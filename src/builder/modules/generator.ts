@@ -1,13 +1,6 @@
+import { type Generator } from "./types";
 import { type Model } from "./model";
 import * as Builder from "./builder";
-
-export type Position = [number, number];
-
-export type Generator = {
-  setModel: (model: Model) => void;
-  getModel: () => Model;
-  drawImage: (id: string, position: Position) => void;
-};
 
 export function makeGenerator(initialModel: Model): Generator {
   const state: { model: Model } = {
@@ -26,9 +19,19 @@ export function makeGenerator(initialModel: Model): Generator {
     state.model = Builder.drawImage(state.model, id, position);
   };
 
+  const drawTexture: Generator["drawTexture"] = (id, source, target): void => {
+    state.model = Builder.drawTexture(state.model, id, source, target, {
+      flip: { kind: "None" },
+      rotate: { kind: "None" },
+      blend: { kind: "None" },
+      pixelate: false,
+    });
+  };
+
   return {
     setModel,
     getModel,
     drawImage,
+    drawTexture,
   };
 }

@@ -938,7 +938,7 @@ export function clearTexture(model: Model, id: string) {
 //   model
 // }
 
-function drawTexture(
+export function drawTexture(
   model: Model,
   id: string,
   [sx, sy, sw, sh]: [number, number, number, number],
@@ -954,18 +954,31 @@ function drawTexture(
     blend: Blend;
     pixelate: boolean;
   }
-) {
-  const currentPage = model.currentPage;
-  if (!currentPage) return;
+): Model {
+  let currModel = model;
+
+  currModel = ensureCurrentPage(currModel);
+
+  const currentPage = currModel.currentPage;
+
+  if (!currentPage) {
+    return currModel;
+  }
+
   const texture = model.values.textures[id];
-  if (!texture) return;
+
+  if (!texture) {
+    return currModel;
+  }
+
   draw(texture, currentPage, [sx, sy, sw, sh], [dx, dy, dw, dh], {
     flip,
     rotate,
     blend,
     pixelate,
   });
-  return model;
+
+  return currModel;
 }
 
 // let hasImage = (model: Model.t, id: string) => {

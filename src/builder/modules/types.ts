@@ -1,5 +1,39 @@
+import { type Model } from "./model";
+
+export type Position = [number, number];
+
+export type Region = [number, number, number, number];
+
+export type Flip =
+  | { kind: "None" }
+  | { kind: "Horizontal" }
+  | { kind: "Vertical" };
+
+export type Rotate =
+  | { kind: "None" }
+  | { kind: "Corner"; degrees: number }
+  | { kind: "Center"; degrees: number };
+
+export type Blend =
+  | { kind: "None" }
+  | { kind: "MultiplyHex"; hex: string }
+  | { kind: "MultiplyRGB"; r: number; g: number; b: number };
+
 export type Generator = {
+  setModel: (model: Model) => void;
+  getModel: () => Model;
   drawImage: (id: string, position: Position) => void;
+  drawTexture: (
+    id: string,
+    source: Region,
+    target: Region,
+    options?: {
+      flip?: Flip;
+      rotate?: Rotate;
+      blend?: Blend;
+      pixelate?: boolean;
+    }
+  ) => void;
 };
 
 export type TextureDef = {
@@ -37,5 +71,3 @@ export type GeneratorDef = {
   textures: TextureDef[];
   script: ScriptDef;
 };
-
-export type Position = [number, number];
