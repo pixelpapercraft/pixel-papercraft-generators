@@ -21,10 +21,24 @@ export type Blend =
 
 export type Generator = {
   setModel: (model: Model) => void;
+
   getModel: () => Model;
+
   defineBooleanInput: (id: string, initial: boolean) => void;
+
   getBooleanInputValue: (id: string) => boolean;
+
+  defineTextureInput(
+    id: string,
+    options: {
+      standardWidth: number;
+      standardHeight: number;
+      choices: string[];
+    }
+  ): void;
+
   drawImage: (id: string, position: Position) => void;
+
   drawTexture: (
     id: string,
     source: Region,

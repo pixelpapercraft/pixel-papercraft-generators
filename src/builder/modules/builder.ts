@@ -603,10 +603,20 @@ export function defineRangeInput(
 export function defineTextureInput(
   model: Model,
   id: string,
-  options: { standardWidth: number; standardHeight: number; choices: string[] }
-) {
-  const input = { tag: "Texture", id, value: options };
-  const inputs = [...model.inputs, input];
+  {
+    standardWidth,
+    standardHeight,
+    choices,
+  }: { standardWidth: number; standardHeight: number; choices: string[] }
+): Model {
+  const input: Input = {
+    kind: "TextureInput",
+    id,
+    standardWidth,
+    standardHeight,
+    choices,
+  };
+  const inputs: Input[] = [...model.inputs, input];
   return { ...model, inputs };
 }
 

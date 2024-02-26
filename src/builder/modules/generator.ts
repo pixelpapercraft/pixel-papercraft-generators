@@ -23,6 +23,10 @@ export function makeGenerator(initialModel: Model): Generator {
     return Builder.getBooleanInputValue(state.model, id);
   };
 
+  const defineTextureInput: Generator["defineTextureInput"] = (id, options) => {
+    state.model = Builder.defineTextureInput(state.model, id, options);
+  };
+
   const drawImage: Generator["drawImage"] = (id, position): void => {
     state.model = Builder.drawImage(state.model, id, position);
   };
@@ -40,6 +44,7 @@ export function makeGenerator(initialModel: Model): Generator {
     setModel,
     getModel,
     defineBooleanInput,
+    defineTextureInput,
     getBooleanInputValue,
     drawImage,
     drawTexture,

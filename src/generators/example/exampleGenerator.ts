@@ -67,6 +67,12 @@ const script: ScriptDef = (generator: Generator) => {
     }); // Bottom
   };
 
+  generator.defineTextureInput("Skin", {
+    standardWidth: 64,
+    standardHeight: 64,
+    choices: [],
+  });
+
   generator.defineBooleanInput("Show Folds", true);
 
   const showFolds = generator.getBooleanInputValue("Show Folds");
