@@ -324,6 +324,10 @@ function setBooleanInputValue(model: Model, id: string, value: boolean): Model {
 //   }
 // }
 
+export function getBooleanInputValue(model: Model, id: string): boolean {
+  return model.values.booleans[id] ?? false;
+}
+
 // let getBooleanInputValueWithDefault = (model: Model.t, id: string, default: bool) => {
 //   let value = Js.Dict.get(model.values.booleans, id)
 //   switch value {

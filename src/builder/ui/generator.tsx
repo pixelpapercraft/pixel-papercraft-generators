@@ -50,12 +50,17 @@ export function Generator({ generatorDef }: { generatorDef: GeneratorDef }) {
       ? model.currentPage.canvasWithContext.canvas.toDataURL("png")
       : null;
 
+  const onInputsChange = async (model: Model) => {
+    const newModel = await run(generatorDef, model);
+    setModel(newModel);
+  };
+
   // console.log(JSON.stringify(model, null, 2));
 
   return (
     <div className="p-8">
       <h1>Generator</h1>
-      <Inputs model={model} onChange={setModel} />
+      <Inputs model={model} onChange={onInputsChange} />
       {dataUrl && <img src={dataUrl} alt="Generated image" />}
     </div>
   );

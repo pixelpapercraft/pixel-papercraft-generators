@@ -23,6 +23,7 @@ export type Generator = {
   setModel: (model: Model) => void;
   getModel: () => Model;
   defineBooleanInput: (id: string, initial: boolean) => void;
+  getBooleanInputValue: (id: string) => boolean;
   drawImage: (id: string, position: Position) => void;
   drawTexture: (
     id: string,

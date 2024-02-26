@@ -19,6 +19,10 @@ export function makeGenerator(initialModel: Model): Generator {
     state.model = Builder.defineBooleanInput(state.model, id, initial);
   };
 
+  const getBooleanInputValue: Generator["getBooleanInputValue"] = (id) => {
+    return Builder.getBooleanInputValue(state.model, id);
+  };
+
   const drawImage: Generator["drawImage"] = (id, position): void => {
     state.model = Builder.drawImage(state.model, id, position);
   };
@@ -36,6 +40,7 @@ export function makeGenerator(initialModel: Model): Generator {
     setModel,
     getModel,
     defineBooleanInput,
+    getBooleanInputValue,
     drawImage,
     drawTexture,
   };

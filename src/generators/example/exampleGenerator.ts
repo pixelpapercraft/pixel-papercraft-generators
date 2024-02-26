@@ -69,11 +69,15 @@ const script: ScriptDef = (generator: Generator) => {
 
   generator.defineBooleanInput("Show Folds", true);
 
+  const showFolds = generator.getBooleanInputValue("Show Folds");
+
   generator.drawImage("Background", [0, 0]);
 
   drawHead("Skin", 185, 117);
 
-  generator.drawImage("Folds", [0, 0]);
+  if (showFolds) {
+    generator.drawImage("Folds", [0, 0]);
+  }
 };
 
 export const generator: GeneratorDef = {
