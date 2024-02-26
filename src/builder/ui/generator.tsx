@@ -53,7 +53,7 @@ export function Generator({ generatorDef }: { generatorDef: GeneratorDef }) {
   // console.log(JSON.stringify(model, null, 2));
 
   return (
-    <div className="p-36">
+    <div className="p-8">
       <h1>Generator</h1>
       <Inputs model={model} onChange={setModel} />
       {dataUrl && <img src={dataUrl} alt="Generated image" />}
