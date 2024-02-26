@@ -216,7 +216,9 @@ function preparePixelationCanvas(
 ): HTMLCanvasElement {
   const [sw2, sh2] = fit(sw, sh, dw, dh);
   const canvas = makeCanvas(sw2, sh2);
-  const context = canvas.getContext("2d");
+  const context = canvas.getContext("2d", {
+    willReadFrequently: true,
+  });
   if (!context) {
     throw new Error("Failed to get 2d context from canvas");
   }
@@ -390,7 +392,9 @@ function drawNearestNeighbor(
   );
 
   if (sw > 0 && sh > 0 && dw > 0 && dh > 0) {
-    const context = canvas.getContext("2d");
+    const context = canvas.getContext("2d", {
+      willReadFrequently: true,
+    });
 
     if (!context) {
       throw new Error("Failed to get 2d context from canvas");
@@ -405,7 +409,9 @@ function drawNearestNeighbor(
 
     const tempCanvas = makeCanvas(dw, dh);
 
-    const tempContext = tempCanvas.getContext("2d");
+    const tempContext = tempCanvas.getContext("2d", {
+      willReadFrequently: true,
+    });
 
     if (!tempContext) {
       throw new Error("Failed to get 2d context from canvas");

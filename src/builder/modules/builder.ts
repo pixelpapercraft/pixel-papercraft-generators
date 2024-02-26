@@ -689,7 +689,9 @@ export function fillBackgroundColor(model: Model, color: string) {
   const newCanvas = document.createElement("canvas");
   newCanvas.width = currentPage.canvasWithContext.canvas.width;
   newCanvas.height = currentPage.canvasWithContext.canvas.height;
-  const newContext = newCanvas.getContext("2d");
+  const newContext = newCanvas.getContext("2d", {
+    willReadFrequently: true,
+  });
   if (!newContext) return;
   newContext.fillStyle = color;
   newContext.fillRect(0, 0, newCanvas.width, newCanvas.height);

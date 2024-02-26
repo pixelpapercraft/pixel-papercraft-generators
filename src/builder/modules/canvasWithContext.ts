@@ -13,7 +13,18 @@ export function makeCanvasWithContext(
   height: number
 ): CanvasWithContext {
   const canvas = makeCanvas(width, height);
-  const context = canvas.getContext("2d")!;
-  const contextWithAlpha = canvas.getContext("2d", { alpha: true })!;
+  const context = canvas.getContext("2d", {
+    willReadFrequently: true,
+  });
+  if (!context) {
+    throw new Error("Failed to get 2d context");
+  }
+  const contextWithAlpha = canvas.getContext("2d", {
+    alpha: true,
+    willReadFrequently: true,
+  });
+  if (!contextWithAlpha) {
+    throw new Error("Failed to get 2d context with alpha");
+  }
   return { width, height, canvas, context, contextWithAlpha };
 }
