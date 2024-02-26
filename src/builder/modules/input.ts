@@ -6,12 +6,12 @@
 //     step: int,
 //   }
 
-export type RangeArgs = {
-  min: number;
-  max: number;
-  value: number;
-  step: number;
-};
+// export type RangeArgs = {
+//   min: number;
+//   max: number;
+//   value: number;
+//   step: number;
+// };
 
 //   type textureArgs = {
 //     standardWidth: int,
@@ -19,11 +19,11 @@ export type RangeArgs = {
 //     choices: array<string>,
 //   }
 
-export type TextureArgs = {
-  standardWidth: number;
-  standardHeight: number;
-  choices: string[];
-};
+// export type TextureArgs = {
+//   standardWidth: number;
+//   standardHeight: number;
+//   choices: string[];
+// };
 
 //   type id = string
 
@@ -49,7 +49,7 @@ export type Input =
   | {
       kind: "CustomStringInput";
       id: Id;
-      callback: (value: string) => React.ReactNode;
+      render: (callback: (value: string) => void) => React.ReactNode;
     }
   | {
       kind: "RegionInput";
@@ -57,10 +57,23 @@ export type Input =
       region: [number, number, number, number];
       onClick: () => void;
     }
-  | { kind: "TextureInput"; id: Id; textureArgs: TextureArgs }
+  | {
+      kind: "TextureInput";
+      id: Id;
+      standardWidth: number;
+      standardHeight: number;
+      choices: string[];
+    }
   | { kind: "BooleanInput"; id: Id }
   | { kind: "SelectInput"; id: Id; options: string[] }
-  | { kind: "RangeInput"; id: Id; rangeArgs: RangeArgs }
+  | {
+      kind: "RangeInput";
+      id: Id;
+      min: number;
+      max: number;
+      value: number;
+      step: number;
+    }
   | { kind: "ButtonInput"; id: Id; onClick: () => void };
 
 // module Model = {
