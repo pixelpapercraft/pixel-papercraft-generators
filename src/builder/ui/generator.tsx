@@ -12,6 +12,7 @@ import {
 } from "@/builder/modules/model";
 import { loadResources } from "@/builder/modules/resourceLoader";
 import { run } from "@/builder/modules/scriptRunner";
+import { Inputs } from "./inputs";
 
 export function Generator({ generatorDef }: { generatorDef: GeneratorDef }) {
   const [model, setModel] = React.useState<Model | null>(null);
@@ -40,14 +41,21 @@ export function Generator({ generatorDef }: { generatorDef: GeneratorDef }) {
     initialize();
   }, [generatorDef]);
 
+  if (!model) {
+    return <div>Loading...</div>;
+  }
+
   const dataUrl =
     model && model.currentPage
       ? model.currentPage.canvasWithContext.canvas.toDataURL("png")
       : null;
 
+  // console.log(JSON.stringify(model, null, 2));
+
   return (
-    <div>
+    <div className="p-36">
       <h1>Generator</h1>
+      <Inputs model={model} onChange={setModel} />
       {dataUrl && <img src={dataUrl} alt="Generated image" />}
     </div>
   );

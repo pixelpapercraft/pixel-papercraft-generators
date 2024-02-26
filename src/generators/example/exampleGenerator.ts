@@ -67,6 +67,8 @@ const script: ScriptDef = (generator: Generator) => {
     }); // Bottom
   };
 
+  generator.defineBooleanInput("Show Folds", true);
+
   generator.drawImage("Background", [0, 0]);
 
   drawHead("Skin", 185, 117);

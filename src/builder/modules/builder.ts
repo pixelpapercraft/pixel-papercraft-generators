@@ -311,6 +311,11 @@ import { type Input } from "./input";
 //   }
 // }
 
+function setBooleanInputValue(model: Model, id: string, value: boolean): Model {
+  const booleans = { ...model.values.booleans, [id]: value };
+  return { ...model, values: { ...model.values, booleans } };
+}
+
 // let getBooleanInputValue = (model: Model.t, id: string) => {
 //   let value = Js.Dict.get(model.values.booleans, id)
 //   switch value {
@@ -512,10 +517,21 @@ export function defineRegionInput(
 //   }
 // }
 
-export function defineBooleanInput(model: Model, id: string, initial: boolean) {
-  const input = { tag: "Boolean", id, value: initial };
-  const inputs = [...model.inputs, input];
-  return { ...model, inputs };
+export function defineBooleanInput(
+  model: Model,
+  id: string,
+  initial: boolean
+): Model {
+  let currModel = model;
+
+  const input: Input = { kind: "BooleanInput", id };
+  const inputs: Input[] = [...model.inputs, input];
+
+  if (!hasBooleanValue(model, id)) {
+    currModel = setBooleanInputValue(model, id, initial);
+  }
+
+  return { ...currModel, inputs };
 }
 
 // let defineButtonInput = (model: Model.t, id: string, onClick) => {

@@ -562,30 +562,30 @@ export function Inputs({
 
   return (
     <div className="bg-gray-100 p-4 mb-8 rounded">
-      {Object.entries(model.inputs).map(([id, input]) => {
+      {model.inputs.map((input) => {
         switch (input.kind) {
           case "Text":
-            return <Text key={id} text={input.text} />;
+            return <Text key={input.id} text={input.text} />;
           case "RegionInput":
             return null;
           case "CustomStringInput":
             return (
-              <div key={id}>
+              <div key={input.id}>
                 {input.render((value: string) => {
-                  onStringInputChange(id, value);
+                  onStringInputChange(input.id, value);
                 })}
               </div>
             );
           case "TextureInput":
             return (
               <TextureInput
-                key={id}
-                id={id}
+                key={input.id}
+                id={input.id}
                 choices={input.choices}
                 textures={model.values.textures}
                 onChange={(image) =>
                   onTextureChange(
-                    id,
+                    input.id,
                     input.standardWidth,
                     input.standardHeight,
                     image
@@ -594,33 +594,33 @@ export function Inputs({
               />
             );
           case "BooleanInput":
-            const checked = getBooleanInputValue(model, id);
+            const checked = getBooleanInputValue(model, input.id);
             return (
               <BooleanInput
-                key={id}
-                id={id}
+                key={input.id}
+                id={input.id}
                 onChange={(value) => {
-                  onBooleanInputChange(id, value);
+                  onBooleanInputChange(input.id, value);
                 }}
                 checked={checked}
               />
             );
           case "SelectInput":
-            const value = getSelectInputValue(model, id);
+            const value = getSelectInputValue(model, input.id);
             return (
               <SelectInput
-                key={id}
-                id={id}
+                key={input.id}
+                id={input.id}
                 options={input.options}
                 value={value}
-                onChange={(value) => onSelectInputChange(id, value)}
+                onChange={(value) => onSelectInputChange(input.id, value)}
               />
             );
           case "ButtonInput":
             return (
               <ButtonInput
-                key={id}
-                id={id}
+                key={input.id}
+                id={input.id}
                 onClick={() => {
                   input.onClick();
                   onButtonInputClick();
@@ -630,13 +630,13 @@ export function Inputs({
           case "RangeInput":
             return (
               <RangeInput
-                key={id}
-                id={id}
+                key={input.id}
+                id={input.id}
                 min={input.min}
                 max={input.max}
                 step={input.step}
                 value={input.value}
-                onChange={(value) => onRangeInputChange(id, value)}
+                onChange={(value) => onRangeInputChange(input.id, value)}
               />
             );
         }
