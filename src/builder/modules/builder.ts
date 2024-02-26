@@ -1,11 +1,4 @@
-import {
-  type ImageWithCanvas,
-  makeImageWithCanvasFromImage,
-} from "./imageWithCanvas";
-import {
-  type CanvasWithContext,
-  makeCanvasWithContext,
-} from "./canvasWithContext";
+import { selectPage, type Model } from "./model";
 import {
   type Texture,
   type Flip,
@@ -13,18 +6,82 @@ import {
   type Blend,
   draw,
 } from "./texture";
-import { type Page, makePage } from "./page";
 import { type Input } from "./input";
+
+// open Dom2
+
+// type textureDef = {
+//   id: string,
+//   url: string,
+//   standardWidth: int,
+//   standardHeight: int,
+// }
+
+// type imageDef = {
+//   id: string,
+//   url: string,
+// }
+
+// type thumnbnailDef = {url: string}
+
+// type videoDef = {url: string}
+
+// type instructionsDef = React.element
+
+// type generatorDef = {
+//   id: string,
+//   name: string,
+//   history: array<string>,
+//   thumbnail: option<thumnbnailDef>,
+//   video: option<videoDef>,
+//   instructions: option<instructionsDef>,
+//   images: array<imageDef>,
+//   textures: array<textureDef>,
+//   script: unit => unit,
+// }
+
+// type position = (int, int)
+
+// type rectangleLegacy = {
+//   x: int,
+//   y: int,
+//   w: int,
+//   h: int,
+// }
+
+// type rectangle = (int, int, int, int)
+
+// module Input = {
+//   type rangeArgs = {
+//     min: int,
+//     max: int,
+//     value: int,
+//     step: int,
+//   }
+
+//   type textureArgs = {
+//     standardWidth: int,
+//     standardHeight: int,
+//     choices: array<string>,
+//   }
+
+//   type id = string
+//   type pageId = string
+
+//   type t =
+//     | Text(id, string)
+//     | CustomStringInput(id, (string => unit) => React.element)
+//     | RegionInput(pageId, (int, int, int, int), unit => unit)
+//     | TextureInput(id, textureArgs)
+//     | BooleanInput(id)
+//     | SelectInput(id, array<string>)
+//     | RangeInput(id, rangeArgs)
+//     | ButtonInput(id, unit => unit)
+// }
 
 // module Model = {
 //   module Variable = {
 //     type t = [#Integer(int) | #String(string) | #Float(float) | #Boolean(bool)]
-
-export type Variable =
-  | { kind: "Integer"; value: number }
-  | { kind: "String"; value: string }
-  | { kind: "Float"; value: number }
-  | { kind: "Boolean"; value: boolean };
 
 //     let toString = (value: t) => {
 //       switch value {
@@ -60,11 +117,6 @@ export type Variable =
 //     region: (int, int, int, int),
 //   }
 
-export type PageRegion = {
-  pageId: string;
-  region: [number, number, number, number];
-};
-
 //   type values = {
 //     images: Js.Dict.t<Generator_ImageWithCanvas.t>,
 //     textures: Js.Dict.t<Generator_Texture.t>,
@@ -75,29 +127,12 @@ export type PageRegion = {
 //     variables: Js.Dict.t<Variable.t>,
 //   }
 
-export type Values = {
-  images: Record<string, ImageWithCanvas>;
-  textures: Record<string, Texture>;
-  booleans: Record<string, boolean>;
-  selects: Record<string, string>;
-  ranges: Record<string, number>;
-  strings: Record<string, string>;
-  variables: Record<string, Variable>;
-};
-
 //   type t = {
 //     inputs: array<Input.t>,
 //     pages: array<Generator_Page.t>,
 //     currentPage: option<Generator_Page.t>,
 //     values: values,
 //   }
-
-export type Model = {
-  inputs: Input[];
-  pages: Page[];
-  currentPage: Page | null;
-  values: Values;
-};
 
 //   let make = () => {
 //     inputs: [],
@@ -115,28 +150,7 @@ export type Model = {
 //   }
 // }
 
-export function makeModel(): Model {
-  return {
-    inputs: [],
-    pages: [],
-    currentPage: null,
-    values: {
-      images: {},
-      textures: {},
-      booleans: {},
-      selects: {},
-      ranges: {},
-      strings: {},
-      variables: {},
-    },
-  };
-}
-
 // let findPage = (model: Model.t, id) => model.pages->Js.Array2.find(page => page.id === id)
-
-export function findPage(model: Model, id: string): Page | null {
-  return model.pages.find((page) => page.id === id) ?? null;
-}
 
 // let getCanvasWithContextPixelColor = (canvasWithContext: Generator_CanvasWithContext.t, x, y) => {
 //   let {width, height, contextWithAlpha} = canvasWithContext
@@ -153,30 +167,6 @@ export function findPage(model: Model, id: string): Page | null {
 //   }
 // }
 
-export function getCanvasWithContextPixelColor(
-  canvasWithContext: CanvasWithContext,
-  x: number,
-  y: number
-): [number, number, number, number] | null {
-  const { width, height, contextWithAlpha } = canvasWithContext;
-  const data = contextWithAlpha.getImageData(0, 0, width, height).data;
-  const pixelIndex = y * width + x;
-  const arrayIndex = pixelIndex * 4;
-  const r = data[arrayIndex];
-  const g = data[arrayIndex + 1];
-  const b = data[arrayIndex + 2];
-  const a = data[arrayIndex + 3];
-  if (
-    r !== undefined &&
-    g !== undefined &&
-    b !== undefined &&
-    a !== undefined
-  ) {
-    return [r, g, b, a];
-  }
-  return null;
-}
-
 // let getTexturePixelColor = (model: Model.t, textureId, x, y) => {
 //   let texture = Js.Dict.get(model.values.textures, textureId)
 //   switch texture {
@@ -184,23 +174,6 @@ export function getCanvasWithContextPixelColor(
 //   | Some(texture) => getCanvasWithContextPixelColor(texture.imageWithCanvas.canvasWithContext, x, y)
 //   }
 // }
-
-export function getTexturePixelColor(
-  model: Model,
-  textureId: string,
-  x: number,
-  y: number
-): [number, number, number, number] | null {
-  const texture = model.values.textures[textureId];
-  if (texture) {
-    return getCanvasWithContextPixelColor(
-      texture.imageWithCanvas.canvasWithContext,
-      x,
-      y
-    );
-  }
-  return null;
-}
 
 // let getImagePixelColor = (model: Model.t, imageId, x, y) => {
 //   let imageWithCanvas = Js.Dict.get(model.values.images, imageId)
@@ -210,23 +183,6 @@ export function getTexturePixelColor(
 //   }
 // }
 
-export function getImagePixelColor(
-  model: Model,
-  imageId: string,
-  x: number,
-  y: number
-): [number, number, number, number] | null {
-  const imageWithCanvas = model.values.images[imageId];
-  if (imageWithCanvas) {
-    return getCanvasWithContextPixelColor(
-      imageWithCanvas.canvasWithContext,
-      x,
-      y
-    );
-  }
-  return null;
-}
-
 // let getPagePixelColor = (model: Model.t, pageId, x, y) => {
 //   let page = findPage(model, pageId)
 //   switch page {
@@ -235,40 +191,12 @@ export function getImagePixelColor(
 //   }
 // }
 
-export function getPagePixelColor(
-  model: Model,
-  pageId: string,
-  x: number,
-  y: number
-): [number, number, number, number] | null {
-  const page = findPage(model, pageId);
-  if (page) {
-    return getCanvasWithContextPixelColor(page.canvasWithContext, x, y);
-  }
-  return null;
-}
-
 // let getCurrentPagePixelColor = (model: Model.t, x, y) => {
 //   switch model.currentPage {
 //   | None => None
 //   | Some(page) => getCanvasWithContextPixelColor(page.canvasWithContext, x, y)
 //   }
 // }
-
-export function getCurrentPagePixelColor(
-  model: Model,
-  x: number,
-  y: number
-): [number, number, number, number] | null {
-  if (model.currentPage) {
-    return getCanvasWithContextPixelColor(
-      model.currentPage.canvasWithContext,
-      x,
-      y
-    );
-  }
-  return null;
-}
 
 // let setVariable = (model: Model.t, id: string, value: Model.Variable.t) => {
 //   let variables = Js.Dict.fromArray(Js.Dict.entries(model.values.variables))
@@ -282,25 +210,9 @@ export function getCurrentPagePixelColor(
 //   }
 // }
 
-export function setVariable(model: Model, id: string, value: Variable): Model {
-  const variables: Record<string, Variable> = { ...model.values.variables };
-  variables[id] = value;
-  return {
-    ...model,
-    values: {
-      ...model.values,
-      variables,
-    },
-  };
-}
-
 // let getVariable = (model: Model.t, id: string) => {
 //   Js.Dict.get(model.values.variables, id)
 // }
-
-export function getVariable(model: Model, id: string): Variable | null {
-  return model.values.variables[id] ?? null;
-}
 
 // let getVariableMap = (model: Model.t, id: string, fn) => {
 //   switch getVariable(model, id) {
@@ -309,113 +221,37 @@ export function getVariable(model: Model, id: string): Variable | null {
 //   }
 // }
 
-// export function getVariableMap(
-//   model: Model,
-//   id: string,
-//   fn: (value: Variable) => any
-// ): any | null {
-//   const variable = getVariable(model, id);
-//   if (variable) {
-//     return fn(variable);
-//   }
-//   return null;
-// }
-
 // let setStringVariable = (model: Model.t, id: string, value: string) => {
 //   setVariable(model, id, #String(value))
 // }
-
-export function setStringVariable(
-  model: Model,
-  id: string,
-  value: string
-): Model {
-  return setVariable(model, id, { kind: "String", value });
-}
 
 // let getStringVariable = (model: Model.t, id: string): option<string> => {
 //   getVariableMap(model, id, Model.Variable.toString)
 // }
 
-export function getStringVariable(model: Model, id: string): string | null {
-  const variable = getVariable(model, id);
-  if (variable && variable.kind === "String") {
-    return variable.value;
-  }
-  return null;
-}
-
 // let setIntegerVariable = (model: Model.t, id: string, value: int) => {
 //   setVariable(model, id, #Integer(value))
 // }
-
-export function setIntegerVariable(
-  model: Model,
-  id: string,
-  value: number
-): Model {
-  return setVariable(model, id, { kind: "Integer", value });
-}
 
 // let getFloatVariable = (model: Model.t, id: string): option<float> => {
 //   getVariableMap(model, id, Model.Variable.toFloat)
 // }
 
-export function getFloatVariable(model: Model, id: string): number | null {
-  const variable = getVariable(model, id);
-  if (variable && variable.kind === "Float") {
-    return variable.value;
-  }
-  return null;
-}
-
 // let setFloatVariable = (model: Model.t, id: string, value: float) => {
 //   setVariable(model, id, #Float(value))
 // }
-
-export function setFloatVariable(
-  model: Model,
-  id: string,
-  value: number
-): Model {
-  return setVariable(model, id, { kind: "Float", value });
-}
 
 // let getIntegerVariable = (model: Model.t, id: string): option<int> => {
 //   getVariableMap(model, id, Model.Variable.toInteger)
 // }
 
-export function getIntegerVariable(model: Model, id: string): number | null {
-  const variable = getVariable(model, id);
-  if (variable && variable.kind === "Integer") {
-    return variable.value;
-  }
-  return null;
-}
-
 // let setBooleanVariable = (model: Model.t, id: string, value: bool) => {
 //   setVariable(model, id, #Boolean(value))
 // }
 
-export function setBooleanVariable(
-  model: Model,
-  id: string,
-  value: boolean
-): Model {
-  return setVariable(model, id, { kind: "Boolean", value });
-}
-
 // let getBooleanVariable = (model: Model.t, id: string): option<bool> => {
 //   getVariableMap(model, id, Model.Variable.toBoolean)
 // }
-
-export function getBooleanVariable(model: Model, id: string): boolean | null {
-  const variable = getVariable(model, id);
-  if (variable && variable.kind === "Boolean") {
-    return variable.value;
-  }
-  return null;
-}
 
 // let hasInput = (model: Model.t, idToFind: string) => {
 //   Js.Array2.find(model.inputs, input => {
@@ -433,29 +269,6 @@ export function getBooleanVariable(model: Model, id: string): boolean | null {
 //   })
 // }
 
-export function hasInput(model: Model, idToFind: string): boolean {
-  return model.inputs.some((input) => {
-    switch (input.kind) {
-      case "Text":
-        return input.id === idToFind;
-      case "RegionInput":
-        return false;
-      case "CustomStringInput":
-        return input.id === idToFind;
-      case "TextureInput":
-        return input.id === idToFind;
-      case "BooleanInput":
-        return input.id === idToFind;
-      case "SelectInput":
-        return input.id === idToFind;
-      case "RangeInput":
-        return input.id === idToFind;
-      case "ButtonInput":
-        return input.id === idToFind;
-    }
-  });
-}
-
 // let clearStringInputValues = (model: Model.t) => {
 //   {
 //     ...model,
@@ -465,16 +278,6 @@ export function hasInput(model: Model, idToFind: string): boolean {
 //     },
 //   }
 // }
-
-export function clearStringInputValues(model: Model): Model {
-  return {
-    ...model,
-    values: {
-      ...model.values,
-      strings: {},
-    },
-  };
-}
 
 // let setStringInputValue = (model: Model.t, id: string, value: string) => {
 //   let strings = Js.Dict.fromArray(Js.Dict.entries(model.values.strings))
@@ -488,22 +291,6 @@ export function clearStringInputValues(model: Model): Model {
 //   }
 // }
 
-export function setStringInputValue(
-  model: Model,
-  id: string,
-  value: string
-): Model {
-  const strings: Record<string, string> = { ...model.values.strings };
-  strings[id] = value;
-  return {
-    ...model,
-    values: {
-      ...model.values,
-      strings,
-    },
-  };
-}
-
 // let getStringInputValue = (model: Model.t, id: string) => {
 //   let value = Js.Dict.get(model.values.strings, id)
 //   switch value {
@@ -511,10 +298,6 @@ export function setStringInputValue(
 //   | Some(value) => value
 //   }
 // }
-
-export function getStringInputValue(model: Model, id: string): string {
-  return model.values.strings[id] ?? "";
-}
 
 // let setBooleanInputValue = (model: Model.t, id: string, value: bool) => {
 //   let booleans = Js.Dict.fromArray(Js.Dict.entries(model.values.booleans))
@@ -528,22 +311,6 @@ export function getStringInputValue(model: Model, id: string): string {
 //   }
 // }
 
-export function setBooleanInputValue(
-  model: Model,
-  id: string,
-  value: boolean
-): Model {
-  const booleans: Record<string, boolean> = { ...model.values.booleans };
-  booleans[id] = value;
-  return {
-    ...model,
-    values: {
-      ...model.values,
-      booleans,
-    },
-  };
-}
-
 // let getBooleanInputValue = (model: Model.t, id: string) => {
 //   let value = Js.Dict.get(model.values.booleans, id)
 //   switch value {
@@ -552,10 +319,6 @@ export function setBooleanInputValue(
 //   }
 // }
 
-export function getBooleanInputValue(model: Model, id: string): boolean {
-  return model.values.booleans[id] ?? false;
-}
-
 // let getBooleanInputValueWithDefault = (model: Model.t, id: string, default: bool) => {
 //   let value = Js.Dict.get(model.values.booleans, id)
 //   switch value {
@@ -563,14 +326,6 @@ export function getBooleanInputValue(model: Model, id: string): boolean {
 //   | Some(value) => value
 //   }
 // }
-
-export function getBooleanInputValueWithDefault(
-  model: Model,
-  id: string,
-  defaultValue: boolean
-): boolean {
-  return model.values.booleans[id] ?? defaultValue;
-}
 
 // let setSelectInputValue = (model: Model.t, id: string, value: string) => {
 //   let selects = Js.Dict.fromArray(Js.Dict.entries(model.values.selects))
@@ -584,22 +339,6 @@ export function getBooleanInputValueWithDefault(
 //   }
 // }
 
-export function setSelectInputValue(
-  model: Model,
-  id: string,
-  value: string
-): Model {
-  const selects: Record<string, string> = { ...model.values.selects };
-  selects[id] = value;
-  return {
-    ...model,
-    values: {
-      ...model.values,
-      selects,
-    },
-  };
-}
-
 // let getSelectInputValue = (model: Model.t, id: string) => {
 //   let value = Js.Dict.get(model.values.selects, id)
 //   switch value {
@@ -607,10 +346,6 @@ export function setSelectInputValue(
 //   | Some(value) => value
 //   }
 // }
-
-export function getSelectInputValue(model: Model, id: string): string {
-  return model.values.selects[id] ?? "";
-}
 
 // let setRangeInputValue = (model: Model.t, id: string, value: int) => {
 //   let ranges = Js.Dict.fromArray(Js.Dict.entries(model.values.ranges))
@@ -624,20 +359,9 @@ export function getSelectInputValue(model: Model, id: string): string {
 //   }
 // }
 
-export function setRangeInputValue(
-  model: Model,
-  id: string,
-  value: number
-): Model {
-  const ranges: Record<string, number> = { ...model.values.ranges };
-  ranges[id] = value;
-  return {
-    ...model,
-    values: {
-      ...model.values,
-      ranges,
-    },
-  };
+export function setRangeInputValue(model: Model, id: string, value: number) {
+  const ranges = { ...model.values.ranges, [id]: value };
+  return { ...model, values: { ...model.values, ranges } };
 }
 
 // let getRangeInputValue = (model: Model.t, id: string): int => {
@@ -648,7 +372,7 @@ export function setRangeInputValue(
 //   }
 // }
 
-export function getRangeInputValue(model: Model, id: string): number {
+export function getRangeInputValue(model: Model, id: string) {
   return model.values.ranges[id] ?? 0;
 }
 
@@ -658,8 +382,7 @@ export function getRangeInputValue(model: Model, id: string): number {
 //   | Some(_) => true
 //   }
 // }
-
-export function hasBooleanValue(model: Model, id: string): boolean {
+export function hasBooleanValue(model: Model, id: string) {
   return model.values.booleans[id] !== undefined;
 }
 
@@ -670,7 +393,7 @@ export function hasBooleanValue(model: Model, id: string): boolean {
 //   }
 // }
 
-export function hasSelectValue(model: Model, id: string): boolean {
+export function hasSelectValue(model: Model, id: string) {
   return model.values.selects[id] !== undefined;
 }
 
@@ -681,7 +404,7 @@ export function hasSelectValue(model: Model, id: string): boolean {
 //   }
 // }
 
-export function hasRangeValue(model: Model, id: string): boolean {
+export function hasRangeValue(model: Model, id: string) {
   return model.values.ranges[id] !== undefined;
 }
 
@@ -704,27 +427,18 @@ export function hasRangeValue(model: Model, id: string): boolean {
 //   }
 // }
 
-export function selectPage(model: Model, id: string): Model {
-  const page = findPage(model, id);
+export function usePage(model: Model, id: string) {
+  const page = model.pages.find((page) => page.id === id);
   if (page) {
-    return {
-      ...model,
-      currentPage: page,
-    };
+    return { ...model, currentPage: page };
+  } else {
+    const page = { id };
+    const pages = [...model.pages, page];
+    return { ...model, pages, currentPage: page };
   }
-  const newPage = makePage(id);
-  return {
-    ...model,
-    pages: [...model.pages, newPage],
-    currentPage: newPage,
-  };
 }
 
 // let getDefaultPageId = () => "Page"
-
-export function getDefaultPageId(): string {
-  return "Page";
-}
 
 // let getCurrentPageId = (model: Model.t) => {
 //   switch model.currentPage {
@@ -733,8 +447,8 @@ export function getDefaultPageId(): string {
 //   }
 // }
 
-export function getCurrentPageId(model: Model): string {
-  return model.currentPage ? model.currentPage.id : getDefaultPageId();
+export function getCurrentPageId(model: Model) {
+  return model.currentPage?.id ?? "Page";
 }
 
 // let ensureCurrentPage = (model: Model.t) => {
@@ -744,11 +458,12 @@ export function getCurrentPageId(model: Model): string {
 //   }
 // }
 
-export function ensureCurrentPage(model: Model): Model {
-  if (!model.currentPage) {
-    return selectPage(model, getDefaultPageId());
+export function ensureCurrentPage(model: Model) {
+  let currModel = model;
+  if (!currModel.currentPage) {
+    currModel = selectPage(model, "Page");
   }
-  return model;
+  return currModel;
 }
 
 // let defineRegionInput = (model: Model.t, region: (int, int, int, int), callback) => {
@@ -760,17 +475,12 @@ export function ensureCurrentPage(model: Model): Model {
 export function defineRegionInput(
   model: Model,
   region: [number, number, number, number],
-  onClick: () => void
-): Model {
-  const pageId = getCurrentPageId(model);
-  const inputs: Input[] = [
-    ...model.inputs,
-    { kind: "RegionInput", pageId, region, onClick },
-  ];
-  return {
-    ...model,
-    inputs,
-  };
+  callback: () => void
+) {
+  const pageId = model.currentPage?.id ?? "Page";
+  const input = { tag: "Region", pageId, region, callback };
+  const inputs = [...model.inputs, input];
+  return { ...model, inputs };
 }
 
 // let defineCustomStringInput = (
@@ -782,20 +492,15 @@ export function defineRegionInput(
 //   {...model, inputs}
 // }
 
-export function defineCustomStringInput(
-  model: Model,
-  id: string,
-  render: (callback: (value: string) => void) => React.ReactNode
-): Model {
-  const inputs: Input[] = [
-    ...model.inputs,
-    { kind: "CustomStringInput", id, render },
-  ];
-  return {
-    ...model,
-    inputs,
-  };
-}
+// export function defineCustomStringInput(
+//   model: Model,
+//   id: string,
+//   render: (value: string) => React.ReactNode
+// ) {
+//   const input: Input = { kind: "CustomStringInput", id, render };
+//   const inputs = [...model.inputs, input];
+//   return { ...model, inputs };
+// }
 
 // let defineBooleanInput = (model: Model.t, id: string, initial: bool) => {
 //   let inputs = Js.Array2.concat(model.inputs, [Input.BooleanInput(id)])
@@ -807,20 +512,10 @@ export function defineCustomStringInput(
 //   }
 // }
 
-export function defineBooleanInput(
-  model: Model,
-  id: string,
-  initial: boolean
-): Model {
-  const inputs: Input[] = [...model.inputs, { kind: "BooleanInput", id }];
-  const newModel: Model = {
-    ...model,
-    inputs,
-  };
-  if (!hasBooleanValue(model, id)) {
-    return setBooleanInputValue(newModel, id, initial);
-  }
-  return newModel;
+export function defineBooleanInput(model: Model, id: string, initial: boolean) {
+  const input = { tag: "Boolean", id, value: initial };
+  const inputs = [...model.inputs, input];
+  return { ...model, inputs };
 }
 
 // let defineButtonInput = (model: Model.t, id: string, onClick) => {
@@ -833,15 +528,10 @@ export function defineButtonInput(
   model: Model,
   id: string,
   onClick: () => void
-): Model {
-  const inputs: Input[] = [
-    ...model.inputs,
-    { kind: "ButtonInput", id, onClick },
-  ];
-  return {
-    ...model,
-    inputs,
-  };
+) {
+  const input = { tag: "Button", id, value: onClick };
+  const inputs = [...model.inputs, input];
+  return { ...model, inputs };
 }
 
 // let defineSelectInput = (model: Model.t, id: string, options: array<string>) => {
@@ -855,24 +545,10 @@ export function defineButtonInput(
 //   }
 // }
 
-export function defineSelectInput(
-  model: Model,
-  id: string,
-  options: string[]
-): Model {
-  const inputs: Input[] = [
-    ...model.inputs,
-    { kind: "SelectInput", id, options },
-  ];
-  const newModel: Model = {
-    ...model,
-    inputs,
-  };
-  if (!hasSelectValue(model, id)) {
-    const value = options[0] ?? "";
-    return setSelectInputValue(newModel, id, value);
-  }
-  return newModel;
+export function defineSelectInput(model: Model, id: string, options: string[]) {
+  const input = { tag: "Select", id, value: options[0] };
+  const inputs = [...model.inputs, input];
+  return { ...model, inputs };
 }
 
 // let defineRangeInput = (model: Model.t, id: string, rangeArgs: Input.rangeArgs) => {
@@ -888,23 +564,11 @@ export function defineSelectInput(
 export function defineRangeInput(
   model: Model,
   id: string,
-  min: number,
-  max: number,
-  value: number,
-  step: number
-): Model {
-  const inputs: Input[] = [
-    ...model.inputs,
-    { kind: "RangeInput", id, min, max, value, step },
-  ];
-  const newModel: Model = {
-    ...model,
-    inputs,
-  };
-  if (!hasRangeValue(model, id)) {
-    return setRangeInputValue(newModel, id, value);
-  }
-  return newModel;
+  rangeArgs: { min: number; max: number; value: number; step: number }
+) {
+  const input = { tag: "Range", id, value: rangeArgs };
+  const inputs = [...model.inputs, input];
+  return { ...model, inputs };
 }
 
 // let defineTextureInput = (model: Model.t, id, options) => {
@@ -919,22 +583,11 @@ export function defineRangeInput(
 export function defineTextureInput(
   model: Model,
   id: string,
-  standardWidth: number,
-  standardHeight: number,
-  choices: string[]
-): Model {
-  const input: Input = {
-    kind: "TextureInput",
-    id,
-    standardWidth,
-    standardHeight,
-    choices,
-  };
-  const inputs: Input[] = [...model.inputs, input];
-  return {
-    ...model,
-    inputs,
-  };
+  options: { standardWidth: number; standardHeight: number; choices: string[] }
+) {
+  const input = { tag: "Texture", id, value: options };
+  const inputs = [...model.inputs, input];
+  return { ...model, inputs };
 }
 
 // let defineText = (model: Model.t, text: string) => {
@@ -953,16 +606,13 @@ export function defineTextureInput(
 //   }
 // }
 
-export function defineText(model: Model, text: string): Model {
-  const isText = (input: Input): boolean => input.kind === "Text";
+export function defineText(model: Model, text: string) {
+  const isText = (input: Input) => (input.kind === "Text" ? true : false);
   const textCount = model.inputs.filter(isText).length;
   const id = `text-${textCount + 1}`;
-  const input: Input = { kind: "Text", id, text };
-  const inputs: Input[] = [...model.inputs, input];
-  return {
-    ...model,
-    inputs,
-  };
+  const input = { tag: "Text", id, value: text };
+  const inputs = [...model.inputs, input];
+  return { ...model, inputs };
 }
 
 // let fillBackgroundColor = (model: Model.t, color: string) => {
@@ -1003,32 +653,30 @@ export function defineText(model: Model, text: string): Model {
 //   }
 // }
 
-export function fillBackgroundColor(model: Model, color: string): Model {
-  if (!model.currentPage) {
-    return model;
-  }
-  const currentPage = findPage(model, model.currentPage.id);
-  if (!currentPage) {
-    return model;
-  }
-  const { width, height } = currentPage.canvasWithContext;
-  const newCanvas = makeCanvasWithContext(width, height);
-  const previousFillStyle = newCanvas.context.fillStyle;
-  newCanvas.context.fillStyle = color;
-  newCanvas.context.fillRect(0, 0, width, height);
-  newCanvas.context.drawImage(currentPage.canvasWithContext.canvas, 0, 0);
-  newCanvas.context.fillStyle = previousFillStyle;
-  const newCurrentPage: Page = {
-    ...currentPage,
-    canvasWithContext: newCanvas,
+export function fillBackgroundColor(model: Model, color: string) {
+  const currentPage = model.currentPage;
+  if (!currentPage) return;
+  const newCanvas = document.createElement("canvas");
+  newCanvas.width = currentPage.canvasWithContext.canvas.width;
+  newCanvas.height = currentPage.canvasWithContext.canvas.height;
+  const newContext = newCanvas.getContext("2d");
+  if (!newContext) return;
+  newContext.fillStyle = color;
+  newContext.fillRect(0, 0, newCanvas.width, newCanvas.height);
+  newContext.drawImage(currentPage.canvasWithContext.canvas, 0, 0);
+  const newCanvasWithContext = {
+    canvas: newCanvas,
+    context: newContext,
   };
-  const newPages: Page[] = model.pages.map((page) =>
-    page.id === newCurrentPage.id ? newCurrentPage : page
+  const newPages = model.pages.map((page) =>
+    page.id === currentPage.id
+      ? { ...page, canvasWithContext: newCanvasWithContext }
+      : page
   );
   return {
     ...model,
     pages: newPages,
-    currentPage: newCurrentPage,
+    currentPage: { ...currentPage, canvasWithContext: newCanvasWithContext },
   };
 }
 
@@ -1049,14 +697,12 @@ export function fillBackgroundColor(model: Model, color: string): Model {
 
 export function fillRect(
   model: Model,
-  dest: [number, number, number, number],
+  [x, y, w, h]: [number, number, number, number],
   color: string
-): Model {
-  const [x, y, w, h] = dest;
-  if (!model.currentPage) {
-    return model;
-  }
-  const context = model.currentPage.canvasWithContext.context;
+) {
+  const currentPage = model.currentPage;
+  if (!currentPage) return;
+  const context = currentPage.canvasWithContext.context;
   context.fillStyle = color;
   context.fillRect(x, y, w, h);
   return model;
@@ -1091,21 +737,9 @@ export function fillRect(
 export function getOffset(
   [x1, y1]: [number, number],
   [x2, y2]: [number, number]
-): [number, number] {
+) {
   const w = x2 - x1;
   const h = y2 - y1;
-
-  /* When a line is drawn and its start and end coords are integer values, the
-  resulting line is drawn in between to rows of pixels, resulting in a line
-  that is two pixels wide and half transparent. To fix this, the line's start
-  and end positions need to be offset 0.5 pixels in the direction normal to the
-  line. The following code gets the angle of the line, and gets the components
-  for a translation in the direction perpendicular to the angle using vector
-  resolution: https://physics.info/vector-components/summary.shtml This results
-  in a fully opaque line with the correct width if the line is vertical or
-  horizontal, but antialiasing may still affect lines at other angles.
- */
-
   const angle = Math.atan2(h, w);
   const ox = Math.sin(angle) * 0.5;
   const oy = Math.cos(angle) * 0.5;
@@ -1156,19 +790,17 @@ export function drawLine(
     pattern: number[];
     offset: number;
   }
-): Model {
-  const [ox, oy] = getOffset([x1, y1], [x2, y2]);
-  if (!model.currentPage) {
-    return model;
-  }
-  const context = model.currentPage.canvasWithContext.context;
+) {
+  const currentPage = model.currentPage;
+  if (!currentPage) return;
+  const context = currentPage.canvasWithContext.context;
   context.beginPath();
   context.strokeStyle = color;
   context.lineWidth = width;
   context.setLineDash(pattern);
   context.lineDashOffset = offset;
-  context.moveTo(x1 + ox, y1 + oy);
-  context.lineTo(x2 + ox, y2 + oy);
+  context.moveTo(x1, y1);
+  context.lineTo(x2, y2);
   context.stroke();
   return model;
 }
@@ -1190,14 +822,25 @@ export function drawImage(
   id: string,
   [x, y]: [number, number]
 ): Model {
-  const modelWithPage = ensureCurrentPage(model);
-  const currentPage = modelWithPage.currentPage;
-  const image = modelWithPage.values.images[id];
-  if (currentPage && image) {
-    const context = currentPage.canvasWithContext.context;
-    context.drawImage(image.image, x, y);
+  let currModel = model;
+
+  currModel = ensureCurrentPage(currModel);
+
+  const currentPage = currModel.currentPage;
+
+  if (!currentPage) {
+    return currModel;
   }
-  return modelWithPage;
+
+  const imageWithCanvas = model.values.images[id];
+
+  if (!imageWithCanvas) {
+    return currModel;
+  }
+
+  currentPage.canvasWithContext.context.drawImage(imageWithCanvas.image, x, y);
+
+  return currModel;
 }
 
 // let addImage = (model: Model.t, id: string, image: Image.t) => {
@@ -1213,23 +856,9 @@ export function drawImage(
 //   }
 // }
 
-export function addImage(
-  model: Model,
-  id: string,
-  image: HTMLImageElement
-): Model {
-  const imageWithCanvas = makeImageWithCanvasFromImage(image);
-  const images: Record<string, ImageWithCanvas> = {
-    ...model.values.images,
-  };
-  images[id] = imageWithCanvas;
-  return {
-    ...model,
-    values: {
-      ...model.values,
-      images,
-    },
-  };
+function addImage(model: Model, id: string, image: HTMLImageElement) {
+  const images = { ...model.values.images, [id]: image };
+  return { ...model, values: { ...model.values, images } };
 }
 
 // let addTexture = (model: Model.t, id: string, texture: Generator_Texture.t) => {
@@ -1244,18 +873,9 @@ export function addImage(
 //   }
 // }
 
-export function addTexture(model: Model, id: string, texture: Texture): Model {
-  const textures: Record<string, Texture> = {
-    ...model.values.textures,
-  };
-  textures[id] = texture;
-  return {
-    ...model,
-    values: {
-      ...model.values,
-      textures,
-    },
-  };
+function addTexture(model: Model, id: string, texture: Texture) {
+  const textures = { ...model.values.textures, [id]: texture };
+  return { ...model, values: { ...model.values, textures } };
 }
 
 // let clearTexture = (model: Model.t, id: string) => {
@@ -1271,19 +891,13 @@ export function addTexture(model: Model, id: string, texture: Texture): Model {
 //   }
 // }
 
-export function clearTexture(model: Model, id: string): Model {
-  // Unsafe types, consider coverting to Maps
-  const entries = Object.entries(model.values.textures).filter(
-    ([textureId]) => textureId !== id
+export function clearTexture(model: Model, id: string) {
+  const textures = Object.fromEntries(
+    Object.entries(model.values.textures).filter(
+      ([textureId]) => textureId !== id
+    )
   );
-  const textures: Record<string, Texture> = Object.fromEntries(entries);
-  return {
-    ...model,
-    values: {
-      ...model.values,
-      textures,
-    },
-  };
+  return { ...model, values: { ...model.values, textures } };
 }
 
 // let drawTexture = (
@@ -1324,7 +938,7 @@ export function clearTexture(model: Model, id: string): Model {
 //   model
 // }
 
-export function drawTexture(
+function drawTexture(
   model: Model,
   id: string,
   [sx, sy, sw, sh]: [number, number, number, number],
@@ -1340,19 +954,18 @@ export function drawTexture(
     blend: Blend;
     pixelate: boolean;
   }
-): Model {
-  const modelWithPage = ensureCurrentPage(model);
-  const currentPage = modelWithPage.currentPage;
-  const texture = modelWithPage.values.textures[id];
-  if (currentPage && texture) {
-    draw(texture, currentPage, [sx, sy, sw, sh], [dx, dy, dw, dh], {
-      flip,
-      rotate,
-      blend,
-      pixelate,
-    });
-  }
-  return modelWithPage;
+) {
+  const currentPage = model.currentPage;
+  if (!currentPage) return;
+  const texture = model.values.textures[id];
+  if (!texture) return;
+  draw(texture, currentPage, [sx, sy, sw, sh], [dx, dy, dw, dh], {
+    flip,
+    rotate,
+    blend,
+    pixelate,
+  });
+  return model;
 }
 
 // let hasImage = (model: Model.t, id: string) => {
@@ -1363,6 +976,10 @@ export function drawTexture(
 //   }
 // }
 
+function hasImage(model: Model, id: string) {
+  return model.values.images[id] !== undefined;
+}
+
 // let hasTexture = (model: Model.t, id: string) => {
 //   let texture = Js.Dict.get(model.values.textures, id)
 //   switch texture {
@@ -1370,6 +987,10 @@ export function drawTexture(
 //   | Some(_) => true
 //   }
 // }
+
+function hasTexture(model: Model, id: string) {
+  return model.values.textures[id] !== undefined;
+}
 
 // let drawText = (model: Model.t, text: string, position: position, size: int) => {
 //   let model = ensureCurrentPage(model)
@@ -1384,3 +1005,18 @@ export function drawTexture(
 //   }
 //   model
 // }
+
+export function drawText(
+  model: Model,
+  text: string,
+  position: [number, number],
+  size: number
+) {
+  const currentPage = model.currentPage;
+  if (!currentPage) return;
+  const [x, y] = position;
+  const font = `${size}px sans-serif`;
+  currentPage.canvasWithContext.context.font = font;
+  currentPage.canvasWithContext.context.fillText(text, x, y);
+  return model;
+}
