@@ -33,16 +33,6 @@ const textures: TextureDef[] = [
   },
 ];
 
-// let script = () => {
-//   Generator.defineTextureInput("Skin", {standardWidth: 64, standardHeight: 64, choices: []})
-//   Generator.defineBooleanInput("Show Folds", true)
-//   let showFolds = Generator.getBooleanInputValue("Show Folds")
-//   Generator.drawImage("Background", (0, 0))
-//   drawHead("Skin", 185, 117)
-//   if showFolds {
-//     Generator.drawImage("Folds", (0, 0))
-//   }
-
 const script: ScriptDef = (generator: Generator) => {
   // Helper Function to draw heads
   const drawHead = (name: string, x: number, y: number) => {
