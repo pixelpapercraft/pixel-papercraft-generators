@@ -1,5 +1,5 @@
 import { type Model, type Control_Texture_Props } from "./model2";
-import { type Flip, type Rotate, type Blend, draw } from "./texture";
+import { type Flip, type Rotate, type Blend, drawTexture } from "./renderer";
 import { type Page, makePage } from "./page";
 
 export class Generator {
@@ -67,9 +67,9 @@ export class Generator {
       return;
     }
 
-    draw(
-      texture,
+    drawTexture(
       currentPage.canvasWithContext,
+      texture,
       [sx, sy, sw, sh],
       [dx, dy, dw, dh],
       {
