@@ -7,12 +7,16 @@ import {
   flipHorizontal,
   addRotation,
 } from "@/builder/modules/renderers/drawTexture";
+import { type TabOrientation } from "@/builder/modules/renderers/drawTab";
 import {
+  type Cuboid,
   type Rectangle,
   type Position,
+  type Dimensions,
   translateRectangle,
-  Dimensions,
 } from "./cuboid";
+
+export type { Cuboid, Rectangle, Position, Dimensions } from "./cuboid";
 
 export type Face = {
   rectangle: Rectangle;
@@ -261,7 +265,7 @@ export class Minecraft {
 
   drawCuboid(
     textureId: string,
-    source: Rectangle,
+    source: Cuboid,
     position: Position,
     dimensions: Dimensions,
     direction: Direction = "East",
@@ -271,12 +275,12 @@ export class Minecraft {
       setLayout(dimensions, direction, center),
       position
     );
-    this.drawFaceTexture(textureId, source, dest.front);
-    this.drawFaceTexture(textureId, source, dest.back);
-    this.drawFaceTexture(textureId, source, dest.top);
-    this.drawFaceTexture(textureId, source, dest.bottom);
-    this.drawFaceTexture(textureId, source, dest.left);
-    this.drawFaceTexture(textureId, source, dest.right);
+    this.drawFaceTexture(textureId, source.front, dest.front);
+    this.drawFaceTexture(textureId, source.back, dest.back);
+    this.drawFaceTexture(textureId, source.top, dest.top);
+    this.drawFaceTexture(textureId, source.bottom, dest.bottom);
+    this.drawFaceTexture(textureId, source.left, dest.left);
+    this.drawFaceTexture(textureId, source.right, dest.right);
   }
 
   setTabSize(tabSize: number) {
@@ -288,42 +292,33 @@ export class Minecraft {
     return tabSize === null ? defaultTabSize : tabSize;
   }
 
-  // let drawFaceTab = (
-  //   face: Builder.rectangle,
-  //   side: Generator.Orientation.t,
-  //   ~showFoldLine: bool=true,
-  //   ~tabAngle: float=45.0,
-  //   ~size: option<int>=?,
-  //   (),
-  // ) => {
-  //   let size = switch size {
-  //   | Some(size) => size
-  //   | None => getTabSize()
-  //   }
-  //   let (x, y, w, h) = face
-  //   let tabRect = switch side {
-  //   | #North => (x, y - size, w, size)
-  //   | #East => (x + w, y, size, h)
-  //   | #South => (x, y + h, w, size)
-  //   | #West => (x - size, y, size, h)
-  //   }
-  //   Generator.drawTab(tabRect, side, ~showFoldLine, ~tabAngle, ())
-  // }
+  drawFaceTab(
+    face: Rectangle,
+    side: TabOrientation,
+    showFoldLine: boolean = true,
+    tabAngle?: number
+  ) {
+    const size = this.getTabSize();
+    const [x, y, w, h] = face;
+    const tabRect: Rectangle =
+      side === "North"
+        ? [x, y - size, w, size]
+        : side === "East"
+        ? [x + w, y, size, h]
+        : side === "South"
+        ? [x, y + h, w, size]
+        : [x - size, y, size, h];
+    this.generator.drawTab(tabRect, side, showFoldLine, tabAngle);
+  }
 
-  // let drawFaceTabs = (
-  //   face: Builder.rectangle,
-  //   sides: array<Generator.Orientation.t>,
-  //   ~showFoldLine: bool=true,
-  //   ~tabAngle: float=45.0,
-  //   ~size: option<int>=?,
-  //   (),
-  // ) => {
-  //   let size = switch size {
-  //   | Some(size) => size
-  //   | None => getTabSize()
-  //   }
-  //   sides->Belt.Array.forEach(side => {
-  //     drawFaceTab(face, side, ~showFoldLine, ~tabAngle, ~size, ())
-  //   })
-  // }
+  drawFaceTabs(
+    face: Rectangle,
+    sides: TabOrientation[],
+    showFoldLine: boolean = true,
+    tabAngle?: number
+  ) {
+    sides.forEach((side) => {
+      this.drawFaceTab(face, side, showFoldLine, tabAngle);
+    });
+  }
 }

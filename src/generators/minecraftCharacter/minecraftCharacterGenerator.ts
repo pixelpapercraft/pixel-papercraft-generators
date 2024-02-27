@@ -12,6 +12,7 @@ import type {
 import { type Generator } from "@/builder/modules/generator";
 
 import { steve, alex } from "../common/minecraftCharacter";
+import { type Dimensions, Minecraft } from "../common/minecraft";
 
 import thumbnailImage from "./thumbnail/v2-thumbnail-256.jpeg";
 
@@ -91,15 +92,7 @@ const textures: TextureDef[] = [
 // let alex = Minecraft.Character.alex
 
 const script: ScriptDef = (generator: Generator) => {
-  //   // Inputs
-  //   Generator.defineTextureInput(
-  //     "Skin",
-  //     {
-  //       standardWidth: 64,
-  //       standardHeight: 64,
-  //       choices: ["Steve", "Alex"],
-  //     },
-  //   )
+  const minecraftGenerator = new Minecraft(generator);
 
   generator.defineTextureInput("Skin", {
     standardWidth: 64,
@@ -156,16 +149,18 @@ const script: ScriptDef = (generator: Generator) => {
 
   const char = isAlexModel ? alex : steve;
 
-  //   let drawHead = ((ox, oy): Generator_Builder.position) => {
-  //     let scale = (64, 64, 64)
-  //     Minecraft.drawCuboid("Skin", char.base.head, (ox, oy), scale, ())
-  //     if showHeadOverlay {
-  //       Minecraft.drawCuboid("Skin", char.overlay.head, (ox, oy), scale, ())
-  //     }
-  //     /* if showFolds {
-  //       Generator.drawFoldLineCuboid((ox, oy), scale, ())
-  //     } */
-  //   }
+  function drawHead([ox, oy]: [number, number]) {
+    const dimensions: Dimensions = [64, 64, 64];
+    minecraftGenerator.drawCuboid("Skin", char.base.head, [ox, oy], dimensions);
+    if (showHeadOverlay) {
+      minecraftGenerator.drawCuboid(
+        "Skin",
+        char.overlay.head,
+        [ox, oy],
+        dimensions
+      );
+    }
+  }
 
   //   let drawBody = ((ox, oy): Generator_Builder.position) => {
   //     let scale = (64, 96, 32)
@@ -173,30 +168,65 @@ const script: ScriptDef = (generator: Generator) => {
   //     if showBodyOverlay {
   //       Minecraft.drawCuboid("Skin", char.overlay.body, (ox, oy), scale, ())
   //     }
-  //     /* if showFolds {
-  //       Generator.drawFoldLineCuboid((ox, oy), scale, ())
-  //     } */
   //   }
+
+  function drawBody([ox, oy]: [number, number]) {
+    const scale: Dimensions = [64, 96, 32];
+    minecraftGenerator.drawCuboid("Skin", char.base.body, [ox, oy], scale);
+    if (showBodyOverlay) {
+      minecraftGenerator.drawCuboid("Skin", char.overlay.body, [ox, oy], scale);
+    }
+  }
+
   //   let drawRightArm = ((ox, oy): Generator_Builder.position) => {
   //     let scale = char == alex ? (24, 96, 32) : (32, 96, 32)
   //     Minecraft.drawCuboid("Skin", char.base.rightArm, (ox, oy), scale, ())
   //     if showRightArmOverlay {
   //       Minecraft.drawCuboid("Skin", char.overlay.rightArm, (ox, oy), scale, ())
   //     }
-  //     /* if showFolds {
-  //       Generator.drawFoldLineCuboid((ox, oy), scale, ())
-  //     } */
   //   }
+
+  function drawRightArm([ox, oy]: [number, number]) {
+    const scale: Dimensions = char === alex ? [24, 96, 32] : [32, 96, 32];
+    minecraftGenerator.drawCuboid("Skin", char.base.rightArm, [ox, oy], scale);
+    if (showRightArmOverlay) {
+      minecraftGenerator.drawCuboid(
+        "Skin",
+        char.overlay.rightArm,
+        [ox, oy],
+        scale
+      );
+    }
+  }
+
   //   let drawLeftArm = ((ox, oy): Generator_Builder.position) => {
   //     let scale = char == alex ? (24, 96, 32) : (32, 96, 32)
   //     Minecraft.drawCuboid("Skin", char.base.leftArm, (ox, oy), scale, ~direction=#West, ())
   //     if showLeftArmOverlay {
   //       Minecraft.drawCuboid("Skin", char.overlay.leftArm, (ox, oy), scale, ~direction=#West, ())
   //     }
-  //     /* if showFolds {
-  //       Generator.drawFoldLineCuboid((ox, oy), scale, ~direction=#West, ())
-  //     } */
   //   }
+
+  function drawLeftArm([ox, oy]: [number, number]) {
+    const scale: Dimensions = char === alex ? [24, 96, 32] : [32, 96, 32];
+    minecraftGenerator.drawCuboid(
+      "Skin",
+      char.base.leftArm,
+      [ox, oy],
+      scale,
+      "West"
+    );
+    if (showLeftArmOverlay) {
+      minecraftGenerator.drawCuboid(
+        "Skin",
+        char.overlay.leftArm,
+        [ox, oy],
+        scale,
+        "West"
+      );
+    }
+  }
+
   //   let drawRightLeg = ((ox, oy): Generator_Builder.position) => {
   //     let scale = (32, 96, 32)
   //     Minecraft.drawCuboid("Skin", char.base.rightLeg, (ox, oy), scale, ())
@@ -207,6 +237,20 @@ const script: ScriptDef = (generator: Generator) => {
   //       Generator.drawFoldLineCuboid((ox, oy), scale, ())
   //     } */
   //   }
+
+  function drawRightLeg([ox, oy]: [number, number]) {
+    const scale: Dimensions = [32, 96, 32];
+    minecraftGenerator.drawCuboid("Skin", char.base.rightLeg, [ox, oy], scale);
+    if (showRightLegOverlay) {
+      minecraftGenerator.drawCuboid(
+        "Skin",
+        char.overlay.rightLeg,
+        [ox, oy],
+        scale
+      );
+    }
+  }
+
   //   let drawLeftLeg = ((ox, oy): Generator_Builder.position) => {
   //     let scale = (32, 96, 32)
   //     Minecraft.drawCuboid("Skin", char.base.leftLeg, (ox, oy), scale, ~direction=#West, ())
@@ -217,6 +261,27 @@ const script: ScriptDef = (generator: Generator) => {
   //       Generator.drawFoldLineCuboid((ox, oy), scale, ~direction=#West, ())
   //     } */
   //   }
+
+  function drawLeftLeg([ox, oy]: [number, number]) {
+    const scale: Dimensions = [32, 96, 32];
+    minecraftGenerator.drawCuboid(
+      "Skin",
+      char.base.leftLeg,
+      [ox, oy],
+      scale,
+      "West"
+    );
+    if (showLeftLegOverlay) {
+      minecraftGenerator.drawCuboid(
+        "Skin",
+        char.overlay.leftLeg,
+        [ox, oy],
+        scale,
+        "West"
+      );
+    }
+  }
+
   //   let drawFolds = () => {
   //     if isAlexModel {
   //       Generator.drawImage("AlexFolds", (0, 0))
@@ -225,58 +290,165 @@ const script: ScriptDef = (generator: Generator) => {
   //     }
   //     // Later replace with drawLineFold functions
   //   }
+
+  function drawFolds() {
+    if (isAlexModel) {
+      generator.drawImage("AlexFolds", [0, 0]);
+    } else {
+      generator.drawImage("SteveFolds", [0, 0]);
+    }
+    // Later replace with drawLineFold functions
+  }
+
   //   // Background
   //   Generator.drawImage("Background", (0, 0))
+
+  generator.drawImage("Background", [0, 0]);
+
   //   if isAlexModel {
   //     Generator.drawImage("AlexTabs", (0, 0))
   //   } else {
   //     Generator.drawImage("SteveTabs", (0, 0))
   //   }
+
+  if (isAlexModel) {
+    generator.drawImage("AlexTabs", [0, 0]);
+  } else {
+    generator.drawImage("SteveTabs", [0, 0]);
+  }
+
   //   // Head
   //   let (ox, oy) = (74, 25)
+  const [oxHead, oyHead] = [74, 25];
+
   //   drawHead((ox, oy))
+  drawHead([oxHead, oyHead]);
+
   //   Generator.defineRegionInput((ox, oy, 256, 192), () => {
   //     Generator.setBooleanInputValue("Show Head Overlay", !showHeadOverlay)
   //   })
+
+  generator.defineRegionInput([oxHead, oyHead, 256, 192], () => {
+    generator.setBooleanInputValue("Show Head Overlay", !showHeadOverlay);
+  });
+
   //   // Body
   //   let (ox, oy) = (268, 201)
+  const [oxBody, oyBody] = [268, 201];
+
   //   drawBody((ox, oy))
+  drawBody([oxBody, oyBody]);
+
   //   Generator.defineRegionInput((ox, oy, 192, 160), () => {
   //     Generator.setBooleanInputValue("Show Body Overlay", !showBodyOverlay)
   //   })
+
+  generator.defineRegionInput([oxBody, oyBody, 192, 160], () => {
+    generator.setBooleanInputValue("Show Body Overlay", !showBodyOverlay);
+  });
+
   //   // Arms
   //   // Right Arm
   //   let (ox, oy) = (isAlexModel ? 107 : 99, 373)
+  const [oxRightArm, oyRightArm] = isAlexModel ? [107, 373] : [99, 373];
+
   //   drawRightArm((ox, oy))
+  drawRightArm([oxRightArm, oyRightArm]);
+
   //   Generator.defineRegionInput((ox, oy, isAlexModel ? 112 : 128, 160), () => {
   //     Generator.setBooleanInputValue("Show Right Arm Overlay", !showRightArmOverlay)
   //   })
+
+  generator.defineRegionInput(
+    [oxRightArm, oyRightArm, isAlexModel ? 112 : 128, 160],
+    () => {
+      generator.setBooleanInputValue(
+        "Show Right Arm Overlay",
+        !showRightArmOverlay
+      );
+    }
+  );
+
   //   // Left Arm
   //   let (ox, oy) = (isAlexModel ? 391 : 383, 373)
+
+  const [oxLeftArm, oyLeftArm] = isAlexModel ? [391, 373] : [383, 373];
+
   //   drawLeftArm((ox, oy))
+
+  drawLeftArm([oxLeftArm, oyLeftArm]);
+
   //   Generator.defineRegionInput((ox, oy, isAlexModel ? 112 : 128, 166), () => {
   //     Generator.setBooleanInputValue("Show Left Arm Overlay", !showLeftArmOverlay)
   //   })
+
+  generator.defineRegionInput(
+    [oxLeftArm, oyLeftArm, isAlexModel ? 112 : 128, 166],
+    () => {
+      generator.setBooleanInputValue(
+        "Show Left Arm Overlay",
+        !showLeftArmOverlay
+      );
+    }
+  );
+
   //   // Right Leg
   //   let (ox, oy) = (99, 587)
+
+  const [oxRightLeg, oyRightLeg] = [99, 587];
+
   //   drawRightLeg((ox, oy))
+
+  drawRightLeg([oxRightLeg, oyRightLeg]);
+
   //   Generator.defineRegionInput((ox, oy, 128, 160), () => {
   //     Generator.setBooleanInputValue("Show Right Leg Overlay", !showRightLegOverlay)
   //   })
+
+  generator.defineRegionInput([oxRightLeg, oyRightLeg, 128, 160], () => {
+    generator.setBooleanInputValue(
+      "Show Right Leg Overlay",
+      !showRightLegOverlay
+    );
+  });
+
   //   // Left Leg
   //   let (ox, oy) = (383, 587)
+
+  const [oxLeftLeg, oyLeftLeg] = [383, 587];
+
   //   drawLeftLeg((ox, oy))
+
+  drawLeftLeg([oxLeftLeg, oyLeftLeg]);
+
   //   Generator.defineRegionInput((ox, oy, 128, 160), () => {
   //     Generator.setBooleanInputValue("Show Left Leg Overlay", !showLeftLegOverlay)
   //   })
+
+  generator.defineRegionInput([oxLeftLeg, oyLeftLeg, 128, 160], () => {
+    generator.setBooleanInputValue(
+      "Show Left Leg Overlay",
+      !showLeftLegOverlay
+    );
+  });
+
   //   // Folds
   //   if showFolds {
   //     drawFolds()
   //   }
+
+  if (showFolds) {
+    drawFolds();
+  }
+
   //   // Labels
   //   if showLabels {
   //     Generator.drawImage("Labels", (0, 0))
   //   }
+
+  if (showLabels) {
+    generator.drawImage("Labels", [0, 0]);
+  }
 };
 
 // let generator: Generator.generatorDef = {

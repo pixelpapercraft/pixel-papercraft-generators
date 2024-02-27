@@ -1,4 +1,4 @@
-import { type Model, type Control_Texture_Props } from "./model";
+import { type Model, type Control_Texture_Props, type Region } from "./model";
 import { type DrawTextureOptions, drawTexture } from "./renderers/drawTexture";
 import { type TabOrientation, drawTab } from "./renderers/drawTab";
 import { type Page, makePage } from "./page";
@@ -35,6 +35,11 @@ export class Generator {
     this.model.addSelectControl(id, options);
   }
 
+  defineRegionInput(region: Region, onClick: () => void): void {
+    const currentPage = this.getCurrentPage();
+    this.model.addRegionControl(currentPage.id, region, onClick);
+  }
+
   defineText(text: string): void {
     this.model.addTextControl(text);
   }
@@ -45,6 +50,10 @@ export class Generator {
 
   getBooleanInputValueWithDefault(id: string, defaultValue: boolean): boolean {
     return this.model.getBooleanVariable(id) ?? defaultValue;
+  }
+
+  setBooleanInputValue(id: string, value: boolean): void {
+    this.model.setBooleanVariable(id, value);
   }
 
   getSelectInputValue(id: string): string | null {
