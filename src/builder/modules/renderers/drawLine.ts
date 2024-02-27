@@ -24,24 +24,44 @@ function getOffset([x1, y1]: Position, [x2, y2]: Position) {
 export type LineProps = {
   color: string;
   width: number;
-  pattern: number[];
-  offset: number;
+  lineDash: number[];
+  lineDashOffset: number;
 };
 
 export function drawLine(
   page: CanvasWithContext,
   [x1, y1]: Position,
   [x2, y2]: Position,
-  { color, width, pattern, offset }: LineProps
+  lineProps?: LineProps
 ) {
+  const { color, width, lineDash, lineDashOffset } = lineProps ?? {
+    color: "#000000",
+    width: 1,
+    lineDash: [],
+    lineDashOffset: 0,
+  };
+
   const [ox, oy] = getOffset([x1, y1], [x2, y2]);
   const context = page.context;
   context.beginPath();
   context.strokeStyle = color;
   context.lineWidth = width;
-  context.setLineDash(pattern);
-  context.lineDashOffset = offset;
+  context.setLineDash(lineDash);
+  context.lineDashOffset = lineDashOffset;
   context.moveTo(x1 + ox, y1 + oy);
   context.lineTo(x2 + ox, y2 + oy);
   context.stroke();
+}
+
+export function drawFoldLine(
+  page: CanvasWithContext,
+  from: Position,
+  to: Position
+) {
+  return drawLine(page, from, to, {
+    color: "#7b7b7b",
+    width: 1,
+    lineDash: [2, 2],
+    lineDashOffset: 3,
+  });
 }

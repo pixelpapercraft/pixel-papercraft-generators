@@ -1,4 +1,7 @@
 /** [x, y] */
+export type Point = [number, number];
+
+/** [x, y] */
 export type Position = [number, number];
 
 /** [w, h] */
