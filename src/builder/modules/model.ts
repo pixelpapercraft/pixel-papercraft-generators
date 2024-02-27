@@ -1274,12 +1274,18 @@ export function drawTexture(
   const currentPage = modelWithPage.currentPage;
   const texture = modelWithPage.values.textures[id];
   if (currentPage && texture) {
-    draw(texture, currentPage, [sx, sy, sw, sh], [dx, dy, dw, dh], {
-      flip,
-      rotate,
-      blend,
-      pixelate,
-    });
+    draw(
+      texture,
+      currentPage.canvasWithContext,
+      [sx, sy, sw, sh],
+      [dx, dy, dw, dh],
+      {
+        flip,
+        rotate,
+        blend,
+        pixelate,
+      }
+    );
   }
   return modelWithPage;
 }

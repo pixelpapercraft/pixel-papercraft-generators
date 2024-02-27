@@ -1,4 +1,7 @@
-import { makeImageFromUrl } from "./imageFactory";
+import {
+  type ImageWithCanvas,
+  makeImageWithCanvasFromUrl,
+} from "./imageWithCanvas";
 import { type Texture, makeTextureFromUrl } from "./texture";
 import { type ImageDef, type TextureDef, type GeneratorDef } from "./types";
 
@@ -6,7 +9,7 @@ import { type ImageDef, type TextureDef, type GeneratorDef } from "./types";
 
 // type imageTuple = (string, Dom2.Image.t)
 
-type ImageTuple = [string, HTMLImageElement];
+type ImageTuple = [string, ImageWithCanvas];
 
 // type textureTuple = (string, Generator_Texture.t)
 
@@ -20,7 +23,7 @@ type TextureTuple = [string, Texture];
 // }
 
 async function imageDefToImage(imageDef: ImageDef): Promise<ImageTuple> {
-  const image = await makeImageFromUrl(imageDef.url);
+  const image = await makeImageWithCanvasFromUrl(imageDef.url);
   return [imageDef.id, image];
 }
 

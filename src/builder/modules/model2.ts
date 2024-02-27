@@ -23,17 +23,22 @@ export type Control_Region = {
   onClick: () => void;
 };
 
-export type Control_Texture = {
-  kind: "Texture";
-  id: string;
+export type Control_Texture_Props = {
   standardWidth: number;
   standardHeight: number;
   choices: string[];
 };
 
+export type Control_Texture = {
+  kind: "Texture";
+  id: string;
+  props: Control_Texture_Props;
+};
+
 export type Control_Boolean = {
   kind: "Boolean";
   id: string;
+  initialValue: boolean;
 };
 
 export type Control_Select = {
@@ -69,224 +74,227 @@ export type Control =
 
 export type Variable_Number = {
   kind: "Number";
-  id: string;
   value: number;
 };
 
 export type Variable_String = {
   kind: "String";
-  id: string;
   value: string;
 };
 
 export type Variable_Boolean = {
   kind: "Boolean";
-  id: string;
   value: boolean;
 };
 
 export type Variable = Variable_Number | Variable_String | Variable_Boolean;
 
-export type Values = {
+export class Values {
   images: Map<string, ImageWithCanvas>;
   textures: Map<string, Texture>;
-  variables: Variable[];
-};
+  variables: Map<string, Variable>;
 
-export type Model = {
+  constructor() {
+    this.images = new Map();
+    this.textures = new Map();
+    this.variables = new Map();
+  }
+
+  addImage(id: string, image: ImageWithCanvas) {
+    this.images.set(id, image);
+  }
+
+  addTexture(id: string, texture: Texture) {
+    this.textures.set(id, texture);
+  }
+
+  removeTexture(id: string) {
+    this.textures.delete(id);
+  }
+
+  setVariable(id: string, variable: Variable) {
+    this.variables.set(id, variable);
+  }
+
+  setStringVariable(id: string, value: string): void {
+    this.variables.set(id, { kind: "String", value });
+  }
+
+  getStringVariable(id: string): string | null {
+    const variable = this.variables.get(id);
+    return variable && variable.kind === "String" ? variable.value : null;
+  }
+
+  setNumberVariable(id: string, value: number): void {
+    this.variables.set(id, { kind: "Number", value });
+  }
+
+  getNumberVariable(id: string): number | null {
+    const variable = this.variables.get(id);
+    return variable && variable.kind === "Number" ? variable.value : null;
+  }
+
+  setBooleanVariable(id: string, value: boolean): void {
+    this.variables.set(id, { kind: "Boolean", value });
+  }
+
+  getBooleanVariable(id: string): boolean | null {
+    const variable = this.variables.get(id);
+    return variable && variable.kind === "Boolean" ? variable.value : null;
+  }
+}
+
+export class Model {
   controls: Control[];
   pages: Page[];
   currentPage: Page | null;
   values: Values;
-};
 
-export function makeModel(): Model {
-  return {
-    controls: [],
-    pages: [],
-    currentPage: null,
-    values: {
-      images: new Map(),
-      textures: new Map(),
-      variables: [],
-    },
-  };
-}
+  constructor(values: Values) {
+    this.controls = [];
+    this.pages = [];
+    this.currentPage = null;
+    this.values = values;
+  }
 
-export function makeModelWithValues(values: Values): Model {
-  return {
-    controls: [],
-    pages: [],
-    currentPage: null,
-    values,
-  };
-}
+  addControl(control: Control) {
+    this.controls.push(control);
+  }
 
-export function addControl(model: Model, control: Control) {
-  return {
-    ...model,
-    controls: [...model.controls, control],
-  };
-}
+  addTextControl(id: string, text: string) {
+    this.addControl({
+      kind: "Text",
+      id,
+      text,
+    });
+  }
 
-export function addTextControl(model: Model, id: string, text: string) {
-  return addControl(model, {
-    kind: "Text",
-    id,
-    text,
-  });
-}
+  addCustomControl(
+    id: string,
+    render: (onChange: (value: string) => void) => React.ReactNode
+  ) {
+    this.addControl({
+      kind: "Custom",
+      id,
+      render,
+    });
+  }
 
-export function addCustomControl(
-  model: Model,
-  id: string,
-  render: (onChange: (value: string) => void) => React.ReactNode
-) {
-  return addControl(model, {
-    kind: "Custom",
-    id,
-    render,
-  });
-}
+  addRegionControl(pageId: string, region: Region, onClick: () => void) {
+    this.addControl({
+      kind: "Region",
+      pageId,
+      region,
+      onClick,
+    });
+  }
 
-export function addRegionControl(
-  model: Model,
-  pageId: string,
-  region: Region,
-  onClick: () => void
-) {
-  return addControl(model, {
-    kind: "Region",
-    pageId,
-    region,
-    onClick,
-  });
-}
+  addTextureControl(id: string, props: Control_Texture_Props) {
+    this.addControl({
+      kind: "Texture",
+      id,
+      props,
+    });
+  }
 
-export function addTextureControl(
-  model: Model,
-  id: string,
-  standardWidth: number,
-  standardHeight: number,
-  choices: string[]
-) {
-  return addControl(model, {
-    kind: "Texture",
-    id,
-    standardWidth,
-    standardHeight,
-    choices,
-  });
-}
+  addBooleanControl(id: string, initialValue: boolean) {
+    this.addControl({
+      kind: "Boolean",
+      id,
+      initialValue,
+    });
+  }
 
-export function addBooleanControl(model: Model, id: string) {
-  return addControl(model, {
-    kind: "Boolean",
-    id,
-  });
-}
+  addSelectControl(id: string, options: string[]) {
+    this.addControl({
+      kind: "Select",
+      id,
+      options,
+    });
+  }
 
-export function addSelectControl(model: Model, id: string, options: string[]) {
-  return addControl(model, {
-    kind: "Select",
-    id,
-    options,
-  });
-}
+  addRangeControl(
+    id: string,
+    min: number,
+    max: number,
+    value: number,
+    step: number
+  ) {
+    this.addControl({
+      kind: "Range",
+      id,
+      min,
+      max,
+      value,
+      step,
+    });
+  }
 
-export function addRangeControl(
-  model: Model,
-  id: string,
-  min: number,
-  max: number,
-  value: number,
-  step: number
-) {
-  return addControl(model, {
-    kind: "Range",
-    id,
-    min,
-    max,
-    value,
-    step,
-  });
-}
+  addButtonControl(id: string, onClick: () => void) {
+    this.addControl({
+      kind: "Button",
+      id,
+      onClick,
+    });
+  }
 
-export function addButtonControl(
-  model: Model,
-  id: string,
-  onClick: () => void
-) {
-  return addControl(model, {
-    kind: "Button",
-    id,
-    onClick,
-  });
-}
+  addPage(page: Page) {
+    this.pages.push(page);
+  }
 
-export function addPage(model: Model, page: Page) {
-  return {
-    ...model,
-    pages: [...model.pages, page],
-  };
-}
+  findPage(id: string): Page | null {
+    return this.pages.find((curr) => curr.id === id) || null;
+  }
 
-export function findPage(model: Model, id: string): Page | null {
-  return model.pages.find((curr) => curr.id === id) || null;
-}
+  addImage(id: string, image: ImageWithCanvas) {
+    this.values.addImage(id, image);
+  }
 
-export function addImage(model: Model, id: string, image: ImageWithCanvas) {
-  return {
-    ...model,
-    values: {
-      ...model.values,
-      images: new Map(model.values.images).set(id, image),
-    },
-  };
-}
+  findImage(id: string): ImageWithCanvas | null {
+    return this.values.images.get(id) || null;
+  }
 
-export function findImage(model: Model, id: string): ImageWithCanvas | null {
-  return model.values.images.get(id) ?? null;
-}
+  addTexture(id: string, texture: Texture) {
+    this.values.addTexture(id, texture);
+  }
 
-export function addTexture(model: Model, id: string, texture: Texture) {
-  return {
-    ...model,
-    values: {
-      ...model.values,
-      textures: new Map(model.values.textures).set(id, texture),
-    },
-  };
-}
+  findTexture(id: string): Texture | null {
+    return this.values.textures.get(id) || null;
+  }
 
-export function findTexture(model: Model, id: string): Texture | null {
-  return model.values.textures.get(id) ?? null;
-}
+  removeTexture(id: string) {
+    this.values.removeTexture(id);
+  }
 
-export function setVariable(model: Model, variable: Variable) {
-  const currVariables = model.values.variables.filter(
-    (curr) => curr.id !== variable.id
-  );
-  return {
-    ...model,
-    values: {
-      ...model.values,
-      variables: [...currVariables, variable],
-    },
-  };
-}
+  setVariable(id: string, variable: Variable) {
+    this.values.setVariable(id, variable);
+  }
 
-export function getStringVariable(model: Model, id: string): string | null {
-  const variable = model.values.variables.find((curr) => curr.id === id);
-  return variable && variable.kind === "String" ? variable.value : null;
-}
+  setStringVariable(id: string, value: string): void {
+    this.values.setStringVariable(id, value);
+  }
 
-export function getNumberVariable(model: Model, id: string): number | null {
-  const variable = model.values.variables.find((curr) => curr.id === id);
-  return variable && variable.kind === "Number" ? variable.value : null;
-}
+  getStringVariable(id: string): string | null {
+    return this.values.getStringVariable(id);
+  }
 
-export function getBooleanVariable(model: Model, id: string): boolean | null {
-  const variable = model.values.variables.find((curr) => curr.id === id);
-  return variable && variable.kind === "Boolean" ? variable.value : null;
+  setNumberVariable(id: string, value: number): void {
+    this.values.setNumberVariable(id, value);
+  }
+
+  getNumberVariable(id: string): number | null {
+    return this.values.getNumberVariable(id);
+  }
+
+  setBooleanVariable(id: string, value: boolean): void {
+    this.values.setBooleanVariable(id, value);
+  }
+
+  getBooleanVariable(id: string): boolean | null {
+    return this.values.getBooleanVariable(id);
+  }
+
+  setCurrentPage(page: Page | null) {
+    this.currentPage = page;
+  }
 }

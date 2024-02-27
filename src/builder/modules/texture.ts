@@ -5,6 +5,7 @@ import {
 import { makeImageFromUrl } from "./imageFactory";
 import { makeCanvas } from "./canvasFactory";
 import { type Page } from "./page";
+import { CanvasWithContext } from "./canvasWithContext";
 
 // open Dom2
 
@@ -381,7 +382,7 @@ function makeInitialValues(
 
 function drawNearestNeighbor(
   texture: Texture,
-  page: Page,
+  page: CanvasWithContext,
   coordinates: Coordinates,
   options: DrawNearestNeighborOptions
 ): void {
@@ -455,7 +456,7 @@ function drawNearestNeighbor(
       }
     }
 
-    const pageContext = page.canvasWithContext.context;
+    const pageContext = page.context;
 
     // Save the current state of the page
     pageContext.save();
@@ -533,7 +534,7 @@ function drawNearestNeighbor(
 
 export function draw(
   texture: Texture,
-  page: Page,
+  page: CanvasWithContext,
   [sx, sy, sw, sh]: [number, number, number, number],
   [dx, dy, dw, dh]: [number, number, number, number],
   {

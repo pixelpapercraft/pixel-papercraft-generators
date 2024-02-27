@@ -970,48 +970,48 @@ export function clearTexture(model: Model, id: string) {
 //   model
 // }
 
-export function drawTexture(
-  model: Model,
-  id: string,
-  [sx, sy, sw, sh]: [number, number, number, number],
-  [dx, dy, dw, dh]: [number, number, number, number],
-  {
-    flip,
-    rotate,
-    blend,
-    pixelate,
-  }: {
-    flip: Flip;
-    rotate: Rotate;
-    blend: Blend;
-    pixelate: boolean;
-  }
-): Model {
-  let currModel = model;
+// export function drawTexture(
+//   model: Model,
+//   id: string,
+//   [sx, sy, sw, sh]: [number, number, number, number],
+//   [dx, dy, dw, dh]: [number, number, number, number],
+//   {
+//     flip,
+//     rotate,
+//     blend,
+//     pixelate,
+//   }: {
+//     flip: Flip;
+//     rotate: Rotate;
+//     blend: Blend;
+//     pixelate: boolean;
+//   }
+// ): Model {
+//   let currModel = model;
 
-  currModel = ensureCurrentPage(currModel);
+//   currModel = ensureCurrentPage(currModel);
 
-  const currentPage = currModel.currentPage;
+//   const currentPage = currModel.currentPage;
 
-  if (!currentPage) {
-    return currModel;
-  }
+//   if (!currentPage) {
+//     return currModel;
+//   }
 
-  const texture = model.values.textures[id];
+//   const texture = model.values.textures[id];
 
-  if (!texture) {
-    return currModel;
-  }
+//   if (!texture) {
+//     return currModel;
+//   }
 
-  draw(texture, currentPage, [sx, sy, sw, sh], [dx, dy, dw, dh], {
-    flip,
-    rotate,
-    blend,
-    pixelate,
-  });
+//   draw(texture, currentPage, [sx, sy, sw, sh], [dx, dy, dw, dh], {
+//     flip,
+//     rotate,
+//     blend,
+//     pixelate,
+//   });
 
-  return currModel;
-}
+//   return currModel;
+// }
 
 // let hasImage = (model: Model.t, id: string) => {
 //   let image = Js.Dict.get(model.values.images, id)

@@ -4,12 +4,7 @@
 
 import React from "react";
 import { type GeneratorDef } from "@/builder/modules/types";
-import {
-  type Model,
-  makeModel,
-  addImage,
-  addTexture,
-} from "@/builder/modules/model";
+import { Model, Values } from "@/builder/modules/model2";
 import { loadResources } from "@/builder/modules/resourceLoader";
 import { run } from "@/builder/modules/scriptRunner";
 import { Inputs } from "./inputs";
@@ -21,16 +16,14 @@ export function Generator({ generatorDef }: { generatorDef: GeneratorDef }) {
     async function initialize() {
       const [imageTuples, textureTuples] = await loadResources(generatorDef);
 
-      let model = makeModel();
+      const model = new Model(new Values());
 
-      imageTuples.forEach((imageTuple) => {
-        const [id, image] = imageTuple;
-        model = addImage(model, id, image);
+      imageTuples.forEach(([id, image]) => {
+        model.addImage(id, image);
       });
 
-      textureTuples.forEach((textureTuple) => {
-        const [id, texture] = textureTuple;
-        model = addTexture(model, id, texture);
+      textureTuples.forEach(([id, texture]) => {
+        model.addTexture(id, texture);
       });
 
       const newModel = await run(generatorDef, model);
@@ -57,7 +50,6 @@ export function Generator({ generatorDef }: { generatorDef: GeneratorDef }) {
 
   return (
     <div className="p-8">
-      <h1>Generator</h1>
       <Inputs model={model} onChange={onInputsChange} />
       {dataUrl && <img src={dataUrl} alt="" />}
     </div>

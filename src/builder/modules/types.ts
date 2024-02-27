@@ -1,4 +1,5 @@
-import { type Model } from "./model";
+import { type Model } from "./model2";
+import { type Generator } from "./generator2";
 
 export type Position = [number, number];
 
@@ -19,38 +20,38 @@ export type Blend =
   | { kind: "MultiplyHex"; hex: string }
   | { kind: "MultiplyRGB"; r: number; g: number; b: number };
 
-export type Generator = {
-  setModel: (model: Model) => void;
+// export type Generator = {
+//   setModel: (model: Model) => void;
 
-  getModel: () => Model;
+//   getModel: () => Model;
 
-  defineBooleanInput: (id: string, initial: boolean) => void;
+//   defineBooleanInput: (id: string, initial: boolean) => void;
 
-  getBooleanInputValue: (id: string) => boolean;
+//   getBooleanInputValue: (id: string) => boolean;
 
-  defineTextureInput(
-    id: string,
-    options: {
-      standardWidth: number;
-      standardHeight: number;
-      choices: string[];
-    }
-  ): void;
+//   defineTextureInput(
+//     id: string,
+//     options: {
+//       standardWidth: number;
+//       standardHeight: number;
+//       choices: string[];
+//     }
+//   ): void;
 
-  drawImage: (id: string, position: Position) => void;
+//   drawImage: (id: string, position: Position) => void;
 
-  drawTexture: (
-    id: string,
-    source: Region,
-    target: Region,
-    options?: {
-      flip?: Flip;
-      rotate?: Rotate;
-      blend?: Blend;
-      pixelate?: boolean;
-    }
-  ) => void;
-};
+//   drawTexture: (
+//     id: string,
+//     source: Region,
+//     target: Region,
+//     options?: {
+//       flip?: Flip;
+//       rotate?: Rotate;
+//       blend?: Blend;
+//       pixelate?: boolean;
+//     }
+//   ) => void;
+// };
 
 export type TextureDef = {
   id: string;

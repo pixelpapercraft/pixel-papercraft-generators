@@ -6,17 +6,7 @@ import React from "react";
 // module Buttons = Generator_Buttons
 
 import { type Texture, makeTextureFromImage } from "@/builder/modules/texture";
-import {
-  type Model,
-  addTexture,
-  clearTexture,
-  setStringInputValue,
-  setBooleanInputValue,
-  setSelectInputValue,
-  setRangeInputValue,
-  getBooleanInputValue,
-  getSelectInputValue,
-} from "@/builder/modules/model";
+import { Model } from "@/builder/modules/model2";
 import { makeImageFromUrl } from "@/builder/modules/imageFactory";
 
 // module TextureInput = {
@@ -116,7 +106,7 @@ export function TextureInput({
   onChange,
 }: {
   id: string;
-  textures: Record<string, Texture>;
+  textures: Map<string, Texture>;
   choices: string[];
   onChange: (image: HTMLImageElement | null) => void;
 }) {
@@ -139,7 +129,7 @@ export function TextureInput({
 
   const onChoiceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value;
-    const texture = textures[value];
+    const texture = textures.get(value);
     onChange(texture?.imageWithCanvas.image || null);
   };
 
@@ -264,11 +254,11 @@ export function BooleanInput({
 //     }
 //     <div className="mb-4">
 //       <div className="font-bold"> {React.string(id)} </div>
-//       <FormInput.Select value={value} onChange={onSelectChange}>
+//       <Formcontrol.Select value={value} onChange={onSelectChange}>
 //         {Js.Array2.map(options, option => {
-//           <FormInput.Option key={option} value={option}> {React.string(option)} </FormInput.Option>
+//           <Formcontrol.Option key={option} value={option}> {React.string(option)} </Formcontrol.Option>
 //         })->React.array}
-//       </FormInput.Select>
+//       </Formcontrol.Select>
 //     </div>
 //   }
 // }
@@ -527,32 +517,32 @@ export function Inputs({
         standardWidth,
         standardHeight
       );
-      const newModel = addTexture(model, id, texture);
-      onChange(newModel);
+      model.addTexture(id, texture);
+      onChange(model);
     } else {
-      const newModel = clearTexture(model, id);
-      onChange(newModel);
+      model.removeTexture(id);
+      onChange(model);
     }
   };
 
   const onStringInputChange = (id: string, value: string) => {
-    const newModel = setStringInputValue(model, id, value);
-    onChange(newModel);
+    model.setStringVariable(id, value);
+    onChange(model);
   };
 
-  const onBooleanInputChange = (id: string, isChecked: boolean) => {
-    const newModel = setBooleanInputValue(model, id, isChecked);
-    onChange(newModel);
+  const onBooleanInputChange = (id: string, value: boolean) => {
+    model.setBooleanVariable(id, value);
+    onChange(model);
   };
 
   const onSelectInputChange = (id: string, value: string) => {
-    const newModel = setSelectInputValue(model, id, value);
-    onChange(newModel);
+    model.setStringVariable(id, value);
+    onChange(model);
   };
 
   const onRangeInputChange = (id: string, value: number) => {
-    const newModel = setRangeInputValue(model, id, value);
-    onChange(newModel);
+    model.setNumberVariable(id, value);
+    onChange(model);
   };
 
   const onButtonInputClick = () => {
@@ -562,81 +552,81 @@ export function Inputs({
 
   return (
     <div className="bg-gray-100 p-4 mb-8 rounded">
-      {model.inputs.map((input) => {
-        switch (input.kind) {
+      {model.controls.map((control) => {
+        switch (control.kind) {
           case "Text":
-            return <Text key={input.id} text={input.text} />;
-          case "RegionInput":
+            return <Text key={control.id} text={control.text} />;
+          case "Region":
             return null;
-          case "CustomStringInput":
+          case "Custom":
             return (
-              <div key={input.id}>
-                {input.render((value: string) => {
-                  onStringInputChange(input.id, value);
+              <div key={control.id}>
+                {control.render((value: string) => {
+                  onStringInputChange(control.id, value);
                 })}
               </div>
             );
-          case "TextureInput":
+          case "Texture":
             return (
               <TextureInput
-                key={input.id}
-                id={input.id}
-                choices={input.choices}
+                key={control.id}
+                id={control.id}
+                choices={control.props.choices}
                 textures={model.values.textures}
                 onChange={(image) =>
                   onTextureChange(
-                    input.id,
-                    input.standardWidth,
-                    input.standardHeight,
+                    control.id,
+                    control.props.standardWidth,
+                    control.props.standardHeight,
                     image
                   )
                 }
               />
             );
-          case "BooleanInput":
-            const checked = getBooleanInputValue(model, input.id);
+          case "Boolean":
+            const checked = model.getBooleanVariable(control.id) ?? false;
             return (
               <BooleanInput
-                key={input.id}
-                id={input.id}
+                key={control.id}
+                id={control.id}
                 onChange={(value) => {
-                  onBooleanInputChange(input.id, value);
+                  onBooleanInputChange(control.id, value);
                 }}
                 checked={checked}
               />
             );
-          case "SelectInput":
-            const value = getSelectInputValue(model, input.id);
+          case "Select":
+            const value = model.getStringVariable(control.id) ?? "";
             return (
               <SelectInput
-                key={input.id}
-                id={input.id}
-                options={input.options}
+                key={control.id}
+                id={control.id}
+                options={control.options}
                 value={value}
-                onChange={(value) => onSelectInputChange(input.id, value)}
+                onChange={(value) => onSelectInputChange(control.id, value)}
               />
             );
-          case "ButtonInput":
+          case "Button":
             return (
               <ButtonInput
-                key={input.id}
-                id={input.id}
+                key={control.id}
+                id={control.id}
                 onClick={() => {
-                  input.onClick();
+                  control.onClick();
                   onButtonInputClick();
                 }}
               />
             );
-          case "RangeInput":
+          case "Range":
             return (
               <RangeInput
-                key={input.id}
-                id={input.id}
-                min={input.min}
-                max={input.max}
-                step={input.step}
-                value={input.value}
-                onChange={(value) => onRangeInputChange(input.id, value)}
+                key={control.id}
+                id={control.id}
+                min={control.min}
+                max={control.max}
+                step={control.step}
+                value={control.value}
+                onChange={(value) => onRangeInputChange(control.id, value)}
               />
             );
         }
