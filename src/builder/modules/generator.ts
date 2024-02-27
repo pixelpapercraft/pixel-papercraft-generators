@@ -1,6 +1,8 @@
 import { type Model, type Control_Texture_Props } from "./model";
 import { type DrawTextureOptions, drawTexture } from "./renderers/drawTexture";
+import { type TabOrientation, drawTab } from "./renderers/drawTab";
 import { type Page, makePage } from "./page";
+import { type Rectangle } from "./renderers/types";
 
 export class Generator {
   model: Model;
@@ -92,6 +94,22 @@ export class Generator {
         blend,
         pixelate,
       }
+    );
+  }
+
+  drawTab(
+    rectangle: Rectangle,
+    orientation: TabOrientation,
+    showFoldLine?: boolean,
+    tabAngle?: number
+  ): void {
+    const currentPage = this.getCurrentPage();
+    drawTab(
+      currentPage.canvasWithContext,
+      rectangle,
+      orientation,
+      showFoldLine,
+      tabAngle
     );
   }
 }

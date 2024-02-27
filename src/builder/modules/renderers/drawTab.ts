@@ -2,7 +2,7 @@ import type { Point, Rectangle } from "./types";
 import { drawLine, drawFoldLine } from "./drawLine";
 import { CanvasWithContext } from "../canvasWithContext";
 
-type Orientation = "North" | "South" | "East" | "West";
+export type TabOrientation = "North" | "South" | "East" | "West";
 
 function translatePoint([x, y]: Point, dx: number, dy: number): Point {
   return [x + dx, y + dy];
@@ -227,11 +227,10 @@ function drawTabWest(
 //     +----+----+      ---   ---
 //     p1        p4
 //
-
 export function drawTab(
   page: CanvasWithContext,
   rectangle: Rectangle,
-  orientation: Orientation,
+  orientation: TabOrientation,
   showFoldLine: boolean = true,
   tabAngle: number = 45
 ) {
