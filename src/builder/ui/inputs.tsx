@@ -6,8 +6,8 @@ import React from "react";
 // module Buttons = Generator_Buttons
 
 import { type Texture, makeTextureFromImage } from "@/builder/modules/texture";
-import { Model } from "@/builder/modules/model2";
-import { makeImageFromUrl } from "@/builder/modules/imageFactory";
+import { Model } from "@/builder/modules/model";
+import { makeImageFromUrl } from "@/builder/modules/image";
 
 // module TextureInput = {
 //   @react.component

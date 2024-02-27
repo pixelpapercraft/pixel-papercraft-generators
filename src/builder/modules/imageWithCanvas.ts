@@ -1,4 +1,4 @@
-import { makeImageFromUrl } from "./imageFactory";
+import { makeImageFromUrl } from "./image";
 import {
   type CanvasWithContext,
   makeCanvasWithContext,

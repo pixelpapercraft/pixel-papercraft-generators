@@ -1,4 +1,4 @@
-import { makeCanvas } from "./canvasFactory";
+import { makeCanvas } from "./canvas";
 
 export type CanvasWithContext = {
   canvas: HTMLCanvasElement;

@@ -3,37 +3,20 @@ import {
   makeImageWithCanvasFromUrl,
 } from "./imageWithCanvas";
 import { type Texture, makeTextureFromUrl } from "./texture";
-import { type ImageDef, type TextureDef, type GeneratorDef } from "./types";
-
-// module Builder = Generator_Builder
-
-// type imageTuple = (string, Dom2.Image.t)
+import {
+  type ImageDef,
+  type TextureDef,
+  type GeneratorDef,
+} from "./generatorDef";
 
 type ImageTuple = [string, ImageWithCanvas];
 
-// type textureTuple = (string, Generator_Texture.t)
-
 type TextureTuple = [string, Texture];
-
-// let imageDefToImage = (imageDef: Builder.imageDef): Promise.t<imageTuple> => {
-//   Generator_ImageFactory.makeFromUrl(imageDef.url)->Promise.thenResolve(image => (
-//     imageDef.id,
-//     image,
-//   ))
-// }
 
 async function imageDefToImage(imageDef: ImageDef): Promise<ImageTuple> {
   const image = await makeImageWithCanvasFromUrl(imageDef.url);
   return [imageDef.id, image];
 }
-
-// let textureDefToTexture = (textureDef: Builder.textureDef): Promise.t<textureTuple> => {
-//   Generator_Texture.makeFromUrl(
-//     textureDef.url,
-//     textureDef.standardWidth,
-//     textureDef.standardHeight,
-//   )->Promise.thenResolve(texture => (textureDef.id, texture))
-// }
 
 async function textureDefToTexture(
   textureDef: TextureDef
@@ -45,20 +28,6 @@ async function textureDefToTexture(
   );
   return [textureDef.id, texture];
 }
-
-// let loadResources = (generatorDef: Builder.generatorDef) => {
-//   let imagePromises = generatorDef.images->Js.Array2.map(imageDefToImage)->Promise.all
-//   let texturePromises = generatorDef.textures->Js.Array2.map(textureDefToTexture)->Promise.all
-
-//   imagePromises
-//   ->Promise.then((images: array<imageTuple>) => {
-//     texturePromises->Promise.thenResolve((textures: array<textureTuple>) => Ok(images, textures))
-//   })
-//   ->Promise.catch(exn => {
-//     Js.log(exn)
-//     Promise.resolve(Error("Failed to load resources"))
-//   })
-// }
 
 export async function loadResources(
   generatorDef: GeneratorDef

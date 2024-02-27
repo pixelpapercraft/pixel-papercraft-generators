@@ -6,8 +6,8 @@ import type {
   HistoryDef,
   TextureDef,
   ScriptDef,
-} from "@/builder/modules/types";
-import { type Generator } from "@/builder/modules/generator2";
+} from "@/builder/modules/generatorDef";
+import { type Generator } from "@/builder/modules/generator";
 
 import skin from "./textures/Skin.png";
 import background from "./images/Background.png";

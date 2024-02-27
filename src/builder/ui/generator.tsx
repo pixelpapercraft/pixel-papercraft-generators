@@ -3,8 +3,8 @@
 "use client";
 
 import React from "react";
-import { type GeneratorDef } from "@/builder/modules/types";
-import { Model, Values } from "@/builder/modules/model2";
+import { type GeneratorDef } from "@/builder/modules/generatorDef";
+import { Model, Values } from "@/builder/modules/model";
 import { loadResources } from "@/builder/modules/resourceLoader";
 import { run } from "@/builder/modules/scriptRunner";
 import { Inputs } from "./inputs";

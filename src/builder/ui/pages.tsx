@@ -3,7 +3,7 @@
 // module Buttons = Generator_Buttons
 // module ButtonStyles = Generator_ButtonStyles
 
-import { type PageSize } from "@/builder/modules/pageSize";
+import { type PageSize } from "@/builder/modules/page";
 // import { type Builder } from "@/builder/modules/types";
 
 // let px = n => `${Js.Int.toString(n)}px`

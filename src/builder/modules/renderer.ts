@@ -5,6 +5,12 @@ import {
 import { type ImageWithCanvas } from "./imageWithCanvas";
 import { type Texture } from "./texture";
 
+export type Position = [number, number];
+
+export type Dimensions = [number, number];
+
+export type Region = [number, number, number, number];
+
 export function fillBackgroundColor(page: CanvasWithContext, color: string) {
   const { width, height } = page.canvas;
   const temp = makeCanvasWithContext(width, height);
@@ -16,7 +22,7 @@ export function fillBackgroundColor(page: CanvasWithContext, color: string) {
 
 export function fillRect(
   page: CanvasWithContext,
-  [x, y, w, h]: [number, number, number, number],
+  [x, y, w, h]: Region,
   color: string
 ) {
   const context = page.context;
@@ -24,7 +30,7 @@ export function fillRect(
   context.fillRect(x, y, w, h);
 }
 
-function getOffset([x1, y1]: [number, number], [x2, y2]: [number, number]) {
+function getOffset([x1, y1]: Position, [x2, y2]: Position) {
   const w = x2 - x1;
   const h = y2 - y1;
 
@@ -46,8 +52,8 @@ function getOffset([x1, y1]: [number, number], [x2, y2]: [number, number]) {
 
 export function drawLine(
   page: CanvasWithContext,
-  [x1, y1]: [number, number],
-  [x2, y2]: [number, number],
+  [x1, y1]: Position,
+  [x2, y2]: Position,
   {
     color,
     width,
@@ -75,7 +81,7 @@ export function drawLine(
 export function drawImage(
   page: CanvasWithContext,
   imageWithCanvas: ImageWithCanvas,
-  [x, y]: [number, number]
+  [x, y]: Position
 ): void {
   page.context.drawImage(imageWithCanvas.image, x, y);
 }
@@ -83,7 +89,7 @@ export function drawImage(
 export function drawText(
   page: CanvasWithContext,
   text: string,
-  position: [number, number],
+  position: Position,
   size: number
 ) {
   const [x, y] = position;
@@ -92,7 +98,7 @@ export function drawText(
   page.context.fillText(text, x, y);
 }
 
-function fit(sw: number, sh: number, dw: number, dh: number): [number, number] {
+function fit(sw: number, sh: number, dw: number, dh: number): Dimensions {
   const wScale = sw / dw;
   const hScale = sh / dh;
   const scale = Math.min(wScale, hScale);
@@ -101,35 +107,30 @@ function fit(sw: number, sh: number, dw: number, dh: number): [number, number] {
 }
 
 function preparePixelationCanvas(
-  sourceCanvas: HTMLCanvasElement,
+  source: CanvasWithContext,
   sx: number,
   sy: number,
   sw: number,
   sh: number,
   dw: number,
   dh: number
-): HTMLCanvasElement {
+): CanvasWithContext {
   const [sw2, sh2] = fit(sw, sh, dw, dh);
-  const { canvas, context } = makeCanvasWithContext(sw2, sh2);
-  context.imageSmoothingEnabled = false;
-  context.drawImage(sourceCanvas, sx, sy, sw, sh, 0, 0, sw2, sh2);
-  return canvas;
+  const canvasWithContext = makeCanvasWithContext(sw2, sh2);
+  canvasWithContext.context.imageSmoothingEnabled = false;
+  canvasWithContext.context.drawImage(
+    source.canvas,
+    sx,
+    sy,
+    sw,
+    sh,
+    0,
+    0,
+    sw2,
+    sh2
+  );
+  return canvasWithContext;
 }
-
-export type Flip =
-  | { kind: "None" }
-  | { kind: "Horizontal" }
-  | { kind: "Vertical" };
-
-export type Rotate =
-  | { kind: "None" }
-  | { kind: "Corner"; degrees: number }
-  | { kind: "Center"; degrees: number };
-
-export type Blend =
-  | { kind: "None" }
-  | { kind: "MultiplyHex"; hex: string }
-  | { kind: "MultiplyRGB"; r: number; g: number; b: number };
 
 function parseHex(value: string): number | null {
   const hex = value.startsWith("#") ? value.slice(1) : value;
@@ -190,8 +191,8 @@ function makeInitialValues(
   pixelate: boolean
 ) {
   if (pixelate) {
-    const canvas = preparePixelationCanvas(
-      texture.imageWithCanvas.canvasWithContext.canvas,
+    const canvasWithContext = preparePixelationCanvas(
+      texture.imageWithCanvas.canvasWithContext,
       coordinates.sx,
       coordinates.sy,
       coordinates.sw,
@@ -201,16 +202,31 @@ function makeInitialValues(
     );
     const sx = 0;
     const sy = 0;
-    const sw = canvas.width;
-    const sh = canvas.height;
+    const sw = canvasWithContext.canvas.width;
+    const sh = canvasWithContext.canvas.height;
     const { dx, dy, dw, dh } = coordinates;
-    return { canvas, sx, sy, sw, sh, dx, dy, dw, dh };
+    return { canvasWithContext, sx, sy, sw, sh, dx, dy, dw, dh };
   }
 
-  const canvas = texture.imageWithCanvas.canvasWithContext.canvas;
+  const canvasWithContext = texture.imageWithCanvas.canvasWithContext;
   const { sx, sy, sw, sh, dx, dy, dw, dh } = coordinates;
-  return { canvas, sx, sy, sw, sh, dx, dy, dw, dh };
+  return { canvasWithContext, sx, sy, sw, sh, dx, dy, dw, dh };
 }
+
+export type Flip =
+  | { kind: "None" }
+  | { kind: "Horizontal" }
+  | { kind: "Vertical" };
+
+export type Rotate =
+  | { kind: "None" }
+  | { kind: "Corner"; degrees: number }
+  | { kind: "Center"; degrees: number };
+
+export type Blend =
+  | { kind: "None" }
+  | { kind: "MultiplyHex"; hex: string }
+  | { kind: "MultiplyRGB"; r: number; g: number; b: number };
 
 type DrawNearestNeighborOptions = {
   rotate?: Rotate;
@@ -230,26 +246,12 @@ function drawNearestNeighbor(
   const blendOption = options.blend ?? { kind: "None" };
   const pixelateOption = options.pixelate ?? false;
 
-  const { canvas, sx, sy, sw, sh, dx, dy, dw, dh } = makeInitialValues(
-    texture,
-    coordinates,
-    pixelateOption
-  );
+  const { canvasWithContext, sx, sy, sw, sh, dx, dy, dw, dh } =
+    makeInitialValues(texture, coordinates, pixelateOption);
 
   if (sw > 0 && sh > 0 && dw > 0 && dh > 0) {
-    const context = canvas.getContext("2d", {
-      willReadFrequently: true,
-    });
+    const imageData = canvasWithContext.context.getImageData(sx, sy, sw, sh);
 
-    if (!context) {
-      throw new Error("Failed to get 2d context from canvas");
-    }
-
-    const imageData = context.getImageData(sx, sy, sw, sh);
-
-    if (!imageData) {
-      throw new Error("Failed to get image data");
-    }
     const pix = imageData.data;
 
     const temp = makeCanvasWithContext(dw, dh);
@@ -329,8 +331,8 @@ export type DrawTextureOptions = DrawNearestNeighborOptions;
 export function drawTexture(
   page: CanvasWithContext,
   texture: Texture,
-  [sx, sy, sw, sh]: [number, number, number, number],
-  [dx, dy, dw, dh]: [number, number, number, number],
+  [sx, sy, sw, sh]: Region,
+  [dx, dy, dw, dh]: Region,
   options: DrawTextureOptions
 ): void {
   if (sh > 0 && dh > 0 && sw > 0 && dw > 0) {

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { makeImageFromUrl } from "./imageFactory";
+import { makeImageFromUrl } from "./image";
 
 // https://github.com/Electroid/mojang-api
 // https://wiki.vg/Mojang_API

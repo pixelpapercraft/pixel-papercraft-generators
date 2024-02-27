@@ -1,6 +1,6 @@
-import { type GeneratorDef } from "./types";
-import { Model } from "./model2";
-import { Generator } from "./generator2";
+import { type GeneratorDef } from "./generatorDef";
+import { Model } from "./model";
+import { Generator } from "./generator";
 
 export function run(generatorDef: GeneratorDef, model: Model): Promise<Model> {
   return new Promise((resolve, _reject) => {

@@ -1,52 +1,73 @@
-// import { type Generator } from "./types";
-// import { type Model } from "./model";
-// import * as Builder from "./builder";
+import { type Model, type Control_Texture_Props } from "./model";
+import { type DrawTextureOptions, drawTexture } from "./renderer";
+import { type Page, makePage } from "./page";
 
-// export function makeGenerator(initialModel: Model): Generator {
-//   const state: { model: Model } = {
-//     model: initialModel,
-//   };
+export class Generator {
+  model: Model;
 
-//   const setModel: Generator["setModel"] = (model) => {
-//     state.model = model;
-//   };
+  constructor(model: Model) {
+    this.model = model;
+  }
 
-//   const getModel: Generator["getModel"] = () => {
-//     return state.model;
-//   };
+  getCurrentPage(): Page {
+    const currentPage = this.model.currentPage;
+    if (currentPage) {
+      return currentPage;
+    }
 
-//   const defineBooleanInput: Generator["defineBooleanInput"] = (id, initial) => {
-//     state.model = Builder.defineBooleanInput(state.model, id, initial);
-//   };
+    const page = makePage("Page");
+    this.model.addPage(page);
+    this.model.setCurrentPage(page);
+    return page;
+  }
 
-//   const getBooleanInputValue: Generator["getBooleanInputValue"] = (id) => {
-//     return Builder.getBooleanInputValue(state.model, id);
-//   };
+  defineTextureInput(id: string, props: Control_Texture_Props): void {
+    this.model.addTextureControl(id, props);
+  }
 
-//   const defineTextureInput: Generator["defineTextureInput"] = (id, options) => {
-//     state.model = Builder.defineTextureInput(state.model, id, options);
-//   };
+  defineBooleanInput(id: string, initialValue: boolean): void {
+    this.model.addBooleanControl(id, initialValue);
+  }
 
-//   const drawImage: Generator["drawImage"] = (id, position): void => {
-//     state.model = Builder.drawImage(state.model, id, position);
-//   };
+  getBooleanInputValue(id: string): boolean | null {
+    return this.model.getBooleanVariable(id);
+  }
 
-//   const drawTexture: Generator["drawTexture"] = (id, source, target): void => {
-//     state.model = Builder.drawTexture(state.model, id, source, target, {
-//       flip: { kind: "None" },
-//       rotate: { kind: "None" },
-//       blend: { kind: "None" },
-//       pixelate: false,
-//     });
-//   };
+  drawImage(id: string, [x, y]: [number, number]): void {
+    const page = this.getCurrentPage();
+    const image = this.model.findImage(id);
 
-//   return {
-//     setModel,
-//     getModel,
-//     defineBooleanInput,
-//     defineTextureInput,
-//     getBooleanInputValue,
-//     drawImage,
-//     drawTexture,
-//   };
-// }
+    if (!image) {
+      return;
+    }
+
+    page.canvasWithContext.context.drawImage(image.image, x, y);
+  }
+
+  drawTexture(
+    id: string,
+    [sx, sy, sw, sh]: [number, number, number, number],
+    [dx, dy, dw, dh]: [number, number, number, number],
+    { flip, rotate, blend, pixelate }: DrawTextureOptions = {}
+  ): void {
+    const currentPage = this.getCurrentPage();
+    const texture = this.model.findTexture(id);
+
+    if (!texture) {
+      return;
+    }
+
+    drawTexture(
+      currentPage.canvasWithContext,
+      texture,
+      [sx, sy, sw, sh],
+      [dx, dy, dw, dh],
+      {
+        flip,
+        rotate,
+        blend,
+        pixelate,
+      }
+    );
+  }
+}
