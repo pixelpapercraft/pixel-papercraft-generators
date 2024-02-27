@@ -49,7 +49,7 @@ export function makeCuboidLegacy(
   };
 }
 
-export function translateLegacyRectangle(
+export function translateRectangleLegacy(
   rectangle: RectangleLegacy,
   xTranslate: number,
   yTranslate: number
@@ -58,18 +58,18 @@ export function translateLegacyRectangle(
   return { x: x + xTranslate, y: y + yTranslate, w, h };
 }
 
-export function translateLegacyCuboid(
+export function translateCuboidLegacy(
   cuboid: CuboidLegacy,
   xTranslate: number,
   yTranslate: number
 ): CuboidLegacy {
   const { top, bottom, left, right, front, back } = cuboid;
   return {
-    top: translateLegacyRectangle(top, xTranslate, yTranslate),
-    bottom: translateLegacyRectangle(bottom, xTranslate, yTranslate),
-    left: translateLegacyRectangle(left, xTranslate, yTranslate),
-    right: translateLegacyRectangle(right, xTranslate, yTranslate),
-    front: translateLegacyRectangle(front, xTranslate, yTranslate),
-    back: translateLegacyRectangle(back, xTranslate, yTranslate),
+    top: translateRectangleLegacy(top, xTranslate, yTranslate),
+    bottom: translateRectangleLegacy(bottom, xTranslate, yTranslate),
+    left: translateRectangleLegacy(left, xTranslate, yTranslate),
+    right: translateRectangleLegacy(right, xTranslate, yTranslate),
+    front: translateRectangleLegacy(front, xTranslate, yTranslate),
+    back: translateRectangleLegacy(back, xTranslate, yTranslate),
   };
 }
