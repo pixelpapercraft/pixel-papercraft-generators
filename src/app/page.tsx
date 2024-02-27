@@ -1,7 +1,7 @@
 import { Generator } from "@/builder/ui/generator";
 
-import * as ExampleGenerator from "@/generators/example/exampleGenerator";
+import { generator } from "@/generators/minecraftCharacter/minecraftCharacterGenerator";
 
 export default function Home() {
-  return <Generator generatorDef={ExampleGenerator.generator} />;
+  return <Generator generatorDef={generator} />;
 }

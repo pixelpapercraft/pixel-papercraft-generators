@@ -79,6 +79,9 @@ const script: ScriptDef = (generator: Generator) => {
 export const generator: GeneratorDef = {
   id,
   name,
+  thumbnail: null,
+  video: null,
+  instructions: null,
   history,
   images,
   textures,

@@ -1,7 +1,9 @@
 import { type ImageWithCanvas } from "./imageWithCanvas";
 import { type Texture } from "./texture";
 import { type Page } from "./page";
+import { makeUUID } from "./uuid";
 
+/** [x, y, width, height] */
 export type Region = [number, number, number, number];
 
 export type Control_Text = {
@@ -161,10 +163,10 @@ export class Model {
     this.controls.push(control);
   }
 
-  addTextControl(id: string, text: string) {
+  addTextControl(text: string) {
     this.addControl({
       kind: "Text",
-      id,
+      id: makeUUID(),
       text,
     });
   }

@@ -29,8 +29,24 @@ export class Generator {
     this.model.addBooleanControl(id, initialValue);
   }
 
+  defineSelectInput(id: string, options: string[]): void {
+    this.model.addSelectControl(id, options);
+  }
+
+  defineText(text: string): void {
+    this.model.addTextControl(text);
+  }
+
   getBooleanInputValue(id: string): boolean | null {
     return this.model.getBooleanVariable(id);
+  }
+
+  getBooleanInputValueWithDefault(id: string, defaultValue: boolean): boolean {
+    return this.model.getBooleanVariable(id) ?? defaultValue;
+  }
+
+  getSelectInputValue(id: string): string | null {
+    return this.model.getStringVariable(id);
   }
 
   drawImage(id: string, [x, y]: [number, number]): void {

@@ -28,9 +28,9 @@ export type GeneratorDef = {
   id: string;
   name: string;
   history: HistoryDef;
-  thumbnail?: ThumbnailDef;
-  video?: VideoDef;
-  instructions?: InstructionsDef;
+  thumbnail: ThumbnailDef | null;
+  video: VideoDef | null;
+  instructions: InstructionsDef | null;
   images: ImageDef[];
   textures: TextureDef[];
   script: ScriptDef;
