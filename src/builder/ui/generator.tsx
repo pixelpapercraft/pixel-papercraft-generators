@@ -8,6 +8,7 @@ import { Model, Values } from "@/builder/modules/model";
 import { loadResources } from "@/builder/modules/resourceLoader";
 import { runScript } from "@/builder/modules/scriptRunner";
 import { Inputs } from "./inputs";
+import { Pages } from "./pages/pages";
 
 export function Generator({ generatorDef }: { generatorDef: GeneratorDef }) {
   const [model, setModel] = React.useState<Model | null>(null);
@@ -40,18 +41,25 @@ export function Generator({ generatorDef }: { generatorDef: GeneratorDef }) {
 
   const dataUrl =
     model && model.currentPage
-      ? model.currentPage.canvasWithContext.canvas.toDataURL("png")
+      ? model.currentPage.canvasWithContext.canvas.toDataURL("image/png")
       : null;
 
-  const onInputsChange = async (model: Model) => {
-    const newModel = await runScript(generatorDef.script, model);
-    setModel(newModel);
+  const onInputsChange = (model: Model) => {
+    runScript(generatorDef.script, model).then(setModel);
+  };
+
+  const onPagesChange = () => {
+    runScript(generatorDef.script, model).then(setModel);
   };
 
   return (
     <div className="p-8">
       <Inputs model={model} onChange={onInputsChange} />
-      {dataUrl && <img src={dataUrl} alt="" />}
+      <Pages
+        generatorDef={generatorDef}
+        model={model}
+        onChange={onPagesChange}
+      />
     </div>
   );
 }

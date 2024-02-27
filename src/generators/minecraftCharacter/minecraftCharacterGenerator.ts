@@ -88,9 +88,6 @@ const textures: TextureDef[] = [
   },
 ];
 
-// let steve = Minecraft.Character.steve
-// let alex = Minecraft.Character.alex
-
 const script: ScriptDef = (generator: Generator) => {
   const minecraftGenerator = new Minecraft(generator);
 
@@ -111,6 +108,7 @@ const script: ScriptDef = (generator: Generator) => {
   );
 
   // Draw
+
   const isAlexModel = generator.getSelectInputValue("Skin Model") === "Alex";
 
   const showFolds = generator.getBooleanInputValue("Show Folds");
