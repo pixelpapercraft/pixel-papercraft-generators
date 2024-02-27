@@ -55,13 +55,11 @@ export function Generator({ generatorDef }: { generatorDef: GeneratorDef }) {
     setModel(newModel);
   };
 
-  // console.log(JSON.stringify(model, null, 2));
-
   return (
     <div className="p-8">
       <h1>Generator</h1>
       <Inputs model={model} onChange={onInputsChange} />
-      {dataUrl && <img src={dataUrl} alt="Generated image" />}
+      {dataUrl && <img src={dataUrl} alt="" />}
     </div>
   );
 }

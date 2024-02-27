@@ -16,64 +16,16 @@ import {
 import { type Page, makePage } from "./page";
 import { type Input } from "./input";
 
-// module Model = {
-//   module Variable = {
-//     type t = [#Integer(int) | #String(string) | #Float(float) | #Boolean(bool)]
-
 export type Variable =
   | { kind: "Integer"; value: number }
   | { kind: "String"; value: string }
   | { kind: "Float"; value: number }
   | { kind: "Boolean"; value: boolean };
 
-//     let toString = (value: t) => {
-//       switch value {
-//       | #String(value) => Some(value)
-//       | _ => None
-//       }
-//     }
-
-//     let toInteger = (value: t) => {
-//       switch value {
-//       | #Integer(value) => Some(value)
-//       | _ => None
-//       }
-//     }
-
-//     let toFloat = (value: t) => {
-//       switch value {
-//       | #Float(value) => Some(value)
-//       | _ => None
-//       }
-//     }
-
-//     let toBoolean = (value: t) => {
-//       switch value {
-//       | #Boolean(value) => Some(value)
-//       | _ => None
-//       }
-//     }
-//   }
-
-//   type pageRegion = {
-//     pageId: string,
-//     region: (int, int, int, int),
-//   }
-
 export type PageRegion = {
   pageId: string;
   region: [number, number, number, number];
 };
-
-//   type values = {
-//     images: Js.Dict.t<Generator_ImageWithCanvas.t>,
-//     textures: Js.Dict.t<Generator_Texture.t>,
-//     booleans: Js.Dict.t<bool>,
-//     selects: Js.Dict.t<string>,
-//     ranges: Js.Dict.t<int>,
-//     strings: Js.Dict.t<string>,
-//     variables: Js.Dict.t<Variable.t>,
-//   }
 
 export type Values = {
   images: Record<string, ImageWithCanvas>;
@@ -85,35 +37,12 @@ export type Values = {
   variables: Record<string, Variable>;
 };
 
-//   type t = {
-//     inputs: array<Input.t>,
-//     pages: array<Generator_Page.t>,
-//     currentPage: option<Generator_Page.t>,
-//     values: values,
-//   }
-
 export type Model = {
   inputs: Input[];
   pages: Page[];
   currentPage: Page | null;
   values: Values;
 };
-
-//   let make = () => {
-//     inputs: [],
-//     pages: [],
-//     currentPage: None,
-//     values: {
-//       images: Js.Dict.empty(),
-//       textures: Js.Dict.empty(),
-//       booleans: Js.Dict.empty(),
-//       selects: Js.Dict.empty(),
-//       ranges: Js.Dict.empty(),
-//       strings: Js.Dict.empty(),
-//       variables: Js.Dict.empty(),
-//     },
-//   }
-// }
 
 export function makeModel(): Model {
   return {
