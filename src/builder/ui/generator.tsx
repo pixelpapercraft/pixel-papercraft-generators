@@ -6,7 +6,7 @@ import React from "react";
 import { type GeneratorDef } from "@/builder/modules/generatorDef";
 import { Model, Values } from "@/builder/modules/model";
 import { loadResources } from "@/builder/modules/resourceLoader";
-import { run } from "@/builder/modules/scriptRunner";
+import { runScript } from "@/builder/modules/scriptRunner";
 import { Inputs } from "./inputs";
 
 export function Generator({ generatorDef }: { generatorDef: GeneratorDef }) {
@@ -26,7 +26,7 @@ export function Generator({ generatorDef }: { generatorDef: GeneratorDef }) {
         model.addTexture(id, texture);
       });
 
-      const newModel = await run(generatorDef, model);
+      const newModel = await runScript(generatorDef.script, model);
 
       setModel(newModel);
     }
@@ -44,7 +44,7 @@ export function Generator({ generatorDef }: { generatorDef: GeneratorDef }) {
       : null;
 
   const onInputsChange = async (model: Model) => {
-    const newModel = await run(generatorDef, model);
+    const newModel = await runScript(generatorDef.script, model);
     setModel(newModel);
   };
 
