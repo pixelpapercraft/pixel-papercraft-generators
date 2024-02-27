@@ -213,15 +213,48 @@ function makeInitialValues(
   return { canvasWithContext, sx, sy, sw, sh, dx, dy, dw, dh };
 }
 
-export type Flip =
-  | { kind: "None" }
-  | { kind: "Horizontal" }
-  | { kind: "Vertical" };
+type FlipNone = { kind: "None" };
+type FlipHorizontal = { kind: "Horizontal" };
+type FlipVertical = { kind: "Vertical" };
 
-export type Rotate =
-  | { kind: "None" }
-  | { kind: "Corner"; degrees: number }
-  | { kind: "Center"; degrees: number };
+export type Flip = FlipNone | FlipHorizontal | FlipVertical;
+
+export function flipNone(): FlipNone {
+  return { kind: "None" };
+}
+
+export function flipHorizontal(): FlipHorizontal {
+  return { kind: "Horizontal" };
+}
+
+export function flipVertical(): FlipVertical {
+  return { kind: "Vertical" };
+}
+
+type RotateNone = { kind: "None" };
+type RotateCorner = { kind: "Corner"; degrees: number };
+type RotateCenter = { kind: "Center"; degrees: number };
+
+export type Rotate = RotateNone | RotateCorner | RotateCenter;
+
+export function rotateNone(): RotateNone {
+  return { kind: "None" };
+}
+
+export function rotateCorner(degrees: number): RotateCorner {
+  return { kind: "Corner", degrees };
+}
+
+export function rotateCenter(degrees: number): RotateCenter {
+  return { kind: "Center", degrees };
+}
+
+export function addRotation(rotate: Rotate, degrees: number): Rotate {
+  if (rotate.kind === "None") {
+    return { kind: "None" };
+  }
+  return { kind: rotate.kind, degrees: rotate.degrees + degrees };
+}
 
 export type Blend =
   | { kind: "None" }

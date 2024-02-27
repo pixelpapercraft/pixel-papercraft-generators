@@ -24,25 +24,6 @@ function cuboid(dimensions: Dimensions, position: Position): Cuboid {
   return translateCuboid(makeCuboid(dimensions), position);
 }
 
-//   let steve: t = {
-//     base: {
-//       head: make(8, 8, 8)->translate(0, 0),
-//       rightArm: make(4, 12, 4)->translate(40, 16),
-//       leftArm: make(4, 12, 4)->translate(32, 48),
-//       body: make(8, 12, 4)->translate(16, 16),
-//       rightLeg: make(4, 12, 4)->translate(0, 16),
-//       leftLeg: make(4, 12, 4)->translate(16, 48),
-//     },
-//     overlay: {
-//       head: make(8, 8, 8)->translate(32, 0),
-//       rightArm: make(4, 12, 4)->translate(40, 32),
-//       leftArm: make(4, 12, 4)->translate(48, 48),
-//       body: make(8, 12, 4)->translate(16, 32),
-//       rightLeg: make(4, 12, 4)->translate(0, 32),
-//       leftLeg: make(4, 12, 4)->translate(0, 48),
-//     },
-//   }
-
 export const steve: Character = {
   base: {
     head: cuboid([8, 8, 8], [0, 0]),

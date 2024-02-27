@@ -49,6 +49,14 @@ export class Generator {
     return this.model.getStringVariable(id);
   }
 
+  setNumberVariable(id: string, value: number): void {
+    this.model.setNumberVariable(id, value);
+  }
+
+  getNumberVariable(id: string): number | null {
+    return this.model.getNumberVariable(id);
+  }
+
   drawImage(id: string, [x, y]: [number, number]): void {
     const page = this.getCurrentPage();
     const image = this.model.findImage(id);
