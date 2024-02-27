@@ -1,5 +1,5 @@
 import { type Model, type Control_Texture_Props } from "./model";
-import { type DrawTextureOptions, drawTexture } from "./renderer";
+import { type DrawTextureOptions, drawTexture } from "./renderers/drawTexture";
 import { type Page, makePage } from "./page";
 
 export class Generator {

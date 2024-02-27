@@ -6,7 +6,7 @@ import {
   flipVertical,
   flipHorizontal,
   addRotation,
-} from "@/builder/modules/renderer";
+} from "@/builder/modules/renderers/drawTexture";
 import {
   type Rectangle,
   type Position,
@@ -164,17 +164,6 @@ function makeDest([w, h, d]: Dimensions, direction: Direction): Dest {
       };
   }
 }
-
-// function adjustDimensionsForCenter(dimensions: Dimensions, enter: Center): Dimensions {
-//   let (w, h, d) = dimensions
-//   let dimensions = switch center {
-//   | #Right => (d, h, w)
-//   | #Left => (d, h, w)
-//   | #Top => (w, d, h)
-//   | #Bottom => (w, d, h)
-//   | _ => (w, h, d)
-//   }
-//  return dimensions;
 
 function adjustDimensionsForCenter(
   [w, h, d]: Dimensions,

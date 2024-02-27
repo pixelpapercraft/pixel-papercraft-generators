@@ -1,102 +1,49 @@
 import {
   type CanvasWithContext,
   makeCanvasWithContext,
-} from "./canvasWithContext";
-import { type ImageWithCanvas } from "./imageWithCanvas";
-import { type Texture } from "./texture";
+} from "../canvasWithContext";
+import type { Texture } from "../texture";
+import type { Dimensions, Region } from "./types";
 
-export type Position = [number, number];
+type FlipNone = { kind: "None" };
 
-export type Dimensions = [number, number];
+type FlipHorizontal = { kind: "Horizontal" };
 
-export type Region = [number, number, number, number];
+type FlipVertical = { kind: "Vertical" };
 
-export function fillBackgroundColor(page: CanvasWithContext, color: string) {
-  const { width, height } = page.canvas;
-  const temp = makeCanvasWithContext(width, height);
-  temp.context.fillStyle = color;
-  temp.context.fillRect(0, 0, width, height);
-  temp.context.drawImage(page.canvas, 0, 0);
-  page.context.drawImage(temp.canvas, 0, 0);
-}
+export type Flip = FlipNone | FlipHorizontal | FlipVertical;
 
-export function fillRect(
-  page: CanvasWithContext,
-  [x, y, w, h]: Region,
-  color: string
-) {
-  const context = page.context;
-  context.fillStyle = color;
-  context.fillRect(x, y, w, h);
-}
+type RotateNone = { kind: "None" };
 
-function getOffset([x1, y1]: Position, [x2, y2]: Position) {
-  const w = x2 - x1;
-  const h = y2 - y1;
+type RotateCorner = { kind: "Corner"; degrees: number };
 
-  // When a line is drawn and its start and end coords are integer values, the
-  // resulting line is drawn in between to rows of pixels, resulting in a line
-  // that is two pixels wide and half transparent. To fix this, the line's start
-  // and end positions need to be offset 0.5 pixels in the direction normal to the
-  // line. The following code gets the angle of the line, and gets the components
-  // for a translation in the direction perpendicular to the angle using vector
-  // resolution: https://physics.info/vector-components/summary.shtml This results
-  // in a fully opaque line with the correct width if the line is vertical or
-  // horizontal, but antialiasing may still affect lines at other angles.
+type RotateCenter = { kind: "Center"; degrees: number };
 
-  const angle = Math.atan2(h, w);
-  const ox = Math.sin(angle) * 0.5;
-  const oy = Math.cos(angle) * 0.5;
-  return [ox, oy];
-}
+export type Rotate = RotateNone | RotateCorner | RotateCenter;
 
-export function drawLine(
-  page: CanvasWithContext,
-  [x1, y1]: Position,
-  [x2, y2]: Position,
-  {
-    color,
-    width,
-    pattern,
-    offset,
-  }: {
-    color: string;
-    width: number;
-    pattern: number[];
-    offset: number;
-  }
-) {
-  const [ox, oy] = getOffset([x1, y1], [x2, y2]);
-  const context = page.context;
-  context.beginPath();
-  context.strokeStyle = color;
-  context.lineWidth = width;
-  context.setLineDash(pattern);
-  context.lineDashOffset = offset;
-  context.moveTo(x1 + ox, y1 + oy);
-  context.lineTo(x2 + ox, y2 + oy);
-  context.stroke();
-}
+type BlendNone = { kind: "None" };
 
-export function drawImage(
-  page: CanvasWithContext,
-  imageWithCanvas: ImageWithCanvas,
-  [x, y]: Position
-): void {
-  page.context.drawImage(imageWithCanvas.image, x, y);
-}
+type BlendMultiplyHex = { kind: "MultiplyHex"; hex: string };
 
-export function drawText(
-  page: CanvasWithContext,
-  text: string,
-  position: Position,
-  size: number
-) {
-  const [x, y] = position;
-  const font = `${size}px sans-serif`;
-  page.context.font = font;
-  page.context.fillText(text, x, y);
-}
+type BlendMultiplyRGB = {
+  kind: "MultiplyRGB";
+  r: number;
+  g: number;
+  b: number;
+};
+
+export type Blend = BlendNone | BlendMultiplyHex | BlendMultiplyRGB;
+
+type Coordinates = {
+  sx: number;
+  sy: number;
+  sw: number;
+  sh: number;
+  dx: number;
+  dy: number;
+  dw: number;
+  dh: number;
+};
 
 function fit(sw: number, sh: number, dw: number, dh: number): Dimensions {
   const wScale = sw / dw;
@@ -174,17 +121,6 @@ function blendColors(
   ];
 }
 
-export type Coordinates = {
-  sx: number;
-  sy: number;
-  sw: number;
-  sh: number;
-  dx: number;
-  dy: number;
-  dw: number;
-  dh: number;
-};
-
 function makeInitialValues(
   texture: Texture,
   coordinates: Coordinates,
@@ -213,12 +149,6 @@ function makeInitialValues(
   return { canvasWithContext, sx, sy, sw, sh, dx, dy, dw, dh };
 }
 
-type FlipNone = { kind: "None" };
-type FlipHorizontal = { kind: "Horizontal" };
-type FlipVertical = { kind: "Vertical" };
-
-export type Flip = FlipNone | FlipHorizontal | FlipVertical;
-
 export function flipNone(): FlipNone {
   return { kind: "None" };
 }
@@ -230,12 +160,6 @@ export function flipHorizontal(): FlipHorizontal {
 export function flipVertical(): FlipVertical {
   return { kind: "Vertical" };
 }
-
-type RotateNone = { kind: "None" };
-type RotateCorner = { kind: "Corner"; degrees: number };
-type RotateCenter = { kind: "Center"; degrees: number };
-
-export type Rotate = RotateNone | RotateCorner | RotateCenter;
 
 export function rotateNone(): RotateNone {
   return { kind: "None" };
@@ -255,11 +179,6 @@ export function addRotation(rotate: Rotate, degrees: number): Rotate {
   }
   return { kind: rotate.kind, degrees: rotate.degrees + degrees };
 }
-
-export type Blend =
-  | { kind: "None" }
-  | { kind: "MultiplyHex"; hex: string }
-  | { kind: "MultiplyRGB"; r: number; g: number; b: number };
 
 type DrawNearestNeighborOptions = {
   rotate?: Rotate;
