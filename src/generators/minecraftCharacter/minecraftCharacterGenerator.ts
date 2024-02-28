@@ -24,11 +24,7 @@ import steveFoldsImage from "./images/SteveFolds.png";
 import steveTabsImage from "./images/SteveTabs.png";
 
 import skinAlex64 from "./textures/SkinAlex64x64.png";
-// import skinAlexReference64 from "./textures/SkinAlexReference64x64.png";
 import skinSteve64 from "./textures/SkinSteve64x64.png";
-// import skinSteveDiamondArmor256 from "./textures/SkinSteveDiamondArmor256x256.png";
-// import skinSteveDiamondArmor64 from "./textures/SkinSteveDiamondArmor64x64.png";
-// import skinSteveReference64 from "./textures/SkinSteveReference64x64.png";
 
 const id = "minecraft-character";
 
@@ -160,14 +156,6 @@ const script: ScriptDef = (generator: Generator) => {
     }
   }
 
-  //   let drawBody = ((ox, oy): Generator_Builder.position) => {
-  //     let scale = (64, 96, 32)
-  //     Minecraft.drawCuboid("Skin", char.base.body, (ox, oy), scale, ())
-  //     if showBodyOverlay {
-  //       Minecraft.drawCuboid("Skin", char.overlay.body, (ox, oy), scale, ())
-  //     }
-  //   }
-
   function drawBody([ox, oy]: [number, number]) {
     const scale: Dimensions = [64, 96, 32];
     minecraftGenerator.drawCuboid("Skin", char.base.body, [ox, oy], scale);
@@ -175,14 +163,6 @@ const script: ScriptDef = (generator: Generator) => {
       minecraftGenerator.drawCuboid("Skin", char.overlay.body, [ox, oy], scale);
     }
   }
-
-  //   let drawRightArm = ((ox, oy): Generator_Builder.position) => {
-  //     let scale = char == alex ? (24, 96, 32) : (32, 96, 32)
-  //     Minecraft.drawCuboid("Skin", char.base.rightArm, (ox, oy), scale, ())
-  //     if showRightArmOverlay {
-  //       Minecraft.drawCuboid("Skin", char.overlay.rightArm, (ox, oy), scale, ())
-  //     }
-  //   }
 
   function drawRightArm([ox, oy]: [number, number]) {
     const scale: Dimensions = char === alex ? [24, 96, 32] : [32, 96, 32];
@@ -196,14 +176,6 @@ const script: ScriptDef = (generator: Generator) => {
       );
     }
   }
-
-  //   let drawLeftArm = ((ox, oy): Generator_Builder.position) => {
-  //     let scale = char == alex ? (24, 96, 32) : (32, 96, 32)
-  //     Minecraft.drawCuboid("Skin", char.base.leftArm, (ox, oy), scale, ~direction=#West, ())
-  //     if showLeftArmOverlay {
-  //       Minecraft.drawCuboid("Skin", char.overlay.leftArm, (ox, oy), scale, ~direction=#West, ())
-  //     }
-  //   }
 
   function drawLeftArm([ox, oy]: [number, number]) {
     const scale: Dimensions = char === alex ? [24, 96, 32] : [32, 96, 32];
@@ -225,17 +197,6 @@ const script: ScriptDef = (generator: Generator) => {
     }
   }
 
-  //   let drawRightLeg = ((ox, oy): Generator_Builder.position) => {
-  //     let scale = (32, 96, 32)
-  //     Minecraft.drawCuboid("Skin", char.base.rightLeg, (ox, oy), scale, ())
-  //     if showRightLegOverlay {
-  //       Minecraft.drawCuboid("Skin", char.overlay.rightLeg, (ox, oy), scale, ())
-  //     }
-  //     /* if showFolds {
-  //       Generator.drawFoldLineCuboid((ox, oy), scale, ())
-  //     } */
-  //   }
-
   function drawRightLeg([ox, oy]: [number, number]) {
     const scale: Dimensions = [32, 96, 32];
     minecraftGenerator.drawCuboid("Skin", char.base.rightLeg, [ox, oy], scale);
@@ -248,17 +209,6 @@ const script: ScriptDef = (generator: Generator) => {
       );
     }
   }
-
-  //   let drawLeftLeg = ((ox, oy): Generator_Builder.position) => {
-  //     let scale = (32, 96, 32)
-  //     Minecraft.drawCuboid("Skin", char.base.leftLeg, (ox, oy), scale, ~direction=#West, ())
-  //     if showLeftLegOverlay {
-  //       Minecraft.drawCuboid("Skin", char.overlay.leftLeg, (ox, oy), scale, ~direction=#West, ())
-  //     }
-  //     /* if showFolds {
-  //       Generator.drawFoldLineCuboid((ox, oy), scale, ~direction=#West, ())
-  //     } */
-  //   }
 
   function drawLeftLeg([ox, oy]: [number, number]) {
     const scale: Dimensions = [32, 96, 32];
@@ -280,15 +230,6 @@ const script: ScriptDef = (generator: Generator) => {
     }
   }
 
-  //   let drawFolds = () => {
-  //     if isAlexModel {
-  //       Generator.drawImage("AlexFolds", (0, 0))
-  //     } else {
-  //       Generator.drawImage("SteveFolds", (0, 0))
-  //     }
-  //     // Later replace with drawLineFold functions
-  //   }
-
   function drawFolds() {
     if (isAlexModel) {
       generator.drawImage("AlexFolds", [0, 0]);
@@ -298,16 +239,9 @@ const script: ScriptDef = (generator: Generator) => {
     // Later replace with drawLineFold functions
   }
 
-  //   // Background
-  //   Generator.drawImage("Background", (0, 0))
+  // Background
 
   generator.drawImage("Background", [0, 0]);
-
-  //   if isAlexModel {
-  //     Generator.drawImage("AlexTabs", (0, 0))
-  //   } else {
-  //     Generator.drawImage("SteveTabs", (0, 0))
-  //   }
 
   if (isAlexModel) {
     generator.drawImage("AlexTabs", [0, 0]);
@@ -315,47 +249,33 @@ const script: ScriptDef = (generator: Generator) => {
     generator.drawImage("SteveTabs", [0, 0]);
   }
 
-  //   // Head
-  //   let (ox, oy) = (74, 25)
+  // Head
+
   const [oxHead, oyHead] = [74, 25];
 
-  //   drawHead((ox, oy))
   drawHead([oxHead, oyHead]);
-
-  //   Generator.defineRegionInput((ox, oy, 256, 192), () => {
-  //     Generator.setBooleanInputValue("Show Head Overlay", !showHeadOverlay)
-  //   })
 
   generator.defineRegionInput([oxHead, oyHead, 256, 192], () => {
     generator.setBooleanInputValue("Show Head Overlay", !showHeadOverlay);
   });
 
-  //   // Body
-  //   let (ox, oy) = (268, 201)
+  // Body
+
   const [oxBody, oyBody] = [268, 201];
 
-  //   drawBody((ox, oy))
   drawBody([oxBody, oyBody]);
-
-  //   Generator.defineRegionInput((ox, oy, 192, 160), () => {
-  //     Generator.setBooleanInputValue("Show Body Overlay", !showBodyOverlay)
-  //   })
 
   generator.defineRegionInput([oxBody, oyBody, 192, 160], () => {
     generator.setBooleanInputValue("Show Body Overlay", !showBodyOverlay);
   });
 
-  //   // Arms
-  //   // Right Arm
-  //   let (ox, oy) = (isAlexModel ? 107 : 99, 373)
+  // Arms
+
+  // Right Arm
+
   const [oxRightArm, oyRightArm] = isAlexModel ? [107, 373] : [99, 373];
 
-  //   drawRightArm((ox, oy))
   drawRightArm([oxRightArm, oyRightArm]);
-
-  //   Generator.defineRegionInput((ox, oy, isAlexModel ? 112 : 128, 160), () => {
-  //     Generator.setBooleanInputValue("Show Right Arm Overlay", !showRightArmOverlay)
-  //   })
 
   generator.defineRegionInput(
     [oxRightArm, oyRightArm, isAlexModel ? 112 : 128, 160],
@@ -367,18 +287,11 @@ const script: ScriptDef = (generator: Generator) => {
     }
   );
 
-  //   // Left Arm
-  //   let (ox, oy) = (isAlexModel ? 391 : 383, 373)
+  // Left Arm
 
   const [oxLeftArm, oyLeftArm] = isAlexModel ? [391, 373] : [383, 373];
 
-  //   drawLeftArm((ox, oy))
-
   drawLeftArm([oxLeftArm, oyLeftArm]);
-
-  //   Generator.defineRegionInput((ox, oy, isAlexModel ? 112 : 128, 166), () => {
-  //     Generator.setBooleanInputValue("Show Left Arm Overlay", !showLeftArmOverlay)
-  //   })
 
   generator.defineRegionInput(
     [oxLeftArm, oyLeftArm, isAlexModel ? 112 : 128, 166],
@@ -390,18 +303,11 @@ const script: ScriptDef = (generator: Generator) => {
     }
   );
 
-  //   // Right Leg
-  //   let (ox, oy) = (99, 587)
+  // Right Leg
 
   const [oxRightLeg, oyRightLeg] = [99, 587];
 
-  //   drawRightLeg((ox, oy))
-
   drawRightLeg([oxRightLeg, oyRightLeg]);
-
-  //   Generator.defineRegionInput((ox, oy, 128, 160), () => {
-  //     Generator.setBooleanInputValue("Show Right Leg Overlay", !showRightLegOverlay)
-  //   })
 
   generator.defineRegionInput([oxRightLeg, oyRightLeg, 128, 160], () => {
     generator.setBooleanInputValue(
@@ -410,18 +316,11 @@ const script: ScriptDef = (generator: Generator) => {
     );
   });
 
-  //   // Left Leg
-  //   let (ox, oy) = (383, 587)
+  // Left Leg
 
   const [oxLeftLeg, oyLeftLeg] = [383, 587];
 
-  //   drawLeftLeg((ox, oy))
-
   drawLeftLeg([oxLeftLeg, oyLeftLeg]);
-
-  //   Generator.defineRegionInput((ox, oy, 128, 160), () => {
-  //     Generator.setBooleanInputValue("Show Left Leg Overlay", !showLeftLegOverlay)
-  //   })
 
   generator.defineRegionInput([oxLeftLeg, oyLeftLeg, 128, 160], () => {
     generator.setBooleanInputValue(
@@ -430,36 +329,18 @@ const script: ScriptDef = (generator: Generator) => {
     );
   });
 
-  //   // Folds
-  //   if showFolds {
-  //     drawFolds()
-  //   }
+  // Folds
 
   if (showFolds) {
     drawFolds();
   }
 
-  //   // Labels
-  //   if showLabels {
-  //     Generator.drawImage("Labels", (0, 0))
-  //   }
+  // Labels
 
   if (showLabels) {
     generator.drawImage("Labels", [0, 0]);
   }
 };
-
-// let generator: Generator.generatorDef = {
-//   id: id,
-//   name: name,
-//   history: history,
-//   thumbnail: Some(thumbnail),
-//   video: None,
-//   instructions: Some(<Generator.Markdown> {instructions} </Generator.Markdown>),
-//   images: images,
-//   textures: textures,
-//   script: script,
-// }
 
 export const generator: GeneratorDef = {
   id,
