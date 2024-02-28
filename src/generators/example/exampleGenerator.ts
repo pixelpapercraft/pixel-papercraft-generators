@@ -2,6 +2,7 @@
 
 import type {
   GeneratorDef,
+  InstructionsDef,
   ImageDef,
   HistoryDef,
   TextureDef,
@@ -9,25 +10,29 @@ import type {
 } from "@/builder/modules/generatorDef";
 import { type Generator } from "@/builder/modules/generator";
 
-import skin from "./textures/Skin.png";
-import background from "./images/Background.png";
-import folds from "./images/Folds.png";
+import skinImage from "./textures/Skin.png";
+import backgroundImage from "./images/Background.png";
+import foldsImage from "./images/Folds.png";
 
-export const id = "example";
+const id = "example";
 
 const name = "Example";
+
+const instructions: InstructionsDef = `
+An example generator to demonstrate how to write a generator script.
+`;
 
 const history: HistoryDef = [];
 
 const images: ImageDef[] = [
-  { id: "Background", url: background.src },
-  { id: "Folds", url: folds.src },
+  { id: "Background", url: backgroundImage.src },
+  { id: "Folds", url: foldsImage.src },
 ];
 
 const textures: TextureDef[] = [
   {
     id: "Skin",
-    url: skin.src,
+    url: skinImage.src,
     standardWidth: 64,
     standardHeight: 64,
   },
@@ -81,7 +86,7 @@ export const generator: GeneratorDef = {
   name,
   thumbnail: null,
   video: null,
-  instructions: null,
+  instructions,
   history,
   images,
   textures,

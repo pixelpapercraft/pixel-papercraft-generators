@@ -10,6 +10,7 @@ import { loadResources } from "@/builder/modules/resourceLoader";
 import { runScript } from "@/builder/modules/scriptRunner";
 import { Controls } from "./controls/controls";
 import { Pages } from "./pages/pages";
+import { Instructions } from "./instructions";
 
 export function Generator({ generatorDef }: { generatorDef: GeneratorDef }) {
   const [model, setModel] = React.useState<Model | null>(null);
@@ -50,7 +51,12 @@ export function Generator({ generatorDef }: { generatorDef: GeneratorDef }) {
 
   return (
     <div>
+      {generatorDef.instructions ? (
+        <Instructions markdown={generatorDef.instructions} />
+      ) : null}
+
       <Controls model={model} onChange={onControlsChange} />
+
       <Pages
         generatorDef={generatorDef}
         model={model}

@@ -1,5 +1,6 @@
-import { type TextureInputControlProps, type Region } from "./modelControls";
+import { type TextureInputControlProps } from "./modelControls";
 import { type Model } from "./model";
+import { type Region, type RegionLegacy } from "./renderers/types";
 import { type DrawTextureOptions, drawTexture } from "./renderers/drawTexture";
 import { type TabOrientation, drawTab } from "./renderers/drawTab";
 import { type Page, makePage } from "./modelPage";
@@ -82,8 +83,8 @@ export class Generator {
 
   drawTexture(
     id: string,
-    [sx, sy, sw, sh]: [number, number, number, number],
-    [dx, dy, dw, dh]: [number, number, number, number],
+    [sx, sy, sw, sh]: Region,
+    [dx, dy, dw, dh]: Region,
     { flip, rotate, blend, pixelate }: DrawTextureOptions = {}
   ): void {
     const currentPage = this.getCurrentPage();
@@ -105,6 +106,15 @@ export class Generator {
         pixelate,
       }
     );
+  }
+
+  drawTextureLegacy(
+    id: string,
+    { x: sx, y: sy, w: sw, h: sh }: RegionLegacy,
+    { x: dx, y: dy, w: dw, h: dh }: RegionLegacy,
+    options?: DrawTextureOptions
+  ): void {
+    this.drawTexture(id, [sx, sy, sw, sh], [dx, dy, dw, dh], options);
   }
 
   drawTab(

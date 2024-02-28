@@ -1,5 +1,6 @@
 import { type GeneratorDef } from "@/builder/modules/generatorDef";
 import * as ExampleGenerator from "@/generators/example/exampleGenerator";
+import * as AmogusBendableGenerator from "@/generators/amogus-bendable/amogusBendableGenerator";
 import * as MinecraftCharacterGenerator from "@/generators/minecraftCharacter/minecraftCharacterGenerator";
 
 const isDevEnvironment: boolean = process.env.NODE_ENV === "development";
@@ -49,9 +50,7 @@ export const mod: GeneratorDef[] = [
   // DalekModDalekGenerator.generator,
 ];
 
-export const other: GeneratorDef[] = [
-  // AmogusBendableGenerator.generator
-];
+export const other: GeneratorDef[] = [AmogusBendableGenerator.generator];
 
 // Incomplete and in development
 export const dev: GeneratorDef[] = isDevEnvironment

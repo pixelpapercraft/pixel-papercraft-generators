@@ -15,16 +15,14 @@ import { steve, alex } from "../common/minecraftCharacter";
 import { type Dimensions, Minecraft } from "../common/minecraft";
 
 import thumbnailImage from "./thumbnail/v2-thumbnail-256.jpeg";
-
 import alexFoldsImage from "./images/AlexFolds.png";
 import alexTabsImage from "./images/AlexTabs.png";
 import backgroundImage from "./images/Background.png";
 import labelsImage from "./images/Labels.png";
 import steveFoldsImage from "./images/SteveFolds.png";
 import steveTabsImage from "./images/SteveTabs.png";
-
-import skinAlex64 from "./textures/SkinAlex64x64.png";
-import skinSteve64 from "./textures/SkinSteve64x64.png";
+import skinAlex64Image from "./textures/SkinAlex64x64.png";
+import skinSteve64Image from "./textures/SkinSteve64x64.png";
 
 const id = "minecraft-character";
 
@@ -66,19 +64,19 @@ const images: ImageDef[] = [
 const textures: TextureDef[] = [
   {
     id: "Skin",
-    url: skinSteve64.src,
+    url: skinSteve64Image.src,
     standardWidth: 64,
     standardHeight: 64,
   },
   {
     id: "Steve",
-    url: skinSteve64.src,
+    url: skinSteve64Image.src,
     standardWidth: 64,
     standardHeight: 64,
   },
   {
     id: "Alex",
-    url: skinAlex64.src,
+    url: skinAlex64Image.src,
     standardWidth: 64,
     standardHeight: 64,
   },

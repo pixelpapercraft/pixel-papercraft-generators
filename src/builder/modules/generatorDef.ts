@@ -20,7 +20,7 @@ export type ThumbnailDef = {
 
 export type VideoDef = { url: string };
 
-export type InstructionsDef = React.ReactNode;
+export type InstructionsDef = string;
 
 export type ScriptDef = (generator: Generator) => void;
 
