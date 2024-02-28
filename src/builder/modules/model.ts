@@ -77,6 +77,12 @@ export class Model {
       id,
       options,
     });
+
+    const value = this.getStringVariable(id);
+    const firstOption = options.at(0);
+    if (!value && firstOption) {
+      this.setStringVariable(id, firstOption);
+    }
   }
 
   addRangeControl(
