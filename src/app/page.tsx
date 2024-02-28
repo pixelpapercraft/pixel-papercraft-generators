@@ -1,7 +1,6 @@
-import { Generator } from "@/builder/ui/generator";
-
-import { generator } from "@/generators/minecraftCharacter/minecraftCharacterGenerator";
+import React from "react";
+import { HomePage } from "@/ui/pages/homePage";
 
 export default function Home() {
-  return <Generator generatorDef={generator} />;
+  return <HomePage />;
 }

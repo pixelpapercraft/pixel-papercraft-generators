@@ -13,7 +13,7 @@ import skin from "./textures/Skin.png";
 import background from "./images/Background.png";
 import folds from "./images/Folds.png";
 
-const id = "example";
+export const id = "example";
 
 const name = "Example";
 
