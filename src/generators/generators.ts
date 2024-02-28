@@ -1,6 +1,6 @@
 import { type GeneratorDef } from "@/builder/modules/generatorDef";
 import * as ExampleGenerator from "@/generators/example/exampleGenerator";
-import * as AmogusBendableGenerator from "@/generators/amogus-bendable/amogusBendableGenerator";
+import * as AmogusBendableGenerator from "@/generators/amogusBendable/amogusBendableGenerator";
 import * as MinecraftCharacterGenerator from "@/generators/minecraftCharacter/minecraftCharacterGenerator";
 
 const isDevEnvironment: boolean = process.env.NODE_ENV === "development";
