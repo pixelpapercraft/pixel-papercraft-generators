@@ -35,12 +35,12 @@ export class Model {
     });
   }
 
-  addCustomControl(
+  addCustomInputControl(
     id: string,
     render: (onChange: (value: string) => void) => React.ReactNode
   ) {
     this.addControl({
-      kind: "Custom",
+      kind: "CustomInput",
       id,
       render,
     });
@@ -57,27 +57,26 @@ export class Model {
 
   addTextureControl(id: string, props: TextureInputControlProps) {
     this.addControl({
-      kind: "Texture",
+      kind: "TextureInput",
       id,
       props,
     });
   }
 
-  addBooleanControl(id: string, initialValue: boolean) {
+  addBooleanInputControl(id: string, initialValue: boolean) {
     this.addControl({
-      kind: "Boolean",
+      kind: "BooleanInput",
       id,
       initialValue,
     });
   }
 
-  addSelectControl(id: string, options: string[]) {
+  addSelectInputControl(id: string, options: string[]) {
     this.addControl({
-      kind: "Select",
+      kind: "SelectInput",
       id,
       options,
     });
-
     const value = this.getStringVariable(id);
     const firstOption = options.at(0);
     if (!value && firstOption) {

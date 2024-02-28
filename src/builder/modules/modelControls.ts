@@ -8,7 +8,7 @@ export type TextControl = {
 };
 
 export type CustomInputControl = {
-  kind: "Custom";
+  kind: "CustomInput";
   id: string;
   render: (onChange: (value: string) => void) => React.ReactNode;
 };
@@ -27,24 +27,24 @@ export type TextureInputControlProps = {
 };
 
 export type TextureInputControl = {
-  kind: "Texture";
+  kind: "TextureInput";
   id: string;
   props: TextureInputControlProps;
 };
 
 export type BooleanInputControl = {
-  kind: "Boolean";
+  kind: "BooleanInput";
   id: string;
   initialValue: boolean;
 };
 
 export type SelectInputControl = {
-  kind: "Select";
+  kind: "SelectInput";
   id: string;
   options: string[];
 };
 
-export type RangeInputControl = {
+export type RangeControl = {
   kind: "Range";
   id: string;
   min: number;
@@ -66,5 +66,5 @@ export type Control =
   | TextureInputControl
   | BooleanInputControl
   | SelectInputControl
-  | RangeInputControl
+  | RangeControl
   | ButtonControl;

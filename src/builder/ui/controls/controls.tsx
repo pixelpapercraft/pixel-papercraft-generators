@@ -1,6 +1,6 @@
 import React from "react";
 
-import { type Texture, makeTextureFromImage } from "@/builder/modules/texture";
+import { type Texture } from "@/builder/modules/texture";
 import { type Model } from "@/builder/modules/model";
 import { TextureControl } from "./textureControl";
 import { BooleanControl } from "./booleanControl";
@@ -54,11 +54,14 @@ export function Controls({
     <div className="bg-gray-100 p-8 mb-8">
       {model.controls.map((control) => {
         switch (control.kind) {
-          case "Text":
+          case "Text": {
             return <TextControl key={control.id} text={control.text} />;
-          case "Region":
+          }
+          case "Region": {
+            // Regions are handled in the page rendering code
             return null;
-          case "Custom":
+          }
+          case "CustomInput": {
             return (
               <div key={control.id}>
                 {control.render((value: string) => {
@@ -66,7 +69,8 @@ export function Controls({
                 })}
               </div>
             );
-          case "Texture":
+          }
+          case "TextureInput": {
             return (
               <TextureControl
                 key={control.id}
@@ -75,7 +79,8 @@ export function Controls({
                 onChange={(texture) => onTextureChange(control.id, texture)}
               />
             );
-          case "Boolean":
+          }
+          case "BooleanInput": {
             const checked = model.getBooleanVariable(control.id) ?? false;
             return (
               <BooleanControl
@@ -87,7 +92,8 @@ export function Controls({
                 checked={checked}
               />
             );
-          case "Select":
+          }
+          case "SelectInput": {
             const value = model.getStringVariable(control.id) ?? "";
             return (
               <SelectControl
@@ -98,7 +104,8 @@ export function Controls({
                 onChange={(value) => onSelectInputChange(control.id, value)}
               />
             );
-          case "Button":
+          }
+          case "Button": {
             return (
               <ButtonControl
                 key={control.id}
@@ -109,7 +116,8 @@ export function Controls({
                 }}
               />
             );
-          case "Range":
+          }
+          case "Range": {
             return (
               <RangeControl
                 key={control.id}
@@ -121,6 +129,7 @@ export function Controls({
                 onChange={(value) => onRangeInputChange(control.id, value)}
               />
             );
+          }
         }
       })}
     </div>

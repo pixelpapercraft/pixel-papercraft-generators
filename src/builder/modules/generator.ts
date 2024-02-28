@@ -30,11 +30,11 @@ export class Generator {
   }
 
   defineBooleanInput(id: string, initialValue: boolean): void {
-    this.model.addBooleanControl(id, initialValue);
+    this.model.addBooleanInputControl(id, initialValue);
   }
 
   defineSelectInput(id: string, options: string[]): void {
-    this.model.addSelectControl(id, options);
+    this.model.addSelectInputControl(id, options);
   }
 
   defineRegionInput(region: Region, onClick: () => void): void {
