@@ -3,6 +3,7 @@ import * as ExampleGenerator from "@/generators/example/exampleGenerator";
 import * as AmogusBendableGenerator from "@/generators/amogusBendable/amogusBendableGenerator";
 import * as DalekModDalekGenerator from "@/generators/dalekModDalek/dalekModDalekGenerator";
 import * as MinecraftActionFigureGenerator from "@/generators/minecraftActionFigure/minecraftActionFigureGenerator";
+import * as MinecraftAllayCharacterGenerator from "@/generators/minecraftAllayCharacter/minecraftAllayCharacterGenerator";
 import * as MinecraftCharacterGenerator from "@/generators/minecraftCharacter/minecraftCharacterGenerator";
 
 const isDevEnvironment: boolean = process.env.NODE_ENV === "development";
@@ -25,7 +26,7 @@ export const mobCharacter: GeneratorDef[] = [
   // MinecraftVillagerCharacterGenerator.generator,
   // MinecraftWolfCharacterGenerator.generator,
   // MinecraftAxolotlCharacterGenerator.generator,
-  // MinecraftAllayCharacterGenerator.generator,
+  MinecraftAllayCharacterGenerator.generator,
   // MinecraftBeeCharacterGenerator.generator,
 ];
 
