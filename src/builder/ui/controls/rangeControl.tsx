@@ -21,12 +21,12 @@ export function RangeControl({
 
   return (
     <div className="mb-4">
-      <div className="font-bold">{id}</div>
+      <div className="font-bold mb-1">{id}</div>
       <input
         type="range"
         min={min}
         max={max}
-        value={value}
+        defaultValue={value}
         step={step}
         onChange={onRangeChange}
       />
