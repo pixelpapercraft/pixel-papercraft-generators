@@ -1,50 +1,62 @@
 import React from "react";
 
-import { type Texture } from "@/builder/modules/texture";
-import { makeImageFromUrl } from "@/builder/modules/image";
+import { type Texture, makeTextureFromUrl } from "@/builder/modules/texture";
+import { type Control_Texture } from "@/builder/modules/model";
 import { type SelectChoice, Select } from "../form/select";
 
 export function TextureControl({
-  id,
+  control,
   textures,
-  choices,
   onChange,
 }: {
-  id: string;
+  control: Control_Texture;
   textures: Map<string, Texture>;
-  choices: string[];
-  onChange: (image: HTMLImageElement | null) => void;
+  onChange: (image: Texture | null) => void;
 }) {
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const fileReader = new FileReader();
-      fileReader.onload = (e) => {
-        const result = e.target?.result;
-        if (typeof result === "string") {
-          makeImageFromUrl(result).then((image) => onChange(image));
-        }
-      };
-      fileReader.readAsDataURL(file);
+    const file = e.target.files ? e.target.files[0] ?? null : null;
+    if (!file) {
+      return;
     }
+    const fileReader = new FileReader();
+
+    fileReader.onload = (e) => {
+      const result = e.target ? e.target.result : null;
+
+      if (typeof result !== "string") {
+        return;
+      }
+
+      makeTextureFromUrl(
+        result,
+        control.props.standardWidth,
+        control.props.standardHeight
+      ).then(onChange);
+    };
+
+    fileReader.readAsDataURL(file);
   };
 
   const onChoiceChange = (choice: SelectChoice) => {
-    const texture = textures.get(choice.id);
-    const image = texture ? texture.imageWithCanvas.image : null;
-    onChange(image);
+    const texture = textures.get(choice.id) ?? null;
+    onChange(texture);
   };
 
-  const selectChoices: SelectChoice[] = [
-    { id: "", label: "None" },
-    ...choices.map((choice) => ({ id: choice, label: choice })),
-  ];
+  const choices = control.props.choices;
+
+  const selectChoices: SelectChoice[] =
+    choices.length > 0
+      ? [
+          { id: "", label: "None" },
+          ...choices.map((choice) => ({ id: choice, label: choice })),
+        ]
+      : [];
 
   return (
     <div className="mb-4">
-      <div className="font-bold mb-1">{id}</div>
+      <div className="font-bold mb-1">{control.id}</div>
       <div className="flex space-x-4 items-center">
-        {choices.length > 0 ? (
+        {selectChoices.length > 0 ? (
           <>
             <Select choices={selectChoices} onChange={onChoiceChange} />
             <div>or</div>

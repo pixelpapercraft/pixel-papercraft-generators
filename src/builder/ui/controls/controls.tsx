@@ -1,7 +1,7 @@
 import React from "react";
 
-import { makeTextureFromImage } from "@/builder/modules/texture";
-import { Model } from "@/builder/modules/model";
+import { type Texture, makeTextureFromImage } from "@/builder/modules/texture";
+import { type Model } from "@/builder/modules/model";
 import { TextureControl } from "./textureControl";
 import { BooleanControl } from "./booleanControl";
 import { SelectControl } from "./selectControl";
@@ -16,24 +16,13 @@ export function Controls({
   model: Model;
   onChange: (model: Model) => void;
 }) {
-  const onTextureChange = (
-    id: string,
-    standardWidth: number,
-    standardHeight: number,
-    image: HTMLImageElement | null
-  ) => {
-    if (image) {
-      const texture = makeTextureFromImage(
-        image,
-        standardWidth,
-        standardHeight
-      );
+  const onTextureChange = (id: string, texture: Texture | null) => {
+    if (texture) {
       model.addTexture(id, texture);
-      onChange(model);
     } else {
       model.removeTexture(id);
-      onChange(model);
     }
+    onChange(model);
   };
 
   const onStringInputChange = (id: string, value: string) => {
@@ -62,7 +51,7 @@ export function Controls({
   };
 
   return (
-    <div className="bg-gray-100 p-4 mb-8 rounded">
+    <div className="bg-gray-100 p-8 mb-8">
       {model.controls.map((control) => {
         switch (control.kind) {
           case "Text":
@@ -81,17 +70,9 @@ export function Controls({
             return (
               <TextureControl
                 key={control.id}
-                id={control.id}
-                choices={control.props.choices}
+                control={control}
                 textures={model.values.textures}
-                onChange={(image) =>
-                  onTextureChange(
-                    control.id,
-                    control.props.standardWidth,
-                    control.props.standardHeight,
-                    image
-                  )
-                }
+                onChange={(texture) => onTextureChange(control.id, texture)}
               />
             );
           case "Boolean":
