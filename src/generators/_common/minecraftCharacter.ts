@@ -1,5 +1,7 @@
 import { type Cuboid, makeCuboid, translateCuboid } from "./cuboid";
 
+export type * from "./cuboid";
+
 export type Layer = {
   head: Cuboid;
   rightArm: Cuboid;

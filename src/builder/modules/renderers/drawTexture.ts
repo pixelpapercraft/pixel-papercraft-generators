@@ -278,7 +278,11 @@ function drawNearestNeighbor(
   }
 }
 
-export type DrawTextureOptions = DrawNearestNeighborOptions & {
+export type DrawTextureOptions = {
+  flip?: Flip;
+  blend?: Blend;
+  pixelate?: boolean;
+  rotate?: number;
   rotateLegacy?: number;
 };
 
@@ -289,9 +293,11 @@ export function drawTexture(
   [dx, dy, dw, dh]: Region,
   options: DrawTextureOptions
 ): void {
-  const rotate: Rotate | undefined = options.rotateLegacy
+  const rotate: Rotate = options.rotateLegacy
     ? rotateCorner(options.rotateLegacy)
-    : options.rotate;
+    : options.rotate
+    ? rotateCenter(options.rotate)
+    : rotateNone();
 
   const drawNearestNeightbourOptions: DrawNearestNeighborOptions = {
     rotate,

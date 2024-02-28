@@ -12,6 +12,7 @@ import {
 } from "./renderers/drawRectangle";
 import { type TabOrientation, drawTab } from "./renderers/drawTab";
 import { type Page } from "./modelPage";
+import { text } from "stream/consumers";
 
 export class Generator {
   model: Model;
@@ -40,9 +41,29 @@ export class Generator {
     const currentPage = this.getCurrentPage();
     this.model.addRegionControl(currentPage.id, region, onClick);
   }
+  defineRangeInput(
+    id: string,
+    {
+      min,
+      max,
+      value,
+      step,
+    }: {
+      min: number;
+      max: number;
+      value: number;
+      step: number;
+    }
+  ): void {
+    this.model.addRangeControl(id, min, max, value, step);
+  }
 
   defineText(text: string): void {
     this.model.addTextControl(text);
+  }
+
+  hasTexture(id: string): boolean {
+    return this.model.hasTexture(id);
   }
 
   getBooleanInputValue(id: string): boolean | null {
@@ -59,6 +80,10 @@ export class Generator {
 
   getSelectInputValue(id: string): string | null {
     return this.model.getStringVariable(id);
+  }
+
+  getRangeInputValue(id: string): number | null {
+    return this.model.getNumberVariable(id);
   }
 
   setNumberVariable(id: string, value: number): void {

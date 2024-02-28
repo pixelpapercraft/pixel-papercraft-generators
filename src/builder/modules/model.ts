@@ -133,6 +133,10 @@ export class Model {
     return this.values.textures.get(id) || null;
   }
 
+  hasTexture(id: string): boolean {
+    return this.findTexture(id) !== null;
+  }
+
   removeTexture(id: string) {
     this.values.removeTexture(id);
   }

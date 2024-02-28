@@ -51,7 +51,7 @@ export function Controls({
   };
 
   return (
-    <div className="bg-gray-100 p-8 mb-8">
+    <div className="w-full bg-gray-100 p-8 mb-8">
       {model.controls.map((control) => {
         switch (control.kind) {
           case "Text": {
