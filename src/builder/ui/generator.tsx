@@ -7,7 +7,7 @@ import { type GeneratorDef } from "@/builder/modules/generatorDef";
 import { Model, Values } from "@/builder/modules/model";
 import { loadResources } from "@/builder/modules/resourceLoader";
 import { runScript } from "@/builder/modules/scriptRunner";
-import { Inputs } from "./inputs";
+import { Controls } from "./controls/controls";
 import { Pages } from "./pages/pages";
 
 export function Generator({ generatorDef }: { generatorDef: GeneratorDef }) {
@@ -39,12 +39,7 @@ export function Generator({ generatorDef }: { generatorDef: GeneratorDef }) {
     return <div>Loading...</div>;
   }
 
-  const dataUrl =
-    model && model.currentPage
-      ? model.currentPage.canvasWithContext.canvas.toDataURL("image/png")
-      : null;
-
-  const onInputsChange = (model: Model) => {
+  const onControlsChange = (model: Model) => {
     runScript(generatorDef.script, model).then(setModel);
   };
 
@@ -54,7 +49,7 @@ export function Generator({ generatorDef }: { generatorDef: GeneratorDef }) {
 
   return (
     <div className="p-8">
-      <Inputs model={model} onChange={onInputsChange} />
+      <Controls model={model} onChange={onControlsChange} />
       <Pages
         generatorDef={generatorDef}
         model={model}

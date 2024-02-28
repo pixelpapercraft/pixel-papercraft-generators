@@ -55,7 +55,7 @@ function makeButtonProps(state: ButtonState): {
 
 export type ButtonProps = {
   children: React.ReactNode;
-  state: ButtonState;
+  state?: ButtonState;
   size?: ButtonSize;
   color?: ButtonColor;
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
@@ -63,7 +63,7 @@ export type ButtonProps = {
 
 export function Button({
   children,
-  state,
+  state = "Ready",
   size = "Medium",
   color = "Blue",
   onClick,
