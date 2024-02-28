@@ -2,13 +2,14 @@ import { type GeneratorDef } from "@/builder/modules/generatorDef";
 import * as ExampleGenerator from "@/generators/example/exampleGenerator";
 import * as AmogusBendableGenerator from "@/generators/amogusBendable/amogusBendableGenerator";
 import * as DalekModDalekGenerator from "@/generators/dalekModDalek/dalekModDalekGenerator";
+import * as MinecraftActionFigureGenerator from "@/generators/minecraftActionFigure/minecraftActionFigureGenerator";
 import * as MinecraftCharacterGenerator from "@/generators/minecraftCharacter/minecraftCharacterGenerator";
 
 const isDevEnvironment: boolean = process.env.NODE_ENV === "development";
 
 export const character: GeneratorDef[] = [
   MinecraftCharacterGenerator.generator,
-  // MinecraftActionFigureGenerator.generator,
+  MinecraftActionFigureGenerator.generator,
   // MinecraftUltimateBendableGenerator.generator,
   // MinecraftCharacterMiniGenerator.generator,
 ];

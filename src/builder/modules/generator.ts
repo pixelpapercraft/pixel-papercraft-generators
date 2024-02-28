@@ -91,9 +91,9 @@ export class Generator {
 
   drawTexture(
     id: string,
-    [sx, sy, sw, sh]: Region,
-    [dx, dy, dw, dh]: Region,
-    { flip, rotate, blend, pixelate }: DrawTextureOptions = {}
+    source: Region,
+    dest: Region,
+    options: DrawTextureOptions = {}
   ): void {
     const currentPage = this.getCurrentPage();
     const texture = this.model.findTexture(id);
@@ -102,18 +102,7 @@ export class Generator {
       return;
     }
 
-    drawTexture(
-      currentPage.canvasWithContext,
-      texture,
-      [sx, sy, sw, sh],
-      [dx, dy, dw, dh],
-      {
-        flip,
-        rotate,
-        blend,
-        pixelate,
-      }
-    );
+    drawTexture(currentPage.canvasWithContext, texture, source, dest, options);
   }
 
   drawTextureLegacy(

@@ -278,7 +278,9 @@ function drawNearestNeighbor(
   }
 }
 
-export type DrawTextureOptions = DrawNearestNeighborOptions;
+export type DrawTextureOptions = DrawNearestNeighborOptions & {
+  rotateLegacy?: number;
+};
 
 export function drawTexture(
   page: CanvasWithContext,
@@ -287,6 +289,17 @@ export function drawTexture(
   [dx, dy, dw, dh]: Region,
   options: DrawTextureOptions
 ): void {
+  const rotate: Rotate | undefined = options.rotateLegacy
+    ? rotateCorner(options.rotateLegacy)
+    : options.rotate;
+
+  const drawNearestNeightbourOptions: DrawNearestNeighborOptions = {
+    rotate,
+    flip: options.flip,
+    blend: options.blend,
+    pixelate: options.pixelate,
+  };
+
   if (sh > 0 && dh > 0 && sw > 0 && dw > 0) {
     const sourceScaleX = texture.imageWithCanvas.width / texture.standardWidth;
     const sourceScaleY =
@@ -310,7 +323,7 @@ export function drawTexture(
         dw,
         dh,
       },
-      options
+      drawNearestNeightbourOptions
     );
   }
 }
