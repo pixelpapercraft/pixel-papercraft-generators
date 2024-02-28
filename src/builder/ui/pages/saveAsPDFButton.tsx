@@ -2,6 +2,7 @@ import { jsPDF } from "jspdf";
 import { type Model } from "@/builder/modules/model";
 import { type GeneratorDef } from "@/builder/modules/generatorDef";
 import { A4 } from "@/builder/modules/page";
+import { Button } from "../button/button";
 
 export function SaveAsPDFButton({
   model,
@@ -26,5 +27,9 @@ export function SaveAsPDFButton({
     doc.save(generatorDef.name);
   };
 
-  return <button onClick={onSavePDF}>Save as PDF</button>;
+  return (
+    <Button state="Ready" color="Blue" size="Small" onClick={onSavePDF}>
+      Save as PDF
+    </Button>
+  );
 }

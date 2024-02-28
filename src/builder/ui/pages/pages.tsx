@@ -45,10 +45,8 @@ export function Pages({
               className="mb-4 flex justify-between items-center"
               style={{ maxWidth: px(A4.px.width) }}
             >
-              <div>
-                <span className="mr-4">
-                  <PrintImageButton dataUrl={dataUrl} />
-                </span>
+              <div className="flex items-center space-x-4">
+                <PrintImageButton dataUrl={dataUrl} />
                 <SaveAsImageButton dataUrl={dataUrl} download={fileName} />
               </div>
               <div>
@@ -57,6 +55,7 @@ export function Pages({
                 ) : null}
               </div>
             </div>
+
             {/* Important: The following div uses absolute positioning for the regions. */}
             <div
               className="relative"
