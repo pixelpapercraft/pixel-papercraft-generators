@@ -11,8 +11,8 @@ import type {
 } from "@/builder/modules/generatorDef";
 import { type Generator } from "@/builder/modules/generator";
 
-import { steve, alex } from "../common/minecraftCharacter";
-import { type Dimensions, Minecraft } from "../common/minecraft";
+import { steve, alex } from "../_common/minecraftCharacter";
+import { type Dimensions, Minecraft } from "../_common/minecraft";
 
 import thumbnailImage from "./thumbnail/v2-thumbnail-256.jpeg";
 import alexFoldsImage from "./images/AlexFolds.png";

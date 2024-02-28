@@ -1,6 +1,7 @@
 import { type GeneratorDef } from "@/builder/modules/generatorDef";
 import * as ExampleGenerator from "@/generators/example/exampleGenerator";
 import * as AmogusBendableGenerator from "@/generators/amogusBendable/amogusBendableGenerator";
+import * as DalekModDalekGenerator from "@/generators/dalekModDalek/dalekModDalekGenerator";
 import * as MinecraftCharacterGenerator from "@/generators/minecraftCharacter/minecraftCharacterGenerator";
 
 const isDevEnvironment: boolean = process.env.NODE_ENV === "development";
@@ -47,7 +48,7 @@ export const utility: GeneratorDef[] = [
 
 export const mod: GeneratorDef[] = [
   // MinecraftMutantCharacterGenerator.generator,
-  // DalekModDalekGenerator.generator,
+  DalekModDalekGenerator.generator,
 ];
 
 export const other: GeneratorDef[] = [AmogusBendableGenerator.generator];

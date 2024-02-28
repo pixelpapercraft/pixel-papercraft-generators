@@ -14,15 +14,7 @@ export class Generator {
   }
 
   getCurrentPage(): Page {
-    const currentPage = this.model.currentPage;
-    if (currentPage) {
-      return currentPage;
-    }
-
-    const page = makePage("Page");
-    this.model.addPage(page);
-    this.model.setCurrentPage(page);
-    return page;
+    return this.model.getCurrentPage();
   }
 
   defineTextureInput(id: string, props: TextureInputControlProps): void {
@@ -68,6 +60,10 @@ export class Generator {
 
   getNumberVariable(id: string): number | null {
     return this.model.getNumberVariable(id);
+  }
+
+  usePage(id: string): void {
+    this.model.usePage(id);
   }
 
   drawImage(id: string, [x, y]: [number, number]): void {

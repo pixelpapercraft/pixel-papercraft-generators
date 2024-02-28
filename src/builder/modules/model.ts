@@ -1,6 +1,6 @@
 import { type ImageWithCanvas } from "./imageWithCanvas";
 import { type Texture } from "./texture";
-import { type Page } from "./modelPage";
+import { type Page, makePage } from "./modelPage";
 import { makeUUID } from "./uuid";
 import {
   type Control,
@@ -165,7 +165,35 @@ export class Model {
     return this.values.getBooleanVariable(id);
   }
 
-  setCurrentPage(page: Page | null) {
+  setCurrentPage(page: Page) {
     this.currentPage = page;
+  }
+
+  getCurrentPage(): Page {
+    if (this.currentPage) {
+      return this.currentPage;
+    }
+
+    const newPage = makePage("Page");
+
+    this.addPage(newPage);
+    this.setCurrentPage(newPage);
+
+    return newPage;
+  }
+
+  usePage(id: string) {
+    const page = this.findPage(id);
+    if (page) {
+      this.setCurrentPage(page);
+      return;
+    }
+
+    const newPage = makePage(id);
+
+    this.addPage(newPage);
+    this.setCurrentPage(newPage);
+
+    return newPage;
   }
 }
