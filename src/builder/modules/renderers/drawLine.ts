@@ -22,10 +22,10 @@ function getOffset([x1, y1]: Position, [x2, y2]: Position) {
 }
 
 export type LineProps = {
-  color: string;
-  width: number;
-  lineDash: number[];
-  lineDashOffset: number;
+  color?: string;
+  width?: number;
+  lineDash?: number[];
+  lineDashOffset?: number;
 };
 
 export function drawLine(
@@ -34,12 +34,10 @@ export function drawLine(
   [x2, y2]: Position,
   lineProps?: LineProps
 ) {
-  const { color, width, lineDash, lineDashOffset } = lineProps ?? {
-    color: "#000000",
-    width: 1,
-    lineDash: [],
-    lineDashOffset: 0,
-  };
+  const color = lineProps?.color ?? "#000000";
+  const width = lineProps?.width ?? 1;
+  const lineDash = lineProps?.lineDash ?? [];
+  const lineDashOffset = lineProps?.lineDashOffset ?? 0;
 
   const [ox, oy] = getOffset([x1, y1], [x2, y2]);
   const context = page.context;

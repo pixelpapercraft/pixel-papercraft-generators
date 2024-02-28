@@ -1,10 +1,17 @@
 import { type TextureInputControlProps } from "./modelControls";
 import { type Model } from "./model";
-import { type Region, type RegionLegacy } from "./renderers/types";
+import {
+  type Region,
+  type RegionLegacy,
+  type Rectangle,
+} from "./renderers/types";
 import { type DrawTextureOptions, drawTexture } from "./renderers/drawTexture";
+import {
+  type DrawRectangeOptions,
+  drawRectangle,
+} from "./renderers/drawRectangle";
 import { type TabOrientation, drawTab } from "./renderers/drawTab";
-import { type Page, makePage } from "./modelPage";
-import { type Rectangle } from "./renderers/types";
+import { type Page } from "./modelPage";
 
 export class Generator {
   model: Model;
@@ -64,6 +71,11 @@ export class Generator {
 
   usePage(id: string): void {
     this.model.usePage(id);
+  }
+
+  drawRectangle(rectangle: Rectangle, options: DrawRectangeOptions = {}): void {
+    const page = this.getCurrentPage();
+    drawRectangle(page.canvasWithContext, rectangle, options);
   }
 
   drawImage(id: string, [x, y]: [number, number]): void {

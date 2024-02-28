@@ -100,128 +100,128 @@ const dalekTextures: TextureDef[] = [
   {
     id: "60's Dalek",
     url: texture60sDalek.src,
-    standardWidth: 64,
-    standardHeight: 64,
+    standardWidth: 128,
+    standardHeight: 128,
   },
   {
     id: "80's Dalek",
     url: texture80sDalek.src,
-    standardWidth: 64,
-    standardHeight: 64,
+    standardWidth: 128,
+    standardHeight: 128,
   },
   {
     id: "Red Dalek",
     url: textureRedDalek.src,
-    standardWidth: 64,
-    standardHeight: 64,
+    standardWidth: 128,
+    standardHeight: 128,
   },
   {
     id: "Yellow Dalek",
     url: textureYellowDalek.src,
-    standardWidth: 64,
-    standardHeight: 64,
+    standardWidth: 128,
+    standardHeight: 128,
   },
   {
     id: "Gold Dalek",
     url: textureMovieDalekGold.src,
-    standardWidth: 64,
-    standardHeight: 64,
+    standardWidth: 128,
+    standardHeight: 128,
   },
   {
     id: "Gold Entity Dalek",
     url: textureEntityGoldDalek.src,
-    standardWidth: 64,
-    standardHeight: 64,
+    standardWidth: 128,
+    standardHeight: 128,
   },
   {
     id: "Black Entity Dalek",
     url: textureEntityMDalekBlk.src,
-    standardWidth: 64,
-    standardHeight: 64,
+    standardWidth: 128,
+    standardHeight: 128,
   },
   {
     id: "Blue Entity Dalek",
     url: textureEntityMDalekBlu.src,
-    standardWidth: 64,
-    standardHeight: 64,
+    standardWidth: 128,
+    standardHeight: 128,
   },
   {
     id: "Red Entity Dalek",
     url: textureEntityMDalekRed.src,
-    standardWidth: 64,
-    standardHeight: 64,
+    standardWidth: 128,
+    standardHeight: 128,
   },
   {
     id: "Ender Dalek",
     url: textureEnderDalek.src,
-    standardWidth: 64,
-    standardHeight: 64,
+    standardWidth: 128,
+    standardHeight: 128,
   },
   {
     id: "Classic Supreme Dalek",
     url: textureClassicSupreme.src,
-    standardWidth: 64,
-    standardHeight: 64,
+    standardWidth: 128,
+    standardHeight: 128,
   },
   {
     id: "Imperial Dalek",
     url: textureImperialDalek.src,
-    standardWidth: 64,
-    standardHeight: 64,
+    standardWidth: 128,
+    standardHeight: 128,
   },
   {
     id: "Invasion Dalek",
     url: textureInvasionDalek.src,
-    standardWidth: 64,
-    standardHeight: 64,
+    standardWidth: 128,
+    standardHeight: 128,
   },
   {
     id: "Ironside Dalek",
     url: textureIronside.src,
-    standardWidth: 64,
-    standardHeight: 64,
+    standardWidth: 128,
+    standardHeight: 128,
   },
   {
     id: "Marine Dalek",
     url: textureMarineDalek.src,
-    standardWidth: 64,
-    standardHeight: 64,
+    standardWidth: 128,
+    standardHeight: 128,
   },
   {
     id: "Pilot Dalek",
     url: texturePilotDalek.src,
-    standardWidth: 64,
-    standardHeight: 64,
+    standardWidth: 128,
+    standardHeight: 128,
   },
   {
     id: "Renegade Dalek",
     url: textureRenegadeDalek.src,
-    standardWidth: 64,
-    standardHeight: 64,
+    standardWidth: 128,
+    standardHeight: 128,
   },
   {
     id: "Scientist Dalek",
     url: textureScientistDalek.src,
-    standardWidth: 64,
-    standardHeight: 64,
+    standardWidth: 128,
+    standardHeight: 128,
   },
   {
     id: "Stone Dalek",
     url: textureStoneDalek.src,
-    standardWidth: 64,
-    standardHeight: 64,
+    standardWidth: 128,
+    standardHeight: 128,
   },
   {
     id: "Strategist Dalek",
     url: textureStrategist.src,
-    standardWidth: 64,
-    standardHeight: 64,
+    standardWidth: 128,
+    standardHeight: 128,
   },
   {
     id: "Suicide Dalek",
     url: textureSuicideDalek.src,
-    standardWidth: 64,
-    standardHeight: 64,
+    standardWidth: 128,
+    standardHeight: 128,
   },
 ];
 
@@ -305,7 +305,6 @@ const script: ScriptDef = (generator: Generator) => {
     { x: 8, y: 44, w: 1, h: 3 },
     { x: 70, y: 110, w: 5, h: 15 }
   ); // Back
-
   generator.drawTextureLegacy(
     "Skin",
     { x: 6, y: 45, w: 1, h: 1 },
@@ -324,7 +323,9 @@ const script: ScriptDef = (generator: Generator) => {
     { x: 66, y: 102, w: 7, h: 8 },
     { x: 135, y: 30, w: 35, h: 40 }
   ); // Top
+
   // Bottom Head
+
   generator.drawTextureLegacy(
     "Skin",
     { x: 58, y: 124, w: 38, h: 4 },
@@ -508,7 +509,9 @@ const script: ScriptDef = (generator: Generator) => {
     { x: 13, y: 80, w: 11, h: 14 },
     { x: 75, y: 186, w: 55, h: 70 }
   ); // Top
+
   // Bottom Skirt
+
   generator.drawTextureLegacy(
     "Skin",
     { x: 0, y: 16, w: 58, h: 4 },
