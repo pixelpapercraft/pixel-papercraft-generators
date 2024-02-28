@@ -10,7 +10,9 @@ import { loadResources } from "@/builder/modules/resourceLoader";
 import { runScript } from "@/builder/modules/scriptRunner";
 import { Controls } from "./controls/controls";
 import { Pages } from "./pages/pages";
+import { Video } from "./video";
 import { Instructions } from "./instructions";
+import { History } from "./history";
 
 export function Generator({ generatorDef }: { generatorDef: GeneratorDef }) {
   const [model, setModel] = React.useState<Model | null>(null);
@@ -51,8 +53,16 @@ export function Generator({ generatorDef }: { generatorDef: GeneratorDef }) {
 
   return (
     <div>
+      {generatorDef.video ? (
+        <div className="mb-8">
+          <Video video={generatorDef.video} />
+        </div>
+      ) : null}
+
       {generatorDef.instructions ? (
-        <Instructions markdown={generatorDef.instructions} />
+        <div className="mb-8">
+          <Instructions markdown={generatorDef.instructions} />
+        </div>
       ) : null}
 
       <Controls model={model} onChange={onControlsChange} />
@@ -62,6 +72,8 @@ export function Generator({ generatorDef }: { generatorDef: GeneratorDef }) {
         model={model}
         onChange={onPagesChange}
       />
+
+      <History generatorDef={generatorDef} />
     </div>
   );
 }

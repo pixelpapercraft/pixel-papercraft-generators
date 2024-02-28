@@ -28,7 +28,11 @@ export function Pages({
 
   return (
     <div>
-      {model.pages.map((page, index) => {
+      <div className="mb-8">
+        <SaveAsPDFButton generatorDef={generatorDef} model={model} />
+      </div>
+
+      {model.pages.map((page) => {
         const dataUrl = page.canvasWithContext.canvas.toDataURL("image/png");
 
         const fileName =
@@ -41,18 +45,16 @@ export function Pages({
             {showPageIds ? (
               <h1 className="font-bold text-2xl mb-4">{page.id}</h1>
             ) : null}
+
             <div
               className="mb-4 flex justify-between items-center"
               style={{ maxWidth: px(A4.px.width) }}
             >
-              <div className="flex items-center space-x-4">
+              <div>
                 <PrintImageButton dataUrl={dataUrl} />
-                <SaveAsImageButton dataUrl={dataUrl} download={fileName} />
               </div>
               <div>
-                {index === 0 ? (
-                  <SaveAsPDFButton generatorDef={generatorDef} model={model} />
-                ) : null}
+                <SaveAsImageButton dataUrl={dataUrl} download={fileName} />
               </div>
             </div>
 

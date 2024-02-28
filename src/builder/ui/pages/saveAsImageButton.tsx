@@ -16,7 +16,8 @@ export function SaveAsImageButton({
 
   return (
     <a className={className} href={href} onClick={onClick} download={download}>
-      {"Save as PNG"}
+      <span className="sm:hidden">Save as PNG</span>
+      <span className="hidden sm:inline">Save page as PNG</span>
     </a>
   );
 }

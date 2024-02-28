@@ -29,7 +29,8 @@ export function PrintImageButton({ dataUrl }: { dataUrl: string }) {
 
   return (
     <Button state="Ready" size="Small" onClick={onClick}>
-      Print
+      <span className="sm:hidden">Print</span>
+      <span className="hidden sm:inline">Print page</span>
     </Button>
   );
 }
