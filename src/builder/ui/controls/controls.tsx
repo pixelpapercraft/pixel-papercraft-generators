@@ -74,7 +74,10 @@ export function Controls({
             return (
               <TextureControl
                 key={control.id}
-                control={control}
+                id={control.id}
+                choices={control.props.choices}
+                standardWidth={control.props.standardWidth}
+                standardHeight={control.props.standardHeight}
                 textures={model.values.textures}
                 onChange={(texture) => onTextureChange(control.id, texture)}
               />
