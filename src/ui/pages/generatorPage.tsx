@@ -1,8 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import { Generator } from "@/builder/ui/generator";
 import { findGeneratorById } from "@/generators/generators";
+import { PageHeading } from "@/ui/components/pageHeading";
+import { CommonLink } from "@/ui/components/commonLink";
 
 export function GeneratorPage({ generatorId }: { generatorId: string }) {
   const generatorDef = findGeneratorById(generatorId);
@@ -11,8 +12,13 @@ export function GeneratorPage({ generatorId }: { generatorId: string }) {
   }
 
   return (
-    <div>
-      <Link href="/">Back</Link>
+    <div className="p-8">
+      <PageHeading title={generatorDef.name} />
+
+      <p className="mb-8">
+        <CommonLink href="/">← Back to generator list</CommonLink>
+      </p>
+
       <Generator generatorDef={generatorDef} />
     </div>
   );

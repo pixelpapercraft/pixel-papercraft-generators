@@ -49,7 +49,7 @@ export function Generator({ generatorDef }: { generatorDef: GeneratorDef }) {
   };
 
   return (
-    <div className="p-8">
+    <div>
       <Controls model={model} onChange={onControlsChange} />
       <Pages
         generatorDef={generatorDef}
