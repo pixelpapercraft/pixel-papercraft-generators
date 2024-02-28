@@ -1,7 +1,8 @@
-import { type Model, type Control_Texture_Props, type Region } from "./model";
+import { type TextureInputControlProps, type Region } from "./modelControls";
+import { type Model } from "./model";
 import { type DrawTextureOptions, drawTexture } from "./renderers/drawTexture";
 import { type TabOrientation, drawTab } from "./renderers/drawTab";
-import { type Page, makePage } from "./page";
+import { type Page, makePage } from "./modelPage";
 import { type Rectangle } from "./renderers/types";
 
 export class Generator {
@@ -23,7 +24,7 @@ export class Generator {
     return page;
   }
 
-  defineTextureInput(id: string, props: Control_Texture_Props): void {
+  defineTextureInput(id: string, props: TextureInputControlProps): void {
     this.model.addTextureControl(id, props);
   }
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { A4 } from "@/builder/modules/page";
+import { A4 } from "@/builder/modules/modelPage";
 import { Button } from "../button/button";
 import { printElement } from "../utils/printHtmlElement";
 

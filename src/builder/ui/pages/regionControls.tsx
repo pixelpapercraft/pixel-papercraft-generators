@@ -1,10 +1,10 @@
 import type { CSSProperties } from "react";
+import { type Model } from "@/builder/modules/model";
 import {
-  type Model,
   type Control,
-  type Control_Region,
-} from "@/builder/modules/model";
-import { A4 } from "@/builder/modules/page";
+  type RegionControl,
+} from "@/builder/modules/modelControls";
+import { A4 } from "@/builder/modules/modelPage";
 import { px, pageBorderWidth } from "./utils";
 
 /** [x, y, w, h] */
@@ -36,7 +36,7 @@ export function RegionControls({
   onClick: (callback: () => void) => void;
 }) {
   const regionControls = model.controls.reduce(
-    (acc: Control_Region[], control: Control) => {
+    (acc: RegionControl[], control: Control) => {
       if (control.kind === "Region" && control.pageId === currentPageId) {
         acc.push(control);
       }

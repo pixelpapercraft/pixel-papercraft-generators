@@ -1,7 +1,7 @@
 import React from "react";
 
 import { type Texture, makeTextureFromUrl } from "@/builder/modules/texture";
-import { type Control_Texture } from "@/builder/modules/model";
+import { type TextureInputControl } from "@/builder/modules/modelControls";
 import { type SelectChoice, Select } from "../form/select";
 
 export function TextureControl({
@@ -9,7 +9,7 @@ export function TextureControl({
   textures,
   onChange,
 }: {
-  control: Control_Texture;
+  control: TextureInputControl;
   textures: Map<string, Texture>;
   onChange: (image: Texture | null) => void;
 }) {

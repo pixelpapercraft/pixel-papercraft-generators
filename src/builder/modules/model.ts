@@ -1,150 +1,14 @@
 import { type ImageWithCanvas } from "./imageWithCanvas";
 import { type Texture } from "./texture";
-import { type Page } from "./page";
+import { type Page } from "./modelPage";
 import { makeUUID } from "./uuid";
-
-/** [x, y, width, height] */
-export type Region = [number, number, number, number];
-
-export type Control_Text = {
-  kind: "Text";
-  id: string;
-  text: string;
-};
-
-export type Control_Custom = {
-  kind: "Custom";
-  id: string;
-  render: (onChange: (value: string) => void) => React.ReactNode;
-};
-
-export type Control_Region = {
-  kind: "Region";
-  pageId: string;
-  region: Region;
-  onClick: () => void;
-};
-
-export type Control_Texture_Props = {
-  standardWidth: number;
-  standardHeight: number;
-  choices: string[];
-};
-
-export type Control_Texture = {
-  kind: "Texture";
-  id: string;
-  props: Control_Texture_Props;
-};
-
-export type Control_Boolean = {
-  kind: "Boolean";
-  id: string;
-  initialValue: boolean;
-};
-
-export type Control_Select = {
-  kind: "Select";
-  id: string;
-  options: string[];
-};
-
-export type Control_Range = {
-  kind: "Range";
-  id: string;
-  min: number;
-  max: number;
-  value: number;
-  step: number;
-};
-
-export type Control_Button = {
-  kind: "Button";
-  id: string;
-  onClick: () => void;
-};
-
-export type Control =
-  | Control_Text
-  | Control_Custom
-  | Control_Region
-  | Control_Texture
-  | Control_Boolean
-  | Control_Select
-  | Control_Range
-  | Control_Button;
-
-export type Variable_Number = {
-  kind: "Number";
-  value: number;
-};
-
-export type Variable_String = {
-  kind: "String";
-  value: string;
-};
-
-export type Variable_Boolean = {
-  kind: "Boolean";
-  value: boolean;
-};
-
-export type Variable = Variable_Number | Variable_String | Variable_Boolean;
-
-export class Values {
-  images: Map<string, ImageWithCanvas>;
-  textures: Map<string, Texture>;
-  variables: Map<string, Variable>;
-
-  constructor() {
-    this.images = new Map();
-    this.textures = new Map();
-    this.variables = new Map();
-  }
-
-  addImage(id: string, image: ImageWithCanvas) {
-    this.images.set(id, image);
-  }
-
-  addTexture(id: string, texture: Texture) {
-    this.textures.set(id, texture);
-  }
-
-  removeTexture(id: string) {
-    this.textures.delete(id);
-  }
-
-  setVariable(id: string, variable: Variable) {
-    this.variables.set(id, variable);
-  }
-
-  setStringVariable(id: string, value: string): void {
-    this.variables.set(id, { kind: "String", value });
-  }
-
-  getStringVariable(id: string): string | null {
-    const variable = this.variables.get(id);
-    return variable && variable.kind === "String" ? variable.value : null;
-  }
-
-  setNumberVariable(id: string, value: number): void {
-    this.variables.set(id, { kind: "Number", value });
-  }
-
-  getNumberVariable(id: string): number | null {
-    const variable = this.variables.get(id);
-    return variable && variable.kind === "Number" ? variable.value : null;
-  }
-
-  setBooleanVariable(id: string, value: boolean): void {
-    this.variables.set(id, { kind: "Boolean", value });
-  }
-
-  getBooleanVariable(id: string): boolean | null {
-    const variable = this.variables.get(id);
-    return variable && variable.kind === "Boolean" ? variable.value : null;
-  }
-}
+import {
+  type Control,
+  type TextureInputControlProps,
+  type Region,
+} from "./modelControls";
+import { type Variable } from "./variables";
+import { type Values } from "./modelValues";
 
 export class Model {
   controls: Control[];
@@ -191,7 +55,7 @@ export class Model {
     });
   }
 
-  addTextureControl(id: string, props: Control_Texture_Props) {
+  addTextureControl(id: string, props: TextureInputControlProps) {
     this.addControl({
       kind: "Texture",
       id,

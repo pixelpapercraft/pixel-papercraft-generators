@@ -4,7 +4,8 @@
 
 import React from "react";
 import { type GeneratorDef } from "@/builder/modules/generatorDef";
-import { Model, Values } from "@/builder/modules/model";
+import { Model } from "@/builder/modules/model";
+import { Values } from "@/builder/modules/modelValues";
 import { loadResources } from "@/builder/modules/resourceLoader";
 import { runScript } from "@/builder/modules/scriptRunner";
 import { Controls } from "./controls/controls";
