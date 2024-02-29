@@ -10,7 +10,6 @@ import type {
   InstructionsDef,
 } from "@/builder/modules/generatorDef";
 import { type Generator } from "@/builder/modules/generator";
-
 import { steve, alex } from "../_common/minecraftCharacter";
 import { type Dimensions, Minecraft } from "../_common/minecraft";
 

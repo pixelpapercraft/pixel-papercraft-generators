@@ -6,6 +6,7 @@ import * as MinecraftActionFigureGenerator from "@/generators/minecraftActionFig
 import * as MinecraftAllayCharacterGenerator from "@/generators/minecraftAllayCharacter/minecraftAllayCharacterGenerator";
 import * as MinecraftAxolotlCharacterGenerator from "@/generators/minecraftAxolotlCharacter/minecraftAxolotlCharacterGenerator";
 import * as MinecraftBeeCharacterGenerator from "@/generators/minecraftBeeCharacter/minecraftBeeCharacterGenerator";
+import * as MinecraftCapeAndElytraGenerator from "@/generators/minecraftCapeAndElytra/minecraftCapeAndElytraGenerator";
 import * as MinecraftCharacterGenerator from "@/generators/minecraftCharacter/minecraftCharacterGenerator";
 
 const isDevEnvironment: boolean = process.env.NODE_ENV === "development";
@@ -46,7 +47,7 @@ export const mob: GeneratorDef[] = [
 export const utility: GeneratorDef[] = [
   // MinecraftBlockGenerator.generator,
   // MinecraftItemGenerator.generator,
-  // MinecraftCapeAndElytraGenerator.generator,
+  MinecraftCapeAndElytraGenerator.generator,
   // MinecraftCharacterHeadsGenerator.generator,
 ];
 

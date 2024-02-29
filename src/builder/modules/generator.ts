@@ -131,6 +131,7 @@ export class Generator {
     drawTexture(currentPage.canvasWithContext, texture, source, dest, options);
   }
 
+  /** @deprecated Use `drawTexture()` instead. */
   drawTextureLegacy(
     id: string,
     { x: sx, y: sy, w: sw, h: sh }: RegionLegacy,

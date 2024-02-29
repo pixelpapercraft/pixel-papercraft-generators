@@ -283,6 +283,8 @@ export type DrawTextureOptions = {
   blend?: Blend;
   pixelate?: boolean;
   rotate?: number;
+
+  /** @deprecated Use `rotate` instead. */
   rotateLegacy?: number;
 };
 
