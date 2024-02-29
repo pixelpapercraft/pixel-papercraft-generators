@@ -83,8 +83,8 @@ export class Generator {
     return this.model.getStringVariable(id);
   }
 
-  getRangeInputValue(id: string): number | null {
-    return this.model.getNumberVariable(id);
+  getRangeInputValue(id: string): number {
+    return this.model.getNumberVariable(id) ?? 0;
   }
 
   setNumberVariable(id: string, value: number): void {
