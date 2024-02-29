@@ -49,123 +49,6 @@ const thumbnail: ThumbnailDef = {
 
 const images: ImageDef[] = [];
 
-// const textures: array<generator.textureDef> = [
-//   {
-//     id: "Background Sprites",
-//     url: generator.requireImage("./images/background-sprites.png"),
-//     standardWidth: 592,
-//     standardHeight: 608,
-//   },
-//   {
-//     id: "Fold Sprites",
-//     url: generator.requireImage("./images/fold-sprites.png"),
-//     standardWidth: 600,
-//     standardHeight: 808,
-//   },
-//   {
-//     id: "Label Sprites",
-//     url: generator.requireImage("./images/label-sprites.png"),
-//     standardWidth: 208,
-//     standardHeight: 80,
-//   },
-//   {
-//     id: "Title Sprites",
-//     url: generator.requireImage("./images/title-sprites.png"),
-//     standardWidth: 294,
-//     standardHeight: 48,
-//   },
-//   {
-//     id: "Pig Texture",
-//     url: generator.requireImage("./textures/vanilla/pig2.png"),
-//     standardWidth: 64,
-//     standardHeight: 32,
-//   },
-//   {
-//     id: "Saddle (Vanilla)",
-//     url: generator.requireImage("./textures/vanilla/pig_saddle2.png"),
-//     standardWidth: 64,
-//     standardHeight: 32,
-//   },
-//   {
-//     id: "Saddle (Vanilla) (Programmer Art)",
-//     url: generator.requireImage("./textures/vanilla/pig_saddle.png"),
-//     standardWidth: 64,
-//     standardHeight: 32,
-//   },
-//   {
-//     id: "Diamond Armor (Vanilla)",
-//     url: generator.requireImage("./textures/vanilla/diamond-armor.png"),
-//     standardWidth: 64,
-//     standardHeight: 32,
-//   },
-//   {
-//     id: "Gold Armor (Vanilla)",
-//     url: generator.requireImage("./textures/vanilla/gold-armor.png"),
-//     standardWidth: 64,
-//     standardHeight: 32,
-//   },
-//   {
-//     id: "Chainmail Armor (Vanilla)",
-//     url: generator.requireImage("./textures/vanilla/chainmail-armor.png"),
-//     standardWidth: 64,
-//     standardHeight: 32,
-//   },
-//   {
-//     id: "Iron Armor (Vanilla)",
-//     url: generator.requireImage("./textures/vanilla/iron-armor.png"),
-//     standardWidth: 64,
-//     standardHeight: 32,
-//   },
-//   {
-//     id: "Saddle (Faithful)",
-//     url: generator.requireImage("./textures/faithful/saddle.png"),
-//     standardWidth: 64,
-//     standardHeight: 32,
-//   },
-//   {
-//     id: "Diamond Armor (Faithful)",
-//     url: generator.requireImage("./textures/faithful/diamond-armor.png"),
-//     standardWidth: 64,
-//     standardHeight: 32,
-//   },
-//   {
-//     id: "Gold Armor (Faithful)",
-//     url: generator.requireImage("./textures/faithful/gold-armor.png"),
-//     standardWidth: 64,
-//     standardHeight: 32,
-//   },
-//   {
-//     id: "Chainmail Armor (Faithful)",
-//     url: generator.requireImage("./textures/faithful/chainmail-armor.png"),
-//     standardWidth: 64,
-//     standardHeight: 32,
-//   },
-//   {
-//     id: "Iron Armor (Faithful)",
-//     url: generator.requireImage("./textures/faithful/iron-armor.png"),
-//     standardWidth: 64,
-//     standardHeight: 32,
-//   },
-//   {
-//     id: "Saddle (Space Pig)",
-//     url: generator.requireImage("./textures/space-pig/saddle.png"),
-//     standardWidth: 64,
-//     standardHeight: 32,
-//   },
-//   {
-//     id: "Armor (Space Pig)",
-//     url: generator.requireImage("./textures/space-pig/armor.png"),
-//     standardWidth: 64,
-//     standardHeight: 32,
-//   },
-//   {
-//     id: "Skin",
-//     url: generator.requireImage("./textures/Steve.png"),
-//     standardWidth: 64,
-//     standardHeight: 64,
-//   },
-// ]
-
 const textures: TextureDef[] = [
   {
     id: "Background Sprites",
@@ -283,19 +166,6 @@ const textures: TextureDef[] = [
   },
 ];
 
-// type bgSprites = {
-//   body: RegionLegacy,
-//   boot: RegionLegacy,
-//   headAdvanced: RegionLegacy,
-//   headSimple: RegionLegacy,
-//   headStandardAdvanced: RegionLegacy,
-//   helmet: RegionLegacy,
-//   leg: RegionLegacy,
-//   nose3D: RegionLegacy,
-//   opaque: RegionLegacy,
-//   ultraMini: RegionLegacy,
-// }
-
 type BgSprites = {
   body: RegionLegacy;
   boot: RegionLegacy;
@@ -309,19 +179,6 @@ type BgSprites = {
   ultraMini: RegionLegacy;
 };
 
-// type foldSprites = {
-//   body: RegionLegacy,
-//   boot: RegionLegacy,
-//   headAdvanced: RegionLegacy,
-//   headAdvancedCuts: RegionLegacy,
-//   headSimple: RegionLegacy,
-//   headStandardAdvanced: RegionLegacy,
-//   helmet: RegionLegacy,
-//   leg: RegionLegacy,
-//   nose3D: RegionLegacy,
-//   saddle: RegionLegacy,
-// }
-
 type FoldSprites = {
   body: RegionLegacy;
   boot: RegionLegacy;
@@ -334,23 +191,6 @@ type FoldSprites = {
   nose3D: RegionLegacy;
   saddle: RegionLegacy;
 };
-
-// type labelSprites = {
-//   bodyHead: RegionLegacy,
-//   bodyLeg1: RegionLegacy,
-//   bodyLeg2: RegionLegacy,
-//   bodyLeg3: RegionLegacy,
-//   bodyLeg4: RegionLegacy,
-//   head: RegionLegacy,
-//   headNose3D: RegionLegacy,
-//   headStandardAdvanced: RegionLegacy,
-//   leg0: RegionLegacy,
-//   leg1: RegionLegacy,
-//   leg2: RegionLegacy,
-//   leg3: RegionLegacy,
-//   leg4: RegionLegacy,
-//   nose3D: RegionLegacy,
-// }
 
 type LabelSprites = {
   bodyHead: RegionLegacy;
@@ -368,19 +208,6 @@ type LabelSprites = {
   leg4: RegionLegacy;
   nose3D: RegionLegacy;
 };
-
-// type titleSprites = {
-//   body: RegionLegacy,
-//   boot: RegionLegacy,
-//   head: RegionLegacy,
-//   helmet: RegionLegacy,
-//   leg: RegionLegacy,
-//   nose3D: RegionLegacy,
-//   pixelPapercraft: RegionLegacy,
-//   saddle: RegionLegacy,
-//   tepigmc: RegionLegacy,
-//   ultraMini: RegionLegacy,
-// }
 
 type TitleSprites = {
   body: RegionLegacy;
@@ -518,6 +345,7 @@ const script: ScriptDef = (generator: Generator) => {
   };
 
   // Function to easily draw a section of an image and stretch it
+
   const drawSpriteSized = (
     sprite: string,
     spriteJson: RegionLegacy,
