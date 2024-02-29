@@ -9,6 +9,7 @@ import * as MinecraftBeeCharacterGenerator from "@/generators/minecraftBeeCharac
 import * as MinecraftCapeAndElytraGenerator from "@/generators/minecraftCapeAndElytra/minecraftCapeAndElytraGenerator";
 import * as MinecraftCatGenerator from "@/generators/minecraftCat/minecraftCatGenerator";
 import * as MinecraftCharacterGenerator from "@/generators/minecraftCharacter/minecraftCharacterGenerator";
+import * as MinecraftCharacterHeadsGenerator from "@/generators/minecraftCharacterHeads/minecraftCharacterHeadsGenerator";
 
 const isDevEnvironment: boolean = process.env.NODE_ENV === "development";
 
@@ -49,7 +50,7 @@ export const utility: GeneratorDef[] = [
   // MinecraftBlockGenerator.generator,
   // MinecraftItemGenerator.generator,
   MinecraftCapeAndElytraGenerator.generator,
-  // MinecraftCharacterHeadsGenerator.generator,
+  MinecraftCharacterHeadsGenerator.generator,
 ];
 
 export const mod: GeneratorDef[] = [

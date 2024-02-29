@@ -173,12 +173,12 @@ export function rotateCenter(degrees: number): RotateCenter {
   return { kind: "Center", degrees };
 }
 
-export function addRotation(rotate: Rotate, degrees: number): Rotate {
-  if (rotate.kind === "None") {
-    return { kind: "None" };
-  }
-  return { kind: rotate.kind, degrees: rotate.degrees + degrees };
-}
+// export function addRotation(rotate: Rotate, degrees: number): Rotate {
+//   if (rotate.kind === "None") {
+//     return { kind: "None" };
+//   }
+//   return { kind: rotate.kind, degrees: rotate.degrees + degrees };
+// }
 
 type DrawNearestNeighborOptions = {
   rotate?: Rotate;

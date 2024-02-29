@@ -5,7 +5,7 @@ import {
   flipNone,
   flipVertical,
   flipHorizontal,
-  addRotation,
+  // addRotation,
 } from "@/builder/modules/renderers/drawTexture";
 import { type TabOrientation } from "@/builder/modules/renderers/drawTab";
 import {
@@ -21,14 +21,16 @@ export type { Cuboid, Rectangle, Position, Dimensions } from "./cuboid";
 export type Face = {
   rectangle: Rectangle;
   flip: Flip;
-  rotate: Rotate;
+  // rotate: Rotate;
+  rotate: number;
 };
 
 export function makeFace(rect: Rectangle): Face {
   return {
     rectangle: rect,
     flip: flipNone(),
-    rotate: flipNone(),
+    // rotate: flipNone(),
+    rotate: 0,
   };
 }
 
@@ -48,7 +50,8 @@ function flipFaceVertical(face: Face): Face {
       return {
         ...face,
         flip: flipNone(),
-        rotate: addRotation(face.rotate, 180.0),
+        // rotate: addRotation(face.rotate, 180.0),
+        rotate: face.rotate + 180,
       };
   }
 }
@@ -63,7 +66,8 @@ function flipFaceHorizontal(face: Face): Face {
       return {
         ...face,
         flip: flipNone(),
-        rotate: addRotation(face.rotate, 180),
+        // rotate: addRotation(face.rotate, 180),
+        rotate: face.rotate + 180,
       };
     case "Horizontal":
       return { ...face, flip: flipNone() };
@@ -92,7 +96,8 @@ export function rotateFace(face: Face, r: number): Face {
         ? [x + (w - h) / 2, y - (w - h) / 2, h, w]
         : [x, y, w, h],
     flip: face.flip,
-    rotate: addRotation(face.rotate, r),
+    // rotate: addRotation(face.rotate, r),
+    rotate: face.rotate + r,
   };
 }
 

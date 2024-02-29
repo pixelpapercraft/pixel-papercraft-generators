@@ -34,6 +34,11 @@ export class Generator {
     this.model.setBooleanVariable(id, initialValue);
   }
 
+  defineAndGetBooleanInput(id: string, initialValue: boolean): boolean {
+    this.defineBooleanInput(id, initialValue);
+    return this.model.getBooleanVariable(id) ?? initialValue;
+  }
+
   defineSelectInput(id: string, options: string[]): void {
     this.model.addSelectInputControl(id, options);
   }
