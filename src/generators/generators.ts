@@ -7,6 +7,7 @@ import * as MinecraftAllayCharacterGenerator from "@/generators/minecraftAllayCh
 import * as MinecraftAxolotlCharacterGenerator from "@/generators/minecraftAxolotlCharacter/minecraftAxolotlCharacterGenerator";
 import * as MinecraftBeeCharacterGenerator from "@/generators/minecraftBeeCharacter/minecraftBeeCharacterGenerator";
 import * as MinecraftCapeAndElytraGenerator from "@/generators/minecraftCapeAndElytra/minecraftCapeAndElytraGenerator";
+import * as MinecraftCatGenerator from "@/generators/minecraftCat/minecraftCatGenerator";
 import * as MinecraftCharacterGenerator from "@/generators/minecraftCharacter/minecraftCharacterGenerator";
 
 const isDevEnvironment: boolean = process.env.NODE_ENV === "development";
@@ -39,7 +40,7 @@ export const mob: GeneratorDef[] = [
   // MinecraftGolemGenerator.generator,
   // MinecraftHorseGenerator.generator,
   // MinecraftPigGenerator.generator,
-  // MinecraftCatGenerator.generator,
+  MinecraftCatGenerator.generator,
   // MinecraftVillagerGenerator.generator,
 ];
 
