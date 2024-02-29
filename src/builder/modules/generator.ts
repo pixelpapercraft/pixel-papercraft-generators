@@ -12,7 +12,8 @@ import {
 } from "./renderers/drawRectangle";
 import { type TabOrientation, drawTab } from "./renderers/drawTab";
 import { type Page } from "./modelPage";
-import { text } from "stream/consumers";
+
+export type * from "./renderers/types";
 
 export class Generator {
   model: Model;
