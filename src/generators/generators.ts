@@ -19,6 +19,7 @@ import { generator as minecraftEndermanCharacterGenerator } from "@/generators/m
 import { generator as minecraftGolemGenerator } from "@/generators/minecraftGolem/minecraftGolemGenerator";
 import { generator as minecraftGolemCharacterGenerator } from "@/generators/minecraftGolemCharacter/minecraftGolemCharacterGenerator";
 import { generator as minecraftHorseGenerator } from "@/generators/minecraftHorse/minecraftHorseGenerator";
+import { generator as minecraftMutantCharacterGenerator } from "@/generators/minecraftMutantCharacter/minecraftMutantCharacterGenerator";
 
 const isDevEnvironment: boolean = process.env.NODE_ENV === "development";
 
@@ -63,7 +64,7 @@ export const utility: GeneratorDef[] = [
 ];
 
 export const mod: GeneratorDef[] = [
-  // minecraftMutantCharacterGenerator,
+  minecraftMutantCharacterGenerator,
   dalekModDalekGenerator,
 ];
 
