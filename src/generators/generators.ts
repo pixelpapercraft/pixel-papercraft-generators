@@ -11,6 +11,7 @@ import * as MinecraftCatGenerator from "@/generators/minecraftCat/minecraftCatGe
 import * as MinecraftCharacterGenerator from "@/generators/minecraftCharacter/minecraftCharacterGenerator";
 import * as MinecraftCharacterHeadsGenerator from "@/generators/minecraftCharacterHeads/minecraftCharacterHeadsGenerator";
 import * as MinecraftCharacterMiniGenerator from "@/generators/minecraftCharacterMini/minecraftCharacterMiniGenerator";
+import * as MinecraftCowCharacterGenerator from "@/generators/minecraftCowCharacter/minecraftCowCharacterGenerator";
 
 const isDevEnvironment: boolean = process.env.NODE_ENV === "development";
 
@@ -24,7 +25,7 @@ export const character: GeneratorDef[] = [
 export const mobCharacter: GeneratorDef[] = [
   // MinecraftCreeperCharacterGenerator.generator,
   // MinecraftCatCharacterGenerator.generator,
-  // MinecraftCowCharacterGenerator.generator,
+  MinecraftCowCharacterGenerator.generator,
   // MinecraftEndermanCharacterGenerator.generator,
   // MinecraftGolemCharacterGenerator.generator,
   // MinecraftPigCharacterGenerator.generator,
