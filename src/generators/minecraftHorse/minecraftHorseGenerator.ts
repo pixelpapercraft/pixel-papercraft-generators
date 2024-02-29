@@ -35,7 +35,6 @@ import horseArmorLeatherTexture from "./textures/horse_armor_leather.png";
 import horseArmorGoldTexture from "./textures/horse_armor_gold.png";
 import horseArmorIronTexture from "./textures/horse_armor_iron.png";
 import horseArmorDiamondTexture from "./textures/horse_armor_diamond.png";
-import { Script } from "vm";
 
 const id = "minecraft-horse";
 
