@@ -7,7 +7,6 @@ import type {
   TextureDef,
   ScriptDef,
   ThumbnailDef,
-  InstructionsDef,
 } from "@/builder/modules/generatorDef";
 import { type Generator } from "@/builder/modules/generator";
 import { steve, alex } from "../_common/minecraftCharacterLegacy";
