@@ -12,6 +12,7 @@ import * as MinecraftCharacterGenerator from "@/generators/minecraftCharacter/mi
 import * as MinecraftCharacterHeadsGenerator from "@/generators/minecraftCharacterHeads/minecraftCharacterHeadsGenerator";
 import * as MinecraftCharacterMiniGenerator from "@/generators/minecraftCharacterMini/minecraftCharacterMiniGenerator";
 import * as MinecraftCowCharacterGenerator from "@/generators/minecraftCowCharacter/minecraftCowCharacterGenerator";
+import * as MinecraftCreeperGenerator from "@/generators/minecraftCreeper/minecraftCreeperGenerator";
 
 const isDevEnvironment: boolean = process.env.NODE_ENV === "development";
 
@@ -38,7 +39,7 @@ export const mobCharacter: GeneratorDef[] = [
 ];
 
 export const mob: GeneratorDef[] = [
-  // MinecraftCreeperGenerator.generator,
+  MinecraftCreeperGenerator.generator,
   // MinecraftEndermanGenerator.generator,
   // MinecraftGolemGenerator.generator,
   // MinecraftHorseGenerator.generator,
