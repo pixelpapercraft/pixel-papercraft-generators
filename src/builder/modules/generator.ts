@@ -31,7 +31,6 @@ export class Generator {
 
   defineBooleanInput(id: string, initialValue: boolean): void {
     this.model.addBooleanInputControl(id, initialValue);
-    this.model.setBooleanVariable(id, initialValue);
   }
 
   defineAndGetBooleanInput(id: string, initialValue: boolean): boolean {
@@ -41,6 +40,11 @@ export class Generator {
 
   defineSelectInput(id: string, options: string[]): void {
     this.model.addSelectInputControl(id, options);
+  }
+
+  defineAndGetSelectInput(id: string, options: string[]): string | null {
+    this.defineSelectInput(id, options);
+    return this.getSelectInputValue(id);
   }
 
   defineRegionInput(region: Region, onClick: () => void): void {
@@ -62,6 +66,19 @@ export class Generator {
     }
   ): void {
     this.model.addRangeControl(id, min, max, value, step);
+  }
+
+  defineAndGetRangeInput(
+    id: string,
+    options: {
+      min: number;
+      max: number;
+      value: number;
+      step: number;
+    }
+  ): number {
+    this.defineRangeInput(id, options);
+    return this.getRangeInputValue(id);
   }
 
   defineText(text: string): void {

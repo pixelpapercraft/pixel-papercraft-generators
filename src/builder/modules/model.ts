@@ -69,6 +69,10 @@ export class Model {
       id,
       initialValue,
     });
+    const value = this.getBooleanVariable(id);
+    if (value === null) {
+      this.setBooleanVariable(id, initialValue);
+    }
   }
 
   addSelectInputControl(id: string, options: string[]) {
@@ -79,7 +83,7 @@ export class Model {
     });
     const value = this.getStringVariable(id);
     const firstOption = options.at(0);
-    if (!value && firstOption) {
+    if (value === null && firstOption) {
       this.setStringVariable(id, firstOption);
     }
   }
@@ -99,6 +103,10 @@ export class Model {
       value,
       step,
     });
+    const currentValue = this.getNumberVariable(id);
+    if (currentValue === null) {
+      this.setNumberVariable(id, value);
+    }
   }
 
   addButtonControl(id: string, onClick: () => void) {

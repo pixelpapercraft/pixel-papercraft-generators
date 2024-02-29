@@ -10,6 +10,7 @@ import * as MinecraftCapeAndElytraGenerator from "@/generators/minecraftCapeAndE
 import * as MinecraftCatGenerator from "@/generators/minecraftCat/minecraftCatGenerator";
 import * as MinecraftCharacterGenerator from "@/generators/minecraftCharacter/minecraftCharacterGenerator";
 import * as MinecraftCharacterHeadsGenerator from "@/generators/minecraftCharacterHeads/minecraftCharacterHeadsGenerator";
+import * as MinecraftCharacterMiniGenerator from "@/generators/minecraftCharacterMini/minecraftCharacterMiniGenerator";
 
 const isDevEnvironment: boolean = process.env.NODE_ENV === "development";
 
@@ -17,7 +18,7 @@ export const character: GeneratorDef[] = [
   MinecraftCharacterGenerator.generator,
   MinecraftActionFigureGenerator.generator,
   // MinecraftUltimateBendableGenerator.generator,
-  // MinecraftCharacterMiniGenerator.generator,
+  MinecraftCharacterMiniGenerator.generator,
 ];
 
 export const mobCharacter: GeneratorDef[] = [
