@@ -48,7 +48,7 @@ const script: ScriptDef = (generator: Generator) => {
     generator.drawTexture(name, [24, 8, 8, 8], [x + 128, y + 0, 64, 64]); // Back
     generator.drawTexture(name, [8, 0, 8, 8], [x + 0, y - 64, 64, 64]); // Top
     generator.drawTexture(name, [16, 0, 8, 8], [x + 0, y + 64, 64, 64], {
-      flip: { kind: "Vertical" },
+      flip: "Vertical",
     }); // Bottom
 
     // Head Overlay
@@ -58,7 +58,7 @@ const script: ScriptDef = (generator: Generator) => {
     generator.drawTexture(name, [56, 8, 8, 8], [x + 128, y + 0, 64, 64]); // Back
     generator.drawTexture(name, [40, 0, 8, 8], [x + 0, y - 64, 64, 64]); // Top
     generator.drawTexture(name, [48, 0, 8, 8], [x + 0, y + 64, 64, 64], {
-      flip: { kind: "Vertical" },
+      flip: "Vertical",
     }); // Bottom
   };
 

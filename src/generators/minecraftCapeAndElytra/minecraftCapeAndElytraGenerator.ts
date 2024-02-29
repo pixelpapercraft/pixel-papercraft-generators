@@ -86,7 +86,7 @@ const script: ScriptDef = (generator: Generator) => {
     "Cape",
     { x: 11, y: 0, w: 10, h: 1 },
     { x: 82, y: 244, w: 80, h: 8 },
-    { flip: { kind: "Vertical" } }
+    { flip: "Vertical" }
   ); // Bottom
 
   // Elytra Harness
@@ -105,13 +105,13 @@ const script: ScriptDef = (generator: Generator) => {
     "Cape",
     { x: 36, y: 2, w: 6, h: 4 },
     { x: 450, y: 180, w: 48, h: 32 },
-    { flip: { kind: "Horizontal" } }
+    { flip: "Horizontal" }
   ); // Right Harness Bottom
   generator.drawTextureLegacy(
     "Cape",
     { x: 36, y: 2, w: 4, h: 5 },
     { x: 450, y: 140, w: 32, h: 40 },
-    { flip: { kind: "Horizontal" } }
+    { flip: "Horizontal" }
   ); // Right Harness Top
 
   // Left Elytron
@@ -138,19 +138,19 @@ const script: ScriptDef = (generator: Generator) => {
     "Cape",
     { x: 36, y: 2, w: 10, h: 20 },
     { x: 161, y: 336, w: 80, h: 160 },
-    { flip: { kind: "Horizontal" } }
+    { flip: "Horizontal" }
   ); // Left Wing Front (Back in game) Back
   generator.drawTextureLegacy(
     "Cape",
     { x: 24, y: 0, w: 10, h: 2 },
     { x: 161, y: 304, w: 80, h: 32 },
-    { flip: { kind: "Vertical" } }
+    { flip: "Vertical" }
   ); // Left Wing Top (Top in game) Back
   generator.drawTextureLegacy(
     "Cape",
     { x: 34, y: 2, w: 2, h: 20 },
     { x: 241, y: 336, w: 32, h: 160 },
-    { flip: { kind: "Horizontal" } }
+    { flip: "Horizontal" }
   ); // Left Wing Side (Side in game) Back
   // Left Wing Base
   generator.drawTextureLegacy(
@@ -196,19 +196,19 @@ const script: ScriptDef = (generator: Generator) => {
     "Cape",
     { x: 36, y: 2, w: 10, h: 20 },
     { x: 161, y: 592, w: 80, h: 160 },
-    { flip: { kind: "Horizontal" } }
+    { flip: "Horizontal" }
   ); // Right Wing Front (Back in game) Back
   generator.drawTextureLegacy(
     "Cape",
     { x: 24, y: 0, w: 10, h: 2 },
     { x: 161, y: 560, w: 80, h: 32 },
-    { flip: { kind: "Vertical" } }
+    { flip: "Vertical" }
   ); // Right Wing Top (Top in game) Back
   generator.drawTextureLegacy(
     "Cape",
     { x: 34, y: 2, w: 2, h: 20 },
     { x: 241, y: 592, w: 32, h: 160 },
-    { flip: { kind: "Horizontal" } }
+    { flip: "Horizontal" }
   ); // Right Wing Side (Side in game) Back
 
   // Right Wing Base
@@ -217,20 +217,20 @@ const script: ScriptDef = (generator: Generator) => {
     "Cape",
     { x: 34, y: 2, w: 2, h: 2 },
     { x: 353, y: 608, w: 32, h: 112 },
-    { flip: { kind: "Horizontal" } }
+    { flip: "Horizontal" }
   ); // Right Wing Base
   // Right Wing Joint
   generator.drawTextureLegacy(
     "Cape",
     { x: 36, y: 2, w: 4, h: 4 },
     { x: 496, y: 631, w: 32, h: 32 },
-    { flip: { kind: "Horizontal" } }
+    { flip: "Horizontal" }
   ); // Right Wing Joint 1
   generator.drawTextureLegacy(
     "Cape",
     { x: 36, y: 2, w: 4, h: 4 },
     { x: 496, y: 665, w: 32, h: 32 },
-    { flip: { kind: "Horizontal" } }
+    { flip: "Horizontal" }
   ); // Right Wing Joint 2
 
   // Draw the Foreground image

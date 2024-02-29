@@ -76,7 +76,7 @@ const script: ScriptDef = (generator: Generator) => {
         texture,
         steve.base.head.bottom,
         [ox, oy + 57, 56, k * 8],
-        { flip: { kind: "Vertical" } }
+        { flip: "Vertical" }
       );
       generator.drawTexture(texture, steve.overlay.head.front, [
         ox,
@@ -106,7 +106,7 @@ const script: ScriptDef = (generator: Generator) => {
         texture,
         steve.overlay.head.bottom,
         [ox, oy + 57, 56, k * 8],
-        { flip: { kind: "Vertical" } }
+        { flip: "Vertical" }
       );
     },
 

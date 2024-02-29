@@ -5,13 +5,7 @@ import {
 import type { Texture } from "../texture";
 import type { Dimensions, Region } from "./types";
 
-type FlipNone = { kind: "None" };
-
-type FlipHorizontal = { kind: "Horizontal" };
-
-type FlipVertical = { kind: "Vertical" };
-
-export type Flip = FlipNone | FlipHorizontal | FlipVertical;
+export type Flip = "None" | "Horizontal" | "Vertical";
 
 type RotateNone = { kind: "None" };
 
@@ -149,18 +143,6 @@ function makeInitialValues(
   return { canvasWithContext, sx, sy, sw, sh, dx, dy, dw, dh };
 }
 
-export function flipNone(): FlipNone {
-  return { kind: "None" };
-}
-
-export function flipHorizontal(): FlipHorizontal {
-  return { kind: "Horizontal" };
-}
-
-export function flipVertical(): FlipVertical {
-  return { kind: "Vertical" };
-}
-
 export function rotateNone(): RotateNone {
   return { kind: "None" };
 }
@@ -172,13 +154,6 @@ export function rotateCorner(degrees: number): RotateCorner {
 export function rotateCenter(degrees: number): RotateCenter {
   return { kind: "Center", degrees };
 }
-
-// export function addRotation(rotate: Rotate, degrees: number): Rotate {
-//   if (rotate.kind === "None") {
-//     return { kind: "None" };
-//   }
-//   return { kind: rotate.kind, degrees: rotate.degrees + degrees };
-// }
 
 type DrawNearestNeighborOptions = {
   rotate?: Rotate;
@@ -264,10 +239,10 @@ function drawNearestNeighbor(
       pageContext.translate(-dw / 2, -dh / 2);
     }
 
-    if (flipOption.kind === "Horizontal") {
+    if (flipOption === "Horizontal") {
       pageContext.translate(dw, 0);
       pageContext.scale(-1, 1);
-    } else if (flipOption.kind === "Vertical") {
+    } else if (flipOption === "Vertical") {
       pageContext.translate(0, dh);
       pageContext.scale(1, -1);
     }

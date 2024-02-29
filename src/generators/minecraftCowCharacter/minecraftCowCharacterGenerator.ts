@@ -140,7 +140,7 @@ const script: ScriptDef = (generator: Generator) => {
     "Skin",
     steve.base.head.bottom,
     { x: 73, y: 136, w: 64, h: 48 },
-    { flip: { kind: "Vertical" } }
+    { flip: "Vertical" }
   ); // Bottom
 
   // Arms
@@ -185,7 +185,7 @@ const script: ScriptDef = (generator: Generator) => {
       "Skin",
       alex.base.rightArm.bottom,
       { x: ox + 32, y: oy + 128, w: 32, h: 32 },
-      { flip: { kind: "Vertical" } }
+      { flip: "Vertical" }
     ); // Bottom
 
     // Left Arm
@@ -227,7 +227,7 @@ const script: ScriptDef = (generator: Generator) => {
       "Skin",
       alex.base.leftArm.bottom,
       { x: ox + 32, y: oy + 128, w: 32, h: 32 },
-      { flip: { kind: "Vertical" } }
+      { flip: "Vertical" }
     ); // Bottom
   } else {
     // Right Arm
@@ -269,7 +269,7 @@ const script: ScriptDef = (generator: Generator) => {
       "Skin",
       steve.base.rightArm.bottom,
       { x: ox + 32, y: oy + 128, w: 32, h: 32 },
-      { flip: { kind: "Vertical" } }
+      { flip: "Vertical" }
     ); // Bottom
 
     // Left Arm
@@ -311,7 +311,7 @@ const script: ScriptDef = (generator: Generator) => {
       "Skin",
       steve.base.leftArm.bottom,
       { x: ox + 32, y: oy + 128, w: 32, h: 32 },
-      { flip: { kind: "Vertical" } }
+      { flip: "Vertical" }
     ); // Bottom
   }
 
@@ -351,7 +351,7 @@ const script: ScriptDef = (generator: Generator) => {
     "Skin",
     steve.base.body.bottom,
     { x: 274, y: 339, w: 96, h: 80 },
-    { flip: { kind: "Vertical" } }
+    { flip: "Vertical" }
   ); // Bottom
 
   // Right Leg
@@ -393,7 +393,7 @@ const script: ScriptDef = (generator: Generator) => {
     "Skin",
     steve.base.rightLeg.bottom,
     { x: ox + 32, y: oy + 128, w: 32, h: 32 },
-    { flip: { kind: "Vertical" } }
+    { flip: "Vertical" }
   ); // Bottom
 
   // Left Leg
@@ -435,7 +435,7 @@ const script: ScriptDef = (generator: Generator) => {
     "Skin",
     steve.base.leftLeg.bottom,
     { x: ox + 32, y: oy + 128, w: 32, h: 32 },
-    { flip: { kind: "Vertical" } }
+    { flip: "Vertical" }
   ); // Bottom
 
   // Overlays
@@ -476,7 +476,7 @@ const script: ScriptDef = (generator: Generator) => {
       "Skin",
       steve.overlay.head.bottom,
       { x: 73, y: 136, w: 64, h: 48 },
-      { flip: { kind: "Vertical" } }
+      { flip: "Vertical" }
     ); // Bottom
   }
 
@@ -611,7 +611,7 @@ const script: ScriptDef = (generator: Generator) => {
         "Skin",
         steve.overlay.rightArm.bottom,
         { x: ox + 32, y: oy + 128, w: 32, h: 32 },
-        { flip: { kind: "Vertical" } }
+        { flip: "Vertical" }
       );
     } // Bottom
     if (!hideLeftSleeve) {
@@ -654,7 +654,7 @@ const script: ScriptDef = (generator: Generator) => {
         "Skin",
         steve.overlay.leftArm.bottom,
         { x: ox + 32, y: oy + 128, w: 32, h: 32 },
-        { flip: { kind: "Vertical" } }
+        { flip: "Vertical" }
       );
     } // Bottom
   }
@@ -695,7 +695,7 @@ const script: ScriptDef = (generator: Generator) => {
       "Skin",
       steve.overlay.body.bottom,
       { x: 274, y: 339, w: 96, h: 80 },
-      { flip: { kind: "Vertical" } }
+      { flip: "Vertical" }
     ); // Bottom
   }
 
@@ -737,7 +737,7 @@ const script: ScriptDef = (generator: Generator) => {
       "Skin",
       steve.overlay.rightLeg.bottom,
       { x: ox + 32, y: oy + 128, w: 32, h: 32 },
-      { flip: { kind: "Vertical" } }
+      { flip: "Vertical" }
     );
   } // Bottom
 
@@ -781,7 +781,7 @@ const script: ScriptDef = (generator: Generator) => {
       "Skin",
       steve.overlay.leftLeg.bottom,
       { x: ox + 32, y: oy + 128, w: 32, h: 32 },
-      { flip: { kind: "Vertical" } }
+      { flip: "Vertical" }
     );
   } // Bottom
 

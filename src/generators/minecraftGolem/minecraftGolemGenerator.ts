@@ -161,7 +161,7 @@ const script: ScriptDef = (generator: Generator) => {
     "Golem",
     { x: 16, y: 0, w: 8, h: 8 },
     { x: ox + 64, y: oy + 144, w: 64, h: 64 },
-    { flip: { kind: "Vertical" } }
+    { flip: "Vertical" }
   ); // Bottom
 
   // Waist
@@ -198,7 +198,7 @@ const script: ScriptDef = (generator: Generator) => {
     "Golem",
     { x: 15, y: 70, w: 9, h: 6 },
     { x: ox + 48, y: oy + 88, w: 72, h: 48 },
-    { flip: { kind: "Vertical" } }
+    { flip: "Vertical" }
   ); // Bottom
 
   // Torso
@@ -235,7 +235,7 @@ const script: ScriptDef = (generator: Generator) => {
     "Golem",
     { x: 29, y: 40, w: 18, h: 11 },
     { x: ox + 88, y: oy + 184, w: 144, h: 88 },
-    { flip: { kind: "Vertical" } }
+    { flip: "Vertical" }
   ); // Bottom
 
   // Right Leg
@@ -272,7 +272,7 @@ const script: ScriptDef = (generator: Generator) => {
     "Golem",
     { x: 48, y: 0, w: 6, h: 5 },
     { x: ox + 40, y: oy + 168, w: 48, h: 40 },
-    { flip: { kind: "Vertical" } }
+    { flip: "Vertical" }
   ); //Bottom
 
   // Left Leg
@@ -309,7 +309,7 @@ const script: ScriptDef = (generator: Generator) => {
     "Golem",
     { x: 71, y: 0, w: 6, h: 5 },
     { x: ox + 40, y: oy + 168, w: 48, h: 40 },
-    { flip: { kind: "Vertical" } }
+    { flip: "Vertical" }
   ); // Bottom
 
   // Right Arm
@@ -346,7 +346,7 @@ const script: ScriptDef = (generator: Generator) => {
     "Golem",
     { x: 70, y: 21, w: 4, h: 6 },
     { x: ox + 48, y: oy + 288, w: 32, h: 48 },
-    { flip: { kind: "Vertical" } }
+    { flip: "Vertical" }
   ); //Bottom
 
   // Left Arm
@@ -383,7 +383,7 @@ const script: ScriptDef = (generator: Generator) => {
     "Golem",
     { x: 70, y: 21, w: 4, h: 6 },
     { x: ox + 48, y: oy + 288, w: 32, h: 48 },
-    { flip: { kind: "Vertical" } }
+    { flip: "Vertical" }
   ); //Bottom
 
   // Nose
@@ -420,7 +420,7 @@ const script: ScriptDef = (generator: Generator) => {
     "Golem",
     { x: 28, y: 0, w: 2, h: 2 },
     { x: ox + 16, y: oy + 48, w: 16, h: 16 },
-    { flip: { kind: "Vertical" } }
+    { flip: "Vertical" }
   ); // Bottom
 
   // Flower
@@ -440,7 +440,7 @@ const script: ScriptDef = (generator: Generator) => {
       "Flower",
       { x: 5, y: 5, w: 8, h: 11 },
       { x: ox + 0, y: oy - 64, w: 64, h: 88 },
-      { flip: { kind: "Horizontal" }, rotateLegacy: 90.0 }
+      { flip: "Horizontal", rotateLegacy: 90.0 }
     ); // Right Side
   }
 
@@ -483,7 +483,7 @@ const script: ScriptDef = (generator: Generator) => {
       "Damage",
       { x: 16, y: 0, w: 8, h: 8 },
       { x: ox + 64, y: oy + 144, w: 64, h: 64 },
-      { flip: { kind: "Vertical" } }
+      { flip: "Vertical" }
     ); // Bottom
 
     // Waist
@@ -520,7 +520,7 @@ const script: ScriptDef = (generator: Generator) => {
       "Damage",
       { x: 15, y: 70, w: 9, h: 6 },
       { x: ox + 48, y: oy + 88, w: 72, h: 48 },
-      { flip: { kind: "Vertical" } }
+      { flip: "Vertical" }
     ); // Bottom
 
     // Torso
@@ -557,7 +557,7 @@ const script: ScriptDef = (generator: Generator) => {
       "Damage",
       { x: 29, y: 40, w: 18, h: 11 },
       { x: ox + 88, y: oy + 184, w: 144, h: 88 },
-      { flip: { kind: "Vertical" } }
+      { flip: "Vertical" }
     ); // Bottom
 
     // Right Leg
@@ -594,7 +594,7 @@ const script: ScriptDef = (generator: Generator) => {
       "Damage",
       { x: 48, y: 0, w: 6, h: 5 },
       { x: ox + 40, y: oy + 168, w: 48, h: 40 },
-      { flip: { kind: "Vertical" } }
+      { flip: "Vertical" }
     ); //Bottom
 
     // Left Leg
@@ -631,7 +631,7 @@ const script: ScriptDef = (generator: Generator) => {
       "Damage",
       { x: 71, y: 0, w: 6, h: 5 },
       { x: ox + 40, y: oy + 168, w: 48, h: 40 },
-      { flip: { kind: "Vertical" } }
+      { flip: "Vertical" }
     ); // Bottom
 
     // Right Arm
@@ -668,7 +668,7 @@ const script: ScriptDef = (generator: Generator) => {
       "Damage",
       { x: 70, y: 21, w: 4, h: 6 },
       { x: ox + 48, y: oy + 288, w: 32, h: 48 },
-      { flip: { kind: "Vertical" } }
+      { flip: "Vertical" }
     ); //Bottom
 
     // Left Arm
@@ -705,7 +705,7 @@ const script: ScriptDef = (generator: Generator) => {
       "Damage",
       { x: 70, y: 21, w: 4, h: 6 },
       { x: ox + 48, y: oy + 288, w: 32, h: 48 },
-      { flip: { kind: "Vertical" } }
+      { flip: "Vertical" }
     ); //Bottom
 
     // Nose
@@ -742,7 +742,7 @@ const script: ScriptDef = (generator: Generator) => {
       "Damage",
       { x: 28, y: 0, w: 2, h: 2 },
       { x: ox + 16, y: oy + 48, w: 16, h: 16 },
-      { flip: { kind: "Vertical" } }
+      { flip: "Vertical" }
     ); // Bottom
   }
 

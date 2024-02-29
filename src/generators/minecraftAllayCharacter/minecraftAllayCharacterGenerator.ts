@@ -71,7 +71,7 @@ const script: ScriptDef = (generator: Generator) => {
       texture,
       steve.base.head.bottom,
       [ox, oy + 51, 50, 50],
-      { flip: { kind: "Vertical" } }
+      { flip: "Vertical" }
     );
     generator.drawTexture(texture, steve.overlay.head.front, [ox, oy, 50, 50]);
     generator.drawTexture(texture, steve.overlay.head.right, [
@@ -102,7 +102,7 @@ const script: ScriptDef = (generator: Generator) => {
       texture,
       steve.overlay.head.bottom,
       [ox, oy + 51, 50, 50],
-      { flip: { kind: "Vertical" } }
+      { flip: "Vertical" }
     );
   };
 
@@ -126,31 +126,31 @@ const script: ScriptDef = (generator: Generator) => {
       texture,
       steve.base.body.front,
       [ox - 21 - 21 - 31, oy, 30, 30],
-      { flip: { kind: "Horizontal" } }
+      { flip: "Horizontal" }
     );
     generator.drawTexture(
       texture,
       steve.base.body.right,
       [ox - 21 - 21, oy, 20, 30],
-      { flip: { kind: "Horizontal" } }
+      { flip: "Horizontal" }
     );
     generator.drawTexture(
       texture,
       steve.base.body.left,
       [ox - 21 - 21 - 31 - 21, oy, 20, 30],
-      { flip: { kind: "Horizontal" } }
+      { flip: "Horizontal" }
     );
     generator.drawTexture(
       texture,
       steve.base.body.back,
       [ox - 21 - 21 - 31 - 21 - 31, oy, 30, 30],
-      { flip: { kind: "Horizontal" } }
+      { flip: "Horizontal" }
     );
     generator.drawTexture(
       texture,
       steve.base.body.top,
       [ox - 21 - 21 - 31, oy - 21, 30, 20],
-      { flip: { kind: "Horizontal" } }
+      { flip: "Horizontal" }
     );
     generator.drawTexture(texture, steve.overlay.body.front, [ox, oy, 30, 30]);
     generator.drawTexture(texture, steve.overlay.body.right, [
@@ -181,31 +181,31 @@ const script: ScriptDef = (generator: Generator) => {
       texture,
       steve.overlay.body.front,
       [ox - 21 - 21 - 31, oy, 30, 30],
-      { flip: { kind: "Horizontal" } }
+      { flip: "Horizontal" }
     );
     generator.drawTexture(
       texture,
       steve.overlay.body.right,
       [ox - 21 - 21, oy, 20, 30],
-      { flip: { kind: "Horizontal" } }
+      { flip: "Horizontal" }
     );
     generator.drawTexture(
       texture,
       steve.overlay.body.left,
       [ox - 21 - 21 - 31 - 21, oy, 20, 30],
-      { flip: { kind: "Horizontal" } }
+      { flip: "Horizontal" }
     );
     generator.drawTexture(
       texture,
       steve.overlay.body.back,
       [ox - 21 - 21 - 31 - 21 - 31, oy, 30, 30],
-      { flip: { kind: "Horizontal" } }
+      { flip: "Horizontal" }
     );
     generator.drawTexture(
       texture,
       steve.overlay.body.top,
       [ox - 21 - 21 - 31, oy - 21, 30, 20],
-      { flip: { kind: "Horizontal" } }
+      { flip: "Horizontal" }
     );
   };
 
@@ -239,7 +239,7 @@ const script: ScriptDef = (generator: Generator) => {
       texture,
       steve.base.rightArm.bottom,
       [ox, oy + 41, 10, 20],
-      { flip: { kind: "Horizontal" } }
+      { flip: "Horizontal" }
     );
     generator.drawTexture(texture, steve.overlay.rightArm.front, [
       ox,
@@ -275,7 +275,7 @@ const script: ScriptDef = (generator: Generator) => {
       texture,
       steve.overlay.rightArm.bottom,
       [ox, oy + 41, 10, 20],
-      { flip: { kind: "Horizontal" } }
+      { flip: "Horizontal" }
     );
   };
 
@@ -309,7 +309,7 @@ const script: ScriptDef = (generator: Generator) => {
       texture,
       steve.base.leftArm.bottom,
       [ox, oy + 41, 10, 20],
-      { flip: { kind: "Horizontal" } }
+      { flip: "Horizontal" }
     );
     generator.drawTexture(texture, steve.overlay.leftArm.front, [
       ox,
@@ -345,7 +345,7 @@ const script: ScriptDef = (generator: Generator) => {
       texture,
       steve.overlay.leftArm.bottom,
       [ox, oy + 41, 10, 20],
-      { flip: { kind: "Horizontal" } }
+      { flip: "Horizontal" }
     );
   };
 
@@ -379,7 +379,7 @@ const script: ScriptDef = (generator: Generator) => {
       texture,
       alex.base.rightArm.bottom,
       [ox, oy + 41, 10, 20],
-      { flip: { kind: "Horizontal" } }
+      { flip: "Horizontal" }
     );
     generator.drawTexture(texture, alex.overlay.rightArm.front, [
       ox,
@@ -415,7 +415,7 @@ const script: ScriptDef = (generator: Generator) => {
       texture,
       alex.overlay.rightArm.bottom,
       [ox, oy + 41, 10, 20],
-      { flip: { kind: "Horizontal" } }
+      { flip: "Horizontal" }
     );
   };
 
@@ -449,7 +449,7 @@ const script: ScriptDef = (generator: Generator) => {
       texture,
       alex.base.leftArm.bottom,
       [ox, oy + 41, 10, 20],
-      { flip: { kind: "Horizontal" } }
+      { flip: "Horizontal" }
     );
     generator.drawTexture(texture, alex.overlay.leftArm.front, [
       ox,
@@ -485,7 +485,7 @@ const script: ScriptDef = (generator: Generator) => {
       texture,
       alex.overlay.leftArm.bottom,
       [ox, oy + 41, 10, 20],
-      { flip: { kind: "Horizontal" } }
+      { flip: "Horizontal" }
     );
   };
 
@@ -508,25 +508,25 @@ const script: ScriptDef = (generator: Generator) => {
       texture,
       steve.base.body.front,
       [ox + 31 + 21 + 31 + 21 + 31, oy, 30, 25],
-      { flip: { kind: "Horizontal" } }
+      { flip: "Horizontal" }
     );
     generator.drawTexture(
       texture,
       steve.base.body.right,
       [ox + 31 + 21 + 31 + 31 + 21 + 31, oy, 20, 25],
-      { flip: { kind: "Horizontal" } }
+      { flip: "Horizontal" }
     );
     generator.drawTexture(
       texture,
       steve.base.body.left,
       [ox + 31 + 31 + 21 + 31, oy, 20, 25],
-      { flip: { kind: "Horizontal" } }
+      { flip: "Horizontal" }
     );
     generator.drawTexture(
       texture,
       steve.base.body.back,
       [ox + 31 + 21 + 31, oy, 30, 25],
-      { flip: { kind: "Horizontal" } }
+      { flip: "Horizontal" }
     );
     generator.drawTexture(texture, steve.base.rightLeg.front, [
       ox,
@@ -568,37 +568,37 @@ const script: ScriptDef = (generator: Generator) => {
       texture,
       steve.base.rightLeg.front,
       [ox + 31 + 21 + 31 + 21 + 31 + 15, oy + 25, 15, 25],
-      { flip: { kind: "Horizontal" } }
+      { flip: "Horizontal" }
     );
     generator.drawTexture(
       texture,
       steve.base.rightLeg.right,
       [ox + 31 + 21 + 31 + 31 + 21 + 31, oy + 25, 20, 25],
-      { flip: { kind: "Horizontal" } }
+      { flip: "Horizontal" }
     );
     generator.drawTexture(
       texture,
       steve.base.rightLeg.back,
       [ox + 31 + 21 + 31, oy + 25, 15, 25],
-      { flip: { kind: "Horizontal" } }
+      { flip: "Horizontal" }
     );
     generator.drawTexture(
       texture,
       steve.base.leftLeg.front,
       [ox + 31 + 21 + 31 + 21 + 31, oy + 25, 15, 25],
-      { flip: { kind: "Horizontal" } }
+      { flip: "Horizontal" }
     );
     generator.drawTexture(
       texture,
       steve.base.leftLeg.left,
       [ox + 31 + 21 + 31 + 31, oy + 25, 20, 25],
-      { flip: { kind: "Horizontal" } }
+      { flip: "Horizontal" }
     );
     generator.drawTexture(
       texture,
       steve.base.leftLeg.back,
       [ox + 31 + 21 + 31 + 15, oy + 25, 15, 25],
-      { flip: { kind: "Horizontal" } }
+      { flip: "Horizontal" }
     );
     generator.drawTexture(texture, steve.overlay.body.front, [ox, oy, 30, 25]);
     generator.drawTexture(texture, steve.overlay.body.right, [
@@ -623,25 +623,25 @@ const script: ScriptDef = (generator: Generator) => {
       texture,
       steve.overlay.body.front,
       [ox + 31 + 21 + 31 + 21 + 31, oy, 30, 25],
-      { flip: { kind: "Horizontal" } }
+      { flip: "Horizontal" }
     );
     generator.drawTexture(
       texture,
       steve.overlay.body.right,
       [ox + 31 + 21 + 31 + 31 + 21 + 31, oy, 20, 25],
-      { flip: { kind: "Horizontal" } }
+      { flip: "Horizontal" }
     );
     generator.drawTexture(
       texture,
       steve.overlay.body.left,
       [ox + 31 + 31 + 21 + 31, oy, 20, 25],
-      { flip: { kind: "Horizontal" } }
+      { flip: "Horizontal" }
     );
     generator.drawTexture(
       texture,
       steve.overlay.body.back,
       [ox + 31 + 21 + 31, oy, 30, 25],
-      { flip: { kind: "Horizontal" } }
+      { flip: "Horizontal" }
     );
     generator.drawTexture(texture, steve.overlay.rightLeg.front, [
       ox,
@@ -683,37 +683,37 @@ const script: ScriptDef = (generator: Generator) => {
       texture,
       steve.overlay.rightLeg.front,
       [ox + 31 + 21 + 31 + 21 + 31 + 15, oy + 25, 15, 25],
-      { flip: { kind: "Horizontal" } }
+      { flip: "Horizontal" }
     );
     generator.drawTexture(
       texture,
       steve.overlay.rightLeg.right,
       [ox + 31 + 21 + 31 + 31 + 21 + 31, oy + 25, 20, 25],
-      { flip: { kind: "Horizontal" } }
+      { flip: "Horizontal" }
     );
     generator.drawTexture(
       texture,
       steve.overlay.rightLeg.back,
       [ox + 31 + 21 + 31, oy + 25, 15, 25],
-      { flip: { kind: "Horizontal" } }
+      { flip: "Horizontal" }
     );
     generator.drawTexture(
       texture,
       steve.overlay.leftLeg.front,
       [ox + 31 + 21 + 31 + 21 + 31, oy + 25, 15, 25],
-      { flip: { kind: "Horizontal" } }
+      { flip: "Horizontal" }
     );
     generator.drawTexture(
       texture,
       steve.overlay.leftLeg.left,
       [ox + 31 + 21 + 31 + 31, oy + 25, 20, 25],
-      { flip: { kind: "Horizontal" } }
+      { flip: "Horizontal" }
     );
     generator.drawTexture(
       texture,
       steve.overlay.leftLeg.back,
       [ox + 31 + 21 + 31 + 15, oy + 25, 15, 25],
-      { flip: { kind: "Horizontal" } }
+      { flip: "Horizontal" }
     );
   };
 

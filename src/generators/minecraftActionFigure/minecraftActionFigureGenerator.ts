@@ -140,7 +140,7 @@ const script: ScriptDef = (generator: Generator) => {
     "Skin",
     { x: 16, y: 0, w: 8, h: 8 },
     { x: 138, y: 726, w: 64, h: 64 },
-    { rotateLegacy: -90.0, flip: { kind: "Vertical" } }
+    { rotateLegacy: -90.0, flip: "Vertical" }
   ); // Bot
 
   // Neck
@@ -185,7 +185,7 @@ const script: ScriptDef = (generator: Generator) => {
     "Skin",
     { x: 28, y: 16, w: 8, h: 4 },
     { x: 67, y: 178, w: 64, h: 32 },
-    { flip: { kind: "Vertical" } }
+    { flip: "Vertical" }
   ); // Bot
 
   // Arms
@@ -197,7 +197,7 @@ const script: ScriptDef = (generator: Generator) => {
       "Skin",
       { x: 39, y: 48, w: 3, h: 4 },
       { x: 329, y: 338, w: 24, h: 32 },
-      { flip: { kind: "Vertical" } }
+      { flip: "Vertical" }
     ); //Left Hand
     generator.drawTextureLegacy(
       "Skin",
@@ -226,7 +226,7 @@ const script: ScriptDef = (generator: Generator) => {
       "Skin",
       { x: 47, y: 16, w: 3, h: 4 },
       { x: 465, y: 714, w: 24, h: 32 },
-      { flip: { kind: "Vertical" } }
+      { flip: "Vertical" }
     ); //Right Hand
     generator.drawTextureLegacy(
       "Skin",
@@ -249,7 +249,7 @@ const script: ScriptDef = (generator: Generator) => {
       "Skin",
       { x: 40, y: 48, w: 4, h: 4 },
       { x: 329, y: 338, w: 32, h: 32 },
-      { flip: { kind: "Vertical" } }
+      { flip: "Vertical" }
     ); //Left Hand
     generator.drawTextureLegacy(
       "Skin",
@@ -278,7 +278,7 @@ const script: ScriptDef = (generator: Generator) => {
       "Skin",
       { x: 48, y: 16, w: 4, h: 4 },
       { x: 457, y: 714, w: 32, h: 32 },
-      { flip: { kind: "Vertical" } }
+      { flip: "Vertical" }
     ); //Right Hand
     generator.drawTextureLegacy(
       "Skin",
@@ -321,7 +321,7 @@ const script: ScriptDef = (generator: Generator) => {
     "Skin",
     { x: 24, y: 48, w: 4, h: 4 },
     { x: 489, y: 338, w: 32, h: 32 },
-    { flip: { kind: "Vertical" } }
+    { flip: "Vertical" }
   ); //Left foot
   //Right Leg
   generator.drawTextureLegacy(
@@ -339,7 +339,7 @@ const script: ScriptDef = (generator: Generator) => {
     "Skin",
     { x: 8, y: 16, w: 4, h: 4 },
     { x: 297, y: 714, w: 32, h: 32 },
-    { flip: { kind: "Vertical" } }
+    { flip: "Vertical" }
   ); //Right foot
 
   // Overlay
@@ -381,7 +381,7 @@ const script: ScriptDef = (generator: Generator) => {
       "Skin",
       { x: 48, y: 0, w: 8, h: 8 },
       { x: 138, y: 726, w: 64, h: 64 },
-      { rotateLegacy: -90.0, flip: { kind: "Vertical" } }
+      { rotateLegacy: -90.0, flip: "Vertical" }
     ); // Bot
     //Neck
     generator.drawTextureLegacy(
@@ -402,7 +402,7 @@ const script: ScriptDef = (generator: Generator) => {
       "Skin",
       { x: 28, y: 32, w: 8, h: 4 },
       { x: 67, y: 178, w: 64, h: 32 },
-      { flip: { kind: "Vertical" } }
+      { flip: "Vertical" }
     );
   } // Bot
 
@@ -415,7 +415,7 @@ const script: ScriptDef = (generator: Generator) => {
         "Skin",
         { x: 55, y: 48, w: 3, h: 4 },
         { x: 329, y: 338, w: 24, h: 32 },
-        { flip: { kind: "Vertical" } }
+        { flip: "Vertical" }
       ); //Left Glove
       generator.drawTextureLegacy(
         "Skin",
@@ -445,7 +445,7 @@ const script: ScriptDef = (generator: Generator) => {
         "Skin",
         { x: 47, y: 32, w: 3, h: 4 },
         { x: 465, y: 714, w: 24, h: 32 },
-        { flip: { kind: "Vertical" } }
+        { flip: "Vertical" }
       ); //Right Glove
       generator.drawTextureLegacy(
         "Skin",
@@ -470,7 +470,7 @@ const script: ScriptDef = (generator: Generator) => {
         "Skin",
         { x: 56, y: 48, w: 4, h: 4 },
         { x: 329, y: 338, w: 32, h: 32 },
-        { flip: { kind: "Vertical" } }
+        { flip: "Vertical" }
       ); //Left Glove
       generator.drawTextureLegacy(
         "Skin",
@@ -500,7 +500,7 @@ const script: ScriptDef = (generator: Generator) => {
         "Skin",
         { x: 48, y: 32, w: 4, h: 4 },
         { x: 457, y: 714, w: 32, h: 32 },
-        { flip: { kind: "Vertical" } }
+        { flip: "Vertical" }
       ); //Right Glove
       generator.drawTextureLegacy(
         "Skin",
@@ -549,7 +549,7 @@ const script: ScriptDef = (generator: Generator) => {
       "Skin",
       { x: 8, y: 48, w: 4, h: 4 },
       { x: 489, y: 338, w: 32, h: 32 },
-      { flip: { kind: "Vertical" } }
+      { flip: "Vertical" }
     ); //Left foot Shoe
     generator.drawTextureLegacy(
       "Skin",
@@ -580,7 +580,7 @@ const script: ScriptDef = (generator: Generator) => {
       "Skin",
       { x: 8, y: 32, w: 4, h: 4 },
       { x: 297, y: 714, w: 32, h: 32 },
-      { flip: { kind: "Vertical" } }
+      { flip: "Vertical" }
     ); //Right foot
     generator.drawTextureLegacy(
       "Skin",

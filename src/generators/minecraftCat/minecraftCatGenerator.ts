@@ -266,7 +266,7 @@ const script: ScriptDef = (generator: Generator) => {
       blend: { kind: "MultiplyHex", hex: tint },
     }); // Top
     generator.drawTexture(texture, [10, 0, 5, 5], [80, 105, 40, 40], {
-      flip: { kind: "Vertical" },
+      flip: "Vertical",
       blend: { kind: "MultiplyHex", hex: tint },
     }); // Bottom
 
@@ -288,7 +288,7 @@ const script: ScriptDef = (generator: Generator) => {
       blend: { kind: "MultiplyHex", hex: tint },
     }); // top
     generator.drawTexture(texture, [30, 0, 4, 6], [88, 369, 32, 48], {
-      flip: { kind: "Vertical" },
+      flip: "Vertical",
       blend: { kind: "MultiplyHex", hex: tint },
     }); // bottom
     // Back Left Leg
@@ -299,7 +299,7 @@ const script: ScriptDef = (generator: Generator) => {
       blend: { kind: "MultiplyHex", hex: tint },
     }); // top
     generator.drawTexture(texture, [10, 13, 2, 2], [267, 368, 16, 16], {
-      flip: { kind: "Vertical" },
+      flip: "Vertical",
       blend: { kind: "MultiplyHex", hex: tint },
     }); // bottom
     // Back Right Leg
@@ -310,7 +310,7 @@ const script: ScriptDef = (generator: Generator) => {
       blend: { kind: "MultiplyHex", hex: tint },
     }); // top
     generator.drawTexture(texture, [10, 13, 2, 2], [356, 368, 16, 16], {
-      flip: { kind: "Vertical" },
+      flip: "Vertical",
       blend: { kind: "MultiplyHex", hex: tint },
     }); // bottom
 
@@ -323,7 +323,7 @@ const script: ScriptDef = (generator: Generator) => {
       blend: { kind: "MultiplyHex", hex: tint },
     }); // top
     generator.drawTexture(texture, [44, 0, 2, 2], [267, 280, 16, 16], {
-      flip: { kind: "Vertical" },
+      flip: "Vertical",
       blend: { kind: "MultiplyHex", hex: tint },
     }); // bottom
     // Front Right Leg
@@ -334,7 +334,7 @@ const script: ScriptDef = (generator: Generator) => {
       blend: { kind: "MultiplyHex", hex: tint },
     }); // top
     generator.drawTexture(texture, [44, 0, 2, 2], [356, 280, 16, 16], {
-      flip: { kind: "Vertical" },
+      flip: "Vertical",
       blend: { kind: "MultiplyHex", hex: tint },
     }); // bottom
 
@@ -355,7 +355,7 @@ const script: ScriptDef = (generator: Generator) => {
       blend: { kind: "MultiplyHex", hex: tint },
     }); // front
     generator.drawTexture(texture, [2, 15, 1, 1], [477, 358, 8, 8], {
-      flip: { kind: "Vertical" },
+      flip: "Vertical",
       blend: { kind: "MultiplyHex", hex: tint },
     }); // bottom
 
@@ -374,7 +374,7 @@ const script: ScriptDef = (generator: Generator) => {
       blend: { kind: "MultiplyHex", hex: tint },
     }); // front
     generator.drawTexture(texture, [6, 15, 1, 1], [549, 358, 8, 8], {
-      flip: { kind: "Vertical" },
+      flip: "Vertical",
       blend: { kind: "MultiplyHex", hex: tint },
     }); // bottom
 
@@ -393,7 +393,7 @@ const script: ScriptDef = (generator: Generator) => {
       blend: { kind: "MultiplyHex", hex: tint },
     }); // left
     generator.drawTexture(texture, [5, 25, 3, 1], [256, 96, 24, 8], {
-      flip: { kind: "Vertical" },
+      flip: "Vertical",
       blend: { kind: "MultiplyHex", hex: tint },
     }); // bottom
 
@@ -420,7 +420,7 @@ const script: ScriptDef = (generator: Generator) => {
       blend: { kind: "MultiplyHex", hex: tint },
     }); //top
     generator.drawTexture(texture, [9, 10, 1, 2], [269, 161, 8, 16], {
-      flip: { kind: "Horizontal" },
+      flip: "Horizontal",
       blend: { kind: "MultiplyHex", hex: tint },
     }); //bottom
     // right
@@ -443,7 +443,7 @@ const script: ScriptDef = (generator: Generator) => {
       blend: { kind: "MultiplyHex", hex: tint },
     }); //top
     generator.drawTexture(texture, [3, 10, 1, 2], [192, 161, 8, 16], {
-      flip: { kind: "Horizontal" },
+      flip: "Horizontal",
       blend: { kind: "MultiplyHex", hex: tint },
     }); //bottom
   };

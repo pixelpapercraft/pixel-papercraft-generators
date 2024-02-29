@@ -161,7 +161,7 @@ const script: ScriptDef = (generator: Generator) => {
     generator.drawTexture("Skin", head.back, [ox + 64 + 40, oy, 64, 40]);
     generator.drawTexture("Skin", head.top, [ox, oy - 40, 64, 40]);
     generator.drawTexture("Skin", head.bottom, [ox, oy + 40, 64, 40], {
-      flip: { kind: "Vertical" },
+      flip: "Vertical",
     });
   };
 
@@ -171,10 +171,10 @@ const script: ScriptDef = (generator: Generator) => {
     const oy = 405;
     generator.drawTexture("Skin", body.top, [ox, oy, 64, 32]);
     generator.drawTexture("Skin", body.back, [ox, oy - 80, 64, 80], {
-      flip: { kind: "Vertical" },
+      flip: "Vertical",
     });
     generator.drawTexture("Skin", body.bottom, [ox + 80 + 64, oy, 64, 32], {
-      flip: { kind: "Vertical" },
+      flip: "Vertical",
     });
     generator.drawTexture("Skin", body.front, [ox, oy + 32, 64, 80]);
     generator.drawTexture("Skin", body.left, [ox + 64, oy + 32, 32, 80], {
@@ -257,7 +257,7 @@ const script: ScriptDef = (generator: Generator) => {
       [topX + 1, topY + 1, 2, 1],
       headFins.topLeftFront,
       {
-        flip: { kind: "Horizontal" },
+        flip: "Horizontal",
       }
     );
 
@@ -266,7 +266,7 @@ const script: ScriptDef = (generator: Generator) => {
       [topX + 5, topY + 1, 2, 1],
       headFins.topRightFront,
       {
-        flip: { kind: "Horizontal" },
+        flip: "Horizontal",
       }
     );
 
@@ -355,7 +355,7 @@ const script: ScriptDef = (generator: Generator) => {
       "Head Fins Texture",
       [0, 40, 3, 4],
       headFins.middleLeftFront,
-      { flip: { kind: "Horizontal" } }
+      { flip: "Horizontal" }
     );
     generator.drawTexture(
       "Head Fins Texture",
@@ -366,7 +366,7 @@ const script: ScriptDef = (generator: Generator) => {
       "Head Fins Texture",
       [11, 40, 3, 4],
       headFins.middleRightFront,
-      { flip: { kind: "Horizontal" } }
+      { flip: "Horizontal" }
     );
     generator.drawTexture(
       "Head Fins Texture",
@@ -377,7 +377,7 @@ const script: ScriptDef = (generator: Generator) => {
       "Head Fins Texture",
       [0, 44, 3, 3],
       headFins.bottomLeftFront,
-      { flip: { kind: "Vertical" } }
+      { flip: "Vertical" }
     );
     generator.drawTexture(
       "Head Fins Texture",
@@ -388,7 +388,7 @@ const script: ScriptDef = (generator: Generator) => {
       "Head Fins Texture",
       [11, 44, 3, 3],
       headFins.bottomRightFront,
-      { flip: { kind: "Vertical" } }
+      { flip: "Vertical" }
     );
   };
 
@@ -425,7 +425,7 @@ const script: ScriptDef = (generator: Generator) => {
       "Tail Fins Texture",
       [2, 26, 9, 1],
       [330 - 32, 533 + 32, 72, 8],
-      { rotate: -90.0, flip: { kind: "Vertical" } }
+      { rotate: -90.0, flip: "Vertical" }
     );
     generator.drawTexture(
       // Left Side lower
@@ -439,7 +439,7 @@ const script: ScriptDef = (generator: Generator) => {
       "Tail Fins Texture",
       [2, 31, 12, 5],
       [298 - 28, 605 + 28, 96, 40],
-      { rotate: -90.0, flip: { kind: "Vertical" } }
+      { rotate: -90.0, flip: "Vertical" }
     );
   };
 

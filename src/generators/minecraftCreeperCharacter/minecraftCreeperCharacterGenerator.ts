@@ -157,7 +157,7 @@ const script: ScriptDef = (generator: Generator) => {
     "Skin",
     steve.base.head.bottom,
     [64 + ox, 128 + oy, 64, 64],
-    { flip: { kind: "Vertical" } }
+    { flip: "Vertical" }
   );
 
   // Body
@@ -194,7 +194,7 @@ const script: ScriptDef = (generator: Generator) => {
     "Skin",
     steve.base.body.bottom,
     [80 + ox, 144 + oy, 64, 32],
-    { flip: { kind: "Vertical" }, rotate: 90.0 }
+    { flip: "Vertical", rotate: 90.0 }
   );
 
   // Front Right Foot
@@ -236,7 +236,7 @@ const script: ScriptDef = (generator: Generator) => {
     "Skin",
     steve.base.rightLeg.bottom,
     [64 + ox, 80 + oy, 32, 32],
-    { flip: { kind: "Vertical" } }
+    { flip: "Vertical" }
   );
 
   // Front Left Foot
@@ -278,7 +278,7 @@ const script: ScriptDef = (generator: Generator) => {
     "Skin",
     steve.base.leftLeg.bottom,
     [64 + ox, 80 + oy, 32, 32],
-    { flip: { kind: "Vertical" } }
+    { flip: "Vertical" }
   );
 
   // Back Right Foot
@@ -320,7 +320,7 @@ const script: ScriptDef = (generator: Generator) => {
     "Skin",
     steve.base.rightLeg.bottom,
     [32 + ox, 80 + oy, 32, 32],
-    { flip: { kind: "Vertical" }, rotate: 180.0 }
+    { flip: "Vertical", rotate: 180.0 }
   );
 
   // Back Left Foot
@@ -359,7 +359,7 @@ const script: ScriptDef = (generator: Generator) => {
     "Skin",
     steve.base.leftLeg.bottom,
     [32 + ox, 80 + oy, 32, 32],
-    { flip: { kind: "Vertical" }, rotate: 180.0 }
+    { flip: "Vertical", rotate: 180.0 }
   );
 
   // Overlays
@@ -404,7 +404,7 @@ const script: ScriptDef = (generator: Generator) => {
       "Skin",
       steve.overlay.head.bottom,
       [64 + ox, 128 + oy, 64, 64],
-      { flip: { kind: "Vertical" } }
+      { flip: "Vertical" }
     );
   }
 
@@ -448,7 +448,7 @@ const script: ScriptDef = (generator: Generator) => {
       "Skin",
       steve.overlay.body.bottom,
       [80 + ox, 144 + oy, 64, 32],
-      { flip: { kind: "Vertical" }, rotate: 90.0 }
+      { flip: "Vertical", rotate: 90.0 }
     );
   }
 
@@ -492,7 +492,7 @@ const script: ScriptDef = (generator: Generator) => {
       "Skin",
       steve.overlay.rightLeg.bottom,
       [64 + ox, 80 + oy, 32, 32],
-      { flip: { kind: "Vertical" } }
+      { flip: "Vertical" }
     );
   }
 
@@ -536,7 +536,7 @@ const script: ScriptDef = (generator: Generator) => {
       "Skin",
       steve.overlay.leftLeg.bottom,
       [64 + ox, 80 + oy, 32, 32],
-      { flip: { kind: "Vertical" } }
+      { flip: "Vertical" }
     );
   }
 
@@ -580,7 +580,7 @@ const script: ScriptDef = (generator: Generator) => {
       "Skin",
       steve.overlay.rightLeg.bottom,
       [32 + ox, 80 + oy, 32, 32],
-      { flip: { kind: "Vertical" }, rotate: 180.0 }
+      { flip: "Vertical", rotate: 180.0 }
     );
   }
 
@@ -624,7 +624,7 @@ const script: ScriptDef = (generator: Generator) => {
       "Skin",
       steve.overlay.leftLeg.bottom,
       [32 + ox, 80 + oy, 32, 32],
-      { flip: { kind: "Vertical" }, rotate: 180.0 }
+      { flip: "Vertical", rotate: 180.0 }
     );
   }
 

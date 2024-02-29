@@ -1,12 +1,5 @@
 import { type Generator } from "@/builder/modules/generator";
-import {
-  type Flip,
-  type Rotate,
-  flipNone,
-  flipVertical,
-  flipHorizontal,
-  // addRotation,
-} from "@/builder/modules/renderers/drawTexture";
+import { type Flip } from "@/builder/modules/renderers/drawTexture";
 import { type TabOrientation } from "@/builder/modules/renderers/drawTab";
 import {
   type Cuboid,
@@ -21,15 +14,13 @@ export type { Cuboid, Rectangle, Position, Dimensions } from "./cuboid";
 export type Face = {
   rectangle: Rectangle;
   flip: Flip;
-  // rotate: Rotate;
   rotate: number;
 };
 
 export function makeFace(rect: Rectangle): Face {
   return {
     rectangle: rect,
-    flip: flipNone(),
-    // rotate: flipNone(),
+    flip: "None",
     rotate: 0,
   };
 }
@@ -39,38 +30,36 @@ function flipFaceNone(face: Face): Face {
 }
 
 function flipFaceVertical(face: Face): Face {
-  switch (face.flip.kind) {
+  switch (face.flip) {
     case "None":
-      return { ...face, flip: flipVertical() };
+      return { ...face, flip: "Vertical" };
     case "Vertical":
-      return { ...face, flip: flipNone() };
+      return { ...face, flip: "None" };
     case "Horizontal":
       // When a face is flipped both vertically and horizontally,
       // this is the same as rotating 180 degrees.
       return {
         ...face,
-        flip: flipNone(),
-        // rotate: addRotation(face.rotate, 180.0),
+        flip: "None",
         rotate: face.rotate + 180,
       };
   }
 }
 
 function flipFaceHorizontal(face: Face): Face {
-  switch (face.flip.kind) {
+  switch (face.flip) {
     case "None":
-      return { ...face, flip: flipHorizontal() };
+      return { ...face, flip: "Horizontal" };
     case "Vertical":
       // When a face is flipped both vertically and horizontally,
       // this is the same as rotating 180 degrees.
       return {
         ...face,
-        flip: flipNone(),
-        // rotate: addRotation(face.rotate, 180),
+        flip: "None",
         rotate: face.rotate + 180,
       };
     case "Horizontal":
-      return { ...face, flip: flipNone() };
+      return { ...face, flip: "None" };
   }
 }
 
@@ -96,7 +85,6 @@ export function rotateFace(face: Face, r: number): Face {
         ? [x + (w - h) / 2, y - (w - h) / 2, h, w]
         : [x, y, w, h],
     flip: face.flip,
-    // rotate: addRotation(face.rotate, r),
     rotate: face.rotate + r,
   };
 }

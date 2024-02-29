@@ -114,7 +114,7 @@ const script: ScriptDef = (generator: Generator) => {
     "Enderman",
     { x: 16, y: 16, w: 8, h: 8 },
     { x: 138, y: 153, w: 64, h: 64 },
-    { flip: { kind: "Vertical" } }
+    { flip: "Vertical" }
   ); // Bottom
 
   // Head
@@ -148,7 +148,7 @@ const script: ScriptDef = (generator: Generator) => {
     "Enderman",
     { x: 16, y: 0, w: 8, h: 8 },
     { x: 138, y: 153, w: 64, h: 64 },
-    { flip: { kind: "Vertical" } }
+    { flip: "Vertical" }
   ); // Bottom
 
   // Body
@@ -182,7 +182,7 @@ const script: ScriptDef = (generator: Generator) => {
     "Enderman",
     { x: 44, y: 16, w: 8, h: 4 },
     { x: 300, y: 329, w: 64, h: 32 },
-    { flip: { kind: "Vertical" } }
+    { flip: "Vertical" }
   ); // Bottom
   // Right arm
   generator.drawTextureLegacy(
@@ -214,38 +214,38 @@ const script: ScriptDef = (generator: Generator) => {
     "Enderman",
     { x: 60, y: 0, w: 2, h: 2 },
     { x: 112, y: 639, w: 16, h: 16 },
-    { flip: { kind: "Vertical" } }
+    { flip: "Vertical" }
   ); // Bottom
   // Left arm
   generator.drawTextureLegacy(
     "Enderman",
     { x: 56, y: 2, w: 2, h: 30 },
     { x: 222, y: 399, w: 16, h: 240 },
-    { flip: { kind: "Horizontal" } }
+    { flip: "Horizontal" }
   ); // Right
   generator.drawTextureLegacy(
     "Enderman",
     { x: 58, y: 2, w: 2, h: 30 },
     { x: 206, y: 399, w: 16, h: 240 },
-    { flip: { kind: "Horizontal" } }
+    { flip: "Horizontal" }
   ); // Face
   generator.drawTextureLegacy(
     "Enderman",
     { x: 60, y: 2, w: 2, h: 30 },
     { x: 190, y: 399, w: 16, h: 240 },
-    { flip: { kind: "Horizontal" } }
+    { flip: "Horizontal" }
   ); // Left
   generator.drawTextureLegacy(
     "Enderman",
     { x: 62, y: 2, w: 2, h: 30 },
     { x: 174, y: 399, w: 16, h: 240 },
-    { flip: { kind: "Horizontal" } }
+    { flip: "Horizontal" }
   ); // Back
   generator.drawTextureLegacy(
     "Enderman",
     { x: 58, y: 0, w: 2, h: 2 },
     { x: 206, y: 383, w: 16, h: 16 },
-    { flip: { kind: "Horizontal" } }
+    { flip: "Horizontal" }
   ); // Top
   generator.drawTextureLegacy(
     "Enderman",
@@ -285,38 +285,38 @@ const script: ScriptDef = (generator: Generator) => {
     "Enderman",
     { x: 60, y: 0, w: 2, h: 2 },
     { x: 292, y: 639, w: 16, h: 16 },
-    { flip: { kind: "Vertical" } }
+    { flip: "Vertical" }
   ); // Bottom
   // Left Leg
   generator.drawTextureLegacy(
     "Enderman",
     { x: 56, y: 2, w: 2, h: 30 },
     { x: 401, y: 399, w: 16, h: 240 },
-    { flip: { kind: "Horizontal" } }
+    { flip: "Horizontal" }
   ); // Right
   generator.drawTextureLegacy(
     "Enderman",
     { x: 58, y: 2, w: 2, h: 30 },
     { x: 385, y: 399, w: 16, h: 240 },
-    { flip: { kind: "Horizontal" } }
+    { flip: "Horizontal" }
   ); // Face
   generator.drawTextureLegacy(
     "Enderman",
     { x: 60, y: 2, w: 2, h: 30 },
     { x: 369, y: 399, w: 16, h: 240 },
-    { flip: { kind: "Horizontal" } }
+    { flip: "Horizontal" }
   ); // Left
   generator.drawTextureLegacy(
     "Enderman",
     { x: 62, y: 2, w: 2, h: 30 },
     { x: 353, y: 399, w: 16, h: 240 },
-    { flip: { kind: "Horizontal" } }
+    { flip: "Horizontal" }
   ); // Back
   generator.drawTextureLegacy(
     "Enderman",
     { x: 58, y: 0, w: 2, h: 2 },
     { x: 385, y: 383, w: 16, h: 16 },
-    { flip: { kind: "Horizontal" } }
+    { flip: "Horizontal" }
   ); // Top
   generator.drawTextureLegacy(
     "Enderman",
@@ -360,7 +360,7 @@ const script: ScriptDef = (generator: Generator) => {
     "Enderman Eyes",
     { x: 16, y: 16, w: 8, h: 8 },
     { x: 138, y: 153, w: 64, h: 64 },
-    { flip: { kind: "Vertical" } }
+    { flip: "Vertical" }
   ); // Bottom
   // Head
   generator.drawTextureLegacy(
@@ -392,7 +392,7 @@ const script: ScriptDef = (generator: Generator) => {
     "Enderman Eyes",
     { x: 16, y: 0, w: 8, h: 8 },
     { x: 138, y: 153, w: 64, h: 64 },
-    { flip: { kind: "Vertical" } }
+    { flip: "Vertical" }
   ); // Bottom
 
   // Body
@@ -426,7 +426,7 @@ const script: ScriptDef = (generator: Generator) => {
     "Enderman Eyes",
     { x: 44, y: 16, w: 8, h: 4 },
     { x: 300, y: 329, w: 64, h: 32 },
-    { flip: { kind: "Vertical" } }
+    { flip: "Vertical" }
   ); // Bottom
 
   // Right arm
@@ -460,7 +460,7 @@ const script: ScriptDef = (generator: Generator) => {
     "Enderman Eyes",
     { x: 60, y: 0, w: 2, h: 2 },
     { x: 112, y: 639, w: 16, h: 16 },
-    { flip: { kind: "Vertical" } }
+    { flip: "Vertical" }
   ); // Bottom
 
   // Left arm
@@ -469,31 +469,31 @@ const script: ScriptDef = (generator: Generator) => {
     "Enderman Eyes",
     { x: 56, y: 2, w: 2, h: 30 },
     { x: 222, y: 399, w: 16, h: 240 },
-    { flip: { kind: "Horizontal" } }
+    { flip: "Horizontal" }
   ); // Right
   generator.drawTextureLegacy(
     "Enderman Eyes",
     { x: 58, y: 2, w: 2, h: 30 },
     { x: 206, y: 399, w: 16, h: 240 },
-    { flip: { kind: "Horizontal" } }
+    { flip: "Horizontal" }
   ); // Face
   generator.drawTextureLegacy(
     "Enderman Eyes",
     { x: 60, y: 2, w: 2, h: 30 },
     { x: 190, y: 399, w: 16, h: 240 },
-    { flip: { kind: "Horizontal" } }
+    { flip: "Horizontal" }
   ); // Left
   generator.drawTextureLegacy(
     "Enderman Eyes",
     { x: 62, y: 2, w: 2, h: 30 },
     { x: 174, y: 399, w: 16, h: 240 },
-    { flip: { kind: "Horizontal" } }
+    { flip: "Horizontal" }
   ); // Back
   generator.drawTextureLegacy(
     "Enderman Eyes",
     { x: 58, y: 0, w: 2, h: 2 },
     { x: 206, y: 383, w: 16, h: 16 },
-    { flip: { kind: "Horizontal" } }
+    { flip: "Horizontal" }
   ); // Top
   generator.drawTextureLegacy(
     "Enderman Eyes",
@@ -533,7 +533,7 @@ const script: ScriptDef = (generator: Generator) => {
     "Enderman Eyes",
     { x: 60, y: 0, w: 2, h: 2 },
     { x: 292, y: 639, w: 16, h: 16 },
-    { flip: { kind: "Vertical" } }
+    { flip: "Vertical" }
   ); // Bottom
 
   // Left Leg
@@ -542,31 +542,31 @@ const script: ScriptDef = (generator: Generator) => {
     "Enderman Eyes",
     { x: 56, y: 2, w: 2, h: 30 },
     { x: 401, y: 399, w: 16, h: 240 },
-    { flip: { kind: "Horizontal" } }
+    { flip: "Horizontal" }
   ); // Right
   generator.drawTextureLegacy(
     "Enderman Eyes",
     { x: 58, y: 2, w: 2, h: 30 },
     { x: 385, y: 399, w: 16, h: 240 },
-    { flip: { kind: "Horizontal" } }
+    { flip: "Horizontal" }
   ); // Face
   generator.drawTextureLegacy(
     "Enderman Eyes",
     { x: 60, y: 2, w: 2, h: 30 },
     { x: 369, y: 399, w: 16, h: 240 },
-    { flip: { kind: "Horizontal" } }
+    { flip: "Horizontal" }
   ); // Left
   generator.drawTextureLegacy(
     "Enderman Eyes",
     { x: 62, y: 2, w: 2, h: 30 },
     { x: 353, y: 399, w: 16, h: 240 },
-    { flip: { kind: "Horizontal" } }
+    { flip: "Horizontal" }
   ); // Back
   generator.drawTextureLegacy(
     "Enderman Eyes",
     { x: 58, y: 0, w: 2, h: 2 },
     { x: 385, y: 383, w: 16, h: 16 },
-    { flip: { kind: "Horizontal" } }
+    { flip: "Horizontal" }
   ); // Top
   generator.drawTextureLegacy(
     "Enderman Eyes",

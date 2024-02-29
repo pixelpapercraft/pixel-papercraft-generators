@@ -136,7 +136,7 @@ const script: ScriptDef = (generator: Generator) => {
     "Skin",
     steve.base.head.bottom,
     { x: 138, y: 153, w: 64, h: 64 },
-    { flip: { kind: "Vertical" } }
+    { flip: "Vertical" }
   ); // Bottom
 
   // Body
@@ -175,7 +175,7 @@ const script: ScriptDef = (generator: Generator) => {
     "Skin",
     steve.base.body.bottom,
     { x: 300, y: 329, w: 64, h: 32 },
-    { flip: { kind: "Vertical" } }
+    { flip: "Vertical" }
   ); // Bottom
 
   // Right arm
@@ -215,7 +215,7 @@ const script: ScriptDef = (generator: Generator) => {
       "Skin",
       alex.base.rightArm.bottom,
       { x: 112, y: 638, w: 16, h: 16 },
-      { flip: { kind: "Vertical" } }
+      { flip: "Vertical" }
     ); // Bottom
   } else {
     generator.drawTextureLegacy("Skin", steve.base.rightArm.right, {
@@ -252,7 +252,7 @@ const script: ScriptDef = (generator: Generator) => {
       "Skin",
       steve.base.rightArm.bottom,
       { x: 112, y: 638, w: 16, h: 16 },
-      { flip: { kind: "Vertical" } }
+      { flip: "Vertical" }
     ); // Bottom
   }
 
@@ -293,7 +293,7 @@ const script: ScriptDef = (generator: Generator) => {
       "Skin",
       alex.base.leftArm.bottom,
       { x: 206, y: 638, w: 16, h: 16 },
-      { flip: { kind: "Vertical" } }
+      { flip: "Vertical" }
     ); // Bottom
   } else {
     generator.drawTextureLegacy("Skin", steve.base.leftArm.right, {
@@ -330,7 +330,7 @@ const script: ScriptDef = (generator: Generator) => {
       "Skin",
       steve.base.leftArm.bottom,
       { x: 206, y: 638, w: 16, h: 16 },
-      { flip: { kind: "Vertical" } }
+      { flip: "Vertical" }
     ); // Bottom
   }
 
@@ -370,7 +370,7 @@ const script: ScriptDef = (generator: Generator) => {
     "Skin",
     steve.base.rightLeg.bottom,
     { x: 292, y: 638, w: 16, h: 16 },
-    { flip: { kind: "Vertical" } }
+    { flip: "Vertical" }
   ); // Bottom
 
   // Left Leg
@@ -409,7 +409,7 @@ const script: ScriptDef = (generator: Generator) => {
     "Skin",
     steve.base.leftLeg.bottom,
     { x: 385, y: 638, w: 16, h: 16 },
-    { flip: { kind: "Vertical" } }
+    { flip: "Vertical" }
   ); // Bottom
 
   // Overlays
@@ -451,7 +451,7 @@ const script: ScriptDef = (generator: Generator) => {
       "Skin",
       steve.overlay.head.bottom,
       { x: 138, y: 153, w: 64, h: 64 },
-      { flip: { kind: "Vertical" } }
+      { flip: "Vertical" }
     ); // Bottom
   }
   if (!hideJacket) {
@@ -491,7 +491,7 @@ const script: ScriptDef = (generator: Generator) => {
       "Skin",
       steve.overlay.body.bottom,
       { x: 300, y: 329, w: 64, h: 32 },
-      { flip: { kind: "Vertical" } }
+      { flip: "Vertical" }
     ); // Bottom
   }
   if (!hideRightSleeve) {
@@ -532,7 +532,7 @@ const script: ScriptDef = (generator: Generator) => {
         "Skin",
         alex.overlay.rightArm.bottom,
         { x: 112, y: 638, w: 16, h: 16 },
-        { flip: { kind: "Vertical" } }
+        { flip: "Vertical" }
       ); // Bottom
     } else {
       generator.drawTextureLegacy("Skin", steve.overlay.rightArm.right, {
@@ -569,7 +569,7 @@ const script: ScriptDef = (generator: Generator) => {
         "Skin",
         steve.overlay.rightArm.bottom,
         { x: 112, y: 638, w: 16, h: 16 },
-        { flip: { kind: "Vertical" } }
+        { flip: "Vertical" }
       ); // Bottom
     }
   }
@@ -611,7 +611,7 @@ const script: ScriptDef = (generator: Generator) => {
         "Skin",
         alex.overlay.leftArm.bottom,
         { x: 206, y: 638, w: 16, h: 16 },
-        { flip: { kind: "Vertical" } }
+        { flip: "Vertical" }
       ); // Bottom
     } else {
       generator.drawTextureLegacy("Skin", steve.overlay.leftArm.right, {
@@ -648,7 +648,7 @@ const script: ScriptDef = (generator: Generator) => {
         "Skin",
         steve.overlay.leftArm.bottom,
         { x: 206, y: 638, w: 16, h: 16 },
-        { flip: { kind: "Vertical" } }
+        { flip: "Vertical" }
       ); // Bottom
     }
   }
@@ -689,7 +689,7 @@ const script: ScriptDef = (generator: Generator) => {
       "Skin",
       steve.overlay.rightLeg.bottom,
       { x: 292, y: 638, w: 16, h: 16 },
-      { flip: { kind: "Vertical" } }
+      { flip: "Vertical" }
     ); // Bottom
   }
   if (!hideLeftPant) {
@@ -729,7 +729,7 @@ const script: ScriptDef = (generator: Generator) => {
       "Skin",
       steve.overlay.leftLeg.bottom,
       { x: 385, y: 638, w: 16, h: 16 },
-      { flip: { kind: "Vertical" } }
+      { flip: "Vertical" }
     ); // Bottom
   }
 

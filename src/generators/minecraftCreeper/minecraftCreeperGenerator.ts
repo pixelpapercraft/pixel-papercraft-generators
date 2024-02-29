@@ -136,7 +136,7 @@ const script: ScriptDef = (generator: Generator) => {
     "Skin",
     { x: 16, y: 0, w: 8, h: 8 },
     { x: 64 + ox, y: 128 + oy, w: 64, h: 64 },
-    { flip: { kind: "Vertical" } }
+    { flip: "Vertical" }
   ); // Bottom
 
   // Body
@@ -173,7 +173,7 @@ const script: ScriptDef = (generator: Generator) => {
     "Skin",
     { x: 28, y: 16, w: 8, h: 4 },
     { x: 96 + ox, y: 192 + oy, w: 64, h: 32 },
-    { flip: { kind: "Vertical" }, rotateLegacy: 270.0 }
+    { flip: "Vertical", rotateLegacy: 270.0 }
   ); // Bottom
 
   // Front Right Foot
@@ -210,7 +210,7 @@ const script: ScriptDef = (generator: Generator) => {
     "Skin",
     { x: 8, y: 16, w: 4, h: 4 },
     { x: 64 + ox, y: 80 + oy, w: 32, h: 32 },
-    { flip: { kind: "Vertical" } }
+    { flip: "Vertical" }
   ); // Bottom
 
   // Front Left Foot
@@ -247,7 +247,7 @@ const script: ScriptDef = (generator: Generator) => {
     "Skin",
     { x: 8, y: 16, w: 4, h: 4 },
     { x: 64 + ox, y: 80 + oy, w: 32, h: 32 },
-    { flip: { kind: "Vertical" } }
+    { flip: "Vertical" }
   ); // Bottom
 
   // Back Right Foot
@@ -285,7 +285,7 @@ const script: ScriptDef = (generator: Generator) => {
     "Skin",
     { x: 8, y: 16, w: 4, h: 4 },
     { x: 64 + ox, y: 112 + oy, w: 32, h: 32 },
-    { flip: { kind: "Vertical" }, rotateLegacy: 180.0 }
+    { flip: "Vertical", rotateLegacy: 180.0 }
   ); // Bottom
 
   // Back Left Foot
@@ -323,7 +323,7 @@ const script: ScriptDef = (generator: Generator) => {
     "Skin",
     { x: 8, y: 16, w: 4, h: 4 },
     { x: 64 + ox, y: 112 + oy, w: 32, h: 32 },
-    { flip: { kind: "Vertical" }, rotateLegacy: 180.0 }
+    { flip: "Vertical", rotateLegacy: 180.0 }
   ); // Bottom
 
   // Action Figure

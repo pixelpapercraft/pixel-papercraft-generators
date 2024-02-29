@@ -203,7 +203,7 @@ const script: ScriptDef = (generator: Generator) => {
       textureId,
       layer.rightLeg.bottom,
       [ox + 64, oy + 64, 32, 64],
-      { flip: { kind: "Vertical" }, pixelate }
+      { flip: "Vertical", pixelate }
     );
   };
 
@@ -238,7 +238,7 @@ const script: ScriptDef = (generator: Generator) => {
       textureId,
       layer.leftLeg.bottom,
       [ox + 96, oy + 64, 32, 64],
-      { flip: { kind: "Vertical" }, pixelate }
+      { flip: "Vertical", pixelate }
     );
   };
 
