@@ -11,8 +11,21 @@ import { runScript } from "@/builder/modules/scriptRunner";
 import { Controls } from "./controls/controls";
 import { Pages } from "./pages/pages";
 import { Video } from "./video";
+import { Thumbnail } from "./thumbnail";
 import { Instructions } from "./instructions";
 import { History } from "./history";
+
+function VideoOrThumbnail({ generatorDef }: { generatorDef: GeneratorDef }) {
+  if (generatorDef.video) {
+    return <Video video={generatorDef.video} />;
+  }
+
+  if (generatorDef.thumbnail) {
+    return <Thumbnail thumbnail={generatorDef.thumbnail} />;
+  }
+
+  return null;
+}
 
 export function Generator({ generatorDef }: { generatorDef: GeneratorDef }) {
   const [model, setModel] = React.useState<Model | null>(null);
@@ -53,9 +66,9 @@ export function Generator({ generatorDef }: { generatorDef: GeneratorDef }) {
 
   return (
     <div>
-      {generatorDef.video ? (
+      {generatorDef.video || generatorDef.thumbnail ? (
         <div className="mb-8">
-          <Video video={generatorDef.video} />
+          <VideoOrThumbnail generatorDef={generatorDef} />
         </div>
       ) : null}
 
