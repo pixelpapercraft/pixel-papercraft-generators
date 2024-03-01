@@ -26,6 +26,7 @@ import { generator as minecraftSquidCharacterGenerator } from "@/generators/mine
 import { generator as minecraftUltimateBendableGenerator } from "@/generators/minecraftUltimateBendable/minecraftUltimateBendableGenerator";
 import { generator as minecraftVillagerGenerator } from "@/generators/minecraftVillager/minecraftVillagerGenerator";
 import { generator as minecraftVillagerCharacterGenerator } from "@/generators/minecraftVillagerCharacter/minecraftVillagerCharacterGenerator";
+import { generator as minecraftWitherGenerator } from "@/generators/minecraftWither/minecraftWitherGenerator";
 
 const isDevEnvironment: boolean = process.env.NODE_ENV === "development";
 
@@ -78,9 +79,7 @@ export const other: GeneratorDef[] = [amogusBendableGenerator];
 
 // Incomplete and in development
 export const dev: GeneratorDef[] = isDevEnvironment
-  ? [
-      //  minecraftWitherGenerator
-    ]
+  ? [minecraftWitherGenerator]
   : [];
 
 export const test: GeneratorDef[] = isDevEnvironment
