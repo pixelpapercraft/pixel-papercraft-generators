@@ -24,6 +24,7 @@ import { generator as minecraftPigGenerator } from "@/generators/minecraftPig/mi
 import { generator as minecraftPigCharacterGenerator } from "@/generators/minecraftPigCharacter/minecraftPigCharacterGenerator";
 import { generator as minecraftSquidCharacterGenerator } from "@/generators/minecraftSquidCharacter/minecraftSquidCharacterGenerator";
 import { generator as minecraftUltimateBendableGenerator } from "@/generators/minecraftUltimateBendable/minecraftUltimateBendableGenerator";
+import { generator as minecraftVillagerGenerator } from "@/generators/minecraftVillager/minecraftVillagerGenerator";
 
 const isDevEnvironment: boolean = process.env.NODE_ENV === "development";
 
@@ -56,7 +57,7 @@ export const mob: GeneratorDef[] = [
   minecraftHorseGenerator,
   minecraftPigGenerator,
   minecraftCatGenerator,
-  // minecraftVillagerGenerator,
+  minecraftVillagerGenerator,
 ];
 
 // Blocks, Items and Accessories
