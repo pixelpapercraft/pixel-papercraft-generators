@@ -72,7 +72,7 @@ const script: ScriptDef = (generator: Generator) => {
   const hideHelmet = generator.getBooleanInputValue("Hide Helmet");
   const hideJacket = generator.getBooleanInputValue("Hide Jacket");
 
-  const getSelectInputAWithDefaultAsNumber = (
+  const getSelectInputAsNumberWithDefault = (
     id: string,
     defaultValue: number
   ) => {
@@ -80,14 +80,14 @@ const script: ScriptDef = (generator: Generator) => {
     return value ? parseInt(value, 10) : defaultValue;
   };
 
-  const tent1 = getSelectInputAWithDefaultAsNumber("Tentacle 1", 5);
-  const tent2 = getSelectInputAWithDefaultAsNumber("Tentacle 2", 7);
-  const tent3 = getSelectInputAWithDefaultAsNumber("Tentacle 3", 3);
-  const tent4 = getSelectInputAWithDefaultAsNumber("Tentacle 4", 3);
-  const tent5 = getSelectInputAWithDefaultAsNumber("Tentacle 5", 3);
-  const tent6 = getSelectInputAWithDefaultAsNumber("Tentacle 6", 1);
-  const tent7 = getSelectInputAWithDefaultAsNumber("Tentacle 7", 1);
-  const tent8 = getSelectInputAWithDefaultAsNumber("Tentacle 8", 1);
+  const tent1 = getSelectInputAsNumberWithDefault("Tentacle 1", 5);
+  const tent2 = getSelectInputAsNumberWithDefault("Tentacle 2", 7);
+  const tent3 = getSelectInputAsNumberWithDefault("Tentacle 3", 3);
+  const tent4 = getSelectInputAsNumberWithDefault("Tentacle 4", 3);
+  const tent5 = getSelectInputAsNumberWithDefault("Tentacle 5", 3);
+  const tent6 = getSelectInputAsNumberWithDefault("Tentacle 6", 1);
+  const tent7 = getSelectInputAsNumberWithDefault("Tentacle 7", 1);
+  const tent8 = getSelectInputAsNumberWithDefault("Tentacle 8", 1);
 
   const cycleTentacleTypes = (t: number) => {
     return ((t % 8) + 1).toString();
