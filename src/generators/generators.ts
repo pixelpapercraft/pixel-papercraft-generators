@@ -25,6 +25,7 @@ import { generator as minecraftPigCharacterGenerator } from "@/generators/minecr
 import { generator as minecraftSquidCharacterGenerator } from "@/generators/minecraftSquidCharacter/minecraftSquidCharacterGenerator";
 import { generator as minecraftUltimateBendableGenerator } from "@/generators/minecraftUltimateBendable/minecraftUltimateBendableGenerator";
 import { generator as minecraftVillagerGenerator } from "@/generators/minecraftVillager/minecraftVillagerGenerator";
+import { generator as minecraftVillagerCharacterGenerator } from "@/generators/minecraftVillagerCharacter/minecraftVillagerCharacterGenerator";
 
 const isDevEnvironment: boolean = process.env.NODE_ENV === "development";
 
@@ -43,7 +44,7 @@ export const mobCharacter: GeneratorDef[] = [
   minecraftGolemCharacterGenerator,
   minecraftPigCharacterGenerator,
   minecraftSquidCharacterGenerator,
-  // minecraftVillagerCharacterGenerator,
+  minecraftVillagerCharacterGenerator,
   // minecraftWolfCharacterGenerator,
   minecraftAxolotlCharacterGenerator,
   minecraftAllayCharacterGenerator,
