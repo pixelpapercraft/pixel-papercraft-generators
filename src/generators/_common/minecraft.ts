@@ -117,9 +117,9 @@ function translateDest(dest: Dest, position: Position): Dest {
   };
 }
 
-type Direction = "East" | "West" | "North" | "South";
+export type Direction = "East" | "West" | "North" | "South";
 
-type Center = "Right" | "Front" | "Left" | "Back" | "Top" | "Bottom";
+export type Center = "Right" | "Front" | "Left" | "Back" | "Top" | "Bottom";
 
 function makeDest([w, h, d]: Dimensions, direction: Direction): Dest {
   switch (direction) {

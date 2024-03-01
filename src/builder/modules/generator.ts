@@ -11,9 +11,11 @@ import {
   drawRectangle,
 } from "./renderers/drawRectangle";
 import { type TabOrientation, drawTab } from "./renderers/drawTab";
+import { fillBackgroundColor } from "./renderers/fillBackgroundColor";
 import { type Page } from "./modelPage";
 
 export type * from "./renderers/types";
+export type * from "./modelPage";
 
 export class Generator {
   model: Model;
@@ -124,6 +126,11 @@ export class Generator {
 
   usePage(id: string): void {
     this.model.usePage(id);
+  }
+
+  fillBackgroundColorWithWhite() {
+    const page = this.getCurrentPage();
+    fillBackgroundColor(page.canvasWithContext, "#ffffff");
   }
 
   drawRectangle(rectangle: Rectangle, options: DrawRectangeOptions = {}): void {
