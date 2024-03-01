@@ -23,13 +23,14 @@ import { generator as minecraftMutantCharacterGenerator } from "@/generators/min
 import { generator as minecraftPigGenerator } from "@/generators/minecraftPig/minecraftPigGenerator";
 import { generator as minecraftPigCharacterGenerator } from "@/generators/minecraftPigCharacter/minecraftPigCharacterGenerator";
 import { generator as minecraftSquidCharacterGenerator } from "@/generators/minecraftSquidCharacter/minecraftSquidCharacterGenerator";
+import { generator as minecraftUltimateBendableGenerator } from "@/generators/minecraftUltimateBendable/minecraftUltimateBendableGenerator";
 
 const isDevEnvironment: boolean = process.env.NODE_ENV === "development";
 
 export const character: GeneratorDef[] = [
   minecraftCharacterGenerator,
   minecraftActionFigureGenerator,
-  // minecraftUltimateBendableGenerator,
+  minecraftUltimateBendableGenerator,
   minecraftCharacterMiniGenerator,
 ];
 
