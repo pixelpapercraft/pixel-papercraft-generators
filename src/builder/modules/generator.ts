@@ -106,6 +106,10 @@ export class Generator {
     return this.model.getStringVariable(id);
   }
 
+  setSelectInputValue(id: string, value: string): void {
+    this.model.setStringVariable(id, value);
+  }
+
   getRangeInputValue(id: string): number {
     return this.model.getNumberVariable(id) ?? 0;
   }
