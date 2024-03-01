@@ -8,6 +8,7 @@ import { generator as minecraftAxolotlCharacterGenerator } from "@/generators/mi
 import { generator as minecraftBeeCharacterGenerator } from "@/generators/minecraftBeeCharacter/minecraftBeeCharacterGenerator";
 import { generator as minecraftCapeAndElytraGenerator } from "@/generators/minecraftCapeAndElytra/minecraftCapeAndElytraGenerator";
 import { generator as minecraftCatGenerator } from "@/generators/minecraftCat/minecraftCatGenerator";
+import { generator as minecraftCatCharacterGenerator } from "@/generators/minecraftCatCharacter/minecraftCatCharacterGenerator";
 import { generator as minecraftCharacterGenerator } from "@/generators/minecraftCharacter/minecraftCharacterGenerator";
 import { generator as minecraftCharacterHeadsGenerator } from "@/generators/minecraftCharacterHeads/minecraftCharacterHeadsGenerator";
 import { generator as minecraftCharacterMiniGenerator } from "@/generators/minecraftCharacterMini/minecraftCharacterMiniGenerator";
@@ -40,7 +41,7 @@ export const character: GeneratorDef[] = [
 
 export const mobCharacter: GeneratorDef[] = [
   minecraftCreeperCharacterGenerator,
-  // minecraftCatCharacterGenerator,
+  minecraftCatCharacterGenerator,
   minecraftCowCharacterGenerator,
   minecraftEndermanCharacterGenerator,
   minecraftGolemCharacterGenerator,
