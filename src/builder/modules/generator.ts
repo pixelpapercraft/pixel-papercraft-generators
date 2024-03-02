@@ -104,6 +104,10 @@ export class Generator {
     return this.model.hasTexture(id);
   }
 
+  clearAllVariables(): void {
+    this.model.cleatAllVariables();
+  }
+
   setBooleanInputValue(id: string, value: boolean): void {
     this.model.setBooleanVariable(id, value);
   }

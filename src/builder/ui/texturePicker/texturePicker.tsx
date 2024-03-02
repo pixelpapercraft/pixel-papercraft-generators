@@ -295,7 +295,7 @@ export function TexturePicker({
             rotation={rotation}
           />
           {enableRotation ? (
-            <div className="flex justify-center">
+            <div className="flex justify-center mt-4">
               <RotationButton
                 rotation={rotation}
                 onClick={() => onRotateClick()}

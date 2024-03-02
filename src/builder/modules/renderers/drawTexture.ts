@@ -89,7 +89,7 @@ function shift(value: number, shift: number): number {
   return (value >> shift) & 255;
 }
 
-function hexToRGB(hex: string): [number, number, number] | null {
+export function hexToRGB(hex: string): [number, number, number] | null {
   const value = parseHex(hex);
   if (value === null) {
     return null;
@@ -196,8 +196,8 @@ function drawNearestNeighbor(
       blendOption.kind === "MultiplyHex"
         ? hexToRGB(blendOption.hex)
         : blendOption.kind === "MultiplyRGB"
-        ? [blendOption.r, blendOption.g, blendOption.b]
-        : null;
+          ? [blendOption.r, blendOption.g, blendOption.b]
+          : null;
 
     for (let y = 0; y < sh; y++) {
       for (let x = 0; x < sw; x++) {
@@ -273,8 +273,8 @@ export function drawTexture(
   const rotate: Rotate = options.rotateLegacy
     ? rotateCorner(options.rotateLegacy)
     : options.rotate
-    ? rotateCenter(options.rotate)
-    : rotateNone();
+      ? rotateCenter(options.rotate)
+      : rotateNone();
 
   const drawNearestNeightbourOptions: DrawNearestNeighborOptions = {
     rotate,

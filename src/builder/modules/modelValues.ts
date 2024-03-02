@@ -25,6 +25,10 @@ export class Values {
     this.textures.delete(id);
   }
 
+  clearAllVariables(): void {
+    this.variables.clear();
+  }
+
   setVariable(id: string, variable: Variable) {
     this.variables.set(id, variable);
   }

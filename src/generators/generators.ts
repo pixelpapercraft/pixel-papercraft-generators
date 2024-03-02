@@ -6,6 +6,7 @@ import { generator as minecraftActionFigureGenerator } from "@/generators/minecr
 import { generator as minecraftAllayCharacterGenerator } from "@/generators/minecraftAllayCharacter/minecraftAllayCharacterGenerator";
 import { generator as minecraftAxolotlCharacterGenerator } from "@/generators/minecraftAxolotlCharacter/minecraftAxolotlCharacterGenerator";
 import { generator as minecraftBeeCharacterGenerator } from "@/generators/minecraftBeeCharacter/minecraftBeeCharacterGenerator";
+import { generator as minecraftBlockGenerator } from "@/generators/minecraftBlock/minecraftBlockGenerator";
 import { generator as minecraftCapeAndElytraGenerator } from "@/generators/minecraftCapeAndElytra/minecraftCapeAndElytraGenerator";
 import { generator as minecraftCatGenerator } from "@/generators/minecraftCat/minecraftCatGenerator";
 import { generator as minecraftCatCharacterGenerator } from "@/generators/minecraftCatCharacter/minecraftCatCharacterGenerator";
@@ -67,7 +68,7 @@ export const mob: GeneratorDef[] = [
 
 // Blocks, Items and Accessories
 export const utility: GeneratorDef[] = [
-  // minecraftBlockGenerator,
+  minecraftBlockGenerator,
   minecraftItemGenerator,
   minecraftCapeAndElytraGenerator,
   minecraftCharacterHeadsGenerator,

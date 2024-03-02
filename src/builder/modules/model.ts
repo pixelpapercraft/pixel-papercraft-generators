@@ -161,6 +161,10 @@ export class Model {
     return this.values.getStringVariable(id);
   }
 
+  cleatAllVariables(): void {
+    this.values.clearAllVariables();
+  }
+
   setNumberVariable(id: string, value: number): void {
     this.values.setNumberVariable(id, value);
   }

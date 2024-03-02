@@ -15,12 +15,20 @@ type ImageWithCoordinates = {
   coordinates: [number, number];
 };
 
+type TileFrame = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+};
+
 type TileInfo = {
   name: string;
   x: number;
   y: number;
   width: number;
   height: number;
+  frames: TileFrame[];
 };
 
 function makeSafeFileName(prefix: string, version: string): string {
@@ -151,8 +159,6 @@ async function makeTiledImagesCanvas(
         const [x, y] = coordinates;
         return acc.then((canvas) => {
           return Jimp.read(image.path).then((image: Jimp) => {
-            // TODO: Check this, it used to be:
-            // Jimp.blit(canvas, image, x, y);
             return canvas.blit(image, x, y);
           });
         });
@@ -264,8 +270,25 @@ export async function makeTiledImages(
         const { name, info } = image;
         const { width, height } = info;
         const [x, y] = coordinates;
-        return { name, x, y, width, height };
+
+        const frameWidth = width;
+        const frameHeight = width; // Assume square frames
+        const frameCount = Math.floor(height / frameHeight);
+
+        const frames = [];
+
+        for (let i = 0; i < frameCount; i++) {
+          frames.push({
+            x,
+            y: y + i * frameHeight,
+            width: frameWidth,
+            height: frameHeight,
+          });
+        }
+
+        return { name, x, y, width, height, frames };
       });
+
       writeTileTypeScript(
         id,
         tileImagePath,
