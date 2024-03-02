@@ -10,7 +10,7 @@ import type {
 } from "@/builder/modules/generatorDef";
 import { type Generator } from "@/builder/modules/generator";
 import { encodeSelectedTexture } from "@/builder/ui/texturePicker/selectedTexture";
-import { allTextureDefs, versionIds } from "./textureVersions";
+import { textureDefs, textureVersionIds } from "./textureVersions";
 import { TexturePicker } from "./texturePicker";
 import { currentBlockTextureId } from "./constants";
 import { drawBlock } from "./shapes/block";
@@ -93,10 +93,10 @@ const images: ImageDef[] = [
   { id: "Tabs-Cake-Right", url: tabsCakeRightImage.src },
 ];
 
-const textures: TextureDef[] = allTextureDefs;
+const textures: TextureDef[] = textureDefs;
 
 const script: ScriptDef = (generator: Generator) => {
-  generator.defineSelectInput("Version", versionIds);
+  generator.defineSelectInput("Version", textureVersionIds);
 
   const versionId = generator.getSelectInputValue("Version");
 

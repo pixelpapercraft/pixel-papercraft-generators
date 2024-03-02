@@ -5,7 +5,7 @@ import { type TextureDef } from "@/builder/modules/generatorDef";
 import {
   type TextureFrame,
   makeFrameLabel,
-} from "@/builder/modules/textureFrame";
+} from "@/builder/modules/textureData";
 import {
   type Rotation,
   makeNextRotation,
