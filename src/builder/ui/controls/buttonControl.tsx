@@ -1,3 +1,5 @@
+import { Button } from "@/builder/ui/button/button";
+
 export function ButtonControl({
   onClick,
   id,
@@ -7,7 +9,9 @@ export function ButtonControl({
 }) {
   return (
     <div className="mb-4">
-      <button onClick={onClick}>{id}</button>
+      <Button size="Small" onClick={onClick}>
+        {id}
+      </Button>
     </div>
   );
 }

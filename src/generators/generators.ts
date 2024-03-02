@@ -20,6 +20,7 @@ import { generator as minecraftEndermanCharacterGenerator } from "@/generators/m
 import { generator as minecraftGolemGenerator } from "@/generators/minecraftGolem/minecraftGolemGenerator";
 import { generator as minecraftGolemCharacterGenerator } from "@/generators/minecraftGolemCharacter/minecraftGolemCharacterGenerator";
 import { generator as minecraftHorseGenerator } from "@/generators/minecraftHorse/minecraftHorseGenerator";
+import { generator as minecraftItemGenerator } from "@/generators/minecraftItem/minecraftItemGenerator";
 import { generator as minecraftMutantCharacterGenerator } from "@/generators/minecraftMutantCharacter/minecraftMutantCharacterGenerator";
 import { generator as minecraftPigGenerator } from "@/generators/minecraftPig/minecraftPigGenerator";
 import { generator as minecraftPigCharacterGenerator } from "@/generators/minecraftPigCharacter/minecraftPigCharacterGenerator";
@@ -67,7 +68,7 @@ export const mob: GeneratorDef[] = [
 // Blocks, Items and Accessories
 export const utility: GeneratorDef[] = [
   // minecraftBlockGenerator,
-  // minecraftItemGenerator,
+  minecraftItemGenerator,
   minecraftCapeAndElytraGenerator,
   minecraftCharacterHeadsGenerator,
 ];

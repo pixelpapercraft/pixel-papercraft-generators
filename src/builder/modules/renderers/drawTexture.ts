@@ -192,7 +192,7 @@ function drawNearestNeighbor(
     const pixw = pixwInitial < deltax ? pixwInitial + 1 : pixwInitial;
     const pixh = pixhInitial < deltay ? pixhInitial + 1 : pixhInitial;
 
-    const blend =
+    const blend: [number, number, number] | null =
       blendOption.kind === "MultiplyHex"
         ? hexToRGB(blendOption.hex)
         : blendOption.kind === "MultiplyRGB"

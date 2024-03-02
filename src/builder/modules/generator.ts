@@ -54,6 +54,7 @@ export class Generator {
     const currentPage = this.getCurrentPage();
     this.model.addRegionControl(currentPage.id, region, onClick);
   }
+
   defineRangeInput(
     id: string,
     {
@@ -88,8 +89,23 @@ export class Generator {
     this.model.addTextControl(text);
   }
 
+  defineCustomStringInput(
+    id: string,
+    render: (onChange: (value: string) => void) => React.ReactNode
+  ): void {
+    this.model.addCustomInputControl(id, render);
+  }
+
+  defineButtonInput(id: string, onClick: () => void): void {
+    this.model.addButtonControl(id, onClick);
+  }
+
   hasTexture(id: string): boolean {
     return this.model.hasTexture(id);
+  }
+
+  setBooleanInputValue(id: string, value: boolean): void {
+    this.model.setBooleanVariable(id, value);
   }
 
   getBooleanInputValue(id: string): boolean | null {
@@ -100,8 +116,16 @@ export class Generator {
     return this.model.getBooleanVariable(id) ?? defaultValue;
   }
 
-  setBooleanInputValue(id: string, value: boolean): void {
-    this.model.setBooleanVariable(id, value);
+  setStringInputValue(id: string, value: string): void {
+    this.model.setStringVariable(id, value);
+  }
+
+  getStringInputValue(id: string): string | null {
+    return this.model.getStringVariable(id);
+  }
+
+  getStringInputValueWithDefault(id: string, defaultValue: string): string {
+    return this.model.getStringVariable(id) ?? defaultValue;
   }
 
   getSelectInputValue(id: string): string | null {

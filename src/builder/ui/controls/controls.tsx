@@ -45,9 +45,8 @@ export function Controls({
     onChange(model);
   };
 
-  const onButtonInputClick = () => {
-    // TODO
-    // onChange({ ...model, ...makeModel() });
+  const onButtonControlClick = () => {
+    onChange(model);
   };
 
   return (
@@ -115,7 +114,7 @@ export function Controls({
                 id={control.id}
                 onClick={() => {
                   control.onClick();
-                  onButtonInputClick();
+                  onButtonControlClick();
                 }}
               />
             );

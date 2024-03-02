@@ -1,7 +1,7 @@
 import { type CanvasWithContext } from "../canvasWithContext";
 import type { Position } from "./types";
 
-function getOffset([x1, y1]: Position, [x2, y2]: Position) {
+function getOffset([x1, y1]: Position, [x2, y2]: Position): Position {
   const w = x2 - x1;
   const h = y2 - y1;
 
