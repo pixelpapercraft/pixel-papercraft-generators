@@ -10,7 +10,6 @@ import type {
   ThumbnailDef,
 } from "@/builder/modules/generatorDef";
 import { type Generator } from "@/builder/modules/generator";
-import { type TextureFrame } from "@/builder/modules/textureFrame";
 import { allTextureDefs, versionIds, findVersion } from "./ui/textureVersions";
 import {
   type SelectedTexture,
@@ -18,7 +17,7 @@ import {
   decodeSelectedTexture,
   encodeSelectedTextures,
   decodeSelectedTextures,
-} from "./ui/selectedTexture";
+} from "@/builder/ui/texturePicker/selectedTexture";
 import { TexturePicker } from "./ui/texturePicker";
 
 /** [x, y, width, height] */
@@ -67,14 +66,6 @@ const textures: TextureDef[] = [
     standardHeight: 128,
   },
 ];
-
-// function cycleTextureOffset(t: number, tileWidth: number): string {
-//   if (t === tileWidth) {
-//     return "0";
-//   } else {
-//     return (t + 1).toString();
-//   }
-// }
 
 function makeRegionId(textureId: string, rectangle: Rectangle): string {
   const [tileX, tileY] = rectangle;

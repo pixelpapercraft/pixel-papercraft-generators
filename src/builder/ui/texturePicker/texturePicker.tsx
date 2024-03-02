@@ -10,7 +10,7 @@ import {
   type Rotation,
   makeNextRotation,
   rotationToDegrees,
-} from "@/generators/minecraftItem/ui/rotation";
+} from "@/builder/ui/texturePicker/rotation";
 import { type SelectedTexture } from "./selectedTexture";
 
 function px(n: number): string {
@@ -46,9 +46,7 @@ function makePadding(t: number, r: number, b: number, l: number): string {
 }
 
 // https://tailwindcss.com/docs/background-color
-const bgGray100 = "rgb(243 244 246)";
 const bgGray200 = "rgb(229 231 235)";
-const bgGray300 = "rgb(209 213 219)";
 const bgGray400 = "rgb(156 163 175)";
 
 const borderSize = 4;
@@ -215,7 +213,7 @@ export function RotationButton({
   );
 }
 
-export function TexturePicker2({
+export function TexturePicker({
   textureDef,
   frames,
   onSelect,
