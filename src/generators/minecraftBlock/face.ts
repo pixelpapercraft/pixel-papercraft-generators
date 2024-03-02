@@ -45,7 +45,10 @@ function drawTexture(
   const { textureDefId, frame, rotation } = face;
   const [dx, dy, dw, dh] = destination;
 
-  const sourceRegion: Region = frame.rectangle;
+  const [sx, sy, sw, sh] = source;
+  const [fx, fy, fw, fh] = frame.rectangle;
+
+  const sourceRegion: Region = [sx + fx, sy + fy, sw, sh];
 
   const destinationRegion: Region = (() => {
     switch (rotation) {

@@ -23,31 +23,6 @@ function makeFaces(ox: number, oy: number): Faces {
   };
 }
 
-//   let draw = (blockId: string, ox: int, oy: int, showFolds: bool) => {
-//     let regions = makeFaces(ox, oy)
-
-//     Face.defineInputRegion("BlockFaceTop" ++ blockId, regions.top)
-//     Face.defineInputRegion("BlockFaceBottom" ++ blockId, regions.bottom)
-//     Face.defineInputRegion("BlockFaceRight" ++ blockId, regions.right)
-//     Face.defineInputRegion("BlockFaceFront" ++ blockId, regions.front)
-//     Face.defineInputRegion("BlockFaceLeft" ++ blockId, regions.left)
-//     Face.defineInputRegion("BlockFaceBack" ++ blockId, regions.back)
-
-//     Face.draw("BlockFaceTop" ++ blockId, (0, 0, 16, 16), regions.top, ())
-//     Face.draw("BlockFaceBottom" ++ blockId, (0, 0, 16, 16), regions.bottom, ())
-//     Face.draw("BlockFaceRight" ++ blockId, (0, 0, 16, 16), regions.right, ())
-//     Face.draw("BlockFaceFront" ++ blockId, (0, 0, 16, 16), regions.front, ())
-//     Face.draw("BlockFaceLeft" ++ blockId, (0, 0, 16, 16), regions.left, ())
-//     Face.draw("BlockFaceBack" ++ blockId, (0, 0, 16, 16), regions.back, ())
-
-//     Generator.drawImage("Tabs-Block", (ox - 32, oy - 1))
-
-//     if showFolds {
-//       Generator.drawImage("Folds-Block", (ox - 32, oy - 1))
-//     }
-//   }
-// }
-
 export function drawBlock(
   generator: Generator,
   blockId: string,
