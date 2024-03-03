@@ -13,8 +13,6 @@ import {
   type SelectedTextureWithBlend,
   encodeSelectedTextureWithBlend,
   decodeSelectedTextureWithBlend,
-  encodeSelectedTextureWithBlendArray,
-  decodeSelectedTextureWithBlendArray,
 } from "./selectedTextureWithBlend";
 import { textureDefs, textureVersionIds } from "./textureVersions";
 import { TexturePicker } from "./texturePicker";

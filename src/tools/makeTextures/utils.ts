@@ -32,7 +32,7 @@ type TileInfo = {
 };
 
 function makeSafeFileName(prefix: string, version: string): string {
-  return prefix + "_" + version.replace(/[-\.]/g, "_");
+  return prefix + "_" + version.replace(/[-.]/g, "_");
 }
 
 function hasImageExtension(path: string): boolean {
@@ -47,11 +47,6 @@ function toImageWithInfo(path: string): ImageWithInfo {
     throw new Error(`Failed to read image info from ${path}`);
   }
   return { name, path, info };
-}
-
-function isDirectory(path: string): boolean {
-  const stats = Fs.statSync(path);
-  return stats.isDirectory();
 }
 
 function isFile(path: string): boolean {

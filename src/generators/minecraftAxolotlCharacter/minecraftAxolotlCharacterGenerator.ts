@@ -95,12 +95,11 @@ const textures: TextureDef[] = [
 
 const xOf = (rectangle: Rectangle) => rectangle[0];
 const yOf = (rectangle: Rectangle) => rectangle[1];
-const widthOf = (rectangle: Rectangle) => rectangle[2];
 const heightOf = (rectangle: Rectangle) => rectangle[3];
 
 // Calculates the top "n" pixels of a rectangle
 
-const topOf = ([x, y, w, h]: Rectangle, n: number): Rectangle => [x, y, w, n];
+const topOf = ([x, y, w]: Rectangle, n: number): Rectangle => [x, y, w, n];
 
 // Calculates the bottom "n" pixels of a rectangle
 

@@ -3,7 +3,7 @@
 import React from "react";
 import { type GeneratorDef } from "@genroot/builder/modules/generatorDef";
 import { type Model } from "@genroot/builder/modules/model";
-import { type PageSize, A4 } from "@genroot/builder/modules/modelPage";
+import { A4 } from "@genroot/builder/modules/modelPage";
 
 import { RegionControls } from "./regionControls";
 import { SaveAsPDFButton } from "./saveAsPDFButton";

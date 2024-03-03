@@ -41,10 +41,6 @@ function makeMargin(t: number, r: number, b: number, l: number): string {
   return px(t) + " " + px(r) + " " + px(b) + " " + px(l);
 }
 
-function makePadding(t: number, r: number, b: number, l: number): string {
-  return px(t) + " " + px(r) + " " + px(b) + " " + px(l);
-}
-
 // https://tailwindcss.com/docs/background-color
 const bgGray200 = "rgb(229 231 235)";
 const bgGray400 = "rgb(156 163 175)";
@@ -184,28 +180,7 @@ export function Preview({
   );
 }
 
-export function RotationButton({
-  rotation,
-  onClick,
-}: {
-  rotation: Rotation;
-  onClick: () => void;
-}) {
-  let icon = null;
-  switch (rotation) {
-    case "Rot0":
-      icon = "ArrowUp";
-      break;
-    case "Rot90":
-      icon = "ArrowRight";
-      break;
-    case "Rot180":
-      icon = "ArrowDown";
-      break;
-    case "Rot270":
-      icon = "ArrowLeft";
-      break;
-  }
+export function RotationButton({ onClick }: { onClick: () => void }) {
   return (
     <Button size="Small" onClick={onClick}>
       <ArrowPathIcon color="White" />
@@ -221,7 +196,7 @@ export function TexturePicker({
 }: {
   textureDef: TextureDef;
   frames: TextureFrame[];
-  onSelect: (selectedTexture: any) => void;
+  onSelect: (selectedTexture: SelectedTexture) => void;
   enableRotation: boolean;
 }) {
   const [search, setSearch] = React.useState("");
@@ -296,10 +271,7 @@ export function TexturePicker({
           />
           {enableRotation ? (
             <div className="flex justify-center mt-4">
-              <RotationButton
-                rotation={rotation}
-                onClick={() => onRotateClick()}
-              />
+              <RotationButton onClick={() => onRotateClick()} />
             </div>
           ) : null}
         </div>

@@ -57,7 +57,7 @@ function drawTexture(
   const [dx, dy, dw, dh] = destination;
 
   const [sx, sy, sw, sh] = source;
-  const [fx, fy, fw, fh] = frame.rectangle;
+  const [fx, fy] = frame.rectangle;
 
   const sourceRegion: Region = [sx + fx, sy + fy, sw, sh];
 

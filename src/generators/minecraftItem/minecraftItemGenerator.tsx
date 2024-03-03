@@ -73,7 +73,7 @@ function makeRegionId(textureId: string, rectangle: Rectangle): string {
 }
 
 function getTileWidth(rectangle: Rectangle): number {
-  const [_, __, tileWidth, ___] = rectangle;
+  const [, , tileWidth] = rectangle;
   return tileWidth;
 }
 

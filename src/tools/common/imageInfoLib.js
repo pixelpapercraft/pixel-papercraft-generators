@@ -153,6 +153,7 @@ function imageInfoSwf(buffer) {
   if (buffer[0] === 0x43) {
     try {
       // If you have zlib available ( npm install zlib ) then we can read compressed flash files
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
       buffer = require("zlib").inflate(buffer.slice(8, 100));
       pos = 0;
     } catch (ex) {
@@ -224,7 +225,7 @@ function checkSig(buffer, offset, sig) {
   return true;
 }
 
-module.exports = function imageInfo(buffer, path) {
+module.exports = function imageInfo(buffer) {
   var pngSig = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
   var jpgSig = [0xff, 0xd8, 0xff];
   var gifSig = [0x47, 0x49, 0x46, 0x38, [0x37, 0x39], 0x61];

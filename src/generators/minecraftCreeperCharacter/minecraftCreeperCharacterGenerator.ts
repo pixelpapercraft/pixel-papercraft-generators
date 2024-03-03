@@ -2,7 +2,6 @@
 
 import type {
   GeneratorDef,
-  InstructionsDef,
   ImageDef,
   HistoryDef,
   TextureDef,

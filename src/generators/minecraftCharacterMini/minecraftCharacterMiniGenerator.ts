@@ -7,7 +7,6 @@ import type {
   TextureDef,
   ScriptDef,
   ThumbnailDef,
-  InstructionsDef,
 } from "@genroot/builder/modules/generatorDef";
 import { type Generator } from "@genroot/builder/modules/generator";
 import { type Layer, steve, alex } from "../_common/minecraftCharacter";
@@ -279,10 +278,6 @@ const script: ScriptDef = (generator: Generator) => {
       const bodyHeight = generator.defineAndGetRangeInput(
         textureId + " Body Height",
         { min: 0, max: 64, value: 32, step: 1 }
-      );
-
-      const bodyHeight2 = generator.getRangeInputValue(
-        textureId + " Body Height"
       );
 
       const textureStyle = generator.defineAndGetSelectInput(
