@@ -12,9 +12,9 @@ import { type Generator } from "@genroot/builder/modules/generator";
 
 import thumnbailImage from "./thumbnail/thumbnail-v2-256.jpeg";
 import whiteCatImage from "./textures/white.png";
-import backgroundImage from "./images/background.png";
-import foldsImage from "./images/folds.png";
-import labelsImage from "./images/labels.png";
+import backgroundImage from "./images/Background.png";
+import foldsImage from "./images/Folds.png";
+import labelsImage from "./images/Labels.png";
 import ocelotImage from "./textures/ocelot.png";
 import allBlackImage from "./textures/all_black.png";
 import britishShorthairImage from "./textures/british_shorthair.png";
