@@ -7,8 +7,8 @@ import type {
   ThumbnailDef,
   ScriptDef,
   TextureDef,
-} from "@/builder/modules/generatorDef";
-import { type Generator } from "@/builder/modules/generator";
+} from "@genroot/builder/modules/generatorDef";
+import { type Generator } from "@genroot/builder/modules/generator";
 import {
   type SelectedTextureWithBlend,
   encodeSelectedTextureWithBlend,

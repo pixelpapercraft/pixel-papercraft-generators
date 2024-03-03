@@ -1,5 +1,5 @@
-import { TexturePicker as BuilderTexturePicker } from "@/builder/ui/texturePicker/texturePicker";
-import { type SelectedTexture } from "@/builder/ui/texturePicker/selectedTexture";
+import { TexturePicker as BuilderTexturePicker } from "@genroot/builder/ui/texturePicker/texturePicker";
+import { type SelectedTexture } from "@genroot/builder/ui/texturePicker/selectedTexture";
 import { type TextureVersion } from "./textureVersions";
 
 export function TexturePicker(props: {

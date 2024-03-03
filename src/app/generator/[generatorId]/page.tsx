@@ -1,4 +1,4 @@
-import { GeneratorPage } from "@/ui/pages/generatorPage";
+import { GeneratorPage } from "@genroot/ui/pages/generatorPage";
 
 type Params = {
   generatorId: string;

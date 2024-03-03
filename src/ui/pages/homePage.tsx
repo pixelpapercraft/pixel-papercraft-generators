@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
-import { GeneratorList } from "@/ui/components/generatorList";
-import { PageHeading } from "@/ui/components/pageHeading";
+import { GeneratorList } from "@genroot/ui/components/generatorList";
+import { PageHeading } from "@genroot/ui/components/pageHeading";
 
 export function HomePage() {
   return (

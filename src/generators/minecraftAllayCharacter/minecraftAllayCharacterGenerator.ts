@@ -8,9 +8,9 @@ import type {
   TextureDef,
   ScriptDef,
   VideoDef,
-} from "@/builder/modules/generatorDef";
-import { type Generator } from "@/builder/modules/generator";
-import { steve, alex } from "@/generators/_common/minecraftCharacter";
+} from "@genroot/builder/modules/generatorDef";
+import { type Generator } from "@genroot/builder/modules/generator";
+import { steve, alex } from "@genroot/generators/_common/minecraftCharacter";
 
 import thumbnailImage from "./thumbnail/thumbnail-256.jpeg";
 import overlayAllayImage from "./images/OverlayAllay.png";

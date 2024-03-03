@@ -1,10 +1,10 @@
 import type { CSSProperties } from "react";
-import { type Model } from "@/builder/modules/model";
+import { type Model } from "@genroot/builder/modules/model";
 import {
   type Control,
   type RegionControl,
-} from "@/builder/modules/modelControls";
-import { A4 } from "@/builder/modules/modelPage";
+} from "@genroot/builder/modules/modelControls";
+import { A4 } from "@genroot/builder/modules/modelPage";
 import { px, pageBorderWidth } from "./utils";
 
 /** [x, y, w, h] */

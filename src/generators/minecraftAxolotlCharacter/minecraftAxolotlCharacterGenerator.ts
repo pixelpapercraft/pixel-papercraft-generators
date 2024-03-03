@@ -8,15 +8,15 @@ import type {
   TextureDef,
   ScriptDef,
   VideoDef,
-} from "@/builder/modules/generatorDef";
-import { type Generator } from "@/builder/modules/generator";
+} from "@genroot/builder/modules/generatorDef";
+import { type Generator } from "@genroot/builder/modules/generator";
 import {
   type Cuboid,
   type Layer,
   steve,
   alex,
   Rectangle,
-} from "@/generators/_common/minecraftCharacter";
+} from "@genroot/generators/_common/minecraftCharacter";
 
 import thumbnailImage from "./thumbnail/thumbnail-256.jpeg";
 import backgroundImage from "./images/Background.png";

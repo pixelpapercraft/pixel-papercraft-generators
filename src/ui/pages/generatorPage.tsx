@@ -1,9 +1,9 @@
 "use client";
 
-import { Generator } from "@/builder/ui/generator";
-import { findGeneratorById } from "@/generators/generators";
-import { PageHeading } from "@/ui/components/pageHeading";
-import { CommonLink } from "@/ui/components/commonLink";
+import { Generator } from "@genroot/builder/ui/generator";
+import { findGeneratorById } from "@genroot/generators/generators";
+import { PageHeading } from "@genroot/ui/components/pageHeading";
+import { CommonLink } from "@genroot/ui/components/commonLink";
 
 export function GeneratorPage({ generatorId }: { generatorId: string }) {
   const generatorDef = findGeneratorById(generatorId);

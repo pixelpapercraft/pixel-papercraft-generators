@@ -8,8 +8,8 @@ import type {
   ScriptDef,
   ThumbnailDef,
   VideoDef,
-} from "@/builder/modules/generatorDef";
-import { type Generator } from "@/builder/modules/generator";
+} from "@genroot/builder/modules/generatorDef";
+import { type Generator } from "@genroot/builder/modules/generator";
 
 import thumbnailImage from "./thumbnail/thumbnail-256.jpeg";
 import backgroundSteveImage from "./images/Background-Steve.png";

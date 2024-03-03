@@ -7,8 +7,8 @@ import type {
   TextureDef,
   ScriptDef,
   InstructionsDef,
-} from "@/builder/modules/generatorDef";
-import { type Generator } from "@/builder/modules/generator";
+} from "@genroot/builder/modules/generatorDef";
+import { type Generator } from "@genroot/builder/modules/generator";
 
 import witherTexture from "./instructions/wither.png";
 import backgroundImage from "./images/Background.png";

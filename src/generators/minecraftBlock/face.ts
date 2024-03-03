@@ -1,8 +1,11 @@
 import {
   type DrawTextureOptions,
   type Blend,
-} from "@/builder/modules/renderers/drawTexture";
-import { type Generator, type Region } from "@/builder/modules/generator";
+} from "@genroot/builder/modules/renderers/drawTexture";
+import {
+  type Generator,
+  type Region,
+} from "@genroot/builder/modules/generator";
 import { currentBlockTextureId } from "./constants";
 import {
   type SelectedTextureWithBlend,

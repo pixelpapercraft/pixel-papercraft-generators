@@ -1,4 +1,7 @@
-import { type Generator, type Region } from "@/builder/modules/generator";
+import {
+  type Generator,
+  type Region,
+} from "@genroot/builder/modules/generator";
 import * as Face from "../face";
 
 type Faces = {

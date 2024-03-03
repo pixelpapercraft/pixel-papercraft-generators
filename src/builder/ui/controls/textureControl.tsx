@@ -1,6 +1,9 @@
 import React from "react";
 
-import { type Texture, makeTextureFromUrl } from "@/builder/modules/texture";
+import {
+  type Texture,
+  makeTextureFromUrl,
+} from "@genroot/builder/modules/texture";
 import { type SelectOption, Select } from "../form/select";
 
 export function TextureControl({

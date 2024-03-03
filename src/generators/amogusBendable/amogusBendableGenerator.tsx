@@ -9,8 +9,8 @@ import type {
   ThumbnailDef,
   VideoDef,
   InstructionsDef,
-} from "@/builder/modules/generatorDef";
-import { type Generator } from "@/builder/modules/generator";
+} from "@genroot/builder/modules/generatorDef";
+import { type Generator } from "@genroot/builder/modules/generator";
 
 import thumbnailImage from "./thumbnail/thumbnail.jpeg";
 import amogusImage from "./instructions/amogus-100.png";

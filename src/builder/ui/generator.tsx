@@ -3,11 +3,11 @@
 "use client";
 
 import React from "react";
-import { type GeneratorDef } from "@/builder/modules/generatorDef";
-import { Model } from "@/builder/modules/model";
-import { Values } from "@/builder/modules/modelValues";
-import { loadResources } from "@/builder/modules/resourceLoader";
-import { runScript } from "@/builder/modules/scriptRunner";
+import { type GeneratorDef } from "@genroot/builder/modules/generatorDef";
+import { Model } from "@genroot/builder/modules/model";
+import { Values } from "@genroot/builder/modules/modelValues";
+import { loadResources } from "@genroot/builder/modules/resourceLoader";
+import { runScript } from "@genroot/builder/modules/scriptRunner";
 import { Controls } from "./controls/controls";
 import { Pages } from "./pages/pages";
 import { Video } from "./video";

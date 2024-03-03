@@ -8,8 +8,8 @@ import type {
   ScriptDef,
   InstructionsDef,
   ThumbnailDef,
-} from "@/builder/modules/generatorDef";
-import { type Generator } from "@/builder/modules/generator";
+} from "@genroot/builder/modules/generatorDef";
+import { type Generator } from "@genroot/builder/modules/generator";
 import { allTextureDefs, versionIds, findVersion } from "./ui/textureVersions";
 import {
   type SelectedTexture,
@@ -17,7 +17,7 @@ import {
   decodeSelectedTexture,
   encodeSelectedTextures,
   decodeSelectedTextures,
-} from "@/builder/ui/texturePicker/selectedTexture";
+} from "@genroot/builder/ui/texturePicker/selectedTexture";
 import { TexturePicker } from "./ui/texturePicker";
 
 /** [x, y, width, height] */

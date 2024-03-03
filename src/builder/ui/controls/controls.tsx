@@ -1,7 +1,7 @@
 import React from "react";
 
-import { type Texture } from "@/builder/modules/texture";
-import { type Model } from "@/builder/modules/model";
+import { type Texture } from "@genroot/builder/modules/texture";
+import { type Model } from "@genroot/builder/modules/model";
 import { TextureControl } from "./textureControl";
 import { BooleanControl } from "./booleanControl";
 import { SelectControl } from "./selectControl";

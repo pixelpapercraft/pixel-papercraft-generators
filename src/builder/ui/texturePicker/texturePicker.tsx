@@ -1,16 +1,16 @@
 import React from "react";
-import { Button } from "@/builder/ui/button/button";
-import { ArrowPathIcon, XMarkIcon } from "@/builder/ui/icon";
-import { type TextureDef } from "@/builder/modules/generatorDef";
+import { Button } from "@genroot/builder/ui/button/button";
+import { ArrowPathIcon, XMarkIcon } from "@genroot/builder/ui/icon";
+import { type TextureDef } from "@genroot/builder/modules/generatorDef";
 import {
   type TextureFrame,
   makeFrameLabel,
-} from "@/builder/modules/textureData";
+} from "@genroot/builder/modules/textureData";
 import {
   type Rotation,
   makeNextRotation,
   rotationToDegrees,
-} from "@/builder/ui/texturePicker/rotation";
+} from "@genroot/builder/ui/texturePicker/rotation";
 import { type SelectedTexture } from "./selectedTexture";
 
 function px(n: number): string {

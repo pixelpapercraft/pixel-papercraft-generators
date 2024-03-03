@@ -1,4 +1,4 @@
-import { Button } from "@/builder/ui/button/button";
+import { Button } from "@genroot/builder/ui/button/button";
 
 export function ButtonControl({
   onClick,

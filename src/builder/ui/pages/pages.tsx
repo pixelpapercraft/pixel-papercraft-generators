@@ -1,9 +1,9 @@
 /* eslint-disable @next/next/no-img-element */
 
 import React from "react";
-import { type GeneratorDef } from "@/builder/modules/generatorDef";
-import { type Model } from "@/builder/modules/model";
-import { type PageSize, A4 } from "@/builder/modules/modelPage";
+import { type GeneratorDef } from "@genroot/builder/modules/generatorDef";
+import { type Model } from "@genroot/builder/modules/model";
+import { type PageSize, A4 } from "@genroot/builder/modules/modelPage";
 
 import { RegionControls } from "./regionControls";
 import { SaveAsPDFButton } from "./saveAsPDFButton";

@@ -1,6 +1,6 @@
-import { type Generator } from "@/builder/modules/generator";
-import { type Flip } from "@/builder/modules/renderers/drawTexture";
-import { type TabOrientation } from "@/builder/modules/renderers/drawTab";
+import { type Generator } from "@genroot/builder/modules/generator";
+import { type Flip } from "@genroot/builder/modules/renderers/drawTexture";
+import { type TabOrientation } from "@genroot/builder/modules/renderers/drawTab";
 import {
   type Cuboid,
   type Rectangle,
@@ -297,10 +297,10 @@ export class Minecraft {
       side === "North"
         ? [x, y - size, w, size]
         : side === "East"
-        ? [x + w, y, size, h]
-        : side === "South"
-        ? [x, y + h, w, size]
-        : [x - size, y, size, h];
+          ? [x + w, y, size, h]
+          : side === "South"
+            ? [x, y + h, w, size]
+            : [x - size, y, size, h];
     this.generator.drawTab(tabRect, side, showFoldLine, tabAngle);
   }
 

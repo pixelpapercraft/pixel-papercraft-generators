@@ -226,7 +226,12 @@ function writeTileTypeScript(
   const code = `
     // This is a generated file
 
-    import { type TextureDef } from "@/builder/modules/generatorDef";
+    type TextureDef = {
+      id: string;
+      url: string;
+      standardWidth: number;
+      standardHeight: number;
+    };
 
     import image from "./${base}";
 

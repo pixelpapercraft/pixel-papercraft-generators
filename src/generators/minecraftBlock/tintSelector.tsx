@@ -1,12 +1,12 @@
 import React from "react";
 import { type Tint, tintGroups, tints } from "./tints";
-import { hexToRGB } from "@/builder/modules/renderers/drawTexture";
+import { hexToRGB } from "@genroot/builder/modules/renderers/drawTexture";
 import {
   type SelectOptionGroup,
   type SelectOption,
   type SelectOptionOrGroup,
   Select,
-} from "@/builder/ui/form/select";
+} from "@genroot/builder/ui/form/select";
 
 type SelectedTint =
   | { kind: "NoTint" }

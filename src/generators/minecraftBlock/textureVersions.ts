@@ -1,14 +1,14 @@
-import { type TextureDef } from "@/builder/modules/generatorDef";
+import { type TextureDef } from "@genroot/builder/modules/generatorDef";
 import {
   type TextureData,
   type TextureFrame,
   tilesToTextureFrames,
-} from "@/builder/modules/textureData";
+} from "@genroot/builder/modules/textureData";
 
-import * as Texture_1_7_10_Blocks from "@/textures/texture_minecraft_1_7_10_blocks";
-import * as Texture_1_13_2_Blocks from "@/textures/texture_minecraft_1_13_2_blocks";
-import * as Texture_1_18_2_Blocks from "@/textures/texture_minecraft_1_18_2_blocks";
-import * as Texture_1_20_4_Blocks from "@/textures/texture_minecraft_1_20_4_blocks";
+import * as Texture_1_7_10_Blocks from "@genroot/textures/texture_minecraft_1_7_10_blocks";
+import * as Texture_1_13_2_Blocks from "@genroot/textures/texture_minecraft_1_13_2_blocks";
+import * as Texture_1_18_2_Blocks from "@genroot/textures/texture_minecraft_1_18_2_blocks";
+import * as Texture_1_20_4_Blocks from "@genroot/textures/texture_minecraft_1_20_4_blocks";
 
 const definitions: [TextureData, number][] = [
   [Texture_1_7_10_Blocks.data, 16],

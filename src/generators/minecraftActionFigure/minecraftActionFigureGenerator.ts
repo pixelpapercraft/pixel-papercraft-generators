@@ -7,8 +7,8 @@ import type {
   ThumbnailDef,
   TextureDef,
   ScriptDef,
-} from "@/builder/modules/generatorDef";
-import { type Generator } from "@/builder/modules/generator";
+} from "@genroot/builder/modules/generatorDef";
+import { type Generator } from "@genroot/builder/modules/generator";
 
 import thumbnailImage from "./thumbnail/thumbnail-256.jpeg";
 import backgroundAlexImage from "./images/Backgroundalex.png";

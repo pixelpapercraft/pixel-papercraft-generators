@@ -1,4 +1,4 @@
-import { type GeneratorDef } from "@/builder/modules/generatorDef";
+import { type GeneratorDef } from "@genroot/builder/modules/generatorDef";
 
 export function History({ generatorDef }: { generatorDef: GeneratorDef }) {
   return (

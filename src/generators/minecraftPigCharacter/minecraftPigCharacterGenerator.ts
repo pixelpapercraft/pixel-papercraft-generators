@@ -7,8 +7,11 @@ import type {
   TextureDef,
   ScriptDef,
   ThumbnailDef,
-} from "@/builder/modules/generatorDef";
-import { type Generator, type RegionLegacy } from "@/builder/modules/generator";
+} from "@genroot/builder/modules/generatorDef";
+import {
+  type Generator,
+  type RegionLegacy,
+} from "@genroot/builder/modules/generator";
 
 import thumbnailImage from "./thumbnail/v2-thumbnail-256.jpeg";
 import backgroundSprites from "./images/background-sprites.png";
