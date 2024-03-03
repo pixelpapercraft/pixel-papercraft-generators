@@ -1,12 +1,15 @@
-import { type DrawTextureOptions } from "@/builder/modules/renderers/drawTexture";
+import {
+  type DrawTextureOptions,
+  type Blend,
+} from "@/builder/modules/renderers/drawTexture";
 import { type Generator, type Region } from "@/builder/modules/generator";
 import { currentBlockTextureId } from "./constants";
 import {
-  type SelectedTexture,
-  decodeSelectedTexture,
-  decodeSelectedTextures,
-  encodeSelectedTextures,
-} from "@/builder/ui/texturePicker/selectedTexture";
+  type SelectedTextureWithBlend,
+  decodeSelectedTextureWithBlend,
+  decodeSelectedTextureWithBlendArray,
+  encodeSelectedTextureWithBlendArray,
+} from "./selectedTextureWithBlend";
 
 export function defineInputRegion(
   generator: Generator,
@@ -19,17 +22,18 @@ export function defineInputRegion(
     );
 
     const selectedTexture = selectedTextureJson
-      ? decodeSelectedTexture(selectedTextureJson)
+      ? decodeSelectedTextureWithBlend(selectedTextureJson)
       : null;
 
     if (selectedTexture) {
       const curentFaceTexturesJson = generator.getStringInputValue(faceId);
       const currentFaceTextures = curentFaceTexturesJson
-        ? decodeSelectedTextures(curentFaceTexturesJson)
+        ? decodeSelectedTextureWithBlendArray(curentFaceTexturesJson)
         : [];
 
       const newFaceTextures = currentFaceTextures.concat([selectedTexture]);
-      const newFaceTexturesJson = encodeSelectedTextures(newFaceTextures);
+      const newFaceTexturesJson =
+        encodeSelectedTextureWithBlendArray(newFaceTextures);
       generator.setStringInputValue(faceId, newFaceTexturesJson);
     }
   });
@@ -37,12 +41,16 @@ export function defineInputRegion(
 
 function drawTexture(
   generator: Generator,
-  face: SelectedTexture,
+  face: SelectedTextureWithBlend,
   source: Region,
   destination: Region,
   options?: DrawTextureOptions
 ) {
-  const { textureDefId, frame, rotation } = face;
+  if (!face.selectedTexture) {
+    return;
+  }
+
+  const { textureDefId, frame, rotation } = face.selectedTexture;
   const [dx, dy, dw, dh] = destination;
 
   const [sx, sy, sw, sh] = source;
@@ -79,9 +87,14 @@ function drawTexture(
     }
   })();
 
+  const blend: Blend | undefined = face.blend
+    ? { kind: "MultiplyHex", hex: face.blend }
+    : undefined;
+
   const optionsWithRotate: DrawTextureOptions = {
     ...options,
     rotate,
+    blend,
   };
 
   generator.drawTexture(
@@ -101,8 +114,8 @@ export function drawFace(
 ) {
   const faceTexturesJson = generator.getStringInputValue(faceId);
   if (faceTexturesJson) {
-    const faceTextures = decodeSelectedTextures(faceTexturesJson);
-    faceTextures.forEach((selectedTexture: SelectedTexture) => {
+    const faceTextures = decodeSelectedTextureWithBlendArray(faceTexturesJson);
+    faceTextures.forEach((selectedTexture: SelectedTextureWithBlend) => {
       drawTexture(generator, selectedTexture, source, destination, options);
     });
   }

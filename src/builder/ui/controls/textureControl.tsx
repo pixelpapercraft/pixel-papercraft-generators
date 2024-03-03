@@ -1,7 +1,7 @@
 import React from "react";
 
 import { type Texture, makeTextureFromUrl } from "@/builder/modules/texture";
-import { type SelectChoice, Select } from "../form/select";
+import { type SelectOption, Select } from "../form/select";
 
 export function TextureControl({
   id,
@@ -38,12 +38,12 @@ export function TextureControl({
     fileReader.readAsDataURL(file);
   };
 
-  const onChoiceChange = (choice: SelectChoice) => {
+  const onChoiceChange = (choice: SelectOption) => {
     const texture = textures.get(choice.id) ?? null;
     onChange(texture);
   };
 
-  const selectChoices: SelectChoice[] =
+  const selectChoices: SelectOption[] =
     choices.length > 0
       ? [
           { id: "", label: "None" },

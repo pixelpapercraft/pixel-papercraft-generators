@@ -1,79 +1,29 @@
 import React from "react";
-import { type Tint, tints } from "./tints";
+import { type Tint, tintGroups, tints } from "./tints";
 import { hexToRGB } from "@/builder/modules/renderers/drawTexture";
-
-// module Builder = Generator.Builder
-
-// module Icon = Generator_Icon
-// module Textures = MinecraftBlock_Textures
-// module Face = MinecraftBlock_Face
-// module Tints = MinecraftBlock_Tints
-
-// type useState<'a> = ('a, ('a => 'a) => unit)
-
-//   type selectedTint = NoTint | CustomTint | HexTint(string)
+import {
+  type SelectOptionGroup,
+  type SelectOption,
+  type SelectOptionOrGroup,
+  Select,
+} from "@/builder/ui/form/select";
 
 type SelectedTint =
   | { kind: "NoTint" }
-  | { kind: "CustomTint" }
-  | { kind: "HexTint"; hex: string };
+  | { kind: "CustomTint"; hex: string | null }
+  | { kind: "SelectedTint"; hex: string };
 
-// module TintSelector = {
-
-//   let makeOptions = tints => {
-//     tints
-//     ->Belt.Array.mapWithIndex((index1, {biomes, color}: Tints.tint) => {
-//       biomes->Belt.Array.mapWithIndex((index2, biome) => {
-//         let key = Js.Int.toString(index1) ++ "-" ++ Js.Int.toString(index2)
-//         <option key={key} value={color}> {biome->React.string} </option>
-//       })
-//     })
-//     ->Belt.Array.concatMany
-//     ->React.array
-//   }
-
-function makeOptions(tints: Tint[]) {
-  return tints.flatMap((tint, index1) => {
-    return tint.biomes.map((biome, index2) => {
-      const key = `${index1}-${index2}`;
-      return (
-        <option key={key} value={tint.color}>
-          {biome}
-        </option>
-      );
-    });
+function makeOptions(tints: Tint[]): SelectOption[] {
+  return tints.map((tint) => {
+    const choice: SelectOption = { id: tint.id, label: tint.biome };
+    return choice;
   });
 }
-
-//   let isValidTint = tint => {
-//     switch Generator_Texture.hexToRGB(tint) {
-//     | None => false
-//     | Some(_) => true
-//     }
-//   }
 
 function isValidTint(tint: string): boolean {
   const value = hexToRGB(tint);
   return value !== null;
 }
-
-//   let normalizeTint = tint => {
-//     let tint = Js.String2.trim(tint)
-//     if Js.String2.length(tint) === 0 {
-//       None
-//     } else {
-//       let tint = if Js.String2.startsWith(tint, "#") {
-//         tint
-//       } else {
-//         "#" ++ tint
-//       }
-//       if isValidTint(tint) {
-//         Some(tint)
-//       } else {
-//         None
-//       }
-//     }
-//   }
 
 function normalizeTint(tint: string): string | null {
   const trimmed = tint.trim();
@@ -89,177 +39,125 @@ function normalizeTint(tint: string): string | null {
   }
 }
 
-//   @react.component
-//   let make = (~onChange) => {
-//     let (selectedTint, setSelectedTint) = React.useState(() => NoTint)
-//     let (customTint, setCustomTint) = React.useState(() => None)
+const noneChoice: SelectOption = { id: "None", label: "No tint" };
 
-//     let onSelectChange = e => {
-//       let target = ReactEvent.Form.target(e)
-//       let tint = switch target["value"] {
-//       | None => NoTint
-//       | Some(value) =>
-//         switch value {
-//         | "None" => NoTint
-//         | "Custom" => CustomTint
-//         | _ => HexTint(value)
-//         }
-//       }
-//       setSelectedTint(_ => tint)
-//       switch tint {
-//       | NoTint => onChange(None)
-//       | CustomTint => onChange(None)
-//       | HexTint(value) => onChange(Some(value))
-//       }
-//     }
+const customChoice: SelectOption = { id: "Custom", label: "Custom tint" };
 
-//     let onInputChange = e => {
-//       let target = ReactEvent.Form.target(e)
-//       let tint = switch target["value"] {
-//       | None => None
-//       | Some(tint) => normalizeTint(tint)
-//       }
-//       setCustomTint(_ => tint)
-//       switch tint {
-//       | None => ()
-//       | Some(value) => onChange(Some(value))
-//       }
-//     }
+const grassChoices: SelectOptionGroup = {
+  id: "Grass",
+  label: "Grass",
+  options: makeOptions(tintGroups.grass),
+};
+const foliageChoices: SelectOptionGroup = {
+  id: "Foliage",
+  label: "Foliage",
+  options: makeOptions(tintGroups.foliage),
+};
+const waterChoices: SelectOptionGroup = {
+  id: "Water",
+  label: "Water",
+  options: makeOptions(tintGroups.water),
+};
 
-//     let color = switch selectedTint {
-//     | NoTint => None
-//     | CustomTint => customTint
-//     | HexTint(color) => Some(color)
-//     }
+const choices: SelectOptionOrGroup[] = [
+  noneChoice,
+  customChoice,
+  grassChoices,
+  foliageChoices,
+  waterChoices,
+];
 
-//     <div className="flex">
-//       <select
-//         placeholder="Tint"
-//         onChange={onSelectChange}
-//         className="border border-gray-300 rounded text-gray-600 h-8 pl-5 pr-10 mr-4 bg-white hover:border-gray-400 focus:outline-none appearance-none">
-//         <option value="None"> {"No tint"->React.string} </option>
-//         <option value="Custom"> {"Custom tint"->React.string} </option>
-//         <optgroup key="grass" label="Grass"> {makeOptions(Tints.tints.grass)} </optgroup>
-//         <optgroup key="foliage" label="Foliage"> {makeOptions(Tints.tints.foliage)} </optgroup>
-//         <optgroup key="water" label="Water"> {makeOptions(Tints.tints.water)} </optgroup>
-//       </select>
-//       {switch selectedTint {
-//       | CustomTint =>
-//         <div>
-//           <span> {"#"->React.string} </span>
-//           <input
-//             className="border border-gray-300 rounded text-gray-600 h-8 px-5 mr-4 bg-white"
-//             onChange={onInputChange}
-//           />
-//         </div>
-//       | _ => React.null
-//       }}
-//       {switch color {
-//       | None => React.null
-//       | Some(color) =>
-//         <div>
-//           <div className="border w-8 h-8" style={ReactDOM.Style.make(~backgroundColor=color, ())} />
-//         </div>
-//       }}
-//     </div>
-//   }
-// }
+function getTintFromOption(option: SelectOption): SelectedTint {
+  switch (option.id) {
+    case "None":
+      return { kind: "NoTint" };
+    case "Custom":
+      return { kind: "CustomTint", hex: null };
+    default: {
+      const tint = tints.find((tint) => tint.id === option.id);
+      if (!tint) {
+        return { kind: "NoTint" };
+      }
+      return { kind: "SelectedTint", hex: tint.color };
+    }
+  }
+}
 
-export function TintSelector(props: {
-  onChange: (tint: string | null) => void;
+function getColorFromSelectedTint(selectedTint: SelectedTint): string | null {
+  switch (selectedTint.kind) {
+    case "NoTint":
+      return null;
+    case "CustomTint":
+      return selectedTint.hex;
+    case "SelectedTint":
+      return selectedTint.hex;
+  }
+}
+
+type TintSelectorState = {
+  selectedOption: SelectOption;
+  selectedTint: SelectedTint;
+  color: string | null;
+};
+
+export function TintSelector({
+  onChange,
+}: {
+  onChange: (hex: string | null) => void;
 }) {
-  const [selectedTint, setSelectedTint] = React.useState<SelectedTint>({
-    kind: "NoTint",
+  const [state, setState] = React.useState<TintSelectorState>({
+    selectedOption: noneChoice,
+    selectedTint: { kind: "NoTint" },
+    color: null,
   });
-  const [customTint, setCustomTint] = React.useState<string | null>(null);
 
-  const onSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value;
-    let tint: SelectedTint;
-    switch (value) {
-      case "None":
-        tint = { kind: "NoTint" };
-        break;
-      case "Custom":
-        tint = { kind: "CustomTint" };
-        break;
-      default:
-        tint = { kind: "HexTint", hex: value };
-        break;
-    }
-    setSelectedTint(tint);
-    switch (tint.kind) {
-      case "NoTint":
-        props.onChange(null);
-        break;
-      case "CustomTint":
-        props.onChange(null);
-        break;
-      case "HexTint":
-        props.onChange(tint.hex);
-        break;
-    }
-  };
+  const { selectedTint, selectedOption, color } = state;
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    const tint = normalizeTint(value);
-    setCustomTint(tint);
-    switch (tint) {
-      case null:
-        break;
-      default:
-        props.onChange(tint);
-        break;
+    const color = normalizeTint(value);
+    const selectedOption = customChoice;
+    const selectedTint: SelectedTint = { kind: "CustomTint", hex: color };
+    setState({ selectedOption, selectedTint, color });
+    if (color) {
+      onChange(color);
     }
   };
 
-  const color = (() => {
-    switch (selectedTint.kind) {
-      case "NoTint":
-        return null;
-      case "CustomTint":
-        return customTint;
-      case "HexTint":
-        return selectedTint.hex;
-    }
-  })();
-
   return (
-    <div className="flex">
-      <select
-        // placeholder="Tint"
-        onChange={onSelectChange}
-        className="border border-gray-300 rounded text-gray-600 h-8 pl-5 pr-10 mr-4 bg-white hover:border-gray-400 focus:outline-none appearance-none"
-      >
-        <option value="None">No tint</option>
-        <option value="Custom">Custom tint</option>
-        <optgroup key="grass" label="Grass">
-          {makeOptions(tints.grass)}
-        </optgroup>
-        <optgroup key="foliage" label="Foliage">
-          {makeOptions(tints.foliage)}
-        </optgroup>
-        <optgroup key="water" label="Water">
-          {makeOptions(tints.water)}
-        </optgroup>
-      </select>
+    <div>
+      <div className="font-bold mb-1">Tint</div>
+      <div className="flex space-x-4">
+        <Select
+          choices={choices}
+          value={selectedOption}
+          onChange={(selectedOption) => {
+            const selectedTint = getTintFromOption(selectedOption);
+            if (selectedTint) {
+              const color = getColorFromSelectedTint(selectedTint);
+              setState({ selectedOption, selectedTint, color });
+              onChange(color);
+            }
+          }}
+        />
 
-      {selectedTint.kind === "CustomTint" ? (
-        <div>
-          <span>#</span>
-          <input
-            className="border border-gray-300 rounded text-gray-600 h-8 px-5 mr-4 bg-white"
-            onChange={onInputChange}
-          />
-        </div>
-      ) : null}
+        {selectedTint.kind === "CustomTint" ? (
+          <div>
+            <span className="mr-1">#</span>
+            <input
+              placeholder="Enter hex color"
+              className="p-2 border border-gray-300"
+              onChange={onInputChange}
+            />
+          </div>
+        ) : null}
 
-      {color ? (
-        <div>
-          <div className="border w-8 h-8" style={{ backgroundColor: color }} />
-        </div>
-      ) : null}
+        {color ? (
+          <div className="border bg-white p-1">
+            <div className="w-8 h-8" style={{ backgroundColor: color }} />
+          </div>
+        ) : null}
+      </div>
     </div>
   );
 }

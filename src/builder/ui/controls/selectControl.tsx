@@ -1,5 +1,5 @@
 import React from "react";
-import { type SelectChoice, Select } from "../form/select";
+import { type SelectOption, Select } from "../form/select";
 
 export function SelectControl({
   id,
@@ -12,11 +12,11 @@ export function SelectControl({
   value: string;
   onChange: (value: string) => void;
 }) {
-  const onSelectChange = (choice: SelectChoice) => {
+  const onSelectChange = (choice: SelectOption) => {
     onChange(choice.id);
   };
 
-  const selectChoices: SelectChoice[] = options.map((option) => ({
+  const selectChoices: SelectOption[] = options.map((option) => ({
     id: option,
     label: option,
   }));

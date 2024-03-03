@@ -1,24 +1,35 @@
 import { TexturePicker as BuilderTexturePicker } from "@/builder/ui/texturePicker/texturePicker";
 import { type SelectedTexture } from "@/builder/ui/texturePicker/selectedTexture";
+import { TintSelector } from "./tintSelector";
 import { findVersion } from "./textureVersions";
 
-export function TexturePicker(props: {
+export function TexturePicker({
+  versionId,
+  onBlendSelected,
+  onTextureSelected,
+}: {
   versionId: string;
-  onSelect: (texture: SelectedTexture) => void;
+  onTextureSelected: (texture: SelectedTexture) => void;
+  onBlendSelected: (blend: string | null) => void;
 }): JSX.Element | null {
-  const textureVersion = findVersion(props.versionId);
+  const textureVersion = findVersion(versionId);
   if (!textureVersion) {
     return null;
   }
   const { textureDef, frames } = textureVersion;
   return (
-    <div className="mb-4">
-      <BuilderTexturePicker
-        textureDef={textureDef}
-        frames={frames}
-        onSelect={props.onSelect}
-        enableRotation={true}
-      />
+    <div>
+      <div className="mb-8">
+        <BuilderTexturePicker
+          textureDef={textureDef}
+          frames={frames}
+          onSelect={onTextureSelected}
+          enableRotation={true}
+        />
+      </div>
+      <div className="mb-4">
+        <TintSelector onChange={onBlendSelected} />
+      </div>
     </div>
   );
 }
