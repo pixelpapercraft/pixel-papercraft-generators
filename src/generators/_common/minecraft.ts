@@ -123,7 +123,7 @@ export type Center = "Right" | "Front" | "Left" | "Back" | "Top" | "Bottom";
 
 function makeDest([w, h, d]: Dimensions, orientation: Orientation): Dest {
   switch (orientation) {
-    case "East":
+    case "West":
       return {
         top: makeFace([d, 0, w, d]),
         right: makeFace([0, d, d, h]),
@@ -132,7 +132,7 @@ function makeDest([w, h, d]: Dimensions, orientation: Orientation): Dest {
         back: makeFace([d + w + d, d, w, h]),
         bottom: makeFace([d, d + h, w, d]),
       };
-    case "West":
+    case "East":
       return {
         top: makeFace([w + d, 0, w, d]),
         back: makeFace([0, d, w, h]),
@@ -141,7 +141,7 @@ function makeDest([w, h, d]: Dimensions, orientation: Orientation): Dest {
         left: makeFace([w + d + w, d, d, h]),
         bottom: makeFace([w + d, d + h, w, d]),
       };
-    case "North":
+    case "South":
       return {
         back: rotateFace(makeFace([d, 0, w, h]), 180),
         top: makeFace([d, h, w, d]),
@@ -150,7 +150,7 @@ function makeDest([w, h, d]: Dimensions, orientation: Orientation): Dest {
         left: makeFace([d + w, h + d, d, h]),
         bottom: makeFace([d, h * 2 + d, w, d]),
       };
-    case "South":
+    case "North":
       return {
         top: makeFace([d, 0, w, d]),
         right: makeFace([0, d, d, h]),
@@ -179,13 +179,34 @@ function adjustDimensionsForCenter(
   }
 }
 
+function adjustOrientationForFlip(
+  orientation: Orientation,
+  flip: Flip
+): Orientation {
+  switch ([flip, orientation]) {
+    case ["Horizontal", "West"]:
+      return "East";
+    case ["Horizontal", "East"]:
+      return "West";
+    case ["Vertical", "South"]:
+      return "North";
+    case ["Vertical", "North"]:
+      return "South";
+    default:
+      return orientation;
+  }
+}
+
 function setLayout(
   dimensions: Dimensions,
   orientation: Orientation,
-  center: Center
+  center: Center,
+  flip: Flip,
+  rotate: number
 ): Dest {
   const dimensionsAdjusted = adjustDimensionsForCenter(dimensions, center);
-  const dest = makeDest(dimensionsAdjusted, orientation);
+  const orientationAdjusted = adjustOrientationForFlip(orientation, flip);
+  const dest = makeDest(dimensionsAdjusted, orientationAdjusted);
   switch (center) {
     case "Right":
       return {
@@ -262,10 +283,13 @@ export class Minecraft {
     position: Position,
     dimensions: Dimensions,
     orientation: Orientation = "East",
-    center: Center = "Front"
+    center: Center = "Front",
+    flip: Flip = "None",
+    rotate: number = 0
+    //blend: Blend = "None"
   ) {
     const dest = translateDest(
-      setLayout(dimensions, orientation, center),
+      setLayout(dimensions, orientation, center, flip, rotate),
       position
     );
     this.drawFaceTexture(textureId, source.front, dest.front);
