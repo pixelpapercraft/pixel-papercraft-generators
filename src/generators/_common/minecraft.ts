@@ -117,12 +117,12 @@ function translateDest(dest: Dest, position: Position): Dest {
   };
 }
 
-export type Direction = "East" | "West" | "North" | "South";
+export type Orientation = "East" | "West" | "North" | "South";
 
 export type Center = "Right" | "Front" | "Left" | "Back" | "Top" | "Bottom";
 
-function makeDest([w, h, d]: Dimensions, direction: Direction): Dest {
-  switch (direction) {
+function makeDest([w, h, d]: Dimensions, orientation: Orientation): Dest {
+  switch (orientation) {
     case "East":
       return {
         top: makeFace([d, 0, w, d]),
@@ -181,11 +181,11 @@ function adjustDimensionsForCenter(
 
 function setLayout(
   dimensions: Dimensions,
-  direction: Direction,
+  orientation: Orientation,
   center: Center
 ): Dest {
   const dimensionsAdjusted = adjustDimensionsForCenter(dimensions, center);
-  const dest = makeDest(dimensionsAdjusted, direction);
+  const dest = makeDest(dimensionsAdjusted, orientation);
   switch (center) {
     case "Right":
       return {
@@ -261,11 +261,11 @@ export class Minecraft {
     source: Cuboid,
     position: Position,
     dimensions: Dimensions,
-    direction: Direction = "East",
+    orientation: Orientation = "East",
     center: Center = "Front"
   ) {
     const dest = translateDest(
-      setLayout(dimensions, direction, center),
+      setLayout(dimensions, orientation, center),
       position
     );
     this.drawFaceTexture(textureId, source.front, dest.front);
