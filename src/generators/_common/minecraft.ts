@@ -44,7 +44,7 @@ function rotateOnAxis(face: Face, axis: Position, r: number): Face {
 }
 
 //add rotate values
-function rotate(face: Face, r: number): Face {
+export function rotateFace(face: Face, r: number): Face {
   const r0 = face.flip == "None" ? r + face.rotate : face.rotate - r;
   return {
     rectangle: face.rectangle,
@@ -54,15 +54,37 @@ function rotate(face: Face, r: number): Face {
 }
 
 // rotate in relation to its own center. Uses rotateOnAxis with the axis as the face's center.
-export function rotateFace(face: Face, r: number): Face {
-  const [x, y, w, h] = face.rectangle;
+export function rotateLocalFace(face: Face): Face {
+  let { rectangle, flip, rotate } = face;
+  let [x, y, w, h] = rectangle;
+
+  face =
+    rotate >= 360
+      ? rotateOnAxis(
+          { rectangle, flip, rotate: 0 },
+          [x - w / 2, y - h / 2],
+          rotate
+        )
+      : rotateOnAxis(
+          { rectangle, flip, rotate: 0 },
+          [x + w / 2, y + h / 2],
+          rotate
+        );
+
+  // If the face is rotated 90 or 270 degrees, then the height and width values will need to be swapped, and the corner moved to its correct position.
+
+  switch ((rotate + 360) % 360) {
+    case 90:
+      rectangle = [x + (w - h) / 2, y + (w - h) / 2, h, w];
+
+    case 270:
+      rectangle = [x - (w - h) / 2, y - (w - h) / 2, h, w];
+  }
+
   return {
-    rectangle:
-      (r + 360) % 180 === 90
-        ? [x + (w - h) / 2, y - (w - h) / 2, h, w]
-        : [x, y, w, h],
-    flip: face.flip,
-    rotate: face.rotate + r,
+    rectangle: rectangle,
+    flip: flip,
+    rotate: rotate,
   };
 }
 
@@ -84,7 +106,7 @@ export function flipFace(
       newRotate = 180;
     }
   }
-  return rotate(
+  return rotateFace(
     { rectangle: face.rectangle, flip: newFlip, rotate: face.rotate },
     newRotate
   );
