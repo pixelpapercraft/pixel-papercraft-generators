@@ -305,7 +305,36 @@ function adjustDestCenter(dest: Dest, center: Center): Dest {
 }
 
 function destRotateFaces(dest: Dest): Dest {
-  return dest;
+  return {
+    right: rotateLocalFace(dest.right),
+    front: rotateLocalFace(dest.front),
+    left: rotateLocalFace(dest.left),
+    back: rotateLocalFace(dest.back),
+    top: rotateLocalFace(dest.top),
+    bottom: rotateLocalFace(dest.bottom),
+  };
+}
+
+function getAxis([w, h, d]: Dimensions, orientation: Orientation): Position {
+  switch (orientation) {
+    case "East":
+      return [d + w * 1.5, d + h / 2];
+    case "South":
+      return [d + w / 2, d + h * 1.5];
+    default:
+      return [d + w / 2, d + h / 2];
+  }
+}
+
+function rotateCuboid(dest: Dest, axis: Position, rotate: number): Dest {
+  return {
+    right: rotateOnAxis(dest.right, axis, rotate),
+    front: rotateOnAxis(dest.front, axis, rotate),
+    left: rotateOnAxis(dest.left, axis, rotate),
+    back: rotateOnAxis(dest.back, axis, rotate),
+    top: rotateOnAxis(dest.top, axis, rotate),
+    bottom: rotateOnAxis(dest.bottom, axis, rotate),
+  };
 }
 
 function setLayout(
@@ -336,6 +365,8 @@ function setLayout(
   //actually rotate the faces
   dest = destRotateFaces(dest);
   // Rotate the destination by the given rotation, with the center of the center face as the axis
+  const axis = getAxis(dimensionsAdjusted, orientationAdjusted);
+  dest = rotateCuboid(dest, axis, rotate);
 
   // Return the destination with faces blended
   return dest;
