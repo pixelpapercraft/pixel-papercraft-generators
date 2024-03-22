@@ -356,23 +356,20 @@ const script: ScriptDef = (generator: Generator) => {
     }
   }
 
-  /*function drawNotch([ox, oy]: [number, number], isLeftSide: boolean) {
-    const dir = isLeftSide ? 1 : 0
-    const [x, y, w, h] = [ox + dir, oy, 8, 24]
+  function drawNotch([ox, oy]: [number, number], isLeftSide: boolean) {
+    const dir = isLeftSide ? 1 : 0;
+    const [x, y, w, h] = [ox + dir, oy, 8, 24];
 
-    const color = "#7b7b7b"
+    const color = "#7b7b7b";
     //Generator.fillRect((x - dir, y, w, h), "#ff0000")
-    generator.drawLine((x, y - 1), (x + w - 1, y - 1), ~color)
-    generator.drawLine(
-      (x + w - 10 * dir, y),
-      (x + w - 10 * dir, y + h),
-      ~color,
-      ~pattern=[7, 1],
-      (),
-    )
-    generator.drawLine((x + w - 1, y + h + 1), (x, y + h + 1), ~color)
+    generator.drawLine([x, y - 1], [x + w - 1, y - 1], { color });
+    generator.drawLine([x + w - 10 * dir, y], [x + w - 10 * dir, y + h], {
+      color,
+      lineDash: [7, 1],
+    });
+    generator.drawLine([x + w - 1, y + h + 1], [x, y + h + 1], { color });
     //Generator.drawFoldLine((x, y + h), (x, y))
-  } */
+  }
 
   // The foreground was designed on a 32px grid with an offset of (9, 5) that makes the cells more centered. This function makes finding the [ox, oy] much easier as you only need to count the cells instead of find the actual coordinates.
   function getGridOrigin(x: number, y: number): [number, number] {
@@ -516,19 +513,19 @@ const script: ScriptDef = (generator: Generator) => {
   }
 
   // Hand Notches
-  /*if handNotches {
+  if (handNotches) {
     // Right Hand Notches
-    const [ox, oy] = getGridOrigin(1, 10)
-    const [ox, oy] = (isAlexModel ? ox + 4 : ox, oy)
-    drawNotch((ox + 44, oy + 104), false) // Front Notch
-    drawNotch((ox + (isAlexModel ? 100 : 108), oy + 104), true) // Back Notch
+    [ox, oy] = getGridOrigin(1, 10);
+    [ox, oy] = [isAlexModel ? ox + 4 : ox, oy];
+    drawNotch([ox + 44, oy + 104], false); // Front Notch
+    drawNotch([ox + (isAlexModel ? 100 : 108), oy + 104], true); // Back Notch
 
     // Left Hand Notches
-    const [ox, oy] = getGridOrigin(13, 10)
-    const [ox, oy] = (isAlexModel ? ox + 4 : ox, oy)
-    drawNotch((ox + (isAlexModel ? 68 : 76), oy + 104), true) // Front Notch
-    drawNotch((ox + 12, oy + 104), false) // Back Notch
-  } */
+    [ox, oy] = getGridOrigin(13, 10);
+    [ox, oy] = [isAlexModel ? ox + 4 : ox, oy];
+    drawNotch([ox + (isAlexModel ? 68 : 76), oy + 104], true); // Front Notch
+    drawNotch([ox + 12, oy + 104], false); // Back Notch
+  }
 
   // Labels
   if (showLabels) {

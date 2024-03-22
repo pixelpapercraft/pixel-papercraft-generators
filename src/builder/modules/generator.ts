@@ -1,6 +1,7 @@
 import { type TextureInputControlProps } from "./modelControls";
 import { type Model } from "./model";
 import {
+  type Position,
   type Region,
   type RegionLegacy,
   type Rectangle,
@@ -10,9 +11,11 @@ import {
   type DrawRectangeOptions,
   drawRectangle,
 } from "./renderers/drawRectangle";
+import { type LineProps, drawLine } from "./renderers/drawLine";
 import { type TabOrientation, drawTab } from "./renderers/drawTab";
 import { fillBackgroundColor } from "./renderers/fillBackgroundColor";
 import { type Page } from "./modelPage";
+//import { Position } from "postcss";
 
 export type * from "./renderers/types";
 export type * from "./modelPage";
@@ -201,6 +204,11 @@ export class Generator {
     options?: DrawTextureOptions
   ): void {
     this.drawTexture(id, [sx, sy, sw, sh], [dx, dy, dw, dh], options);
+  }
+
+  drawLine(p1: Position, p2: Position, options?: LineProps): void {
+    const currentPage = this.getCurrentPage();
+    drawLine(currentPage.canvasWithContext, p1, p2, options);
   }
 
   drawTab(
