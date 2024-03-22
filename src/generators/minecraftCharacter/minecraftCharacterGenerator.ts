@@ -154,33 +154,43 @@ const script: ScriptDef = (generator: Generator) => {
   }
 
   function drawBody([ox, oy]: [number, number]) {
-    const scale: Dimensions = [64, 96, 32];
-    minecraftGenerator.drawCuboid("Skin", char.base.body, [ox, oy], scale);
+    const dimensions: Dimensions = [64, 96, 32];
+    minecraftGenerator.drawCuboid("Skin", char.base.body, [ox, oy], dimensions);
     if (showBodyOverlay) {
-      minecraftGenerator.drawCuboid("Skin", char.overlay.body, [ox, oy], scale);
+      minecraftGenerator.drawCuboid(
+        "Skin",
+        char.overlay.body,
+        [ox, oy],
+        dimensions
+      );
     }
   }
 
   function drawRightArm([ox, oy]: [number, number]) {
-    const scale: Dimensions = char === alex ? [24, 96, 32] : [32, 96, 32];
-    minecraftGenerator.drawCuboid("Skin", char.base.rightArm, [ox, oy], scale);
+    const dimensions: Dimensions = char === alex ? [24, 96, 32] : [32, 96, 32];
+    minecraftGenerator.drawCuboid(
+      "Skin",
+      char.base.rightArm,
+      [ox, oy],
+      dimensions
+    );
     if (showRightArmOverlay) {
       minecraftGenerator.drawCuboid(
         "Skin",
         char.overlay.rightArm,
         [ox, oy],
-        scale
+        dimensions
       );
     }
   }
 
   function drawLeftArm([ox, oy]: [number, number]) {
-    const scale: Dimensions = char === alex ? [24, 96, 32] : [32, 96, 32];
+    const dimensions: Dimensions = char === alex ? [24, 96, 32] : [32, 96, 32];
     minecraftGenerator.drawCuboid(
       "Skin",
       char.base.leftArm,
       [ox, oy],
-      scale,
+      dimensions,
       "East"
     );
     if (showLeftArmOverlay) {
@@ -188,32 +198,37 @@ const script: ScriptDef = (generator: Generator) => {
         "Skin",
         char.overlay.leftArm,
         [ox, oy],
-        scale,
+        dimensions,
         "East"
       );
     }
   }
 
   function drawRightLeg([ox, oy]: [number, number]) {
-    const scale: Dimensions = [32, 96, 32];
-    minecraftGenerator.drawCuboid("Skin", char.base.rightLeg, [ox, oy], scale);
+    const dimensions: Dimensions = [32, 96, 32];
+    minecraftGenerator.drawCuboid(
+      "Skin",
+      char.base.rightLeg,
+      [ox, oy],
+      dimensions
+    );
     if (showRightLegOverlay) {
       minecraftGenerator.drawCuboid(
         "Skin",
         char.overlay.rightLeg,
         [ox, oy],
-        scale
+        dimensions
       );
     }
   }
 
   function drawLeftLeg([ox, oy]: [number, number]) {
-    const scale: Dimensions = [32, 96, 32];
+    const dimensions: Dimensions = [32, 96, 32];
     minecraftGenerator.drawCuboid(
       "Skin",
       char.base.leftLeg,
       [ox, oy],
-      scale,
+      dimensions,
       "East"
     );
     if (showLeftLegOverlay) {
@@ -221,7 +236,7 @@ const script: ScriptDef = (generator: Generator) => {
         "Skin",
         char.overlay.leftLeg,
         [ox, oy],
-        scale,
+        dimensions,
         "East"
       );
     }

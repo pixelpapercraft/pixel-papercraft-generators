@@ -9,15 +9,19 @@ import type {
   ScriptDef,
 } from "@genroot/builder/modules/generatorDef";
 import { type Generator } from "@genroot/builder/modules/generator";
+import { steve, alex } from "../_common/minecraftCharacter";
+import { type Dimensions, Minecraft } from "../_common/minecraft";
 
 import thumbnailImage from "./thumbnail/thumbnail-256.jpeg";
-import backgroundAlexImage from "./images/Backgroundalex.png";
-import backgroundSteveImage from "./images/Backgroundsteve.png";
-import foldsAlexImage from "./images/Foldsalex.png";
-import foldsSteveImage from "./images/Foldssteve.png";
+import foldsAlexImage from "./images/Folds-Alex.png";
+import foldsSteveImage from "./images/Folds-Steve.png";
+import foldsM16Image from "./images/Folds-M16.png";
+import foregroundAlexImage from "./images/Foreground-Alex.png";
+import foregroundSteveImage from "./images/Foreground-Steve.png";
+import foregroundM16Image from "./images/Foreground-M16.png";
 import labelsImage from "./images/Labels.png";
-import notchImage from "./images/Notch.png";
 import skin64x64SteveImage from "./textures/Skin64x64Steve.png";
+import internal from "stream";
 
 const id = "minecraft-action-figure";
 
@@ -29,6 +33,8 @@ const history: HistoryDef = [
   "09 Oct 2020 NinjolasNJM - Tweaked pelvis, bottom of body and leg height.",
   "24 Feb 2021 NinjolasNJM - Moved pelvis so that the leg's pivot point is accurate to the game, changed leg height accordingly.",
   "06 Jun 2021 NinjolasNJM - Converted to ReScript generator.",
+  "02 Feb 2024 NinjolasNJM - Reworked layout, improved notches and added skin input",
+  "22 Mar 2024 NinjolasNJM - Converted to TypeScript Generator.",
 ];
 
 const thumbnail: ThumbnailDef = {
@@ -36,12 +42,13 @@ const thumbnail: ThumbnailDef = {
 };
 
 const images: ImageDef[] = [
-  { id: "Backgroundalex", url: backgroundAlexImage.src },
-  { id: "Backgroundsteve", url: backgroundSteveImage.src },
-  { id: "Foldsalex", url: foldsAlexImage.src },
-  { id: "Foldssteve", url: foldsSteveImage.src },
+  { id: "Folds-Alex", url: foldsAlexImage.src },
+  { id: "Folds-Steve", url: foldsSteveImage.src },
+  { id: "Folds-M16", url: foldsM16Image.src },
+  { id: "Foreground-Alex", url: foregroundAlexImage.src },
+  { id: "Foreground-Steve", url: foregroundSteveImage.src },
+  { id: "Foreground-M16", url: foregroundM16Image.src },
   { id: "Labels", url: labelsImage.src },
-  { id: "Notch", url: notchImage.src },
 ];
 
 const textures: TextureDef[] = [
@@ -54,9 +61,10 @@ const textures: TextureDef[] = [
 ];
 
 const script: ScriptDef = (generator: Generator) => {
+  const minecraftGenerator = new Minecraft(generator);
   // Define user inputs
 
-  generator.defineSelectInput("Skin Model Type", ["Steve", "Alex"]);
+  generator.defineSelectInput("Skin Model", ["Steve", "Alex"]);
 
   generator.defineTextureInput("Skin", {
     standardWidth: 64,
@@ -66,560 +74,461 @@ const script: ScriptDef = (generator: Generator) => {
 
   // Define user variables
 
-  generator.defineBooleanInput("Hand Notches", false);
   generator.defineBooleanInput("Show Folds", true);
   generator.defineBooleanInput("Show Labels", true);
-
+  generator.defineBooleanInput("Hand Notches", true);
   // Get user variable values
+  const isAlexModel = generator.getSelectInputValue("Skin Model") === "Alex";
 
-  const alexModel = generator.getSelectInputValue("Skin Model Type") === "Alex";
-  const handNotches = generator.getBooleanInputValue("Hand Notches");
   const showFolds = generator.getBooleanInputValue("Show Folds");
   const showLabels = generator.getBooleanInputValue("Show Labels");
-  const hideHelmet = generator.getBooleanInputValue("Hide Helmet");
-  const hideJacket = generator.getBooleanInputValue("Hide Jacket");
-  const hideLeftSleeve = generator.getBooleanInputValue("Hide Left Sleeve");
-  const hideRightSleeve = generator.getBooleanInputValue("Hide Right Sleeve");
-  const hideLeftPant = generator.getBooleanInputValue("Hide Left Pant");
-  const hideRightPant = generator.getBooleanInputValue("Hide Right Pant");
+  const handNotches = generator.getBooleanInputValue("Hand Notches");
 
-  // Define regions
+  const showHeadOverlay = generator.getBooleanInputValueWithDefault(
+    "Show Head Overlay",
+    true
+  );
+  const showBodyOverlay = generator.getBooleanInputValueWithDefault(
+    "Show Body Overlay",
+    true
+  );
+  const showLeftArmOverlay = generator.getBooleanInputValueWithDefault(
+    "Show Left Arm Overlay",
+    true
+  );
+  const showRightArmOverlay = generator.getBooleanInputValueWithDefault(
+    "Show Right Arm Overlay",
+    true
+  );
+  const showLeftLegOverlay = generator.getBooleanInputValueWithDefault(
+    "Show Left Leg Overlay",
+    true
+  );
+  const showRightLegOverlay = generator.getBooleanInputValueWithDefault(
+    "Show Right Leg Overlay",
+    true
+  );
 
-  generator.defineRegionInput([10, 534, 192, 256], () => {
-    generator.setBooleanInputValue("Hide Helmet", !hideHelmet);
-  });
-  generator.defineRegionInput([35, 50, 192, 144], () => {
-    generator.setBooleanInputValue("Hide Jacket", !hideJacket);
-  });
-  generator.defineRegionInput([265, 211, 128, 160], () => {
-    generator.setBooleanInputValue("Hide Left Sleeve", !hideLeftSleeve);
-  });
-  generator.defineRegionInput([425, 587, 128, 160], () => {
-    generator.setBooleanInputValue("Hide Right Sleeve", !hideRightSleeve);
-  });
-  generator.defineRegionInput([425, 162, 128, 208], () => {
-    generator.setBooleanInputValue("Hide Left Pant", !hideLeftPant);
-  });
-  generator.defineRegionInput([265, 538, 128, 208], () => {
-    generator.setBooleanInputValue("Hide Right Pant", !hideRightPant);
-  });
+  const m16Mode = generator.getBooleanInputValueWithDefault("M16 Mode", false);
+
+  const char = isAlexModel ? alex : steve;
+
+  function drawHead([ox, oy]: [number, number]) {
+    const dimensions: Dimensions = [64, 64, 64];
+    minecraftGenerator.drawCuboid("Skin", char.base.head, [ox, oy], dimensions);
+    if (showHeadOverlay) {
+      minecraftGenerator.drawCuboid(
+        "Skin",
+        char.overlay.head,
+        [ox, oy],
+        dimensions
+      );
+    }
+  }
+
+  function drawNeck([ox, oy]: [number, number]) {
+    generator.drawTexture("Skin", char.base.head.bottom, [ox, oy, 96, 64]); // Neck
+    if (showHeadOverlay) {
+      generator.drawTexture("Skin", char.overlay.head.bottom, [ox, oy, 96, 64]); // Neck
+    }
+  }
+
+  function drawBody([ox, oy]: [number, number]) {
+    const dimensions: Dimensions = [64, 96, 32];
+    minecraftGenerator.drawCuboid("Skin", char.base.body, [ox, oy], dimensions);
+    generator.drawTexture("Skin", [0, 20, 4, 4], [ox, oy + 128, 32, 32]); // Right Hip
+    generator.drawTexture("Skin", [24, 52, 4, 4], [ox + 96, oy + 128, 32, 32]); // Left Hip
+
+    if (showBodyOverlay) {
+      minecraftGenerator.drawCuboid(
+        "Skin",
+        char.overlay.body,
+        [ox, oy],
+        dimensions
+      );
+    }
+    if (showRightLegOverlay) {
+      generator.drawTexture("Skin", [0, 36, 4, 4], [ox, oy + 128, 32, 32]); // Right Hip
+    }
+    if (showLeftLegOverlay) {
+      generator.drawTexture("Skin", [8, 52, 4, 4], [ox + 96, oy + 128, 32, 32]); // Left Hip
+    }
+  }
+
+  function drawPelvis([ox, oy]: [number, number]) {
+    generator.drawTexture("Skin", char.base.rightLeg.top, [ox, oy, 32, 128]); // Right Pelvis
+    generator.drawTexture("Skin", char.base.leftLeg.top, [
+      ox + 32,
+      oy,
+      32,
+      128,
+    ]); // Left Pelvis
+
+    if (showRightLegOverlay) {
+      generator.drawTexture("Skin", char.overlay.rightLeg.top, [
+        ox,
+        oy,
+        32,
+        128,
+      ]); // Right Pelvis
+    }
+
+    if (showLeftLegOverlay) {
+      generator.drawTexture("Skin", char.overlay.leftLeg.top, [
+        ox + 32,
+        oy,
+        32,
+        128,
+      ]); // Left Pelvis
+    }
+  }
+
+  function drawRightArm([ox, oy]: [number, number]) {
+    const dimensions: Dimensions = char === alex ? [24, 96, 32] : [32, 96, 32];
+    minecraftGenerator.drawCuboid(
+      "Skin",
+      char.base.rightArm,
+      [ox, oy],
+      dimensions
+    );
+    if (showRightArmOverlay) {
+      minecraftGenerator.drawCuboid(
+        "Skin",
+        char.overlay.rightArm,
+        [ox, oy],
+        dimensions
+      );
+    }
+  }
+
+  function drawRightShoulder([ox, oy]: [number, number]) {
+    generator.drawTexture(
+      "Skin",
+      [char === alex ? 47 : 48, 20, 4, 4],
+      [ox, oy + 15, 32, 32]
+    ); //Right Shoulder Inside
+    generator.drawTexture(
+      "Skin",
+      [char === alex ? 47 : 48, 20, 4, 4],
+      [ox, oy + 49, 32, 32]
+    ); //Right Shoulder
+
+    if (showRightArmOverlay) {
+      generator.drawTexture(
+        "Skin",
+        [char === alex ? 47 : 48, 36, 4, 4],
+        [ox, oy + 15, 32, 32]
+      ); //Right Shoulder Inside
+      generator.drawTexture(
+        "Skin",
+        [char === alex ? 47 : 48, 36, 4, 4],
+        [ox, oy + 49, 32, 32]
+      ); //Right Shoulder
+    }
+  }
+
+  function drawLeftArm([ox, oy]: [number, number]) {
+    const dimensions: Dimensions = char === alex ? [24, 96, 32] : [32, 96, 32];
+    minecraftGenerator.drawCuboid(
+      "Skin",
+      char.base.leftArm,
+      [ox, oy],
+      dimensions,
+      "East"
+    );
+
+    if (showLeftArmOverlay) {
+      minecraftGenerator.drawCuboid(
+        "Skin",
+        char.overlay.leftArm,
+        [ox, oy],
+        dimensions,
+        "East"
+      );
+    }
+  }
+
+  function drawLeftShoulder([ox, oy]: [number, number]) {
+    generator.drawTexture("Skin", [32, 52, 4, 4], [ox, oy + 15, 32, 32]); //Left Shoulder Inside
+    generator.drawTexture("Skin", [32, 52, 4, 4], [ox, oy + 49, 32, 32]); //Left Shoulder
+
+    if (showLeftArmOverlay) {
+      generator.drawTexture("Skin", [48, 52, 4, 4], [ox, oy + 15, 32, 32]); //Left Shoulder Inside
+      generator.drawTexture("Skin", [48, 52, 4, 4], [ox, oy + 49, 32, 32]); //Left Shoulder
+    }
+  }
+
+  function drawRightLeg([ox, oy]: [number, number]) {
+    const dimensions: Dimensions = [32, 96, 32];
+    minecraftGenerator.drawCuboid(
+      "Skin",
+      char.base.rightLeg,
+      [ox, oy],
+      dimensions
+    );
+    generator.drawTexture("Skin", [12, 20, 4, 4], [ox + 32, oy - 50, 32, 32], {
+      rotate: 180,
+    });
+    generator.drawTexture("Skin", char.base.rightLeg.top, [
+      ox + 32,
+      oy - 18,
+      32,
+      50,
+    ]);
+
+    // 50 pixels tall top, so that the back texture is in line with where it should be on the back side
+
+    if (showRightLegOverlay) {
+      minecraftGenerator.drawCuboid(
+        "Skin",
+        char.overlay.rightLeg,
+        [ox, oy],
+        dimensions
+      );
+      generator.drawTexture(
+        "Skin",
+        [12, 36, 4, 4],
+        [ox + 32, oy - 50, 32, 32],
+        { rotate: 180 }
+      );
+      generator.drawTexture("Skin", char.base.rightLeg.top, [
+        ox + 32,
+        oy - 18,
+        32,
+        50,
+      ]);
+      generator.drawTexture("Skin", char.overlay.rightLeg.top, [
+        ox + 32,
+        oy - 18,
+        32,
+        50,
+      ]);
+      // 50 pixels tall top, so that the back texture is in line with where it should be on the back side
+    }
+  }
+  function drawLeftLeg([ox, oy]: [number, number]) {
+    const dimensions: Dimensions = [32, 96, 32];
+    minecraftGenerator.drawCuboid(
+      "Skin",
+      char.base.leftLeg,
+      [ox, oy],
+      dimensions,
+      "East"
+    );
+    generator.drawTexture("Skin", [28, 52, 4, 4], [ox + 64, oy - 50, 32, 32], {
+      rotate: 180,
+    });
+    generator.drawTexture("Skin", char.base.leftLeg.top, [
+      ox + 64,
+      oy - 18,
+      32,
+      50,
+    ]);
+
+    // 50 pixels tall top, so that the back texture is in line with where it should be on the back side
+    if (showLeftLegOverlay) {
+      minecraftGenerator.drawCuboid(
+        "Skin",
+        char.overlay.leftLeg,
+        [ox, oy],
+        dimensions,
+        "East"
+      );
+      generator.drawTexture(
+        "Skin",
+        [12, 52, 4, 4],
+        [ox + 64, oy - 50, 32, 32],
+        { rotate: 180 }
+      );
+      generator.drawTexture("Skin", char.base.leftLeg.top, [
+        ox + 64,
+        oy - 18,
+        32,
+        50,
+      ]);
+      generator.drawTexture("Skin", char.overlay.leftLeg.top, [
+        ox + 64,
+        oy - 18,
+        32,
+        50,
+      ]);
+      // 50 pixels tall top, so that the back texture is in line with where it should be on the back side
+    }
+  }
+
+  /*function drawNotch([ox, oy]: [number, number], isLeftSide: boolean) {
+    const dir = isLeftSide ? 1 : 0
+    const [x, y, w, h] = [ox + dir, oy, 8, 24]
+
+    const color = "#7b7b7b"
+    //Generator.fillRect((x - dir, y, w, h), "#ff0000")
+    generator.drawLine((x, y - 1), (x + w - 1, y - 1), ~color)
+    generator.drawLine(
+      (x + w - 10 * dir, y),
+      (x + w - 10 * dir, y + h),
+      ~color,
+      ~pattern=[7, 1],
+      (),
+    )
+    generator.drawLine((x + w - 1, y + h + 1), (x, y + h + 1), ~color)
+    //Generator.drawFoldLine((x, y + h), (x, y))
+  } */
+
+  // The foreground was designed on a 32px grid with an offset of (9, 5) that makes the cells more centered. This function makes finding the [ox, oy] much easier as you only need to count the cells instead of find the actual coordinates.
+  function getGridOrigin(x: number, y: number): [number, number] {
+    return [9 + 32 * x, 5 + 32 * y];
+  }
 
   // Head
+  let [ox, oy] = getGridOrigin(1, 1);
 
-  generator.drawTextureLegacy(
-    "Skin",
-    { x: 0, y: 8, w: 8, h: 8 },
-    { x: 74, y: 790, w: 64, h: 64 },
-    { rotateLegacy: -90 }
-  ); // Right
-  generator.drawTextureLegacy(
-    "Skin",
-    { x: 8, y: 8, w: 8, h: 8 },
-    { x: 74, y: 726, w: 64, h: 64 },
-    { rotateLegacy: -90.0 }
-  ); // Face
-  generator.drawTextureLegacy(
-    "Skin",
-    { x: 16, y: 8, w: 8, h: 8 },
-    { x: 74, y: 662, w: 64, h: 64 },
-    { rotateLegacy: -90.0 }
-  ); // Left
-  generator.drawTextureLegacy(
-    "Skin",
-    { x: 24, y: 8, w: 8, h: 8 },
-    { x: 74, y: 598, w: 64, h: 64 },
-    { rotateLegacy: -90.0 }
-  ); // Back
-  generator.drawTextureLegacy(
-    "Skin",
-    { x: 8, y: 0, w: 8, h: 8 },
-    { x: 10, y: 726, w: 64, h: 64 },
-    { rotateLegacy: -90.0 }
-  ); // Top
-  generator.drawTextureLegacy(
-    "Skin",
-    { x: 16, y: 0, w: 8, h: 8 },
-    { x: 138, y: 726, w: 64, h: 64 },
-    { rotateLegacy: -90.0, flip: "Vertical" }
-  ); // Bot
+  drawHead([ox, oy]);
+
+  generator.defineRegionInput([ox, oy, 256, 192], () => {
+    generator.setBooleanInputValue("Show Head Overlay", !showHeadOverlay);
+  });
 
   // Neck
 
-  generator.drawTextureLegacy(
-    "Skin",
-    { x: 16, y: 0, w: 8, h: 8 },
-    { x: 36, y: 414, w: 64, h: 96 }
-  ); // Bot
+  [ox, oy] = getGridOrigin(13, 3);
 
-  // Pelvis
-
-  generator.drawTextureLegacy(
-    "Skin",
-    { x: 20, y: 48, w: 4, h: 4 },
-    { x: 163, y: 380, w: 32, h: 130 }
-  ); // Left Pelvis
-  generator.drawTextureLegacy(
-    "Skin",
-    { x: 4, y: 16, w: 4, h: 4 },
-    { x: 131, y: 380, w: 32, h: 130 }
-  ); // Right Pelvis
+  drawNeck([ox, oy]);
 
   // Body
 
-  generator.drawTextureLegacy(
-    "Skin",
-    { x: 16, y: 16, w: 24, h: 16 },
-    { x: 35, y: 50, w: 192, h: 128 }
-  ); // Body
-  generator.drawTextureLegacy(
-    "Skin",
-    { x: 0, y: 20, w: 4, h: 4 },
-    { x: 35, y: 178, w: 32, h: 32 }
-  ); // Right hip
-  generator.drawTextureLegacy(
-    "Skin",
-    { x: 24, y: 52, w: 4, h: 4 },
-    { x: 131, y: 178, w: 32, h: 32 }
-  ); // Left hip
-  generator.drawTextureLegacy(
-    "Skin",
-    { x: 28, y: 16, w: 8, h: 4 },
-    { x: 67, y: 178, w: 64, h: 32 },
-    { flip: "Vertical" }
-  ); // Bot
+  [ox, oy] = getGridOrigin(7, 6);
+
+  drawBody([ox, oy]);
+  generator.defineRegionInput([ox, oy, 192, 160], () => {
+    generator.setBooleanInputValue("Show Body Overlay", !showBodyOverlay);
+  });
+
+  // Pelvis
+
+  [ox, oy] = getGridOrigin(8, 17);
+
+  drawPelvis([ox, oy]);
 
   // Arms
 
-  if (alexModel) {
-    // Left Arm
+  // Right Arm
 
-    generator.drawTextureLegacy(
-      "Skin",
-      { x: 39, y: 48, w: 3, h: 4 },
-      { x: 329, y: 338, w: 24, h: 32 },
-      { flip: "Vertical" }
-    ); //Left Hand
-    generator.drawTextureLegacy(
-      "Skin",
-      { x: 32, y: 48, w: 11, h: 16 },
-      { x: 297, y: 211, w: 88, h: 128 }
-    ); //Left arm
-    generator.drawTextureLegacy(
-      "Skin",
-      { x: 43, y: 52, w: 3, h: 12 },
-      { x: 273, y: 243, w: 24, h: 96 }
-    ); //Back Left Arm
-    generator.drawTextureLegacy(
-      "Skin",
-      { x: 32, y: 52, w: 4, h: 4 },
-      { x: 297, y: 121, w: 32, h: 32 }
-    ); //Left Shoulder
-    generator.drawTextureLegacy(
-      "Skin",
-      { x: 32, y: 52, w: 4, h: 4 },
-      { x: 297, y: 86, w: 32, h: 32 }
-    ); //Left Shoulder Inside
+  [ox, oy] = getGridOrigin(1, 10);
+  [ox, oy] = [isAlexModel ? ox + 8 : ox, oy];
 
-    // Right Arm
+  drawRightArm([ox, oy]);
 
-    generator.drawTextureLegacy(
-      "Skin",
-      { x: 47, y: 16, w: 3, h: 4 },
-      { x: 465, y: 714, w: 24, h: 32 },
-      { flip: "Vertical" }
-    ); //Right Hand
-    generator.drawTextureLegacy(
-      "Skin",
-      { x: 40, y: 16, w: 14, h: 16 },
-      { x: 433, y: 587, w: 112, h: 128 }
-    ); //Right Arm
-    generator.drawTextureLegacy(
-      "Skin",
-      { x: 47, y: 20, w: 4, h: 4 },
-      { x: 489, y: 496, w: 32, h: 32 }
-    ); //Right Shoulder
-    generator.drawTextureLegacy(
-      "Skin",
-      { x: 47, y: 20, w: 4, h: 4 },
-      { x: 489, y: 462, w: 32, h: 32 }
-    ); //Right Shoulder Inside
-  } else {
-    // Left Arm
-    generator.drawTextureLegacy(
-      "Skin",
-      { x: 40, y: 48, w: 4, h: 4 },
-      { x: 329, y: 338, w: 32, h: 32 },
-      { flip: "Vertical" }
-    ); //Left Hand
-    generator.drawTextureLegacy(
-      "Skin",
-      { x: 32, y: 48, w: 12, h: 16 },
-      { x: 297, y: 211, w: 96, h: 128 }
-    ); //Left arm
-    generator.drawTextureLegacy(
-      "Skin",
-      { x: 44, y: 52, w: 4, h: 12 },
-      { x: 265, y: 243, w: 32, h: 96 }
-    ); //Back Left Arm
-    generator.drawTextureLegacy(
-      "Skin",
-      { x: 32, y: 52, w: 4, h: 4 },
-      { x: 297, y: 121, w: 32, h: 32 }
-    ); //Left Shoulder
-    generator.drawTextureLegacy(
-      "Skin",
-      { x: 32, y: 52, w: 4, h: 4 },
-      { x: 297, y: 86, w: 32, h: 32 }
-    ); //Left Shoulder Inside
+  generator.defineRegionInput([ox, oy, isAlexModel ? 112 : 128, 160], () => {
+    generator.setBooleanInputValue(
+      "Show Right Arm Overlay",
+      !showRightArmOverlay
+    );
+  });
 
-    //Right Arm
+  // Right Shoulder
 
-    generator.drawTextureLegacy(
-      "Skin",
-      { x: 48, y: 16, w: 4, h: 4 },
-      { x: 457, y: 714, w: 32, h: 32 },
-      { flip: "Vertical" }
-    ); //Right Hand
-    generator.drawTextureLegacy(
-      "Skin",
-      { x: 40, y: 16, w: 16, h: 16 },
-      { x: 425, y: 587, w: 128, h: 128 }
-    ); //Right Arm
-    generator.drawTextureLegacy(
-      "Skin",
-      { x: 48, y: 20, w: 4, h: 4 },
-      { x: 489, y: 496, w: 32, h: 32 }
-    ); //Right Shoulder
-    generator.drawTextureLegacy(
-      "Skin",
-      { x: 48, y: 20, w: 4, h: 4 },
-      { x: 489, y: 462, w: 32, h: 32 }
-    ); //Right Shoulder Inside
-  }
+  [ox, oy] = getGridOrigin(7, 12);
 
-  // Legs
+  drawRightShoulder([ox, oy]);
+
+  // Left Arm
+
+  [ox, oy] = getGridOrigin(13, 10);
+  [ox, oy] = [isAlexModel ? ox + 8 : ox, oy];
+
+  drawLeftArm([ox, oy]);
+
+  generator.defineRegionInput([ox, oy, isAlexModel ? 112 : 128, 166], () => {
+    generator.setBooleanInputValue(
+      "Show Left Arm Overlay",
+      !showLeftArmOverlay
+    );
+  });
+
+  // Left  Shoulder
+
+  [ox, oy] = getGridOrigin(10, 12);
+
+  drawLeftShoulder([ox, oy]);
+
+  // Right Leg
+
+  [ox, oy] = getGridOrigin(1, 18);
+
+  drawRightLeg([ox, oy]);
+  generator.defineRegionInput([ox, oy - 48, 128, 208], () => {
+    generator.setBooleanInputValue(
+      "Show Right Leg Overlay",
+      !showRightLegOverlay
+    );
+  });
 
   // Left Leg
 
-  generator.drawTextureLegacy(
-    "Skin",
-    { x: 16, y: 48, w: 12, h: 16 },
-    { x: 457, y: 210, w: 96, h: 128 }
-  ); //Left Leg
-  generator.drawTextureLegacy(
-    "Skin",
-    { x: 28, y: 52, w: 4, h: 8 },
-    { x: 521, y: 210, w: 32, h: 64 },
-    { rotateLegacy: 180.0 }
-  ); //Left Buttock
-  generator.drawTextureLegacy(
-    "Skin",
-    { x: 28, y: 52, w: 4, h: 12 },
-    { x: 425, y: 242, w: 32, h: 96 }
-  ); //Back Left Leg
-  generator.drawTextureLegacy(
-    "Skin",
-    { x: 24, y: 48, w: 4, h: 4 },
-    { x: 489, y: 338, w: 32, h: 32 },
-    { flip: "Vertical" }
-  ); //Left foot
-  //Right Leg
-  generator.drawTextureLegacy(
-    "Skin",
-    { x: 0, y: 16, w: 16, h: 16 },
-    { x: 265, y: 586, w: 128, h: 128 }
-  ); //Right Leg
-  generator.drawTextureLegacy(
-    "Skin",
-    { x: 12, y: 20, w: 4, h: 8 },
-    { x: 329, y: 586, w: 32, h: 64 },
-    { rotateLegacy: 180.0 }
-  ); //Right Buttock
-  generator.drawTextureLegacy(
-    "Skin",
-    { x: 8, y: 16, w: 4, h: 4 },
-    { x: 297, y: 714, w: 32, h: 32 },
-    { flip: "Vertical" }
-  ); //Right foot
+  [ox, oy] = getGridOrigin(13, 18);
 
-  // Overlay
-
-  if (!hideHelmet) {
-    // Helmet
-
-    generator.drawTextureLegacy(
-      "Skin",
-      { x: 32, y: 8, w: 8, h: 8 },
-      { x: 74, y: 790, w: 64, h: 64 },
-      { rotateLegacy: -90.0 }
-    ); // Right
-    generator.drawTextureLegacy(
-      "Skin",
-      { x: 40, y: 8, w: 8, h: 8 },
-      { x: 74, y: 726, w: 64, h: 64 },
-      { rotateLegacy: -90.0 }
-    ); // Face
-    generator.drawTextureLegacy(
-      "Skin",
-      { x: 48, y: 8, w: 8, h: 8 },
-      { x: 74, y: 662, w: 64, h: 64 },
-      { rotateLegacy: -90.0 }
-    ); // Left
-    generator.drawTextureLegacy(
-      "Skin",
-      { x: 56, y: 8, w: 8, h: 8 },
-      { x: 74, y: 598, w: 64, h: 64 },
-      { rotateLegacy: -90.0 }
-    ); // Back
-    generator.drawTextureLegacy(
-      "Skin",
-      { x: 40, y: 0, w: 8, h: 8 },
-      { x: 10, y: 726, w: 64, h: 64 },
-      { rotateLegacy: -90.0 }
-    ); // Top
-    generator.drawTextureLegacy(
-      "Skin",
-      { x: 48, y: 0, w: 8, h: 8 },
-      { x: 138, y: 726, w: 64, h: 64 },
-      { rotateLegacy: -90.0, flip: "Vertical" }
-    ); // Bot
-    //Neck
-    generator.drawTextureLegacy(
-      "Skin",
-      { x: 48, y: 0, w: 8, h: 8 },
-      { x: 36, y: 414, w: 64, h: 96 }
+  drawLeftLeg([ox, oy]);
+  generator.defineRegionInput([ox, oy - 48, 128, 208], () => {
+    generator.setBooleanInputValue(
+      "Show Left Leg Overlay",
+      !showLeftLegOverlay
     );
-  } // Bot
+  });
 
-  if (!hideJacket) {
-    // Jacket
-    generator.drawTextureLegacy(
-      "Skin",
-      { x: 16, y: 32, w: 24, h: 16 },
-      { x: 35, y: 50, w: 192, h: 128 }
-    ); // Jacket
-    generator.drawTextureLegacy(
-      "Skin",
-      { x: 28, y: 32, w: 8, h: 4 },
-      { x: 67, y: 178, w: 64, h: 32 },
-      { flip: "Vertical" }
-    );
-  } // Bot
-
-  // Sleeves
-
-  if (alexModel) {
-    if (!hideLeftSleeve) {
-      //Left Sleeve
-      generator.drawTextureLegacy(
-        "Skin",
-        { x: 55, y: 48, w: 3, h: 4 },
-        { x: 329, y: 338, w: 24, h: 32 },
-        { flip: "Vertical" }
-      ); //Left Glove
-      generator.drawTextureLegacy(
-        "Skin",
-        { x: 48, y: 48, w: 11, h: 16 },
-        { x: 297, y: 211, w: 88, h: 128 }
-      ); //Left Sleeve
-      generator.drawTextureLegacy(
-        "Skin",
-        { x: 59, y: 52, w: 3, h: 12 },
-        { x: 273, y: 243, w: 24, h: 96 }
-      ); //Back Left Sleeve
-      generator.drawTextureLegacy(
-        "Skin",
-        { x: 48, y: 52, w: 4, h: 4 },
-        { x: 297, y: 121, w: 32, h: 32 }
-      ); //Left Shoulder Sleeve
-      generator.drawTextureLegacy(
-        "Skin",
-        { x: 48, y: 52, w: 4, h: 4 },
-        { x: 297, y: 86, w: 32, h: 32 }
-      );
-    } //Left Shoulder Sleeve Inside
-
-    if (!hideRightSleeve) {
-      //Right Sleeve
-      generator.drawTextureLegacy(
-        "Skin",
-        { x: 47, y: 32, w: 3, h: 4 },
-        { x: 465, y: 714, w: 24, h: 32 },
-        { flip: "Vertical" }
-      ); //Right Glove
-      generator.drawTextureLegacy(
-        "Skin",
-        { x: 40, y: 32, w: 14, h: 16 },
-        { x: 433, y: 587, w: 112, h: 128 }
-      ); //Right Sleeve
-      generator.drawTextureLegacy(
-        "Skin",
-        { x: 47, y: 36, w: 4, h: 4 },
-        { x: 489, y: 496, w: 32, h: 32 }
-      ); //Right Shoulder Sleeve
-      generator.drawTextureLegacy(
-        "Skin",
-        { x: 47, y: 36, w: 4, h: 4 },
-        { x: 489, y: 462, w: 32, h: 32 }
-      ); //Right Shoulder Sleeve Inside
-    }
+  // Foreground
+  if (isAlexModel) {
+    generator.drawImage("Foreground-Alex", [0, 0]);
   } else {
-    if (!hideLeftSleeve) {
-      //Left Sleeve
-      generator.drawTextureLegacy(
-        "Skin",
-        { x: 56, y: 48, w: 4, h: 4 },
-        { x: 329, y: 338, w: 32, h: 32 },
-        { flip: "Vertical" }
-      ); //Left Glove
-      generator.drawTextureLegacy(
-        "Skin",
-        { x: 48, y: 48, w: 12, h: 16 },
-        { x: 297, y: 211, w: 96, h: 128 }
-      ); //Left Sleeve
-      generator.drawTextureLegacy(
-        "Skin",
-        { x: 60, y: 52, w: 4, h: 12 },
-        { x: 265, y: 243, w: 32, h: 96 }
-      ); //Back Left Sleeve
-      generator.drawTextureLegacy(
-        "Skin",
-        { x: 48, y: 52, w: 4, h: 4 },
-        { x: 297, y: 121, w: 32, h: 32 }
-      ); //Left Shoulder Sleeve
-      generator.drawTextureLegacy(
-        "Skin",
-        { x: 48, y: 52, w: 4, h: 4 },
-        { x: 297, y: 86, w: 32, h: 32 }
-      ); //Left Shoulder Sleeve Inside
-    }
-
-    if (!hideRightSleeve) {
-      //Right Sleeve
-      generator.drawTextureLegacy(
-        "Skin",
-        { x: 48, y: 32, w: 4, h: 4 },
-        { x: 457, y: 714, w: 32, h: 32 },
-        { flip: "Vertical" }
-      ); //Right Glove
-      generator.drawTextureLegacy(
-        "Skin",
-        { x: 40, y: 32, w: 16, h: 16 },
-        { x: 425, y: 587, w: 128, h: 128 }
-      ); //Right Sleeve
-      generator.drawTextureLegacy(
-        "Skin",
-        { x: 48, y: 36, w: 4, h: 4 },
-        { x: 489, y: 496, w: 32, h: 32 }
-      ); //Right Shoulder Sleeve
-      generator.drawTextureLegacy(
-        "Skin",
-        { x: 48, y: 36, w: 4, h: 4 },
-        { x: 489, y: 462, w: 32, h: 32 }
-      );
-    } // Right Shoulder Sleeve Inside
-  }
-
-  // Pants
-
-  if (!hideLeftPant) {
-    generator.drawTextureLegacy(
-      "Skin",
-      { x: 4, y: 48, w: 4, h: 4 },
-      { x: 163, y: 380, w: 32, h: 130 }
-    ); // Left Pelvis
-    //Left Leg Pant
-    generator.drawTextureLegacy(
-      "Skin",
-      { x: 0, y: 48, w: 12, h: 16 },
-      { x: 457, y: 210, w: 96, h: 128 }
-    ); //Left Leg Pant
-    generator.drawTextureLegacy(
-      "Skin",
-      { x: 12, y: 52, w: 4, h: 8 },
-      { x: 521, y: 210, w: 32, h: 64 },
-      { rotateLegacy: 180.0 }
-    ); //Left Buttock Pant
-    generator.drawTextureLegacy(
-      "Skin",
-      { x: 12, y: 52, w: 4, h: 12 },
-      { x: 425, y: 242, w: 32, h: 96 }
-    ); //Back Left Leg Pant
-    generator.drawTextureLegacy(
-      "Skin",
-      { x: 8, y: 48, w: 4, h: 4 },
-      { x: 489, y: 338, w: 32, h: 32 },
-      { flip: "Vertical" }
-    ); //Left foot Shoe
-    generator.drawTextureLegacy(
-      "Skin",
-      { x: 8, y: 52, w: 4, h: 4 },
-      { x: 131, y: 178, w: 32, h: 32 }
-    ); // Left Hip Pant
-  }
-
-  if (!hideRightPant) {
-    generator.drawTextureLegacy(
-      "Skin",
-      { x: 4, y: 32, w: 4, h: 4 },
-      { x: 131, y: 380, w: 32, h: 130 }
-    ); // Right Pelvis
-    //Right Leg Pant
-    generator.drawTextureLegacy(
-      "Skin",
-      { x: 0, y: 32, w: 16, h: 16 },
-      { x: 265, y: 586, w: 128, h: 128 }
-    ); //Right Leg
-    generator.drawTextureLegacy(
-      "Skin",
-      { x: 12, y: 36, w: 4, h: 8 },
-      { x: 329, y: 586, w: 32, h: 64 },
-      { rotateLegacy: 180.0 }
-    ); //Right Buttock
-    generator.drawTextureLegacy(
-      "Skin",
-      { x: 8, y: 32, w: 4, h: 4 },
-      { x: 297, y: 714, w: 32, h: 32 },
-      { flip: "Vertical" }
-    ); //Right foot
-    generator.drawTextureLegacy(
-      "Skin",
-      { x: 0, y: 36, w: 4, h: 4 },
-      { x: 35, y: 178, w: 32, h: 32 }
-    ); // Right Hip Pant
-  }
-
-  // Background
-  if (alexModel) {
-    generator.drawImage("Backgroundalex", [0, 0]);
-  } else {
-    generator.drawImage("Backgroundsteve", [0, 0]);
+    generator.drawImage("Foreground-Steve", [0, 0]);
   }
 
   // Folds
   if (showFolds) {
-    if (alexModel) {
-      generator.drawImage("Foldsalex", [0, 0]);
+    if (isAlexModel) {
+      generator.drawImage("Folds-Alex", [0, 0]);
     } else {
-      generator.drawImage("Foldssteve", [0, 0]);
+      generator.drawImage("Folds-Steve", [0, 0]);
+    }
+  }
+
+  // M16 Mode
+
+  generator.defineRegionInput([1016, 1016, 64, 64], () => {
+    // M + 16 = 1000 + 16 = 1016
+    generator.setBooleanInputValue("M16 Mode", !m16Mode);
+  });
+  if (m16Mode) {
+    // draw new body and legs
+    [ox, oy] = getGridOrigin(7, 6);
+    drawBody([ox, oy]);
+    [ox, oy] = getGridOrigin(1, 18);
+
+    drawRightLeg([ox, oy]);
+    [ox, oy] = getGridOrigin(13, 18);
+
+    drawLeftLeg([ox, oy]);
+
+    // Draw images
+    generator.drawImage("Foreground-M16", [0, 0]);
+    if (showFolds) {
+      generator.drawImage("Folds-M16", [0, 0]);
     }
   }
 
   // Hand Notches
+  /*if handNotches {
+    // Right Hand Notches
+    const [ox, oy] = getGridOrigin(1, 10)
+    const [ox, oy] = (isAlexModel ? ox + 4 : ox, oy)
+    drawNotch((ox + 44, oy + 104), false) // Front Notch
+    drawNotch((ox + (isAlexModel ? 100 : 108), oy + 104), true) // Back Notch
 
-  if (handNotches) {
-    if (alexModel) {
-      generator.drawImage("Notch", [341, 307]); // Front Left Notch
-      generator.drawImage("Notch", [285, 307]); // Back Left Notch
-      generator.drawImage("Notch", [477, 683]); // Front Right Notch
-      generator.drawImage("Notch", [533, 683]); // Back Right Notch
-    } else {
-      generator.drawImage("Notch", [345, 307]); // Front Left Notch
-      generator.drawImage("Notch", [281, 307]); // Back Left Notch
-      generator.drawImage("Notch", [473, 683]); // Front Right Notch
-      generator.drawImage("Notch", [537, 683]); // Back Right Notch
-    }
-  }
+    // Left Hand Notches
+    const [ox, oy] = getGridOrigin(13, 10)
+    const [ox, oy] = (isAlexModel ? ox + 4 : ox, oy)
+    drawNotch((ox + (isAlexModel ? 68 : 76), oy + 104), true) // Front Notch
+    drawNotch((ox + 12, oy + 104), false) // Back Notch
+  } */
 
   // Labels
   if (showLabels) {
