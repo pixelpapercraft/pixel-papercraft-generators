@@ -234,7 +234,7 @@ const script: ScriptDef = (generator: Generator) => {
       char.base.leftArm,
       [ox, oy],
       dimensions,
-      "East"
+      { orientation: "East" }
     );
 
     if (showLeftArmOverlay) {
@@ -243,7 +243,7 @@ const script: ScriptDef = (generator: Generator) => {
         char.overlay.leftArm,
         [ox, oy],
         dimensions,
-        "East"
+        { orientation: "East" }
       );
     }
   }
@@ -313,7 +313,7 @@ const script: ScriptDef = (generator: Generator) => {
       char.base.leftLeg,
       [ox, oy],
       dimensions,
-      "East"
+      { orientation: "East" }
     );
     generator.drawTexture("Skin", [28, 52, 4, 4], [ox + 64, oy - 50, 32, 32], {
       rotate: 180,
@@ -332,7 +332,7 @@ const script: ScriptDef = (generator: Generator) => {
         char.overlay.leftLeg,
         [ox, oy],
         dimensions,
-        "East"
+        { orientation: "East" }
       );
       generator.drawTexture(
         "Skin",

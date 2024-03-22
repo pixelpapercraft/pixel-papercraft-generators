@@ -191,7 +191,7 @@ const script: ScriptDef = (generator: Generator) => {
       char.base.leftArm,
       [ox, oy],
       dimensions,
-      "East"
+      { orientation: "East" }
     );
     if (showLeftArmOverlay) {
       minecraftGenerator.drawCuboid(
@@ -199,7 +199,7 @@ const script: ScriptDef = (generator: Generator) => {
         char.overlay.leftArm,
         [ox, oy],
         dimensions,
-        "East"
+        { orientation: "East" }
       );
     }
   }
@@ -229,7 +229,7 @@ const script: ScriptDef = (generator: Generator) => {
       char.base.leftLeg,
       [ox, oy],
       dimensions,
-      "East"
+      { orientation: "East" }
     );
     if (showLeftLegOverlay) {
       minecraftGenerator.drawCuboid(
@@ -237,7 +237,7 @@ const script: ScriptDef = (generator: Generator) => {
         char.overlay.leftLeg,
         [ox, oy],
         dimensions,
-        "East"
+        { orientation: "East" }
       );
     }
   }

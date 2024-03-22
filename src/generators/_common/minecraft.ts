@@ -1,5 +1,8 @@
 import { type Generator } from "@genroot/builder/modules/generator";
-import { type Flip } from "@genroot/builder/modules/renderers/drawTexture";
+import {
+  type Flip,
+  Blend,
+} from "@genroot/builder/modules/renderers/drawTexture";
 import { type TabOrientation } from "@genroot/builder/modules/renderers/drawTab";
 import {
   type Cuboid,
@@ -16,6 +19,7 @@ export type Face = {
   rectangle: Rectangle;
   flip: Flip;
   rotate: number;
+  blend: Blend;
 };
 
 export function makeFace(rect: Rectangle): Face {
@@ -23,6 +27,7 @@ export function makeFace(rect: Rectangle): Face {
     rectangle: rect,
     flip: "None",
     rotate: 0,
+    blend: { kind: "None" },
   };
 }
 // Rotates the face using a point as an axis to rotate around. This is necessary because the faces of the cuboid need to rotate around the center of the cuboid and not their own centers.
@@ -39,7 +44,7 @@ function rotateOnAxis(face: Face, axis: Position, r: number): Face {
     rectangle: [x3, y3, w, h],
     flip: face.flip,
     rotate: face.rotate + r,
-    //blend: face.blend,
+    blend: face.blend,
   };
 }
 
@@ -50,23 +55,24 @@ export function rotateFace(face: Face, r: number): Face {
     rectangle: face.rectangle,
     flip: face.flip,
     rotate: r0,
+    blend: face.blend,
   };
 }
 
 // rotate in relation to its own center. Uses rotateOnAxis with the axis as the face's center.
 export function rotateLocalFace(face: Face): Face {
-  let { rectangle, flip, rotate } = face;
+  let { rectangle, flip, rotate, blend } = face;
   let [x, y, w, h] = rectangle;
 
   face =
     rotate >= 360
       ? rotateOnAxis(
-          { rectangle, flip, rotate: 0 },
+          { rectangle, flip, rotate: 0, blend },
           [x - w / 2, y - h / 2],
           rotate
         )
       : rotateOnAxis(
-          { rectangle, flip, rotate: 0 },
+          { rectangle, flip, rotate: 0, blend },
           [x + w / 2, y + h / 2],
           rotate
         );
@@ -85,6 +91,7 @@ export function rotateLocalFace(face: Face): Face {
     rectangle: rectangle,
     flip: flip,
     rotate: rotate,
+    blend: blend,
   };
 }
 
@@ -107,9 +114,23 @@ export function flipFace(
     }
   }
   return rotateFace(
-    { rectangle: face.rectangle, flip: newFlip, rotate: face.rotate },
+    {
+      rectangle: face.rectangle,
+      flip: newFlip,
+      rotate: face.rotate,
+      blend: face.blend,
+    },
     newRotate
   );
+}
+
+export function blendFace(face: Face, blend: Blend): Face {
+  return {
+    rectangle: face.rectangle,
+    flip: face.flip,
+    rotate: face.rotate,
+    blend,
+  };
 }
 
 export function translateFace(face: Face, position: [number, number]): Face {
@@ -117,6 +138,7 @@ export function translateFace(face: Face, position: [number, number]): Face {
     rectangle: translateRectangle(face.rectangle, position),
     flip: face.flip,
     rotate: face.rotate,
+    blend: face.blend,
   };
 }
 
@@ -337,12 +359,24 @@ function rotateCuboid(dest: Dest, axis: Position, rotate: number): Dest {
   };
 }
 
+function adjustDestBlend(dest: Dest, blend: Blend): Dest {
+  return {
+    right: blendFace(dest.right, blend),
+    front: blendFace(dest.front, blend),
+    left: blendFace(dest.left, blend),
+    back: blendFace(dest.back, blend),
+    top: blendFace(dest.top, blend),
+    bottom: blendFace(dest.bottom, blend),
+  };
+}
+
 function setLayout(
   dimensions: Dimensions,
   orientation: Orientation,
   center: Center,
   flip: Flip,
-  rotate: number
+  rotate: number,
+  blend: Blend
 ): Dest {
   // Depending of the center face of the cuboid, the width, height and depth as found in dimensions will have to change.
   const dimensionsAdjusted = adjustDimensionsForCenter(dimensions, center);
@@ -368,11 +402,22 @@ function setLayout(
   const axis = getAxis(dimensionsAdjusted, orientationAdjusted);
   dest = rotateCuboid(dest, axis, rotate);
 
-  // Return the destination with faces blended
+  // Blend each face
+  dest = adjustDestBlend(dest, blend);
+
+  // Return the destination
   return dest;
 }
 
 const defaultTabSize = 24;
+
+export type DrawCuboidOptions = {
+  orientation: Orientation;
+  center: Center;
+  flip: Flip;
+  rotate: number;
+  blend: Blend;
+};
 
 export class Minecraft {
   constructor(private generator: Generator) {}
@@ -389,14 +434,18 @@ export class Minecraft {
     source: Cuboid,
     position: Position,
     dimensions: Dimensions,
-    orientation: Orientation = "West",
-    center: Center = "Front",
-    flip: Flip = "None",
-    rotate: number = 0
-    //blend: Blend = "None"
+    options: Partial<DrawCuboidOptions> = {}
   ) {
+    const {
+      orientation = "West",
+      center = "Front",
+      flip = "None",
+      rotate = 0,
+      blend = { kind: "None" },
+    } = options;
+
     const dest = translateDest(
-      setLayout(dimensions, orientation, center, flip, rotate),
+      setLayout(dimensions, orientation, center, flip, rotate, blend),
       position
     );
     this.drawFaceTexture(textureId, source.front, dest.front);
