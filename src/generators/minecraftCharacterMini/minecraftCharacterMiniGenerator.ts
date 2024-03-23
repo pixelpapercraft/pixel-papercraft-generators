@@ -501,8 +501,8 @@ const script: ScriptDef = (generator: Generator) => {
     }
   };
 
-  drawMini("Mini 1", 151, 108);
-  drawMini("Mini 2", 151, 453);
+  drawMini("Mini 1", 121, 108);
+  drawMini("Mini 2", 121, 453);
 
   generator.drawImage("Title", [0, 0]);
   generator.fillBackgroundColorWithWhite();

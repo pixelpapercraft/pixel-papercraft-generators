@@ -15,6 +15,10 @@ import { FaceFrownIcon } from "@heroicons/react/24/outline";
 
 export type { Cuboid, Rectangle, Position, Dimensions } from "./cuboid";
 
+export function addAngle(r1: number, r2: number): number {
+  return (r1 + r2 + 360) % 360;
+}
+
 export type Face = {
   rectangle: Rectangle;
   flip: Flip;
@@ -43,14 +47,15 @@ function rotateOnAxis(face: Face, axis: Position, r: number): Face {
   return {
     rectangle: [x3, y3, w, h],
     flip: face.flip,
-    rotate: face.rotate + r,
+    rotate: addAngle(face.rotate, r),
     blend: face.blend,
   };
 }
 
 //add rotate values
 export function rotateFace(face: Face, r: number): Face {
-  const r0 = face.flip == "None" ? r + face.rotate : face.rotate - r;
+  const r0 =
+    face.flip == "None" ? addAngle(r, face.rotate) : addAngle(-r, face.rotate);
   return {
     rectangle: face.rectangle,
     flip: face.flip,
@@ -79,7 +84,7 @@ export function rotateLocalFace(face: Face): Face {
 
   // If the face is rotated 90 or 270 degrees, then the height and width values will need to be swapped, and the corner moved to its correct position.
 
-  switch ((rotate + 360) % 360) {
+  switch (addAngle(rotate, 0)) {
     case 90:
       rectangle = [x + (w - h) / 2, y + (w - h) / 2, h, w];
 
