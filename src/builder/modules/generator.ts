@@ -15,6 +15,7 @@ import { type LineProps, drawLine } from "./renderers/drawLine";
 import { type TabOrientation, drawTab } from "./renderers/drawTab";
 import { fillBackgroundColor } from "./renderers/fillBackgroundColor";
 import { type Page } from "./modelPage";
+import { fillRect } from "./renderers/fillRect";
 //import { Position } from "postcss";
 
 export type * from "./renderers/types";
@@ -164,6 +165,11 @@ export class Generator {
     fillBackgroundColor(page.canvasWithContext, "#ffffff");
   }
 
+  fillRectangle(rectangle: Rectangle, color: string): void {
+    const page = this.getCurrentPage();
+    fillRect(page.canvasWithContext, rectangle, color);
+  }
+
   drawRectangle(rectangle: Rectangle, options: DrawRectangeOptions = {}): void {
     const page = this.getCurrentPage();
     drawRectangle(page.canvasWithContext, rectangle, options);
@@ -209,6 +215,16 @@ export class Generator {
   drawLine(p1: Position, p2: Position, options?: LineProps): void {
     const currentPage = this.getCurrentPage();
     drawLine(currentPage.canvasWithContext, p1, p2, options);
+  }
+
+  drawFoldLine(p1: Position, p2: Position): void {
+    const currentPage = this.getCurrentPage();
+    drawLine(currentPage.canvasWithContext, p1, p2, {
+      color: "#7b7b7b",
+      width: 1,
+      lineDash: [2, 2],
+      lineDashOffset: 3,
+    });
   }
 
   drawTab(

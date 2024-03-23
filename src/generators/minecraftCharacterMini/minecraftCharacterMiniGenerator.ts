@@ -8,12 +8,21 @@ import type {
   ScriptDef,
   ThumbnailDef,
 } from "@genroot/builder/modules/generatorDef";
-import { type Generator } from "@genroot/builder/modules/generator";
-import { type Layer, steve, alex } from "../_common/minecraftCharacter";
+import {
+  Position,
+  Rectangle,
+  type Generator,
+} from "@genroot/builder/modules/generator";
+import {
+  type Layer,
+  steve,
+  alex,
+  Dimensions,
+} from "../_common/minecraftCharacter";
 
 import thumbnailImage from "./thumbnail/v2-thumbnail-256.jpeg";
-import skinOverlayImage from "./images/skin-overlay.png";
-import skinBackgroundImage from "./images/skin-background.png";
+import foregroundImage from "./images/Foreground.png";
+import titleImage from "./images/Title.png";
 import steveSkin from "./textures/SkinSteve64x64.png";
 import alexSkin from "./textures/SkinAlex64x64.png";
 
@@ -25,6 +34,8 @@ const history: HistoryDef = [
   "13 Sep 2015 Sandvich - First release using the generator builder.",
   "17 Sep 2020 NinjolasNJM - Added support for Alex skins and fixed bottom of legs.",
   "11 Feb 2022 LostMiner - Refactor. Add pixelate option.",
+  "03 Jun 2022 NinjolasNJM - Overhauled the foreground, added a title and an opaque background, a folds toggle, and overlay region inputs",
+  "02 Feb 2024 NinjolasNJM - added skin input",
 ];
 
 const thumbnail: ThumbnailDef = {
@@ -33,12 +44,12 @@ const thumbnail: ThumbnailDef = {
 
 const images: ImageDef[] = [
   {
-    id: "Skin Overlay",
-    url: skinOverlayImage.src,
+    id: "Foreground",
+    url: foregroundImage.src,
   },
   {
-    id: "Skin Background",
-    url: skinBackgroundImage.src,
+    id: "Title",
+    url: titleImage.src,
   },
 ];
 
@@ -241,6 +252,66 @@ const script: ScriptDef = (generator: Generator) => {
     );
   };
 
+  function drawFoldLineRectangle(rectangle: Rectangle) {
+    const [x, y, w, h] = rectangle;
+
+    generator.drawFoldLine([x, y - 1], [x + w, y - 1]);
+    generator.drawFoldLine([x + w, y], [x + w, y + h]);
+    generator.drawFoldLine([x + w, y + h + 1], [x, y + h + 1]);
+    generator.drawFoldLine([x, y + h], [x, y]);
+  }
+
+  function drawFoldLineCuboid(
+    position: Position,
+    dimensions: Dimensions,
+    leftSide: boolean = false
+  ): void {
+    let [x, y] = position;
+    let [w, h, l] = dimensions;
+
+    if (!leftSide) {
+      drawFoldLineRectangle([x + l, y, w, l * 2 + h]);
+      drawFoldLineRectangle([x, y + l, l * 2 + w * 2, h]);
+      generator.drawFoldLine(
+        [x + l * 2 + w - 1, y + l],
+        [x + l * 2 + w - 1, y + l + h]
+      );
+    } else {
+      drawFoldLineRectangle([x + l + w, y, w, l * 2 + h]);
+      drawFoldLineRectangle([x, y + l, l * 2 + w * 2, h]);
+      generator.drawFoldLine([x + w, y + l], [x + w, y + l + h]);
+    }
+  }
+
+  function drawFolds([x, y]: Position): void {
+    generator.fillRectangle([x + 49, y + 90, 64, 64], "#ffffff80");
+    generator.fillRectangle([x + 177, y + 90, 64, 64], "#ffffff80");
+
+    drawFoldLineCuboid([x + 49, y + 26], [64, 128, 64]);
+    generator.drawFoldLine([x + 49, y + 25], [x + 241, y + 25]);
+
+    drawFoldLineRectangle([x + 1, y + 10, 48, 64]);
+    generator.drawFoldLine([x + 1, y + 41], [x + 49, y + 41]);
+    generator.drawFoldLine([x + 48, y + 74], [x + 48, y + 90]);
+    generator.drawLine([x + 49, y + 26], [x + 49, y + 42], {
+      color: "#ff0000",
+    });
+
+    drawFoldLineRectangle([x + 241, y + 10, 48, 64]);
+    generator.drawFoldLine([x + 241, y + 41], [x + 290, y + 41]);
+    generator.drawFoldLine([x + 241, y + 74], [x + 241, y + 90]);
+    generator.drawLine([x + 240, y + 26], [x + 240, y + 42], {
+      color: "#ff0000",
+    });
+
+    generator.drawLine([x + 49, y + 89], [x + 113, y + 89], {
+      color: "#ff0000",
+    });
+    generator.drawLine([x + 177, y + 89], [x + 241, y + 89], {
+      color: "#ff0000",
+    });
+  }
+
   const drawMini = (textureId: string, x: number, y: number) => {
     generator.defineTextureInput(textureId, {
       standardWidth: 64,
@@ -249,29 +320,39 @@ const script: ScriptDef = (generator: Generator) => {
     });
 
     if (generator.hasTexture(textureId)) {
-      const modelTypeName = textureId + " Model Type";
+      const modelTypeName = textureId + " Model";
 
       generator.defineSelectInput(modelTypeName, ["Steve", "Alex"]);
 
       const modelType = generator.getSelectInputValue(modelTypeName);
 
-      const showHeadOverlay = generator.defineAndGetBooleanInput(
+      const showFolds = generator.defineAndGetBooleanInput(
+        "Show " + textureId + " Folds",
+        true
+      );
+
+      const showHeadOverlay = generator.getBooleanInputValueWithDefault(
         textureId + " Head Overlay",
         true
       );
-
-      const showBodyOverlay = generator.defineAndGetBooleanInput(
+      const showBodyOverlay = generator.getBooleanInputValueWithDefault(
         textureId + " Body Overlay",
         true
       );
-
-      const showArmOverlay = generator.defineAndGetBooleanInput(
-        textureId + " Arm Overlay",
+      const showLeftArmOverlay = generator.getBooleanInputValueWithDefault(
+        textureId + " Left Arm Overlay",
         true
       );
-
-      const showLegOverlay = generator.defineAndGetBooleanInput(
-        textureId + " Leg Overlay",
+      const showRightArmOverlay = generator.getBooleanInputValueWithDefault(
+        textureId + " Right Arm Overlay",
+        true
+      );
+      const showLeftLegOverlay = generator.getBooleanInputValueWithDefault(
+        textureId + " Left Leg Overlay",
+        true
+      );
+      const showRightLegOverlay = generator.getBooleanInputValueWithDefault(
+        textureId + " Right Leg Overlay",
         true
       );
 
@@ -287,11 +368,6 @@ const script: ScriptDef = (generator: Generator) => {
 
       const isAlexModel = modelType === "Alex";
       const pixelate = textureStyle === "Simple";
-
-      // Skin Background
-
-      generator.drawImage("Skin Background", [x, y]);
-
       let ox: number;
       let oy: number;
 
@@ -305,6 +381,12 @@ const script: ScriptDef = (generator: Generator) => {
       if (showHeadOverlay) {
         drawHead(textureId, steve.overlay, ox, oy);
       }
+      generator.defineRegionInput([ox, oy - 64, 192, 128], () => {
+        generator.setBooleanInputValue(
+          textureId + " Head Overlay",
+          !showHeadOverlay
+        );
+      });
 
       // Head Flaps
 
@@ -327,6 +409,12 @@ const script: ScriptDef = (generator: Generator) => {
       if (showBodyOverlay) {
         drawBody(textureId, steve.overlay, ox, oy, bodyHeight, pixelate);
       }
+      generator.defineRegionInput([ox, oy, 256, bodyHeight], () => {
+        generator.setBooleanInputValue(
+          textureId + " Body Overlay",
+          !showBodyOverlay
+        );
+      });
 
       // Arms
 
@@ -339,9 +427,15 @@ const script: ScriptDef = (generator: Generator) => {
 
       drawRightArm(textureId, armTexture.base, ox, oy, pixelate);
 
-      if (showArmOverlay) {
+      if (showRightArmOverlay) {
         drawRightArm(textureId, armTexture.overlay, ox, oy, pixelate);
       }
+      generator.defineRegionInput([ox - 8, oy + 8, 48, 64], () => {
+        generator.setBooleanInputValue(
+          textureId + " Right Arm Overlay",
+          !showRightArmOverlay
+        );
+      });
 
       // Left Arm
 
@@ -350,9 +444,15 @@ const script: ScriptDef = (generator: Generator) => {
 
       drawLeftArm(textureId, armTexture.base, ox, oy, pixelate);
 
-      if (showArmOverlay) {
+      if (showLeftArmOverlay) {
         drawLeftArm(textureId, armTexture.overlay, ox, oy, pixelate);
       }
+      generator.defineRegionInput([ox - 8, oy + 8, 48, 64], () => {
+        generator.setBooleanInputValue(
+          textureId + " Left Arm Overlay",
+          !showLeftArmOverlay
+        );
+      });
 
       // Legs
 
@@ -363,26 +463,49 @@ const script: ScriptDef = (generator: Generator) => {
 
       drawRightLeg(textureId, steve.base, ox, oy, bodyHeight, pixelate);
 
-      if (showLegOverlay) {
+      if (showRightLegOverlay) {
         drawRightLeg(textureId, steve.overlay, ox, oy, bodyHeight, pixelate);
       }
+      generator.defineRegionInput(
+        [ox, oy + bodyHeight, 96, 128 - bodyHeight],
+        () => {
+          generator.setBooleanInputValue(
+            textureId + " Right Leg Overlay",
+            !showRightLegOverlay
+          );
+        }
+      );
 
       // Left Leg
 
       drawLeftLeg(textureId, steve.base, ox, oy, bodyHeight, pixelate);
 
-      if (showLegOverlay) {
+      if (showLeftLegOverlay) {
         drawLeftLeg(textureId, steve.overlay, ox, oy, bodyHeight, pixelate);
       }
+      generator.defineRegionInput(
+        [ox + 96, oy + bodyHeight, 160, 128 - bodyHeight],
+        () => {
+          generator.setBooleanInputValue(
+            textureId + " Left Leg Overlay",
+            !showLeftLegOverlay
+          );
+        }
+      );
 
       // Draw the fold and cut lines
-
-      generator.drawImage("Skin Overlay", [x, y]);
+      generator.drawImage("Foreground", [x, y]);
+      if (showFolds) {
+        drawFolds([x, y]);
+      }
     }
   };
 
   drawMini("Mini 1", 151, 108);
   drawMini("Mini 2", 151, 453);
+
+  generator.drawImage("Title", [0, 0]);
+  generator.fillBackgroundColorWithWhite();
 };
 
 export const generator: GeneratorDef = {
