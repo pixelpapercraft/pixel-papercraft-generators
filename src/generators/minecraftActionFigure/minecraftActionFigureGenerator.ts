@@ -21,7 +21,6 @@ import foregroundSteveImage from "./images/Foreground-Steve.png";
 import foregroundM16Image from "./images/Foreground-M16.png";
 import labelsImage from "./images/Labels.png";
 import skin64x64SteveImage from "./textures/Skin64x64Steve.png";
-import internal from "stream";
 
 const id = "minecraft-action-figure";
 
@@ -411,7 +410,7 @@ const script: ScriptDef = (generator: Generator) => {
   // Right Arm
 
   [ox, oy] = getGridOrigin(1, 10);
-  [ox, oy] = [isAlexModel ? ox + 8 : ox, oy];
+  ox = isAlexModel ? ox + 8 : ox;
 
   drawRightArm([ox, oy]);
 
@@ -431,7 +430,7 @@ const script: ScriptDef = (generator: Generator) => {
   // Left Arm
 
   [ox, oy] = getGridOrigin(13, 10);
-  [ox, oy] = [isAlexModel ? ox + 8 : ox, oy];
+  ox = isAlexModel ? ox + 8 : ox;
 
   drawLeftArm([ox, oy]);
 
@@ -516,13 +515,13 @@ const script: ScriptDef = (generator: Generator) => {
   if (handNotches) {
     // Right Hand Notches
     [ox, oy] = getGridOrigin(1, 10);
-    [ox, oy] = [isAlexModel ? ox + 4 : ox, oy];
+    ox = isAlexModel ? ox + 4 : ox;
     drawNotch([ox + 44, oy + 104], false); // Front Notch
     drawNotch([ox + (isAlexModel ? 100 : 108), oy + 104], true); // Back Notch
 
     // Left Hand Notches
     [ox, oy] = getGridOrigin(13, 10);
-    [ox, oy] = [isAlexModel ? ox + 4 : ox, oy];
+    ox = isAlexModel ? ox + 4 : ox;
     drawNotch([ox + (isAlexModel ? 68 : 76), oy + 104], true); // Front Notch
     drawNotch([ox + 12, oy + 104], false); // Back Notch
   }

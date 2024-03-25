@@ -11,7 +11,6 @@ import {
   type Dimensions,
   translateRectangle,
 } from "./cuboid";
-import { FaceFrownIcon } from "@heroicons/react/24/outline";
 
 export type { Cuboid, Rectangle, Position, Dimensions } from "./cuboid";
 
@@ -66,10 +65,10 @@ export function rotateFace(face: Face, r: number): Face {
 
 // rotate in relation to its own center. Uses rotateOnAxis with the axis as the face's center.
 export function rotateLocalFace(face: Face): Face {
-  let { rectangle, flip, rotate, blend } = face;
+  const { rectangle, flip, rotate, blend } = face;
   let [x, y, w, h] = rectangle;
 
-  face =
+  const newFace =
     rotate >= 360
       ? rotateOnAxis(
           { rectangle, flip, rotate: 0, blend },
@@ -82,21 +81,25 @@ export function rotateLocalFace(face: Face): Face {
           rotate
         );
 
+  [x, y, w, h] = newFace.rectangle;
+
   // If the face is rotated 90 or 270 degrees, then the height and width values will need to be swapped, and the corner moved to its correct position.
 
-  switch (addAngle(rotate, 0)) {
+  switch (addAngle(newFace.rotate, 0)) {
     case 90:
-      rectangle = [x + (w - h) / 2, y + (w - h) / 2, h, w];
+      newFace.rectangle = [x + (w - h) / 2, y + (w - h) / 2, h, w];
+      break;
 
     case 270:
-      rectangle = [x - (w - h) / 2, y - (w - h) / 2, h, w];
+      newFace.rectangle = [x - (w - h) / 2, y - (w - h) / 2, h, w];
+      break;
   }
 
   return {
-    rectangle: rectangle,
-    flip: flip,
-    rotate: rotate,
-    blend: blend,
+    rectangle: newFace.rectangle,
+    flip: newFace.flip,
+    rotate: newFace.rotate,
+    blend: newFace.blend,
   };
 }
 

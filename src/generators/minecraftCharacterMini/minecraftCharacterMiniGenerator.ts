@@ -266,8 +266,8 @@ const script: ScriptDef = (generator: Generator) => {
     dimensions: Dimensions,
     leftSide: boolean = false
   ): void {
-    let [x, y] = position;
-    let [w, h, l] = dimensions;
+    const [x, y] = position;
+    const [w, h, l] = dimensions;
 
     if (!leftSide) {
       drawFoldLineRectangle([x + l, y, w, l * 2 + h]);
