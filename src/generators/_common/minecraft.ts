@@ -1,7 +1,7 @@
 import { type Generator } from "@genroot/builder/modules/generator";
 import {
   type Flip,
-  Blend,
+  type Blend,
 } from "@genroot/builder/modules/renderers/drawTexture";
 import { type TabOrientation } from "@genroot/builder/modules/renderers/drawTab";
 import {
