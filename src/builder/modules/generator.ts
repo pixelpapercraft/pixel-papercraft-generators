@@ -16,7 +16,6 @@ import { type TabOrientation, drawTab } from "./renderers/drawTab";
 import { fillBackgroundColor } from "./renderers/fillBackgroundColor";
 import { type Page } from "./modelPage";
 import { fillRect } from "./renderers/fillRect";
-//import { Position } from "postcss";
 
 export type * from "./renderers/types";
 export type * from "./modelPage";
