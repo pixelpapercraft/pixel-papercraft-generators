@@ -433,7 +433,7 @@ export class Minecraft {
   drawFaceTexture(textureId: string, source: Rectangle, dest: Face) {
     this.generator.drawTexture(textureId, source, dest.rectangle, {
       flip: dest.flip,
-      rotate: dest.rotate,
+      rotateLegacy: dest.rotate,
     });
   }
 
