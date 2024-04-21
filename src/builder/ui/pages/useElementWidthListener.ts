@@ -6,7 +6,7 @@ export function useElementWidthListener(elRef: React.RefObject<HTMLElement>) {
   React.useEffect(() => {
     const updateWidth = () => {
       if (elRef.current) {
-        const width = elRef.current.offsetWidth;
+        const width = elRef.current.clientWidth;
         setWidth(width);
       }
     };
