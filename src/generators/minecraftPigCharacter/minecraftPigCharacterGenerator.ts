@@ -294,16 +294,24 @@ const script: ScriptDef = (generator: Generator) => {
   };
 
   // Function to help with defining the inputs
-  const makeTextureInput = (
-    texture: string,
-    width: number,
-    height: number,
-    choices: string[]
-  ) => {
+  const makeTextureInput = ({
+    texture,
+    width,
+    height,
+    choices,
+    enableMinecraftSkinInput,
+  }: {
+    texture: string;
+    width: number;
+    height: number;
+    choices: string[];
+    enableMinecraftSkinInput: boolean;
+  }) => {
     generator.defineTextureInput(texture, {
       standardWidth: width,
       standardHeight: height,
       choices: choices,
+      enableMinecraftSkinInput,
     });
   };
 
@@ -311,26 +319,44 @@ const script: ScriptDef = (generator: Generator) => {
 
   generator.defineSelectInput("Skin Model Type", ["Steve", "Alex"]);
 
-  makeTextureInput(skinTexture, 64, 64, []);
+  makeTextureInput({
+    texture: skinTexture,
+    width: 64,
+    height: 64,
+    choices: [],
+    enableMinecraftSkinInput: true,
+  });
 
-  makeTextureInput(saddleTexture, 64, 32, [
-    "Saddle (Vanilla)",
-    "Saddle (Vanilla) (Programmer Art)",
-    "Saddle (Faithful)",
-    "Saddle (Space Pig)",
-  ]);
+  makeTextureInput({
+    texture: saddleTexture,
+    width: 64,
+    height: 32,
+    choices: [
+      "Saddle (Vanilla)",
+      "Saddle (Vanilla) (Programmer Art)",
+      "Saddle (Faithful)",
+      "Saddle (Space Pig)",
+    ],
+    enableMinecraftSkinInput: false,
+  });
 
-  makeTextureInput(armorTexture, 64, 32, [
-    "Diamond Armor (Vanilla)",
-    "Gold Armor (Vanilla)",
-    "Chainmail Armor (Vanilla)",
-    "Iron Armor (Vanilla)",
-    "Diamond Armor (Faithful)",
-    "Gold Armor (Faithful)",
-    "Chainmail Armor (Faithful)",
-    "Iron Armor (Faithful)",
-    "Armor (Space Pig)",
-  ]);
+  makeTextureInput({
+    texture: armorTexture,
+    width: 64,
+    height: 32,
+    choices: [
+      "Diamond Armor (Vanilla)",
+      "Gold Armor (Vanilla)",
+      "Chainmail Armor (Vanilla)",
+      "Iron Armor (Vanilla)",
+      "Diamond Armor (Faithful)",
+      "Gold Armor (Faithful)",
+      "Chainmail Armor (Faithful)",
+      "Iron Armor (Faithful)",
+      "Armor (Space Pig)",
+    ],
+    enableMinecraftSkinInput: false,
+  });
 
   // Function to easily draw a section of a texture
 

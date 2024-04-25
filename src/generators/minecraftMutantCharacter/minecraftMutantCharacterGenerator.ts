@@ -59,6 +59,7 @@ const script: ScriptDef = (generator: Generator) => {
     standardWidth: 64,
     standardHeight: 64,
     choices: [],
+    enableMinecraftSkinInput: true,
   });
 
   generator.defineSelectInput("Skin style", ["Steve", "Alex"]);

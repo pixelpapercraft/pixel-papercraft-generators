@@ -24,6 +24,7 @@ export type TextureInputControlProps = {
   standardWidth: number;
   standardHeight: number;
   choices: string[];
+  enableMinecraftSkinInput?: boolean;
 };
 
 export type TextureInputControl = {

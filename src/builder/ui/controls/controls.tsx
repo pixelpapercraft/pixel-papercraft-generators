@@ -77,6 +77,9 @@ export function Controls({
                 choices={control.props.choices}
                 standardWidth={control.props.standardWidth}
                 standardHeight={control.props.standardHeight}
+                enableMinecraftSkinInput={
+                  control.props.enableMinecraftSkinInput ?? false
+                }
                 textures={model.values.textures}
                 onChange={(texture) => onTextureChange(control.id, texture)}
               />
