@@ -56,6 +56,11 @@ function MinecraftSkin({
           placeholder="Enter username"
           value={value}
           onChange={(e) => setValue(e.target.value)}
+          onKeyUp={(e) => {
+            if (e.key === "Enter") {
+              onFetchSkin();
+            }
+          }}
         />
         <Button size="Small" state={buttonState} onClick={onFetchSkin}>
           Fetch skin
