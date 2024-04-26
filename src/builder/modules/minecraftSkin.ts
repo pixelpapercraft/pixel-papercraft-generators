@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { makeImageFromUrl } from "./image";
+import { convertToStandardSkin } from "./minecraftSkinConverter";
 
 // https://github.com/Electroid/mojang-api
 // https://wiki.vg/Mojang_API
@@ -68,5 +69,7 @@ export async function fetchSkinImage(
 
   const image = await makeImageFromUrl(skinUrl);
 
-  return image;
+  const skinImage = convertToStandardSkin(image);
+
+  return skinImage;
 }
