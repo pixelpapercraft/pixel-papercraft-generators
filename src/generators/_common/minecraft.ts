@@ -236,17 +236,34 @@ function adjustOrientationForFlip(
   orientation: Orientation,
   flip: Flip
 ): Orientation {
-  switch ([flip, orientation]) {
-    case ["Horizontal", "West"]:
-      return "East";
-    case ["Horizontal", "East"]:
-      return "West";
-    case ["Vertical", "South"]:
-      return "North";
-    case ["Vertical", "North"]:
-      return "South";
-    default:
+  switch (flip) {
+    case "Horizontal": {
+      switch (orientation) {
+        case "West":
+          return "East";
+        case "East":
+          return "West";
+        case "North":
+        case "South":
+          return orientation;
+      }
+      break;
+    }
+    case "Vertical": {
+      switch (orientation) {
+        case "South":
+          return "North";
+        case "North":
+          return "South";
+        case "East":
+        case "West":
+          return orientation;
+      }
+      break;
+    }
+    case "None": {
       return orientation;
+    }
   }
 }
 
