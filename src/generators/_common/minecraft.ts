@@ -14,14 +14,30 @@ import {
 
 export type { Cuboid, Rectangle, Position, Dimensions } from "./cuboid";
 
-export function addAngle(r1: number, r2: number): number {
-  return (r1 + r2 + 360) % 360;
+export type RotationDegrees = 0 | 90 | 180 | 270;
+
+function addRotationDegrees(
+  r1: RotationDegrees,
+  r2: RotationDegrees
+): RotationDegrees {
+  // Normally we should never use `as` but this is a special case where
+  // we know that the result will always be a valid `RotationDegrees`.
+  return ((r1 + r2) % 360) as RotationDegrees;
+}
+
+function subtractRotationDegrees(
+  r1: RotationDegrees,
+  r2: RotationDegrees
+): RotationDegrees {
+  // Normally we should never use `as` but this is a special case where
+  // we know that the result will always be a valid `RotationDegrees`.
+  return ((r1 - r2 + 360) % 360) as RotationDegrees;
 }
 
 export type Face = {
   rectangle: Rectangle;
   flip: Flip;
-  rotate: number;
+  rotate: RotationDegrees;
   blend: Blend;
 };
 
@@ -34,7 +50,7 @@ export function makeFace(rect: Rectangle): Face {
   };
 }
 // Rotates the face using a point as an axis to rotate around. This is necessary because the faces of the cuboid need to rotate around the center of the cuboid and not their own centers.
-function rotateOnAxis(face: Face, axis: Position, r: number): Face {
+function rotateOnAxis(face: Face, axis: Position, r: RotationDegrees): Face {
   const rad = (r * Math.PI) / 180; // degrees to radians
   const [cos, sin] = [Math.cos(rad), Math.sin(rad)]; // components of the unit vector
   const [x, y, w, h] = face.rectangle;
@@ -46,15 +62,17 @@ function rotateOnAxis(face: Face, axis: Position, r: number): Face {
   return {
     rectangle: [x3, y3, w, h],
     flip: face.flip,
-    rotate: addAngle(face.rotate, r),
+    rotate: addRotationDegrees(face.rotate, r),
     blend: face.blend,
   };
 }
 
 //add rotate values
-export function rotateFace(face: Face, r: number): Face {
+export function rotateFace(face: Face, r: RotationDegrees): Face {
   const r0 =
-    face.flip == "None" ? addAngle(r, face.rotate) : addAngle(-r, face.rotate);
+    face.flip == "None"
+      ? addRotationDegrees(face.rotate, r)
+      : subtractRotationDegrees(face.rotate, r);
   return {
     rectangle: face.rectangle,
     flip: face.flip,
@@ -85,7 +103,7 @@ export function rotateLocalFace(face: Face): Face {
 
   // If the face is rotated 90 or 270 degrees, then the height and width values will need to be swapped, and the corner moved to its correct position.
 
-  switch (addAngle(newFace.rotate, 0)) {
+  switch (addRotationDegrees(newFace.rotate, 0)) {
     case 90:
       newFace.rectangle = [x + (w - h) / 2, y + (w - h) / 2, h, w];
       break;
@@ -108,7 +126,7 @@ export function flipFace(
   flip: "None" | "Vertical" | "Horizontal"
 ): Face {
   let newFlip: Flip = "None";
-  let newRotate = 0;
+  let newRotate: RotationDegrees = 0;
   // set to be flip
   // if face flip is the same, set to none
   // if face flip is opposite, set to none and 180
@@ -373,7 +391,11 @@ function getAxis([w, h, d]: Dimensions, orientation: Orientation): Position {
   }
 }
 
-function rotateCuboid(dest: Dest, axis: Position, rotate: number): Dest {
+function rotateCuboid(
+  dest: Dest,
+  axis: Position,
+  rotate: RotationDegrees
+): Dest {
   return {
     right: rotateOnAxis(dest.right, axis, rotate),
     front: rotateOnAxis(dest.front, axis, rotate),
@@ -400,7 +422,7 @@ function setLayout(
   orientation: Orientation,
   center: Center,
   flip: Flip,
-  rotate: number,
+  rotate: RotationDegrees,
   blend: Blend
 ): Dest {
   // Depending of the center face of the cuboid, the width, height and depth as found in dimensions will have to change.
@@ -440,7 +462,7 @@ export type DrawCuboidOptions = {
   orientation: Orientation;
   center: Center;
   flip: Flip;
-  rotate: number;
+  rotate: RotationDegrees;
   blend: Blend;
 };
 
