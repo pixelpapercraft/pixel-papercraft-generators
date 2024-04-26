@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { makeImageFromUrl } from "./image";
+import { convertToStandardSkin } from "./minecraftSkinConverter";
 
 // https://github.com/Electroid/mojang-api
 // https://wiki.vg/Mojang_API
@@ -33,40 +34,42 @@ import { makeImageFromUrl } from "./image";
 //   "created_at": "2010-08-28"
 // }
 
+// Notes:
+// Not all requests return all of the fields above. E.g. `cape` might be missing.
+// So we just include the fields that we need in the parser below.
+
 export const textureSchema = z.object({
-  url: z.string(),
   data: z.string(),
 });
 
 export const texturesSchema = z.object({
-  custom: z.boolean(),
-  slim: z.boolean(),
   skin: textureSchema,
-  cape: textureSchema,
-  raw: z.object({
-    value: z.string(),
-    signature: z.string(),
-  }),
 });
 
-export const usernameHistoryItemSchema = z.object({ username: z.string() });
-
 export const userSchema = z.object({
-  uuid: z.string(),
-  username: z.string(),
-  username_history: z.array(usernameHistoryItemSchema),
   textures: texturesSchema,
-  created_at: z.string(),
 });
 
 export async function fetchSkinImage(
   username: string
 ): Promise<HTMLImageElement> {
   const apiUrl = `https://api.ashcon.app/mojang/v2/user/${username}`;
+
   const response = await fetch(apiUrl);
+
+  if (!response.ok) {
+    throw new Error(`${response.status} ${response.statusText}`);
+  }
+
   const json = await response.json();
+
   const user = userSchema.parse(json);
+
   const skinUrl = `data:image/png;base64,${user.textures.skin.data}`;
+
   const image = await makeImageFromUrl(skinUrl);
-  return image;
+
+  const skinImage = convertToStandardSkin(image);
+
+  return skinImage;
 }

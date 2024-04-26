@@ -67,6 +67,7 @@ const script: ScriptDef = (generator: Generator) => {
     standardWidth: 64,
     standardHeight: 64,
     choices: [],
+    enableMinecraftSkinInput: true,
   });
 
   const hideHelmet = generator.getBooleanInputValue("Hide Helmet");

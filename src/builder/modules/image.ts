@@ -1,3 +1,7 @@
+export function makeImage(): HTMLImageElement {
+  return new Image();
+}
+
 export function makeImageFromUrl(url: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const image = new Image();

@@ -75,6 +75,7 @@ const script: ScriptDef = (generator: Generator) => {
     standardWidth: 64,
     standardHeight: 64,
     choices: [],
+    enableMinecraftSkinInput: true,
   });
   generator.defineTextureInput("Flower", {
     standardWidth: 16,

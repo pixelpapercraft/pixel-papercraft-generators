@@ -125,6 +125,7 @@ const script: ScriptDef = (generator: Generator) => {
         "Creeper",
         "Blaze",
       ],
+      enableMinecraftSkinInput: true,
     });
   }
 

@@ -571,6 +571,7 @@ const script: ScriptDef = (generator: Generator) => {
     standardWidth: 64,
     standardHeight: 64,
     choices: [],
+    enableMinecraftSkinInput: true,
   });
 
   const alexModel1 =
@@ -591,6 +592,7 @@ const script: ScriptDef = (generator: Generator) => {
     standardWidth: 64,
     standardHeight: 64,
     choices: [],
+    enableMinecraftSkinInput: true,
   });
 
   const alexModel2 =
