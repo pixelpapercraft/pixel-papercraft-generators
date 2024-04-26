@@ -52,6 +52,20 @@ export function ArrowPathIcon({
   return <HeroArrowPathIcon className={makeClassName(size, color)} />;
 }
 
+export function ArrowPathIconWithSpin({
+  size = "Medium",
+  color = "Black",
+}: {
+  size?: IconSize;
+  color?: IconColor;
+}) {
+  return (
+    <HeroArrowPathIcon
+      className={makeClassName(size, color) + " animate-spin"}
+    />
+  );
+}
+
 export function XMarkIcon({
   size = "Medium",
   color = "Black",

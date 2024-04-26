@@ -8,6 +8,7 @@ import {
 import { fetchSkinImage } from "@genroot/builder/modules/minecraftSkin";
 import { type SelectOption, Select } from "../form/select";
 import { Button, type ButtonState } from "../button/button";
+import { ArrowPathIconWithSpin } from "../icon";
 
 type FetchState =
   | { kind: "Idle" }
@@ -48,20 +49,30 @@ function MinecraftSkin({
   const buttonState: ButtonState =
     !username || fetchState.kind === "Fetching" ? "Disabled" : "Ready";
 
+  const showSpinner = fetchState.kind === "Fetching";
+
   return (
     <div>
-      <div className="whitespace-nowrap">
-        <input
-          className="border border-gray-300 p-2 mr-2 w-60"
-          placeholder="Enter username"
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          onKeyUp={(e) => {
-            if (e.key === "Enter") {
-              onFetchSkin();
-            }
-          }}
-        />
+      <div className="flex">
+        <div className="relative">
+          <input
+            className="border border-gray-300 p-2 mr-2 w-60"
+            placeholder="Enter username"
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            onKeyUp={(e) => {
+              if (e.key === "Enter") {
+                onFetchSkin();
+              }
+            }}
+          />
+          {showSpinner ? (
+            <span className="absolute top-2 right-4">
+              <ArrowPathIconWithSpin />
+            </span>
+          ) : null}
+        </div>
+
         <Button size="Small" state={buttonState} onClick={onFetchSkin}>
           Fetch skin
         </Button>
