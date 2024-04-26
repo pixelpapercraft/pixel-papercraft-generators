@@ -52,7 +52,7 @@ function MinecraftSkin({
   const showSpinner = fetchState.kind === "Fetching";
 
   return (
-    <div>
+    <div className="relative">
       <div className="flex">
         <div className="relative">
           <input
@@ -78,9 +78,10 @@ function MinecraftSkin({
         </Button>
       </div>
       {fetchState.kind === "Error" ? (
-        <div className="text-red-500 text-sm">
-          There was a problem fetching the skin. Check the username and try
-          again.
+        <div className="text-red-500 absolute top-18">
+          There was a problem fetching the skin.
+          <br />
+          Check the username and try again.
         </div>
       ) : null}
     </div>
