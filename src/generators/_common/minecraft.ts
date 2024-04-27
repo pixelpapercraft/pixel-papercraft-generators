@@ -103,7 +103,7 @@ export function rotateLocalFace(face: Face): Face {
 
   // If the face is rotated 90 or 270 degrees, then the height and width values will need to be swapped, and the corner moved to its correct position.
 
-  switch (addRotationDegrees(newFace.rotate, 0)) {
+  switch (newFace.rotate) {
     case 90:
       newFace.rectangle = [x + (w - h) / 2, y + (w - h) / 2, h, w];
       break;
