@@ -15,6 +15,18 @@ import foregroundImage from "./images/Foreground.png";
 import foldsImage from "./images/Folds.png";
 import labelsImage from "./images/Labels.png";
 
+import migratorImage from "./textures/Migrator.png";
+import vanillaImage from "./textures/Vanilla.png";
+import cherryBlossomImage from "./textures/CherryBlossom.png";
+import minecon2011Image from "./textures/Minecon2011.png";
+import minecon2012Image from "./textures/Minecon2012.png";
+import minecon2013Image from "./textures/Minecon2013.png";
+import minecon2015Image from "./textures/Minecon2015.png";
+import minecon2016Image from "./textures/Minecon2016.png";
+import minecon2019Image from "./textures/Minecon2019.png";
+import mojangImage from "./textures/Mojang.png";
+import elytraImage from "./textures/Elytra.png";
+
 const id = "minecraft-cape-and-elytra";
 
 const name = "Minecraft Cape And Elytra";
@@ -22,6 +34,7 @@ const name = "Minecraft Cape And Elytra";
 const history: HistoryDef = [
   "16 Mar 2021 NinjolasNJM - Initially completed both cape and elytra generation.",
   "06 Jun 2021 NinjolasNJM - Converted to ReScript generator.",
+  "02 Feb 2024 NinjolasNJM - added default textures and improved folds. ",
 ];
 
 const thumbnail: ThumbnailDef = {
@@ -34,14 +47,99 @@ const images: ImageDef[] = [
   { id: "Labels", url: labelsImage.src },
 ];
 
-const textures: TextureDef[] = [];
+const textures: TextureDef[] = [
+  {
+    id: "Cape",
+    url: migratorImage.src,
+    standardWidth: 64,
+    standardHeight: 32,
+  },
+  {
+    id: "Migrator Cape",
+    url: migratorImage.src,
+    standardWidth: 64,
+    standardHeight: 32,
+  },
+  {
+    id: "Vanilla Cape",
+    url: vanillaImage.src,
+    standardWidth: 64,
+    standardHeight: 32,
+  },
+  {
+    id: "Cherry Blossom Cape",
+    url: cherryBlossomImage.src,
+    standardWidth: 64,
+    standardHeight: 32,
+  },
+  {
+    id: "Minecon 2011 Cape",
+    url: minecon2011Image.src,
+    standardWidth: 64,
+    standardHeight: 32,
+  },
+  {
+    id: "Minecon 2012 Cape",
+    url: minecon2012Image.src,
+    standardWidth: 64,
+    standardHeight: 32,
+  },
+  {
+    id: "Minecon 2013 Cape",
+    url: minecon2013Image.src,
+    standardWidth: 64,
+    standardHeight: 32,
+  },
+  {
+    id: "Minecon 2015 Cape",
+    url: minecon2015Image.src,
+    standardWidth: 64,
+    standardHeight: 32,
+  },
+  {
+    id: "Minecon 2016 Cape",
+    url: minecon2016Image.src,
+    standardWidth: 64,
+    standardHeight: 32,
+  },
+  {
+    id: "Founder's Cape",
+    url: minecon2019Image.src,
+    standardWidth: 64,
+    standardHeight: 32,
+  },
+  {
+    id: "Mojang Cape",
+    url: mojangImage.src,
+    standardWidth: 64,
+    standardHeight: 32,
+  },
+  {
+    id: "Elytra",
+    url: elytraImage.src,
+    standardWidth: 64,
+    standardHeight: 32,
+  },
+];
 
 const script: ScriptDef = (generator: Generator) => {
   // Define the user inputs
   generator.defineTextureInput("Cape", {
     standardWidth: 64,
     standardHeight: 32,
-    choices: [],
+    choices: [
+      "Migrator Cape",
+      "Vanilla Cape",
+      "Cherry Blossom Cape",
+      "Minecon 2011 Cape",
+      "Minecon 2012 Cape",
+      "Minecon 2013 Cape",
+      "Minecon 2015 Cape",
+      "Minecon 2016 Cape",
+      "Founder's Cape",
+      "Mojang Cape",
+      "Elytra",
+    ],
   });
 
   // Define user variables

@@ -1,5 +1,8 @@
 import { type Generator } from "@genroot/builder/modules/generator";
-import { type Flip } from "@genroot/builder/modules/renderers/drawTexture";
+import {
+  type Flip,
+  type Blend,
+} from "@genroot/builder/modules/renderers/drawTexture";
 import { type TabOrientation } from "@genroot/builder/modules/renderers/drawTab";
 import {
   type Cuboid,
@@ -11,10 +14,31 @@ import {
 
 export type { Cuboid, Rectangle, Position, Dimensions } from "./cuboid";
 
+export type RotationDegrees = 0 | 90 | 180 | 270;
+
+function addRotationDegrees(
+  r1: RotationDegrees,
+  r2: RotationDegrees
+): RotationDegrees {
+  // Normally we should never use `as` but this is a special case where
+  // we know that the result will always be a valid `RotationDegrees`.
+  return ((r1 + r2) % 360) as RotationDegrees;
+}
+
+function subtractRotationDegrees(
+  r1: RotationDegrees,
+  r2: RotationDegrees
+): RotationDegrees {
+  // Normally we should never use `as` but this is a special case where
+  // we know that the result will always be a valid `RotationDegrees`.
+  return ((r1 - r2 + 360) % 360) as RotationDegrees;
+}
+
 export type Face = {
   rectangle: Rectangle;
   flip: Flip;
-  rotate: number;
+  rotate: RotationDegrees;
+  blend: Blend;
 };
 
 export function makeFace(rect: Rectangle): Face {
@@ -22,70 +46,116 @@ export function makeFace(rect: Rectangle): Face {
     rectangle: rect,
     flip: "None",
     rotate: 0,
+    blend: { kind: "None" },
+  };
+}
+// Rotates the face using a point as an axis to rotate around. This is necessary because the faces of the cuboid need to rotate around the center of the cuboid and not their own centers.
+function rotateOnAxis(face: Face, axis: Position, r: RotationDegrees): Face {
+  const rad = (r * Math.PI) / 180; // degrees to radians
+  const [cos, sin] = [Math.cos(rad), Math.sin(rad)]; // components of the unit vector
+  const [x, y, w, h] = face.rectangle;
+  const [x0, y0] = axis;
+  const [x1, y1] = [x - x0, y - y0]; // move rectangle so the corner is on the axis
+  const [x2, y2] = [x1 * cos - y1 * sin, x1 * sin + y1 * cos]; // offset in relation to the angle
+  const [x3, y3] = [x2 + x0, y2 + y0]; // move rectangle away from the axis
+
+  return {
+    rectangle: [x3, y3, w, h],
+    flip: face.flip,
+    rotate: addRotationDegrees(face.rotate, r),
+    blend: face.blend,
   };
 }
 
-function flipFaceNone(face: Face): Face {
-  return face;
+//add rotate values
+export function rotateFace(face: Face, r: RotationDegrees): Face {
+  const r0 =
+    face.flip == "None"
+      ? addRotationDegrees(face.rotate, r)
+      : subtractRotationDegrees(face.rotate, r);
+  return {
+    rectangle: face.rectangle,
+    flip: face.flip,
+    rotate: r0,
+    blend: face.blend,
+  };
 }
 
-function flipFaceVertical(face: Face): Face {
-  switch (face.flip) {
-    case "None":
-      return { ...face, flip: "Vertical" };
-    case "Vertical":
-      return { ...face, flip: "None" };
-    case "Horizontal":
-      // When a face is flipped both vertically and horizontally,
-      // this is the same as rotating 180 degrees.
-      return {
-        ...face,
-        flip: "None",
-        rotate: face.rotate + 180,
-      };
-  }
-}
+// rotate in relation to its own center. Uses rotateOnAxis with the axis as the face's center.
+export function rotateLocalFace(face: Face): Face {
+  const { rectangle, flip, rotate, blend } = face;
+  let [x, y, w, h] = rectangle;
 
-function flipFaceHorizontal(face: Face): Face {
-  switch (face.flip) {
-    case "None":
-      return { ...face, flip: "Horizontal" };
-    case "Vertical":
-      // When a face is flipped both vertically and horizontally,
-      // this is the same as rotating 180 degrees.
-      return {
-        ...face,
-        flip: "None",
-        rotate: face.rotate + 180,
-      };
-    case "Horizontal":
-      return { ...face, flip: "None" };
+  const newFace =
+    rotate >= 360
+      ? rotateOnAxis(
+          { rectangle, flip, rotate: 0, blend },
+          [x - w / 2, y - h / 2],
+          rotate
+        )
+      : rotateOnAxis(
+          { rectangle, flip, rotate: 0, blend },
+          [x + w / 2, y + h / 2],
+          rotate
+        );
+
+  [x, y, w, h] = newFace.rectangle;
+
+  // If the face is rotated 90 or 270 degrees, then the height and width values will need to be swapped, and the corner moved to its correct position.
+
+  switch (newFace.rotate) {
+    case 90:
+      newFace.rectangle = [x + (w - h) / 2, y + (w - h) / 2, h, w];
+      break;
+
+    case 270:
+      newFace.rectangle = [x - (w - h) / 2, y - (w - h) / 2, h, w];
+      break;
   }
+
+  return {
+    rectangle: newFace.rectangle,
+    flip: newFace.flip,
+    rotate: newFace.rotate,
+    blend: newFace.blend,
+  };
 }
 
 export function flipFace(
   face: Face,
   flip: "None" | "Vertical" | "Horizontal"
 ): Face {
-  switch (flip) {
-    case "None":
-      return flipFaceNone(face);
-    case "Vertical":
-      return flipFaceVertical(face);
-    case "Horizontal":
-      return flipFaceHorizontal(face);
+  let newFlip: Flip = "None";
+  let newRotate: RotationDegrees = 0;
+  // set to be flip
+  // if face flip is the same, set to none
+  // if face flip is opposite, set to none and 180
+  if (face.flip != flip) {
+    if (face.flip == "None") {
+      newFlip = flip;
+    } else if (flip == "None") {
+      newFlip = face.flip;
+    } else {
+      newRotate = 180;
+    }
   }
+  return rotateFace(
+    {
+      rectangle: face.rectangle,
+      flip: newFlip,
+      rotate: face.rotate,
+      blend: face.blend,
+    },
+    newRotate
+  );
 }
 
-export function rotateFace(face: Face, r: number): Face {
-  const [x, y, w, h] = face.rectangle;
+export function blendFace(face: Face, blend: Blend): Face {
   return {
-    rectangle:
-      (r + 360) % 180 === 90
-        ? [x + (w - h) / 2, y - (w - h) / 2, h, w]
-        : [x, y, w, h],
+    rectangle: face.rectangle,
     flip: face.flip,
-    rotate: face.rotate + r,
+    rotate: face.rotate,
+    blend,
   };
 }
 
@@ -94,6 +164,7 @@ export function translateFace(face: Face, position: [number, number]): Face {
     rectangle: translateRectangle(face.rectangle, position),
     flip: face.flip,
     rotate: face.rotate,
+    blend: face.blend,
   };
 }
 
@@ -117,13 +188,13 @@ function translateDest(dest: Dest, position: Position): Dest {
   };
 }
 
-export type Direction = "East" | "West" | "North" | "South";
+export type Orientation = "East" | "West" | "North" | "South";
 
 export type Center = "Right" | "Front" | "Left" | "Back" | "Top" | "Bottom";
 
-function makeDest([w, h, d]: Dimensions, direction: Direction): Dest {
-  switch (direction) {
-    case "East":
+function makeDest([w, h, d]: Dimensions, orientation: Orientation): Dest {
+  switch (orientation) {
+    case "West":
       return {
         top: makeFace([d, 0, w, d]),
         right: makeFace([0, d, d, h]),
@@ -132,7 +203,7 @@ function makeDest([w, h, d]: Dimensions, direction: Direction): Dest {
         back: makeFace([d + w + d, d, w, h]),
         bottom: makeFace([d, d + h, w, d]),
       };
-    case "West":
+    case "East":
       return {
         top: makeFace([w + d, 0, w, d]),
         back: makeFace([0, d, w, h]),
@@ -141,7 +212,7 @@ function makeDest([w, h, d]: Dimensions, direction: Direction): Dest {
         left: makeFace([w + d + w, d, d, h]),
         bottom: makeFace([w + d, d + h, w, d]),
       };
-    case "North":
+    case "South":
       return {
         back: rotateFace(makeFace([d, 0, w, h]), 180),
         top: makeFace([d, h, w, d]),
@@ -150,7 +221,7 @@ function makeDest([w, h, d]: Dimensions, direction: Direction): Dest {
         left: makeFace([d + w, h + d, d, h]),
         bottom: makeFace([d, h * 2 + d, w, d]),
       };
-    case "South":
+    case "North":
       return {
         top: makeFace([d, 0, w, d]),
         right: makeFace([0, d, d, h]),
@@ -179,13 +250,67 @@ function adjustDimensionsForCenter(
   }
 }
 
-function setLayout(
-  dimensions: Dimensions,
-  direction: Direction,
-  center: Center
-): Dest {
-  const dimensionsAdjusted = adjustDimensionsForCenter(dimensions, center);
-  const dest = makeDest(dimensionsAdjusted, direction);
+function adjustOrientationForFlip(
+  orientation: Orientation,
+  flip: Flip
+): Orientation {
+  switch (flip) {
+    case "Horizontal": {
+      switch (orientation) {
+        case "West":
+          return "East";
+        case "East":
+          return "West";
+        case "North":
+        case "South":
+          return orientation;
+      }
+      break;
+    }
+    case "Vertical": {
+      switch (orientation) {
+        case "South":
+          return "North";
+        case "North":
+          return "South";
+        case "East":
+        case "West":
+          return orientation;
+      }
+      break;
+    }
+    case "None": {
+      return orientation;
+    }
+  }
+}
+
+function adjustDestFlip(dest: Dest, flip: Flip): Dest {
+  switch (flip) {
+    case "Horizontal":
+      return {
+        right: flipFace(dest.left, "Horizontal"),
+        front: flipFace(dest.front, "Horizontal"),
+        left: flipFace(dest.right, "Horizontal"),
+        back: flipFace(dest.back, "Horizontal"),
+        top: flipFace(dest.top, "Horizontal"),
+        bottom: flipFace(dest.bottom, "Horizontal"),
+      };
+    case "Vertical":
+      return {
+        right: flipFace(dest.right, "Vertical"),
+        front: flipFace(dest.front, "Vertical"),
+        left: flipFace(dest.left, "Vertical"),
+        back: flipFace(dest.back, "Vertical"),
+        top: flipFace(dest.bottom, "Vertical"),
+        bottom: flipFace(dest.top, "Vertical"),
+      };
+    case "None":
+      return dest;
+  }
+}
+
+function adjustDestCenter(dest: Dest, center: Center): Dest {
   switch (center) {
     case "Right":
       return {
@@ -193,8 +318,8 @@ function setLayout(
         front: dest.left,
         left: dest.back,
         back: dest.right,
-        top: rotateFace(dest.top, -90),
-        bottom: flipFace(dest.bottom, "Vertical"),
+        top: rotateFace(dest.top, 270),
+        bottom: flipFace(rotateFace(dest.bottom, 90), "Vertical"),
       };
     case "Front":
       return {
@@ -212,7 +337,7 @@ function setLayout(
         left: dest.front,
         back: dest.left,
         top: rotateFace(dest.top, 90),
-        bottom: flipFace(dest.bottom, "Vertical"),
+        bottom: flipFace(rotateFace(dest.bottom, 270), "Vertical"),
       };
     case "Back":
       return {
@@ -221,20 +346,20 @@ function setLayout(
         left: dest.right,
         back: dest.front,
         top: rotateFace(dest.top, 180),
-        bottom: flipFace(dest.bottom, "Vertical"),
+        bottom: flipFace(dest.bottom, "Horizontal"),
       };
     case "Top":
       return {
         right: rotateFace(dest.right, 90),
         front: dest.bottom,
-        left: rotateFace(dest.left, -90),
+        left: rotateFace(dest.left, 270),
         back: rotateFace(dest.top, 180),
         top: dest.front,
-        bottom: flipFace(rotateFace(dest.back, 180), "Vertical"),
+        bottom: flipFace(dest.back, "Horizontal"),
       };
     case "Bottom":
       return {
-        right: rotateFace(dest.right, -90),
+        right: rotateFace(dest.right, 270),
         front: dest.top,
         left: rotateFace(dest.left, 90),
         back: rotateFace(dest.bottom, 180),
@@ -244,7 +369,102 @@ function setLayout(
   }
 }
 
+function destRotateFaces(dest: Dest): Dest {
+  return {
+    right: rotateLocalFace(dest.right),
+    front: rotateLocalFace(dest.front),
+    left: rotateLocalFace(dest.left),
+    back: rotateLocalFace(dest.back),
+    top: rotateLocalFace(dest.top),
+    bottom: rotateLocalFace(dest.bottom),
+  };
+}
+
+function getAxis([w, h, d]: Dimensions, orientation: Orientation): Position {
+  switch (orientation) {
+    case "East":
+      return [d + w * 1.5, d + h / 2];
+    case "South":
+      return [d + w / 2, d + h * 1.5];
+    default:
+      return [d + w / 2, d + h / 2];
+  }
+}
+
+function rotateCuboid(
+  dest: Dest,
+  axis: Position,
+  rotate: RotationDegrees
+): Dest {
+  return {
+    right: rotateOnAxis(dest.right, axis, rotate),
+    front: rotateOnAxis(dest.front, axis, rotate),
+    left: rotateOnAxis(dest.left, axis, rotate),
+    back: rotateOnAxis(dest.back, axis, rotate),
+    top: rotateOnAxis(dest.top, axis, rotate),
+    bottom: rotateOnAxis(dest.bottom, axis, rotate),
+  };
+}
+
+function adjustDestBlend(dest: Dest, blend: Blend): Dest {
+  return {
+    right: blendFace(dest.right, blend),
+    front: blendFace(dest.front, blend),
+    left: blendFace(dest.left, blend),
+    back: blendFace(dest.back, blend),
+    top: blendFace(dest.top, blend),
+    bottom: blendFace(dest.bottom, blend),
+  };
+}
+
+function setLayout(
+  dimensions: Dimensions,
+  orientation: Orientation,
+  center: Center,
+  flip: Flip,
+  rotate: RotationDegrees,
+  blend: Blend
+): Dest {
+  // Depending of the center face of the cuboid, the width, height and depth as found in dimensions will have to change.
+  const dimensionsAdjusted = adjustDimensionsForCenter(dimensions, center);
+  // Depending on the flip direction of the cuboid, the orientation will need to change.
+  const orientationAdjusted = adjustOrientationForFlip(orientation, flip);
+
+  // Create destination with default layout
+  let dest = makeDest(dimensionsAdjusted, orientationAdjusted);
+  /*
+    Flip:
+    Add flip each face in the given direction
+    Change layout (by default, make horizontal make a west facing cuboid face east):
+    If horizontal, switch the right and left face, and if the orientation is east or west, make it face the other direction
+    If vertical, switch the top and bottom faces, and if the orientation is north or south, make it face the other direction
+ */
+  dest = adjustDestFlip(dest, flip);
+
+  // Place faces in proper places depending on the center face.
+  dest = adjustDestCenter(dest, center);
+  //actually rotate the faces
+  dest = destRotateFaces(dest);
+  // Rotate the destination by the given rotation, with the center of the center face as the axis
+  const axis = getAxis(dimensionsAdjusted, orientationAdjusted);
+  dest = rotateCuboid(dest, axis, rotate);
+
+  // Blend each face
+  dest = adjustDestBlend(dest, blend);
+
+  // Return the destination
+  return dest;
+}
+
 const defaultTabSize = 24;
+
+export type DrawCuboidOptions = {
+  orientation: Orientation;
+  center: Center;
+  flip: Flip;
+  rotate: RotationDegrees;
+  blend: Blend;
+};
 
 export class Minecraft {
   constructor(private generator: Generator) {}
@@ -252,7 +472,7 @@ export class Minecraft {
   drawFaceTexture(textureId: string, source: Rectangle, dest: Face) {
     this.generator.drawTexture(textureId, source, dest.rectangle, {
       flip: dest.flip,
-      rotate: dest.rotate,
+      rotateLegacy: dest.rotate,
     });
   }
 
@@ -261,11 +481,18 @@ export class Minecraft {
     source: Cuboid,
     position: Position,
     dimensions: Dimensions,
-    direction: Direction = "East",
-    center: Center = "Front"
+    options: Partial<DrawCuboidOptions> = {}
   ) {
+    const {
+      orientation = "West",
+      center = "Front",
+      flip = "None",
+      rotate = 0,
+      blend = { kind: "None" },
+    } = options;
+
     const dest = translateDest(
-      setLayout(dimensions, direction, center),
+      setLayout(dimensions, orientation, center, flip, rotate, blend),
       position
     );
     this.drawFaceTexture(textureId, source.front, dest.front);
