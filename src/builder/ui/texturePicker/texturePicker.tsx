@@ -206,8 +206,10 @@ export function TexturePicker({
 
   const [rotation, setRotation] = React.useState<Rotation>("Rot0");
 
-  const framesFiltered = search
-    ? frames.filter((frame) => frame.name.includes(search))
+  const searchLower = search.toLowerCase();
+
+  const framesFiltered = searchLower
+    ? frames.filter((frame) => frame.name.toLowerCase().includes(searchLower))
     : frames;
 
   const onRotateClick = () => {
