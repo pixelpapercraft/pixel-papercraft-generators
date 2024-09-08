@@ -5,6 +5,7 @@ import {
   type Region,
   type RegionLegacy,
   type Rectangle,
+  Dimensions,
 } from "./renderers/types";
 import { type DrawTextureOptions, drawTexture } from "./renderers/drawTexture";
 import {
@@ -224,6 +225,37 @@ export class Generator {
       lineDash: [2, 2],
       lineDashOffset: 3,
     });
+  }
+
+  drawFoldLineRect(dest: Region): void {
+    const [x, y, w, h] = dest;
+
+    this.drawFoldLine([x, y - 1], [x + w, y - 1]);
+    this.drawFoldLine([x + w, y], [x + w, y + h]);
+    this.drawFoldLine([x + w, y + h + 1], [x, y + h + 1]);
+    this.drawFoldLine([x, y + h], [x, y]);
+  }
+
+  drawFoldLineCuboid(
+    position: Position,
+    dimensions: [number, number, number],
+    leftSide?: boolean //Ideally supports all four orientations
+  ): void {
+    const [x, y] = position;
+    const [w, h, d] = dimensions;
+
+    if (!leftSide) {
+      this.drawFoldLineRect([x + d, y, w, d * 2 + h]);
+      this.drawFoldLineRect([x, y + d, d * 2 + w * 2, h]);
+      this.drawFoldLine(
+        [x + d * 2 + w - 1, y + d],
+        [x + d * 2 + w - 1, y + d + h]
+      );
+    } else {
+      this.drawFoldLineRect([x + d + w, y, w, d * 2 + h]);
+      this.drawFoldLineRect([x, y + d, d * 2 + w * 2, h]);
+      this.drawFoldLine([x + w, y + d], [x + w, y + d + h]);
+    }
   }
 
   drawTab(
