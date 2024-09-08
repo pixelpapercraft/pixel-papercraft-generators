@@ -141,6 +141,13 @@ const script: ScriptDef = (generator: Generator) => {
     drawLeg(texture, [41, 501 - 16], "South", true);
   }
 
+  function drawFolds() {
+    generator.drawFoldLineCuboid([169, 21], [64, 64, 64]);
+    generator.drawFoldLineCuboid([225, 309], [48, 48, 48]);
+    generator.drawFoldLineCuboid([177, 549], [80, 96, 64]);
+    generator.drawImage("Folds", [0, 0]);
+  }
+
   let ox: number;
   let oy: number;
 
@@ -177,7 +184,7 @@ const script: ScriptDef = (generator: Generator) => {
   // Folds
 
   if (showFolds) {
-    generator.drawImage("Folds", [0, 0]);
+    drawFolds();
   }
 
   // Labels
