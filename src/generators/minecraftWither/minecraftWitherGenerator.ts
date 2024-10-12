@@ -7,25 +7,25 @@ import type {
   TextureDef,
   ScriptDef,
   InstructionsDef,
+  ThumbnailDef
 } from "@genroot/builder/modules/generatorDef";
 import { type Generator } from "@genroot/builder/modules/generator";
 
 import witherTexture from "./instructions/wither.png";
 import backgroundImage from "./images/Background.png";
 import foldsImage from "./images/Folds.png";
+import thumbnailImage from "./images/Thumbnail.png";
 
 const id = "minecraft-wither";
 
 const name = "Minecraft Wither";
 
-const history: HistoryDef = ["01 Aug 2021 Hannibanni - Created."];
+const history: HistoryDef = [
+  "01 Aug 2021 Hannibanni - Created.",
+  "12 Oct 2024 Argenticityzen14 - Added PPC Footer and Thumbnail."
+];
 
 const instructions: InstructionsDef = `
-## TODO
-
-* Add a thumbnail image.
-* Make background the A4 page tempate with Pixel Papercraft footer.
-
 ## How to use the Wither generator
 
 ### Option 1: Use an existing Wither skin
@@ -46,6 +46,10 @@ const images: ImageDef[] = [
   { id: "Background", url: backgroundImage.src },
   { id: "Folds", url: foldsImage.src },
 ];
+
+const thumbnail: ThumbnailDef = {
+  url: thumbnailImage.src,
+};
 
 const witherSkinId = "Wither Skin";
 
@@ -538,7 +542,7 @@ export const generator: GeneratorDef = {
   id,
   name,
   history,
-  thumbnail: null,
+  thumbnail,
   video: null,
   instructions,
   images,

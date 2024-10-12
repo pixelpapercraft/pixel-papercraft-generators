@@ -64,6 +64,7 @@ export const mob: GeneratorDef[] = [
   minecraftPigGenerator,
   minecraftCatGenerator,
   minecraftVillagerGenerator,
+  minecraftWitherGenerator,
 ];
 
 // Blocks, Items and Accessories
@@ -83,7 +84,7 @@ export const other: GeneratorDef[] = [amogusBendableGenerator];
 
 // Incomplete and in development
 export const dev: GeneratorDef[] = isDevEnvironment
-  ? [minecraftWitherGenerator]
+  ? []
   : [];
 
 export const test: GeneratorDef[] = isDevEnvironment
