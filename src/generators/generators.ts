@@ -4,6 +4,7 @@ import { generator as amogusBendableGenerator } from "@genroot/generators/amogus
 import { generator as dalekModDalekGenerator } from "@genroot/generators/dalekModDalek/dalekModDalekGenerator";
 import { generator as minecraftActionFigureGenerator } from "@genroot/generators/minecraftActionFigure/minecraftActionFigureGenerator";
 import { generator as minecraftAllayCharacterGenerator } from "@genroot/generators/minecraftAllayCharacter/minecraftAllayCharacterGenerator";
+import { generator as minecraftArmorGenerator } from "@genroot/generators/minecraftArmor/minecraftArmorGenerator";
 import { generator as minecraftAxolotlCharacterGenerator } from "@genroot/generators/minecraftAxolotlCharacter/minecraftAxolotlCharacterGenerator";
 import { generator as minecraftBeeCharacterGenerator } from "@genroot/generators/minecraftBeeCharacter/minecraftBeeCharacterGenerator";
 import { generator as minecraftBlockGenerator } from "@genroot/generators/minecraftBlock/minecraftBlockGenerator";
@@ -71,6 +72,7 @@ export const utility: GeneratorDef[] = [
   minecraftBlockGenerator,
   minecraftItemGenerator,
   minecraftCapeAndElytraGenerator,
+  minecraftArmorGenerator,
   minecraftCharacterHeadsGenerator,
 ];
 
