@@ -9,548 +9,676 @@ import type {
   ThumbnailDef,
 } from "@genroot/builder/modules/generatorDef";
 import { type Generator } from "@genroot/builder/modules/generator";
+import { Dimensions, old } from "../_common/minecraftCharacter";
+import thumbnailImage from "./thumbnail/v1-thumbnail-256.jpeg";
 
-import thumbnailImage from "./thumbnail/v3-thumbnail-256.jpeg";
-import foregroundHorseImage from "./images/Foreground-Horse.png";
-import foregroundMuleImage from "./images/Foreground-Mule.png";
-import foldsHorseImage from "./images/Folds-Horse.png";
-import foldsMuleImage from "./images/Folds-Mule.png";
+import foregroundImage from "./images/Foreground.png";
+import foldsImage from "./images/Folds.png";
 import labelsImage from "./images/Labels.png";
-import horseBlackTexture from "./textures/horse_black.png";
-import horseBrownTexture from "./textures/horse_brown.png";
-import horseChestnutTexture from "./textures/horse_chestnut.png";
-import horseCreamyTexture from "./textures/horse_creamy.png";
-import horseDarkbrownTexture from "./textures/horse_darkbrown.png";
-import horseGrayTexture from "./textures/horse_gray.png";
-import horseWhiteTexture from "./textures/horse_white.png";
-import horseSkeletonTexture from "./textures/horse_skeleton.png";
-import horseZombieTexture from "./textures/horse_zombie.png";
-import donkeyTexture from "./textures/donkey.png";
-import muleTexture from "./textures/mule.png";
-import horseMarkingsBlackDotsTexture from "./textures/horse_markings_blackdots.png";
-import horseMarkingsWhiteTexture from "./textures/horse_markings_white.png";
-import horseMarkingsWhiteDotsTexture from "./textures/horse_markings_whitedots.png";
-import horseMarkingsWhiteFieldTexture from "./textures/horse_markings_whitefield.png";
-import horseArmorLeatherTexture from "./textures/horse_armor_leather.png";
-import horseArmorGoldTexture from "./textures/horse_armor_gold.png";
-import horseArmorIronTexture from "./textures/horse_armor_iron.png";
-import horseArmorDiamondTexture from "./textures/horse_armor_diamond.png";
+import foregroundShouldersImage from "./images/Foreground-Shoulders.png";
+import foldsShouldersImage from "./images/Folds-Shoulders.png";
+
+import enchantedGlint from "./textures/enchanted_glint_entity.png";
+
+import steveTexture from "./textures/steve.png";
+import alexTexture from "./textures/alex.png";
+import debugTexture from "./textures/SkinSteveReference64x64.png";
+import helmetTexture from "./textures/diamond_layer_1.png";
+import chestplateTexture from "./textures/diamond_layer_1.png";
+import leggingsTexture from "./textures/diamond_layer_2.png";
+import bootsTexture from "./textures/diamond_layer_1.png";
+import helmetOverlayTexture from "./textures/leather_layer_1_overlay.png";
+import chestplateOverlayTexture from "./textures/leather_layer_1_overlay.png";
+import leggingsOverlayTexture from "./textures/leather_layer_2_overlay.png";
+import bootsOverlayTexture from "./textures/leather_layer_1_overlay.png";
+import chainmail1Texture from "./textures/chainmail_layer_1.png";
+import chainmail2Texture from "./textures/chainmail_layer_2.png";
+import diamond2Texture from "./textures/diamond_layer_2.png";
+import gold1Texture from "./textures/gold_layer_1.png";
+import gold2Texture from "./textures/gold_layer_2.png";
+import iron1Texture from "./textures/iron_layer_1.png";
+import iron2Texture from "./textures/iron_layer_2.png";
+import netherite1Texture from "./textures/netherite_layer_1.png";
+import netherite2Texture from "./textures/netherite_layer_2.png";
+import leather1Texture from "./textures/leather_layer_1.png";
+import leather2Texture from "./textures/leather_layer_2.png";
+import leather1OverlayTexture from "./textures/leather_layer_1_overlay.png";
+import leather2OverlayTexture from "./textures/leather_layer_2_overlay.png";
+import turtleShellTexture from "./textures/turtle_layer_1.png";
+import notchTexture from "./textures/Notch.png";
+import { Minecraft } from "../_common/minecraft";
 
 const id = "minecraft-armor";
-
 const name = "Minecraft Armor";
 
-const history: HistoryDef = [
-  "11 Jul 2021 NinjolasNJM - Initial script finished.",
-];
+const history: HistoryDef = [];
+
+const instructions = `
+## How to use the Minecraft Armor Generator?
+
+### Choosing the Armor
+* Select from the drop down menu under each armor part which material you want for each piece of armor.
+* Alternatively, you can select "Choose file" to provide your own armor texture files.
+* If your custom helmet texture has an overlay layer, you can click on the helmet to toggle on and off the overlay layer.
+* If a part of the design doesn't look right for your armor texture, you can try clicking on that part in the papercraft template to adjust that part.
+
+### Armor Options
+* For each armor part, there are a few options you can select from:
+#### Tint Armor
+  - Select from the drop down menu what color you want to tint the armor.
+  - Select either from the drop down menu or from "Choose file" to choose the overlay that goes over the tinted part of the armor.
+#### Trim Armor
+  - Select either from the drop down menu or from "Choose file" to choose which trim pattern to apply to the armor.
+  - Select either from the drop down menu or select "Choose file" to choose the material that the trim is made out of.
+#### Enchant Armor
+  - Coming Soon???
+`;
 
 const thumbnail: ThumbnailDef = {
   url: thumbnailImage.src,
 };
 
 const images: ImageDef[] = [
-  {
-    id: "Foreground-Horse",
-    url: foregroundHorseImage.src,
-  },
-  {
-    id: "Foreground-Mule",
-    url: foregroundMuleImage.src,
-  },
-  {
-    id: "Folds-Horse",
-    url: foldsHorseImage.src,
-  },
-  {
-    id: "Folds-Mule",
-    url: foldsMuleImage.src,
-  },
-  {
-    id: "Labels",
-    url: labelsImage.src,
-  },
+  { id: "Foreground", url: foregroundImage.src },
+  { id: "Folds", url: foldsImage.src },
+  { id: "Labels", url: labelsImage.src },
+  { id: "Foreground-Shoulders", url: foregroundShouldersImage.src },
+  { id: "Folds-Shoulders", url: foldsShouldersImage.src },
 ];
 
 const textures: TextureDef[] = [
-  {
-    id: "Black Horse",
-    url: horseBlackTexture.src,
-    standardWidth: 64,
-    standardHeight: 64,
-  },
-  {
-    id: "Brown Horse",
-    url: horseBrownTexture.src,
-    standardWidth: 64,
-    standardHeight: 64,
-  },
-  {
-    id: "Chestnut Horse",
-    url: horseChestnutTexture.src,
-    standardWidth: 64,
-    standardHeight: 64,
-  },
-  {
-    id: "Creamy Horse",
-    url: horseCreamyTexture.src,
-    standardWidth: 64,
-    standardHeight: 64,
-  },
-  {
-    id: "Dark Brown Horse",
-    url: horseDarkbrownTexture.src,
-    standardWidth: 64,
-    standardHeight: 64,
-  },
-  {
-    id: "Gray Horse",
-    url: horseGrayTexture.src,
-    standardWidth: 64,
-    standardHeight: 64,
-  },
-  {
-    id: "White Horse",
-    url: horseWhiteTexture.src,
-    standardWidth: 64,
-    standardHeight: 64,
-  },
-  {
-    id: "Skeleton Horse",
-    url: horseSkeletonTexture.src,
-    standardWidth: 64,
-    standardHeight: 64,
-  },
-  {
-    id: "Zombie Horse",
-    url: horseZombieTexture.src,
-    standardWidth: 64,
-    standardHeight: 64,
-  },
-  {
-    id: "Donkey",
-    url: donkeyTexture.src,
-    standardWidth: 64,
-    standardHeight: 64,
-  },
-  {
-    id: "Mule",
-    url: muleTexture.src,
-    standardWidth: 64,
-    standardHeight: 64,
-  },
-  {
-    id: "Black Dots",
-    url: horseMarkingsBlackDotsTexture.src,
-    standardWidth: 64,
-    standardHeight: 64,
-  },
-  {
-    id: "White",
-    url: horseMarkingsWhiteTexture.src,
-    standardWidth: 64,
-    standardHeight: 64,
-  },
-  {
-    id: "White Dots",
-    url: horseMarkingsWhiteDotsTexture.src,
-    standardWidth: 64,
-    standardHeight: 64,
-  },
-  {
-    id: "White Field",
-    url: horseMarkingsWhiteFieldTexture.src,
-    standardWidth: 64,
-    standardHeight: 64,
-  },
-  {
-    id: "Leather",
-    url: horseArmorLeatherTexture.src,
-    standardWidth: 64,
-    standardHeight: 64,
-  },
-  {
-    id: "Gold",
-    url: horseArmorGoldTexture.src,
-    standardWidth: 64,
-    standardHeight: 64,
-  },
-  {
-    id: "Iron",
-    url: horseArmorIronTexture.src,
-    standardWidth: 64,
-    standardHeight: 64,
-  },
-  {
-    id: "Diamond",
-    url: horseArmorDiamondTexture.src,
-    standardWidth: 64,
-    standardHeight: 64,
-  },
+  { id: "Steve", url: steveTexture.src, standardWidth: 64, standardHeight: 64 },
+  { id: "Alex", url: alexTexture.src, standardWidth: 64, standardHeight: 64 },
+  { id: "Debug", url: debugTexture.src, standardWidth: 64, standardHeight: 64 },
+  { id: "Helmet", url: helmetTexture.src, standardWidth: 64, standardHeight: 64 },
+  { id: "Chestplate", url: chestplateTexture.src, standardWidth: 64, standardHeight: 64 },
+  { id: "Leggings", url: leggingsTexture.src, standardWidth: 64, standardHeight: 64 },
+  { id: "Boots", url: bootsTexture.src, standardWidth: 64, standardHeight: 64 },
+  { id: "Helmet Overlay", url: helmetOverlayTexture.src, standardWidth: 64, standardHeight: 64 },
+  { id: "Chestplate Overlay", url: chestplateOverlayTexture.src, standardWidth: 64, standardHeight: 64 },
+  { id: "Leggings Overlay", url: leggingsOverlayTexture.src, standardWidth: 64, standardHeight: 64 },
+  { id: "Boots Overlay", url: bootsOverlayTexture.src, standardWidth: 64, standardHeight: 64 },
+  { id: "Chainmail", url: chainmail1Texture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Chainmail ", url: chainmail2Texture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Diamond", url: helmetTexture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Diamond ", url: diamond2Texture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Gold", url: gold1Texture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Gold ", url: gold2Texture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Iron", url: iron1Texture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Iron ", url: iron2Texture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Netherite", url: netherite1Texture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Netherite ", url: netherite2Texture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Leather", url: leather1Texture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Leather ", url: leather2Texture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Leather Overlay", url: leather1OverlayTexture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Leather Overlay ", url: leather2OverlayTexture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Turtle Shell", url: turtleShellTexture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Notch", url: notchTexture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Enchanted Glint", url: enchantedGlint.src, standardWidth: 128, standardHeight: 128 },
 ];
 
 const script: ScriptDef = (generator: Generator) => {
+  const minecraftGenerator = new Minecraft(generator);
+
+  const char = old;
+
+  // Chestplate inputs
+  generator.defineTextureInput("Chestplate", {
+    standardWidth: 64,
+    standardHeight: 64,
+    choices: ["Leather", "Chainmail", "Gold", "Iron", "Diamond", "Netherite"],
+  });
+  generator.defineBooleanInput("Tint Chestplate", false);
+  const tintChestplate = generator.getBooleanInputValue("Tint Chestplate");
+  if (tintChestplate) {
+    generator.defineSelectInput("Chestplate Color", [
+      "Leather", "Black", "Red", "Green", "Brown", "Blue", "Purple", "Cyan",
+      "Light Gray", "Gray", "Pink", "Lime", "Yellow", "Light Blue", "Magenta", "Orange", "White",
+    ]);
+    generator.defineTextureInput("Chestplate Overlay", {
+      standardWidth: 64,
+      standardHeight: 64,
+      choices: ["Leather Overlay"],
+    });
+  }
+
+  // Leggings inputs
+  generator.defineTextureInput("Leggings", {
+    standardWidth: 64,
+    standardHeight: 64,
+    choices: ["Leather ", "Chainmail ", "Gold ", "Iron ", "Diamond ", "Netherite "],
+  });
+  generator.defineBooleanInput("Tint Leggings", false);
+  const tintLeggings = generator.getBooleanInputValue("Tint Leggings");
+  if (tintLeggings) {
+    generator.defineSelectInput("Leggings Color", [
+      "Leather", "Black", "Red", "Green", "Brown", "Blue", "Purple", "Cyan",
+      "Light Gray", "Gray", "Pink", "Lime", "Yellow", "Light Blue", "Magenta", "Orange", "White",
+    ]);
+    generator.defineTextureInput("Leggings Overlay", {
+      standardWidth: 64,
+      standardHeight: 64,
+      choices: ["Leather Overlay "],
+    });
+  }
+
+  // Boots inputs
+  generator.defineTextureInput("Boots", {
+    standardWidth: 64,
+    standardHeight: 64,
+    choices: ["Leather", "Chainmail", "Gold", "Iron", "Diamond", "Netherite"],
+  });
+  generator.defineBooleanInput("Tint Boots", false);
+  const tintBoots = generator.getBooleanInputValue("Tint Boots");
+  if (tintBoots) {
+    generator.defineSelectInput("Boots Color", [
+      "Leather", "Black", "Red", "Green", "Brown", "Blue", "Purple", "Cyan",
+      "Light Gray", "Gray", "Pink", "Lime", "Yellow", "Light Blue", "Magenta", "Orange", "White",
+    ]);
+    generator.defineTextureInput("Boots Overlay", {
+      standardWidth: 64,
+      standardHeight: 64,
+      choices: ["Leather Overlay"],
+    });
+  }
+
+  function rgbaToHex([r, g, b, a]: [number, number, number, number]): string {
+    const toHex = (value: number) => value.toString(16).padStart(2, "0");
+    return `#${toHex(r)}${toHex(g)}${toHex(b)}${toHex(a)}`;
+  }
+  
+  function getTexturePixelColor(id: string, x: number, y: number): string {
+    const color = generator.getTexturePixelColor(id, x, y);
+    return color ? rgbaToHex(color) : "Unknown";
+  }
+  
+  function getPalette(id: string, length: number): string[] {
+    return Array.from({ length }, (_, i) => getTexturePixelColor(id, i, 0));
+  }
+  
+  const baseColors = getPalette("Trim Palette  ", 8);
+  
+  function shoulderAlpha(textureId: string): number {
+    const color = generator.getTexturePixelColor(textureId, 51, 24);
+    const a = color ? color[3] : 33;
+    console.log(`${textureId}: ${a}`);
+    return a;
+  }
+
+  function drawHelmetHead(
+    textureId: string,
+    showHeadOverlay: boolean,
+    tint: string
+  ) {
+    const ox = 41;
+    const oy = 21;
+    const dimensions: Dimensions = [80, 80, 80];
+    minecraftGenerator.drawCuboid(textureId, char.base.head, [ox, oy], dimensions, { blend: { kind: "MultiplyHex", hex: tint } });
+    if (showHeadOverlay) {
+      minecraftGenerator.drawCuboid(textureId, char.overlay.head, [ox, oy], dimensions, { blend: { kind: "MultiplyHex", hex: tint } });
+    }
+  }
+  
+  function drawHelmetLiner(
+    textureId: string,
+    showHeadOverlay: boolean,
+    tint: string
+  ) {
+    const ox = 329;
+    const oy = 37;
+    const dimensions: Dimensions = [64, 64, 64];
+    minecraftGenerator.drawCuboid(textureId, char.base.head, [ox, oy], dimensions, { blend: { kind: "MultiplyHex", hex: tint }, rotate: 90 });
+    generator.drawTexture(textureId, [0, 16, 8, 2], [ox + 100, oy + 28, 64, 8], {
+      blend: { kind: "MultiplyHex", hex: tint },
+      rotate: 90,
+    });
+    generator.drawTexture(textureId, [16, 16, 8, 2], [ox + 100, oy + 156, 64, 8], {
+      blend: { kind: "MultiplyHex", hex: tint },
+      rotate: 90,
+    });
+    if (showHeadOverlay) {
+      minecraftGenerator.drawCuboid(textureId, char.overlay.head, [ox, oy], dimensions, { blend: { kind: "MultiplyHex", hex: tint }, rotate: 90 });
+      generator.drawTexture(textureId, [32, 16, 8, 2], [ox + 100, oy + 28, 64, 8], {
+        blend: { kind: "MultiplyHex", hex: tint },
+        rotate: 90,
+      });
+      generator.drawTexture(textureId, [48, 16, 8, 2], [ox + 100, oy + 156, 64, 8], {
+        blend: { kind: "MultiplyHex", hex: tint },
+        rotate: 90,
+      });
+    }
+  }
+  
+  function drawChestplateBody(textureId: string, tint: string) {
+    const ox = 185;
+    const oy = 309;
+    const dimensions: Dimensions = [64, 96, 48];
+    minecraftGenerator.drawCuboid(textureId, char.base.body, [ox, oy], dimensions, { blend: { kind: "MultiplyHex", hex: tint } });
+    generator.drawTexture(textureId, char.base.body.back, [ox + 48, oy - 96, 64, 96], {
+      rotate: 180,
+      blend: { kind: "MultiplyHex", hex: tint },
+    });
+    generator.drawTexture(textureId, [33, 48, 6, 16], [ox + 112, oy - 96, 48, 64], {
+      rotate: 180,
+      blend: { kind: "MultiplyHex", hex: tint },
+    });
+    generator.drawTexture(textureId, [20, 44, 8, 2], [ox + 48, oy, 64, 48], { blend: { kind: "MultiplyHex", hex: tint } });
+    generator.drawTexture(textureId, [20, 42, 8, 2], [ox + 48, oy, 64, 48], { blend: { kind: "MultiplyHex", hex: tint } });
+  }
+  
+  function drawRightShoulder(textureId: string, tint: string) {
+    const ox = -27;
+    const oy = 233;
+    const dimensions: Dimensions = [40, 96, 48];
+   /* if (shoulderAlpha(textureId) === 0) {
+      generator.drawTexture(textureId, char.base.rightArm.left, [ox + 100, oy + 92, 48, 96], {
+        blend: { kind: "MultiplyHex", hex: tint },
+        rotate: 270,
+      });
+    } */
+    minecraftGenerator.drawCuboid(textureId, char.base.rightArm, [ox, oy], dimensions, {
+      blend: { kind: "MultiplyHex", hex: tint },
+      rotate: 90,
+    });
+    generator.drawTexture(textureId, char.base.rightArm.back, [ox + 192, oy + 88, 40, 96], {
+      blend: { kind: "MultiplyHex", hex: tint },
+      rotate: 270,
+    });
+    generator.drawTexture(textureId, char.base.rightArm.back, [ox + 192, oy + 48, 40, 96], {
+      blend: { kind: "MultiplyHex", hex: tint },
+      rotate: 270,
+    });
+  }
+  
+  function drawLeftShoulder(textureId: string, tint: string) {
+    const ox = 445;
+    const oy = 233;
+    const dimensions: Dimensions = [40, 96, 48];
+    /* if (shoulderAlpha(textureId) === 0) {
+      generator.drawTexture(textureId, char.base.leftArm.left, [ox + 28, oy + 92, 48, 96], {
+        blend: { kind: "MultiplyHex", hex: tint },
+        flip: "Horizontal",
+        rotate: 90,
+      });
+    } */
+    minecraftGenerator.drawCuboid(textureId, char.base.leftArm, [ox, oy], dimensions, {
+      blend: { kind: "MultiplyHex", hex: tint },
+      flip: "Horizontal",
+      rotate: 270,
+    });
+    generator.drawTexture(textureId, char.base.leftArm.back, [ox - 56, oy + 88, 40, 96], {
+      blend: { kind: "MultiplyHex", hex: tint },
+      flip: "Horizontal",
+      rotate: 90,
+    });
+    generator.drawTexture(textureId, char.base.leftArm.back, [ox - 56, oy + 48, 40, 96], {
+      blend: { kind: "MultiplyHex", hex: tint },
+      flip: "Horizontal",
+      rotate: 90,
+    });
+  }
+  
+  function drawLeggingsBody(textureId: string, tint: string) {
+    const ox = 193;
+    const oy = 385;
+    const dimensions: Dimensions = [64, 104, 40];
+    generator.drawTexture(textureId, [0, 40, 4, 24], [ox, oy + 135, 40, 104], { blend: { kind: "MultiplyHex", hex: tint } });
+    generator.drawTexture(textureId, [0, 40, 4, 24], [ox + 104, oy + 135, 40, 104], {
+      blend: { kind: "MultiplyHex", hex: tint },
+      flip: "Horizontal",
+    });
+    minecraftGenerator.drawCuboid(textureId, char.base.body, [ox, oy], dimensions, { blend: { kind: "MultiplyHex", hex: tint } });
+  }
+  
+  function drawRightLegging(textureId: string, tint: string) {
+    const ox = 49;
+    const oy = 541;
+    const dimensions: Dimensions = [32, 104, 40];
+    minecraftGenerator.drawCuboid(textureId, char.base.rightLeg, [ox, oy], dimensions, { blend: { kind: "MultiplyHex", hex: tint } });
+    generator.drawTexture(textureId, [16, 40, 4, 24], [ox, oy - 55, 40, 104], { blend: { kind: "MultiplyHex", hex: tint } });
+    generator.drawTexture(textureId, [0, 40, 4, 8], [ox + 72, oy + 20, 40, 34], { blend: { kind: "MultiplyHex", hex: tint } });
+    generator.drawTexture(textureId, [16, 40, 4, 24], [ox + 72, oy - 75, 40, 104], { blend: { kind: "MultiplyHex", hex: tint } });
+  }
+  
+  function drawLeftLegging(textureId: string, tint: string) {
+    const ox = 401;
+    const oy = 541;
+    const dimensions: Dimensions = [32, 104, 40];
+    minecraftGenerator.drawCuboid(textureId, char.base.leftLeg, [ox, oy], dimensions, {
+      blend: { kind: "MultiplyHex", hex: tint },
+      flip: "Horizontal",
+    });
+    generator.drawTexture(textureId, [28, 40, 4, 24], [ox + 104, oy - 55, 40, 104], { blend: { kind: "MultiplyHex", hex: tint } });
+    generator.drawTexture(textureId, [0, 40, 4, 8], [ox + 32, oy + 20, 40, 34], {
+      blend: { kind: "MultiplyHex", hex: tint },
+      flip: "Horizontal",
+    });
+    generator.drawTexture(textureId, [28, 40, 4, 24], [ox + 32, oy - 75, 40, 104], {
+      blend: { kind: "MultiplyHex", hex: tint },
+      flip: "Horizontal",
+    });
+  }
+  
+  function drawRightBoot(textureId: string, tint: string) {
+    const ox = 35;
+    const oy = 597;
+    const dimensions: Dimensions = [40, 96, 48];
+    minecraftGenerator.drawCuboid(textureId, char.base.rightLeg, [ox, oy], dimensions, { blend: { kind: "MultiplyHex", hex: tint } });
+    minecraftGenerator.drawCuboid(textureId, char.base.rightLeg, [169, 613], [32, 96, 32], {
+      blend: { kind: "MultiplyHex", hex: tint },
+      rotate: 270,
+      center: "Back",
+    });
+  }
+  
+  function drawLeftBoot(textureId: string, tint: string) {
+    const ox = 383;
+    const oy = 597;
+    const dimensions: Dimensions = [40, 96, 48];
+    minecraftGenerator.drawCuboid(textureId, char.base.leftLeg, [ox, oy], dimensions, {
+      blend: { kind: "MultiplyHex", hex: tint },
+      flip: "Horizontal",
+    });
+    minecraftGenerator.drawCuboid(textureId, char.base.leftLeg, [297, 613], [32, 96, 32], {
+      blend: { kind: "MultiplyHex", hex: tint },
+      rotate: 90,
+      center: "Back",
+      flip: "Horizontal",
+    });
+  }
+  
+  function drawFolds() {
+    generator.drawImage("Folds", [0, 0]);
+    // Later replace with drawLineFold functions
+  }
+
+  function drawHelmetHead(textureId: string, showHeadOverlay: boolean, tint: string) {
+    const ox = 41;
+    const oy = 21;
+    const dimensions: Dimensions = [80, 80, 80];
+    minecraftGenerator.drawCuboid(textureId, char.base.head, [ox, oy], dimensions, {
+      blend: { kind: "MultiplyHex", hex: tint },
+    });
+    if (showHeadOverlay) {
+      minecraftGenerator.drawCuboid(textureId, char.overlay.head, [ox, oy], dimensions, {
+        blend: { kind: "MultiplyHex", hex: tint },
+      });
+    }
+  }
+  
+  function drawHelmetLiner(textureId: string, showHeadOverlay: boolean, tint: string) {
+    const ox = 329;
+    const oy = 37;
+    const dimensions: Dimensions = [64, 64, 64];
+    minecraftGenerator.drawCuboid(textureId, char.base.head, [ox, oy], dimensions, {
+      blend: { kind: "MultiplyHex", hex: tint },
+      rotate: 90,
+    });
+    generator.drawTexture(textureId, [0, 16, 8, 2], [ox + 100, oy + 28, 64, 8], {
+      blend: { kind: "MultiplyHex", hex: tint },
+      rotate: 90,
+    });
+    generator.drawTexture(textureId, [16, 16, 8, 2], [ox + 100, oy + 156, 64, 8], {
+      blend: { kind: "MultiplyHex", hex: tint },
+      rotate: 90,
+    });
+    if (showHeadOverlay) {
+      minecraftGenerator.drawCuboid(textureId, char.overlay.head, [ox, oy], dimensions, {
+        blend: { kind: "MultiplyHex", hex: tint },
+        rotate: 90,
+      });
+      generator.drawTexture(textureId, [32, 16, 8, 2], [ox + 100, oy + 28, 64, 8], {
+        blend: { kind: "MultiplyHex", hex: tint },
+        rotate: 90,
+      });
+      generator.drawTexture(textureId, [48, 16, 8, 2], [ox + 100, oy + 156, 64, 8], {
+        blend: { kind: "MultiplyHex", hex: tint },
+        rotate: 90,
+      });
+    }
+  }
+  
+  function drawHelmet(showHeadOverlay: boolean) {
+    generator.defineTextureInput("Helmet", {
+      standardWidth: 64,
+      standardHeight: 64,
+      choices: ["Leather", "Chainmail", "Gold", "Iron", "Diamond", "Netherite", "Turtle Shell"],
+    });
+    generator.defineBooleanInput("Tint Helmet", false);
+    const tintHelmet = generator.getBooleanInputValue("Tint Helmet");
+    if (tintHelmet) {
+      generator.defineSelectInput("Helmet Color", [
+        "Leather", "Black", "Red", "Green", "Brown", "Blue", "Purple", "Cyan",
+        "Light Gray", "Gray", "Pink", "Lime", "Yellow", "Light Blue", "Magenta", "Orange", "White",
+      ]);
+      generator.defineTextureInput("Helmet Overlay", {
+        standardWidth: 64,
+        standardHeight: 64,
+        choices: ["Leather Overlay"],
+      });
+    }
+    generator.defineBooleanInput("Show Head Overlay", true);
+    const tint = tintHelmet ? getTint("Helmet Color") : "None";
+  
+    drawHelmetHead("Helmet", showHeadOverlay, tint);
+    drawHelmetLiner("Helmet", showHeadOverlay, tint);
+  
+    if (tintHelmet) {
+      generator.defineTextureInput("Helmet Overlay", {
+        standardWidth: 64,
+        standardHeight: 64,
+        choices: ["Leather Overlay"],
+      });
+      drawHelmetHead("Helmet Overlay", showHeadOverlay, "None");
+      drawHelmetLiner("Helmet Overlay", showHeadOverlay, "None");
+    }
+  
+    generator.defineRegionInput([41, 21, 320, 160], () => {
+      generator.setBooleanInputValue("Show Head Overlay", !showHeadOverlay);
+    });
+  }
+  
+  function drawChestplate() {
+    generator.defineTextureInput("Chestplate", {
+      standardWidth: 64,
+      standardHeight: 64,
+      choices: materials,
+    });
+  
+    const tintChestplate = generator.defineAndGetBooleanInput("Tint Chestplate", false);
+    const tint = tintChestplate ? getTint("Chestplate Color") : "FFFFFF";
+  
+    drawChestplateBody("Chestplate", { kind: "MultiplyHex", hex: tint });
+    drawLeftShoulder("Chestplate", { kind: "MultiplyHex", hex: tint });
+    drawRightShoulder("Chestplate", { kind: "MultiplyHex", hex: tint });
+  
+    if (tintChestplate) {
+      generator.defineTextureInput("Chestplate Overlay", {
+        standardWidth: 64,
+        standardHeight: 64,
+        choices: ["Leather Overlay"],
+      });
+      drawChestplateBody("Chestplate Overlay", { kind: "None" });
+      drawLeftShoulder("Chestplate Overlay", { kind: "None" });
+      drawRightShoulder("Chestplate Overlay", { kind: "None" });
+    }
+  }
+  
+  function drawLeggings() {
+    generator.defineTextureInput("Leggings", {
+      standardWidth: 64,
+      standardHeight: 64,
+      choices: materials2,
+    });
+  
+    const tintLeggings = generator.defineAndGetBooleanInput("Tint Leggings", false);
+    const tint = tintLeggings ? getTint("Leggings Color") : "FFFFFF";
+  
+    drawLeggingsBody("Leggings", { kind: "MultiplyHex", hex: tint });
+    drawRightLegging("Leggings", { kind: "MultiplyHex", hex: tint });
+    drawLeftLegging("Leggings", { kind: "MultiplyHex", hex: tint });
+  
+    if (tintLeggings) {
+      generator.defineTextureInput("Leggings Overlay", {
+        standardWidth: 64,
+        standardHeight: 64,
+        choices: ["Leather Overlay "],
+      });
+      drawLeggingsBody("Leggings Overlay", { kind: "None" });
+      drawRightLegging("Leggings Overlay", { kind: "None" });
+      drawLeftLegging("Leggings Overlay", { kind: "None" });
+    }
+  }
+  
+  function drawBoots() {
+    generator.defineTextureInput("Boots", {
+      standardWidth: 64,
+      standardHeight: 64,
+      choices: materials,
+    });
+  
+    const tintBoots = generator.defineAndGetBooleanInput("Tint Boots", false);
+    const tint = tintBoots ? getTint("Boots Color") : "FFFFFF";
+  
+    drawLeftBoot("Boots", tint);
+    drawRightBoot("Boots", tint);
+  
+    if (tintBoots) {
+      generator.defineTextureInput("Boots Overlay", {
+        standardWidth: 64,
+        standardHeight: 64,
+        choices: ["Leather Overlay"],
+      });
+      drawLeftBoot("Boots Overlay", "FFFFFF");
+      drawRightBoot("Boots Overlay", "FFFFFF");
+    }
+  }
+  
+  // function drawHelmetTrim(showHeadOverlay: boolean) {
+  //   generator.defineTextureInput("Helmet Trim", {
+  //     standardWidth: 64,
+  //     standardHeight: 64,
+  //     choices: trimTemplates,
+  //   });
+  //   generator.defineTextureInput("Helmet Trim Material", {
+  //     standardWidth: 8,
+  //     standardHeight: 1,
+  //     choices: trimMaterials,
+  //   });
+  //   const colors = getPalette("Helmet Trim Material", 8);
+  //   drawHelmetHead("Helmet Trim", showHeadOverlay, { kind: "ReplaceHex", from: baseColors, to: colors });
+  //   drawHelmetLiner("Helmet Trim", showHeadOverlay, { kind: "ReplaceHex", from: baseColors, to: colors });
+  // }
+  
+  // function drawChestplateTrim() {
+  //   generator.defineTextureInput("Chestplate Trim", {
+  //     standardWidth: 64,
+  //     standardHeight: 64,
+  //     choices: trimTemplates,
+  //   });
+  //   generator.defineTextureInput("Chestplate Trim Material", {
+  //     standardWidth: 8,
+  //     standardHeight: 1,
+  //     choices: trimMaterials,
+  //   });
+  //   const colors = getPalette("Chestplate Trim Material", 8);
+  //   drawChestplateBody("Chestplate Trim", { kind: "ReplaceHex", from: baseColors, to: colors });
+  //   drawLeftShoulder("Chestplate Trim", { kind: "ReplaceHex", from: baseColors, to: colors });
+  //   drawRightShoulder("Chestplate Trim", { kind: "ReplaceHex", from: baseColors, to: colors });
+  // }
+  
+  // function drawLeggingsTrim() {
+  //   generator.defineTextureInput("Leggings Trim", {
+  //     standardWidth: 64,
+  //     standardHeight: 64,
+  //     choices: trimTemplates2,
+  //   });
+  //   generator.defineTextureInput("Leggings Trim Material", {
+  //     standardWidth: 8,
+  //     standardHeight: 1,
+  //     choices: trimMaterials,
+  //   });
+  //   const colors = getPalette("Leggings Trim Material", 8);
+  //   drawLeggingsBody("Leggings Trim", { kind: "ReplaceHex", from: baseColors, to: colors });
+  //   drawRightLegging("Leggings Trim", { kind: "ReplaceHex", from: baseColors, to: colors });
+  //   drawLeftLegging("Leggings Trim", { kind: "ReplaceHex", from: baseColors, to: colors });
+  // }
+  
+  // function drawBootsTrim() {
+  //   generator.defineTextureInput("Boots Trim", {
+  //     standardWidth: 64,
+  //     standardHeight: 64,
+  //     choices: trimTemplates,
+  //   });
+  //   generator.defineTextureInput("Boots Trim Material", {
+  //     standardWidth: 8,
+  //     standardHeight: 1,
+  //     choices: trimMaterials,
+  //   });
+  //   const colors = getPalette("Boots Trim Material", 8);
+  //   drawLeftBoot("Boots Trim", { kind: "ReplaceHex", from: baseColors, to: colors });
+  //   drawRightBoot("Boots Trim", { kind: "ReplaceHex", from: baseColors, to: colors });
+  // }
+
   // Define user inputs
-
-  generator.defineTextureInput("Horse", {
-    standardWidth: 64,
-    standardHeight: 64,
-    choices: [
-      "Black Horse",
-      "Brown Horse",
-      "Chestnut Horse",
-      "Creamy Horse",
-      "Dark Brown Horse",
-      "Gray Horse",
-      "White Horse",
-      "Skeleton Horse",
-      "Zombie Horse",
-      "Donkey",
-      "Mule",
-    ],
-  });
-
-  generator.defineTextureInput("Markings", {
-    standardWidth: 64,
-    standardHeight: 64,
-    choices: ["Black Dots", "White", "White Dots", "White Field"],
-  });
-
-  generator.defineTextureInput("Armor", {
-    standardWidth: 64,
-    standardHeight: 64,
-    choices: ["Leather", "Gold", "Iron", "Diamond"],
-  });
-
-  // Define user variables
-
   generator.defineBooleanInput("Show Folds", true);
   generator.defineBooleanInput("Show Labels", true);
-  generator.defineBooleanInput("Donkey / Mule Model", false);
 
   // Get user variable values
 
   const showFolds = generator.getBooleanInputValue("Show Folds");
   const showLabels = generator.getBooleanInputValue("Show Labels");
-  const muleModel = generator.getBooleanInputValue("Donkey / Mule Model");
 
-  const drawHorse = (texture: string) => {
-    let ox: number;
-    let oy: number;
 
-    // Head
-    ox = 20;
-    oy = 20;
-    generator.drawTexture(texture, [7, 13, 6, 7], [ox + 56, oy + 0, 48, 56]); // Top
-    generator.drawTexture(texture, [13, 13, 6, 7], [ox + 56, oy + 96, 48, 56], {
-      flip: "Vertical",
-    }); // Bottom
-    generator.drawTexture(texture, [0, 20, 7, 5], [ox + 0, oy + 56, 56, 40]); // Right
-    generator.drawTexture(texture, [7, 20, 6, 5], [ox + 56, oy + 56, 48, 40]); // Front
-    generator.drawTexture(texture, [13, 20, 7, 5], [ox + 104, oy + 56, 56, 40]); // Left
-    generator.drawTexture(texture, [20, 20, 6, 5], [ox + 160, oy + 56, 48, 40]); // Back
-    // Mouth
-    ox = 140;
-    oy = 142;
-    generator.drawTexture(texture, [5, 25, 4, 5], [ox + 40, oy + 0, 32, 40]); // Top
-    generator.drawTexture(texture, [9, 25, 4, 5], [ox + 40, oy + 80, 32, 40], {
-      flip: "Vertical",
-    }); // Bottom
-    generator.drawTexture(texture, [0, 30, 5, 5], [ox + 0, oy + 40, 40, 40]); // Right
-    generator.drawTexture(texture, [5, 30, 4, 5], [ox + 40, oy + 40, 32, 40]); // Front
-    generator.drawTexture(texture, [9, 30, 5, 5], [ox + 72, oy + 40, 40, 40]); // Left
-    generator.drawTexture(texture, [14, 30, 4, 5], [ox + 112, oy + 40, 32, 40]); // Back
-    // Neck
-    ox = 24;
-    oy = 232;
-    generator.drawTexture(texture, [7, 35, 4, 7], [ox + 56, oy + 0, 32, 56]); // Top
-    generator.drawTexture(
-      texture,
-      [11, 35, 4, 7],
-      [ox + 56, oy + 152, 32, 56],
-      { flip: "Vertical" }
-    ); // Bottom
-    generator.drawTexture(texture, [0, 42, 7, 12], [ox + 0, oy + 56, 56, 96]); // Right
-    generator.drawTexture(texture, [7, 42, 4, 12], [ox + 56, oy + 56, 32, 96]); // Front
-    generator.drawTexture(texture, [11, 42, 7, 12], [ox + 88, oy + 56, 56, 96]); // Left
-    generator.drawTexture(
-      texture,
-      [18, 42, 4, 12],
-      [ox + 144, oy + 56, 32, 96]
-    ); // Back
+  // Draw
+  // drawHelmetHead(...)
+  // drawHelmetLiner(...)
+  // drawChestplateBody(...)
+  // drawRightShoulder(...)
+  // drawLeftShoulder(...)
+  // drawLeggingsBody(...)
+  // drawRightLegging(...)
+  // drawLeftLegging(...)
+  // drawRightBoot(...)
+  // drawLeftBoot(...)
+  // drawHelmetTrim(...)
+  // drawChestplateTrim(...)
+  // drawLeggingsTrim(...)
+  // drawBootsTrim(...)
 
-    // Mane
-
-    ox = 321;
-    oy = 16;
-
-    generator.drawTexture(texture, [58, 36, 2, 2], [ox + 16, oy + 0, 16, 16], {
-      rotate: 180.0,
-    }); // Top
-    generator.drawTexture(
-      texture,
-      [56, 38, 2, 16],
-      [ox + 32, oy + 16, 16, 128]
-    ); // Right
-    generator.drawTexture(
-      texture,
-      [58, 38, 2, 16],
-      [ox + 48, oy + 16, 16, 128]
-    ); // Front
-    generator.drawTexture(texture, [60, 38, 2, 16], [ox + 0, oy + 16, 16, 128]); // Left
-    generator.drawTexture(
-      texture,
-      [62, 38, 2, 16],
-      [ox + 16, oy + 16, 16, 128]
-    ); // Back
-
-    // Tail
-
-    ox = 224;
-    oy = 348;
-
-    generator.drawTexture(texture, [46, 36, 3, 4], [ox + 32, oy + 0, 24, 32], {
-      rotate: 180.0,
-    }); // Top
-    generator.drawTexture(
-      texture,
-      [42, 40, 4, 14],
-      [ox + 56, oy + 32, 32, 112]
-    ); // Right
-    generator.drawTexture(
-      texture,
-      [46, 40, 3, 14],
-      [ox + 88, oy + 32, 24, 112]
-    ); // Front
-    generator.drawTexture(texture, [49, 40, 4, 14], [ox + 0, oy + 32, 32, 112]); // Left
-    generator.drawTexture(
-      texture,
-      [53, 40, 3, 14],
-      [ox + 32, oy + 32, 24, 112]
-    ); // Back
-
-    // Horse Ears
-
-    const horseEars = (ox: number, oy: number) => {
-      generator.drawTexture(texture, [20, 16, 2, 1], [ox + 8, oy + 40, 16, 8]); // Top
-      generator.drawTexture(texture, [22, 16, 2, 1], [ox + 8, oy + 64, 16, 8], {
-        flip: "Vertical",
-      }); // Bottom
-      generator.drawTexture(texture, [19, 17, 1, 2], [ox + 0, oy + 48, 8, 16]); // Right
-      generator.drawTexture(texture, [20, 17, 2, 2], [ox + 8, oy + 48, 16, 16]); // Front
-      generator.drawTexture(texture, [22, 17, 1, 2], [ox + 24, oy + 48, 8, 16]); // Left
-      generator.drawTexture(
-        texture,
-        [23, 17, 2, 2],
-        [ox + 32, oy + 48, 16, 16]
-      ); // Back
-    };
-
-    // Donkey / Mule Ears
-
-    const muleEars = (ox: number, oy: number) => {
-      generator.drawTexture(texture, [1, 12, 2, 1], [ox + 8, oy + 0, 16, 8]); // Top
-      generator.drawTexture(texture, [3, 12, 2, 1], [ox + 8, oy + 64, 16, 8], {
-        flip: "Vertical",
-      }); // Bottom
-      generator.drawTexture(texture, [0, 13, 1, 7], [ox + 0, oy + 8, 8, 56]); // Right
-      generator.drawTexture(texture, [1, 13, 2, 7], [ox + 8, oy + 8, 16, 56]); // Front
-      generator.drawTexture(texture, [3, 13, 1, 7], [ox + 24, oy + 8, 8, 56]); // Left
-      generator.drawTexture(texture, [4, 13, 2, 7], [ox + 32, oy + 8, 16, 56]); // Back
-    };
-
-    // Left Ear
-
-    ox = 332;
-    oy = 249;
-
-    if (muleModel) {
-      muleEars(ox, oy);
-    } else {
-      horseEars(ox, oy);
-    }
-
-    // Right Ear
-
-    ox = 256;
-    oy = 249;
-
-    if (muleModel) {
-      muleEars(ox, oy);
-    } else {
-      horseEars(ox, oy);
-    }
-
-    // Body
-
-    ox = 40;
-    oy = 452;
-
-    generator.drawTexture(
-      texture,
-      [22, 32, 10, 22],
-      [ox + 80, oy + 80, 80, 176],
-      { rotate: 180.0 }
-    ); // Top
-    generator.drawTexture(
-      texture,
-      [32, 32, 10, 22],
-      [ox + 240, oy + 80, 80, 176],
-      { flip: "Vertical" }
-    ); // Bottom
-    generator.drawTexture(
-      texture,
-      [0, 54, 22, 10],
-      [ox + 112, oy + 128, 176, 80],
-      { rotate: -90.0 }
-    ); // Right
-    generator.drawTexture(
-      texture,
-      [22, 54, 10, 10],
-      [ox + 80, oy + 0, 80, 80],
-      { rotate: 180.0 }
-    ); // Front
-    generator.drawTexture(
-      texture,
-      [32, 54, 22, 10],
-      [ox - 48, oy + 128, 176, 80],
-      { rotate: 90.0 }
-    ); // Left
-    generator.drawTexture(
-      texture,
-      [54, 54, 10, 10],
-      [ox + 80, oy + 256, 80, 80]
-    ); // Back
-
-    // Front Left Leg
-
-    ox = 413;
-    oy = 40;
-
-    generator.drawTexture(texture, [52, 21, 4, 4], [ox + 64, oy + 0, 32, 32], {
-      flip: "Horizontal",
-    }); // Top
-    generator.drawTexture(
-      texture,
-      [56, 21, 4, 4],
-      [ox + 64, oy + 120, 32, 32],
-      { rotate: 180.0 }
-    ); // Bottom
-    generator.drawTexture(
-      texture,
-      [48, 25, 4, 11],
-      [ox + 96, oy + 32, 32, 88],
-      { flip: "Horizontal" }
-    ); // Right
-    generator.drawTexture(
-      texture,
-      [52, 25, 4, 11],
-      [ox + 64, oy + 32, 32, 88],
-      { flip: "Horizontal" }
-    ); // Front
-    generator.drawTexture(
-      texture,
-      [56, 25, 4, 11],
-      [ox + 32, oy + 32, 32, 88],
-      { flip: "Horizontal" }
-    ); // Left
-    generator.drawTexture(texture, [60, 25, 4, 11], [ox + 0, oy + 32, 32, 88], {
-      flip: "Horizontal",
-    }); // Back
-
-    // Front Right Leg
-
-    ox = 413;
-    oy = 238;
-
-    generator.drawTexture(texture, [52, 21, 4, 4], [ox + 32, oy + 0, 32, 32]); // Top
-    generator.drawTexture(
-      texture,
-      [56, 21, 4, 4],
-      [ox + 32, oy + 120, 32, 32],
-      { flip: "Vertical" }
-    ); // Bottom
-    generator.drawTexture(texture, [48, 25, 4, 11], [ox + 0, oy + 32, 32, 88]); // Right
-    generator.drawTexture(texture, [52, 25, 4, 11], [ox + 32, oy + 32, 32, 88]); // Front
-    generator.drawTexture(texture, [56, 25, 4, 11], [ox + 64, oy + 32, 32, 88]); // Left
-    generator.drawTexture(texture, [60, 25, 4, 11], [ox + 96, oy + 32, 32, 88]); // Back
-    // Back Left Leg
-    ox = 413;
-    oy = 436;
-    generator.drawTexture(texture, [52, 21, 4, 4], [ox + 64, oy + 0, 32, 32], {
-      flip: "Horizontal",
-    }); // Top
-    generator.drawTexture(
-      texture,
-      [56, 21, 4, 4],
-      [ox + 64, oy + 120, 32, 32],
-      { rotate: 180.0 }
-    ); // Bottom
-    generator.drawTexture(
-      texture,
-      [48, 25, 4, 11],
-      [ox + 96, oy + 32, 32, 88],
-      { flip: "Horizontal" }
-    ); // Right
-    generator.drawTexture(
-      texture,
-      [52, 25, 4, 11],
-      [ox + 64, oy + 32, 32, 88],
-      { flip: "Horizontal" }
-    ); // Front
-    generator.drawTexture(
-      texture,
-      [56, 25, 4, 11],
-      [ox + 32, oy + 32, 32, 88],
-      { flip: "Horizontal" }
-    ); // Left
-    generator.drawTexture(texture, [60, 25, 4, 11], [ox + 0, oy + 32, 32, 88], {
-      flip: "Horizontal",
-    }); // Back
-    // Back Right Leg
-    ox = 413;
-    oy = 634;
-    generator.drawTexture(texture, [52, 21, 4, 4], [ox + 32, oy + 0, 32, 32]); // Top
-    generator.drawTexture(
-      texture,
-      [56, 21, 4, 4],
-      [ox + 32, oy + 120, 32, 32],
-      { flip: "Vertical" }
-    ); // Bottom
-    generator.drawTexture(texture, [48, 25, 4, 11], [ox + 0, oy + 32, 32, 88]); // Right
-    generator.drawTexture(texture, [52, 25, 4, 11], [ox + 32, oy + 32, 32, 88]); // Front
-    generator.drawTexture(texture, [56, 25, 4, 11], [ox + 64, oy + 32, 32, 88]); // Left
-    generator.drawTexture(texture, [60, 25, 4, 11], [ox + 96, oy + 32, 32, 88]); // Back
-  };
-
-  // Draw Horse
-
-  drawHorse("Horse");
-  drawHorse("Markings");
-  drawHorse("Armor");
+  // Draw Folds
 
   // Foreground
-
-  if (muleModel) {
-    generator.drawImage("Foreground-Mule", [0, 0]);
-  } else {
-    generator.drawImage("Foreground-Horse", [0, 0]);
-  }
+  generator.drawImage("Foreground", [0, 0])
 
   // Folds
 
   if (showFolds) {
-    if (muleModel) {
-      generator.drawImage("Folds-Mule", [0, 0]);
-    } else {
-      generator.drawImage("Folds-Horse", [0, 0]);
-    }
+    drawFolds()
   }
+
+  // Shoulder Curve
+  /* if (
+    shoulderAlpha("Chestplate") == 0 &&
+      (shoulderAlpha("Chestplate Trim") == 33 ||
+      !trimChestplate ||
+      shoulderAlpha("Chestplate Trim") == 0)
+  ) {
+    generator.drawImage("Foreground-Shoulders", [0, 0])
+    if (showFolds) {
+      generator.drawImage("Folds-Shoulders", [0, 0])
+    }
+  } */
+
+  // (Chestplate.isEmpty() && (trim.isEmpty() || !trim.exists()))
 
   // Labels
 
   if (showLabels) {
-    generator.drawImage("Labels", [0, 0]);
+    generator.drawImage("Labels", [0, 0])
   }
+
+  generator.fillBackgroundColorWithWhite()
 };
 
 export const generator: GeneratorDef = {
@@ -559,7 +687,7 @@ export const generator: GeneratorDef = {
   history,
   thumbnail,
   video: null,
-  instructions: null,
+  instructions,
   images,
   textures,
   script,
