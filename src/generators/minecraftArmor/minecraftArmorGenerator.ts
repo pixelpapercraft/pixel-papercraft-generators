@@ -91,30 +91,30 @@ const textures: TextureDef[] = [
   { id: "Steve", url: steveTexture.src, standardWidth: 64, standardHeight: 64 },
   { id: "Alex", url: alexTexture.src, standardWidth: 64, standardHeight: 64 },
   { id: "Debug", url: debugTexture.src, standardWidth: 64, standardHeight: 64 },
-  { id: "Helmet", url: helmetTexture.src, standardWidth: 64, standardHeight: 64 },
-  { id: "Chestplate", url: chestplateTexture.src, standardWidth: 64, standardHeight: 64 },
-  { id: "Leggings", url: leggingsTexture.src, standardWidth: 64, standardHeight: 64 },
-  { id: "Boots", url: bootsTexture.src, standardWidth: 64, standardHeight: 64 },
-  { id: "Helmet Overlay", url: helmetOverlayTexture.src, standardWidth: 64, standardHeight: 64 },
-  { id: "Chestplate Overlay", url: chestplateOverlayTexture.src, standardWidth: 64, standardHeight: 64 },
-  { id: "Leggings Overlay", url: leggingsOverlayTexture.src, standardWidth: 64, standardHeight: 64 },
-  { id: "Boots Overlay", url: bootsOverlayTexture.src, standardWidth: 64, standardHeight: 64 },
-  { id: "Chainmail", url: chainmail1Texture.src, standardWidth: 64, standardHeight: 32 },
-  { id: "Chainmail ", url: chainmail2Texture.src, standardWidth: 64, standardHeight: 32 },
-  { id: "Diamond", url: helmetTexture.src, standardWidth: 64, standardHeight: 32 },
-  { id: "Diamond ", url: diamond2Texture.src, standardWidth: 64, standardHeight: 32 },
-  { id: "Gold", url: gold1Texture.src, standardWidth: 64, standardHeight: 32 },
-  { id: "Gold ", url: gold2Texture.src, standardWidth: 64, standardHeight: 32 },
-  { id: "Iron", url: iron1Texture.src, standardWidth: 64, standardHeight: 32 },
-  { id: "Iron ", url: iron2Texture.src, standardWidth: 64, standardHeight: 32 },
-  { id: "Netherite", url: netherite1Texture.src, standardWidth: 64, standardHeight: 32 },
-  { id: "Netherite ", url: netherite2Texture.src, standardWidth: 64, standardHeight: 32 },
-  { id: "Leather", url: leather1Texture.src, standardWidth: 64, standardHeight: 32 },
-  { id: "Leather ", url: leather2Texture.src, standardWidth: 64, standardHeight: 32 },
-  { id: "Leather Overlay", url: leather1OverlayTexture.src, standardWidth: 64, standardHeight: 32 },
-  { id: "Leather Overlay ", url: leather2OverlayTexture.src, standardWidth: 64, standardHeight: 32 },
-  { id: "Turtle Shell", url: turtleShellTexture.src, standardWidth: 64, standardHeight: 32 },
-  { id: "Notch", url: notchTexture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Helmet", url: helmetTexture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Chestplate", url: chestplateTexture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Leggings", url: leggingsTexture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Boots", url: bootsTexture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Helmet Overlay", url: helmetOverlayTexture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Chestplate Overlay", url: chestplateOverlayTexture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Leggings Overlay", url: leggingsOverlayTexture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Boots Overlay", url: bootsOverlayTexture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Chainmail", url: chainmail1Texture.src, standardWidth: 64, standardHeight: 32 }, //
+  { id: "Chainmail ", url: chainmail2Texture.src, standardWidth: 64, standardHeight: 32 }, //
+  { id: "Diamond", url: helmetTexture.src, standardWidth: 64, standardHeight: 32 }, //
+  { id: "Diamond ", url: diamond2Texture.src, standardWidth: 64, standardHeight: 32 }, //
+  { id: "Gold", url: gold1Texture.src, standardWidth: 64, standardHeight: 32 }, //
+  { id: "Gold ", url: gold2Texture.src, standardWidth: 64, standardHeight: 32 }, //
+  { id: "Iron", url: iron1Texture.src, standardWidth: 64, standardHeight: 32 }, //
+  { id: "Iron ", url: iron2Texture.src, standardWidth: 64, standardHeight: 32 }, //
+  { id: "Netherite", url: netherite1Texture.src, standardWidth: 64, standardHeight: 32 }, //
+  { id: "Netherite ", url: netherite2Texture.src, standardWidth: 64, standardHeight: 32 }, //
+  { id: "Leather", url: leather1Texture.src, standardWidth: 64, standardHeight: 32 }, //
+  { id: "Leather ", url: leather2Texture.src, standardWidth: 64, standardHeight: 32 }, //
+  { id: "Leather Overlay", url: leather1OverlayTexture.src, standardWidth: 64, standardHeight: 32 }, //
+  { id: "Leather Overlay ", url: leather2OverlayTexture.src, standardWidth: 64, standardHeight: 32 }, //
+  { id: "Turtle Shell", url: turtleShellTexture.src, standardWidth: 64, standardHeight: 32 }, //
+  { id: "Notch", url: notchTexture.src, standardWidth: 64, standardHeight: 32 }, //
   { id: "Enchanted Glint", url: enchantedGlint.src, standardWidth: 128, standardHeight: 128 },
 ];
 
@@ -237,21 +237,21 @@ const script: ScriptDef = (generator: Generator) => {
     const oy = 37;
     const dimensions: Dimensions = [64, 64, 64];
     minecraftGenerator.drawCuboid(textureId, char.base.head, [ox, oy], dimensions, { blend: tint, rotate: 90 });
-    generator.drawTexture(textureId, [0, 16, 8, 2], [ox + 100, oy + 28, 64, 8], {
+    generator.drawTexture(textureId, [0, 8, 8, 1], [ox + 100, oy + 28, 64, 8], {
       blend: tint,
       rotate: 90,
     });
-    generator.drawTexture(textureId, [16, 16, 8, 2], [ox + 100, oy + 156, 64, 8], {
+    generator.drawTexture(textureId, [16, 8, 8, 1], [ox + 100, oy + 156, 64, 8], {
       blend: tint,
       rotate: 90,
     });
     if (showHeadOverlay) {
       minecraftGenerator.drawCuboid(textureId, char.overlay.head, [ox, oy], dimensions, { blend: tint, rotate: 90 });
-      generator.drawTexture(textureId, [32, 16, 8, 2], [ox + 100, oy + 28, 64, 8], {
+      generator.drawTexture(textureId, [32, 8, 8, 1], [ox + 100, oy + 28, 64, 8], {
         blend: tint,
         rotate: 90,
       });
-      generator.drawTexture(textureId, [48, 16, 8, 2], [ox + 100, oy + 156, 64, 8], {
+      generator.drawTexture(textureId, [48, 8, 8, 1], [ox + 100, oy + 156, 64, 8], {
         blend: tint,
         rotate: 90,
       });
@@ -266,13 +266,13 @@ const script: ScriptDef = (generator: Generator) => {
     generator.drawTexture(textureId, char.base.body.back, [ox + 48, oy - 96, 64, 96], {
       rotate: 180,
       blend: tint,
-    });
-    generator.drawTexture(textureId, [33, 48, 6, 16], [ox + 112, oy - 96, 48, 64], {
+    }); // Back texture that goes around over the head
+    generator.drawTexture(textureId, [33, 24, 6, 8], [ox + 112, oy - 96, 48, 64], {
       rotate: 180,
       blend: tint,
-    });
-    generator.drawTexture(textureId, [20, 44, 8, 2], [ox + 48, oy, 64, 48], { blend: tint });
-    generator.drawTexture(textureId, [20, 42, 8, 2], [ox + 48, oy, 64, 48], { blend: tint });
+    }); // Tab that goes inside the back face
+    generator.drawTexture(textureId, [20, 22, 8, 1], [ox + 48, oy, 64, 48], { blend: tint });
+    generator.drawTexture(textureId, [20, 21, 8, 1], [ox + 48, oy, 64, 48], { blend: tint });
   }
   
   function drawRightShoulder(textureId: string, tint: Blend) {
@@ -331,8 +331,8 @@ const script: ScriptDef = (generator: Generator) => {
     const ox = 193;
     const oy = 385;
     const dimensions: Dimensions = [64, 104, 40];
-    generator.drawTexture(textureId, [0, 40, 4, 24], [ox, oy + 135, 40, 104], { blend: tint });
-    generator.drawTexture(textureId, [0, 40, 4, 24], [ox + 104, oy + 135, 40, 104], {
+    generator.drawTexture(textureId, [0, 20, 4, 12], [ox, oy + 135, 40, 104], { blend: tint });
+    generator.drawTexture(textureId, [0, 20, 4, 12], [ox + 104, oy + 135, 40, 104], {
       blend: tint,
       flip: "Horizontal",
     });
@@ -344,9 +344,9 @@ const script: ScriptDef = (generator: Generator) => {
     const oy = 541;
     const dimensions: Dimensions = [32, 104, 40];
     minecraftGenerator.drawCuboid(textureId, char.base.rightLeg, [ox, oy], dimensions, { blend: tint });
-    generator.drawTexture(textureId, [16, 40, 4, 24], [ox, oy - 55, 40, 104], { blend: tint });
-    generator.drawTexture(textureId, [0, 40, 4, 8], [ox + 72, oy + 20, 40, 34], { blend: tint });
-    generator.drawTexture(textureId, [16, 40, 4, 24], [ox + 72, oy - 75, 40, 104], { blend: tint });
+    generator.drawTexture(textureId, [16, 20, 4, 12], [ox, oy - 55, 40, 104], { blend: tint });
+    generator.drawTexture(textureId, [0, 20, 4, 4], [ox + 72, oy + 20, 40, 34], { blend: tint });
+    generator.drawTexture(textureId, [16, 20, 4, 12], [ox + 72, oy - 75, 40, 104], { blend: tint });
   }
   
   function drawLeftLegging(textureId: string, tint: Blend) {
@@ -357,12 +357,12 @@ const script: ScriptDef = (generator: Generator) => {
       blend: tint,
       flip: "Horizontal",
     });
-    generator.drawTexture(textureId, [28, 40, 4, 24], [ox + 104, oy - 55, 40, 104], { blend: tint });
-    generator.drawTexture(textureId, [0, 40, 4, 8], [ox + 32, oy + 20, 40, 34], {
+    generator.drawTexture(textureId, [28, 20, 4, 12], [ox + 104, oy - 55, 40, 104], { blend: tint });
+    generator.drawTexture(textureId, [0, 20, 4, 4], [ox + 32, oy + 20, 40, 34], {
       blend: tint,
       flip: "Horizontal",
     });
-    generator.drawTexture(textureId, [28, 40, 4, 24], [ox + 32, oy - 75, 40, 104], {
+    generator.drawTexture(textureId, [28, 20, 4, 12], [ox + 32, oy - 75, 40, 104], {
       blend: tint,
       flip: "Horizontal",
     });

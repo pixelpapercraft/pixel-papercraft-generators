@@ -60,11 +60,11 @@ export const alex: Character = {
 export const old: Character = {
   base: {
     head: translate(cuboid([8, 8, 8]), [0, 0]),
-    rightArm: translate(cuboid([4, 12, 4]), [40, 32]),
-    leftArm: translate(cuboid([4, 12, 4]), [40, 32]),
-    body: translate(cuboid([8, 12, 4]), [16, 32]),
-    rightLeg: translate(cuboid([4, 12, 4]), [0, 32]),
-    leftLeg: translate(cuboid([4, 12, 4]), [0, 32]),
+    rightArm: translate(cuboid([4, 12, 4]), [40, 16]),
+    leftArm: translate(cuboid([4, 12, 4]), [40, 16]),
+    body: translate(cuboid([8, 12, 4]), [16, 16]),
+    rightLeg: translate(cuboid([4, 12, 4]), [0, 16]),
+    leftLeg: translate(cuboid([4, 12, 4]), [0, 16]),
   },
   overlay: {
     head: translate(cuboid([8, 8, 8]), [32, 0]),
