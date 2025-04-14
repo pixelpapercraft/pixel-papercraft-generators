@@ -47,6 +47,7 @@ import leather2OverlayTexture from "./textures/leather_layer_2_overlay.png";
 import turtleShellTexture from "./textures/turtle_layer_1.png";
 import notchTexture from "./textures/Notch.png";
 import { Minecraft } from "../_common/minecraft";
+import { Blend } from "@genroot/builder/modules/renderers/drawTexture";
 
 const id = "minecraft-armor";
 const name = "Minecraft Armor";
@@ -117,71 +118,79 @@ const textures: TextureDef[] = [
   { id: "Enchanted Glint", url: enchantedGlint.src, standardWidth: 128, standardHeight: 128 },
 ];
 
+const materials = ["Leather", "Chainmail", "Gold", "Iron", "Diamond", "Netherite"];
+const materials2 = ["Leather ", "Chainmail ", "Gold ", "Iron ", "Diamond ", "Netherite "];
+
 const script: ScriptDef = (generator: Generator) => {
   const minecraftGenerator = new Minecraft(generator);
 
   const char = old;
 
-  // Chestplate inputs
-  generator.defineTextureInput("Chestplate", {
-    standardWidth: 64,
-    standardHeight: 64,
-    choices: ["Leather", "Chainmail", "Gold", "Iron", "Diamond", "Netherite"],
-  });
-  generator.defineBooleanInput("Tint Chestplate", false);
-  const tintChestplate = generator.getBooleanInputValue("Tint Chestplate");
-  if (tintChestplate) {
-    generator.defineSelectInput("Chestplate Color", [
-      "Leather", "Black", "Red", "Green", "Brown", "Blue", "Purple", "Cyan",
-      "Light Gray", "Gray", "Pink", "Lime", "Yellow", "Light Blue", "Magenta", "Orange", "White",
-    ]);
-    generator.defineTextureInput("Chestplate Overlay", {
-      standardWidth: 64,
-      standardHeight: 64,
-      choices: ["Leather Overlay"],
-    });
-  }
+  function getTint(colorId: string): Blend {
+    generator.defineSelectInput(colorId, [
+      "Leather",
+      "Black",
+      "Red",
+      "Green",
+      "Brown",
+      "Blue",
+      "Purple",
+      "Cyan",
+      "Light Gray",
+      "Gray",
+      "Pink",
+      "Lime",
+      "Yellow",
+      "Light Blue",
+      "Magenta",
+      "Orange",
+      "White",
+    ],)
 
-  // Leggings inputs
-  generator.defineTextureInput("Leggings", {
-    standardWidth: 64,
-    standardHeight: 64,
-    choices: ["Leather ", "Chainmail ", "Gold ", "Iron ", "Diamond ", "Netherite "],
-  });
-  generator.defineBooleanInput("Tint Leggings", false);
-  const tintLeggings = generator.getBooleanInputValue("Tint Leggings");
-  if (tintLeggings) {
-    generator.defineSelectInput("Leggings Color", [
-      "Leather", "Black", "Red", "Green", "Brown", "Blue", "Purple", "Cyan",
-      "Light Gray", "Gray", "Pink", "Lime", "Yellow", "Light Blue", "Magenta", "Orange", "White",
-    ]);
-    generator.defineTextureInput("Leggings Overlay", {
-      standardWidth: 64,
-      standardHeight: 64,
-      choices: ["Leather Overlay "],
-    });
-  }
+    const hex = (() => {
+      switch (generator.getSelectInputValue(colorId)) {
+        case "Leather":
+          return "A06540";
+        case "Black":
+          return "1D1D21";
+        case "Red":
+          return "B02E26";
+        case "Green":
+          return "5E7C16";
+        case "Brown":
+          return "835432";
+        case "Blue":
+          return "3C44AA";
+        case "Purple":
+          return "8932B8";
+        case "Cyan":
+          return "169C9C";
+        case "Light Gray":
+          return "9D9D97";
+        case "Gray":
+          return "474F52";
+        case "Pink":
+          return "F38BAA";
+        case "Lime":
+          return "80C71F";
+        case "Yellow":
+          return "FED83D";
+        case "Light Blue":
+          return "3AB3DA";
+        case "Magenta":
+          return "C74EBD";
+        case "Orange":
+          return "F9801D";
+        case "White":
+          return "F9FFFE";
+        default:
+          return "A06540";
+      }
+    })();
 
-  // Boots inputs
-  generator.defineTextureInput("Boots", {
-    standardWidth: 64,
-    standardHeight: 64,
-    choices: ["Leather", "Chainmail", "Gold", "Iron", "Diamond", "Netherite"],
-  });
-  generator.defineBooleanInput("Tint Boots", false);
-  const tintBoots = generator.getBooleanInputValue("Tint Boots");
-  if (tintBoots) {
-    generator.defineSelectInput("Boots Color", [
-      "Leather", "Black", "Red", "Green", "Brown", "Blue", "Purple", "Cyan",
-      "Light Gray", "Gray", "Pink", "Lime", "Yellow", "Light Blue", "Magenta", "Orange", "White",
-    ]);
-    generator.defineTextureInput("Boots Overlay", {
-      standardWidth: 64,
-      standardHeight: 64,
-      choices: ["Leather Overlay"],
-    });
+    return { kind: "MultiplyHex", hex: hex };
   }
-
+/* 
   function rgbaToHex([r, g, b, a]: [number, number, number, number]): string {
     const toHex = (value: number) => value.toString(16).padStart(2, "0");
     return `#${toHex(r)}${toHex(g)}${toHex(b)}${toHex(a)}`;
@@ -203,184 +212,184 @@ const script: ScriptDef = (generator: Generator) => {
     const a = color ? color[3] : 33;
     console.log(`${textureId}: ${a}`);
     return a;
-  }
+  } */
 
   function drawHelmetHead(
     textureId: string,
     showHeadOverlay: boolean,
-    tint: string
+    tint: Blend
   ) {
     const ox = 41;
     const oy = 21;
     const dimensions: Dimensions = [80, 80, 80];
-    minecraftGenerator.drawCuboid(textureId, char.base.head, [ox, oy], dimensions, { blend: { kind: "MultiplyHex", hex: tint } });
+    minecraftGenerator.drawCuboid(textureId, char.base.head, [ox, oy], dimensions, { blend: tint });
     if (showHeadOverlay) {
-      minecraftGenerator.drawCuboid(textureId, char.overlay.head, [ox, oy], dimensions, { blend: { kind: "MultiplyHex", hex: tint } });
+      minecraftGenerator.drawCuboid(textureId, char.overlay.head, [ox, oy], dimensions, { blend: tint });
     }
   }
   
   function drawHelmetLiner(
     textureId: string,
     showHeadOverlay: boolean,
-    tint: string
+    tint: Blend
   ) {
     const ox = 329;
     const oy = 37;
     const dimensions: Dimensions = [64, 64, 64];
-    minecraftGenerator.drawCuboid(textureId, char.base.head, [ox, oy], dimensions, { blend: { kind: "MultiplyHex", hex: tint }, rotate: 90 });
+    minecraftGenerator.drawCuboid(textureId, char.base.head, [ox, oy], dimensions, { blend: tint, rotate: 90 });
     generator.drawTexture(textureId, [0, 16, 8, 2], [ox + 100, oy + 28, 64, 8], {
-      blend: { kind: "MultiplyHex", hex: tint },
+      blend: tint,
       rotate: 90,
     });
     generator.drawTexture(textureId, [16, 16, 8, 2], [ox + 100, oy + 156, 64, 8], {
-      blend: { kind: "MultiplyHex", hex: tint },
+      blend: tint,
       rotate: 90,
     });
     if (showHeadOverlay) {
-      minecraftGenerator.drawCuboid(textureId, char.overlay.head, [ox, oy], dimensions, { blend: { kind: "MultiplyHex", hex: tint }, rotate: 90 });
+      minecraftGenerator.drawCuboid(textureId, char.overlay.head, [ox, oy], dimensions, { blend: tint, rotate: 90 });
       generator.drawTexture(textureId, [32, 16, 8, 2], [ox + 100, oy + 28, 64, 8], {
-        blend: { kind: "MultiplyHex", hex: tint },
+        blend: tint,
         rotate: 90,
       });
       generator.drawTexture(textureId, [48, 16, 8, 2], [ox + 100, oy + 156, 64, 8], {
-        blend: { kind: "MultiplyHex", hex: tint },
+        blend: tint,
         rotate: 90,
       });
     }
   }
   
-  function drawChestplateBody(textureId: string, tint: string) {
+  function drawChestplateBody(textureId: string, tint: Blend) {
     const ox = 185;
     const oy = 309;
     const dimensions: Dimensions = [64, 96, 48];
-    minecraftGenerator.drawCuboid(textureId, char.base.body, [ox, oy], dimensions, { blend: { kind: "MultiplyHex", hex: tint } });
+    minecraftGenerator.drawCuboid(textureId, char.base.body, [ox, oy], dimensions, { blend: tint });
     generator.drawTexture(textureId, char.base.body.back, [ox + 48, oy - 96, 64, 96], {
       rotate: 180,
-      blend: { kind: "MultiplyHex", hex: tint },
+      blend: tint,
     });
     generator.drawTexture(textureId, [33, 48, 6, 16], [ox + 112, oy - 96, 48, 64], {
       rotate: 180,
-      blend: { kind: "MultiplyHex", hex: tint },
+      blend: tint,
     });
-    generator.drawTexture(textureId, [20, 44, 8, 2], [ox + 48, oy, 64, 48], { blend: { kind: "MultiplyHex", hex: tint } });
-    generator.drawTexture(textureId, [20, 42, 8, 2], [ox + 48, oy, 64, 48], { blend: { kind: "MultiplyHex", hex: tint } });
+    generator.drawTexture(textureId, [20, 44, 8, 2], [ox + 48, oy, 64, 48], { blend: tint });
+    generator.drawTexture(textureId, [20, 42, 8, 2], [ox + 48, oy, 64, 48], { blend: tint });
   }
   
-  function drawRightShoulder(textureId: string, tint: string) {
+  function drawRightShoulder(textureId: string, tint: Blend) {
     const ox = -27;
     const oy = 233;
     const dimensions: Dimensions = [40, 96, 48];
    /* if (shoulderAlpha(textureId) === 0) {
       generator.drawTexture(textureId, char.base.rightArm.left, [ox + 100, oy + 92, 48, 96], {
-        blend: { kind: "MultiplyHex", hex: tint },
+        blend: tint,
         rotate: 270,
       });
     } */
     minecraftGenerator.drawCuboid(textureId, char.base.rightArm, [ox, oy], dimensions, {
-      blend: { kind: "MultiplyHex", hex: tint },
+      blend: tint,
       rotate: 90,
     });
     generator.drawTexture(textureId, char.base.rightArm.back, [ox + 192, oy + 88, 40, 96], {
-      blend: { kind: "MultiplyHex", hex: tint },
+      blend: tint,
       rotate: 270,
     });
     generator.drawTexture(textureId, char.base.rightArm.back, [ox + 192, oy + 48, 40, 96], {
-      blend: { kind: "MultiplyHex", hex: tint },
+      blend: tint,
       rotate: 270,
     });
   }
   
-  function drawLeftShoulder(textureId: string, tint: string) {
+  function drawLeftShoulder(textureId: string, tint: Blend) {
     const ox = 445;
     const oy = 233;
     const dimensions: Dimensions = [40, 96, 48];
     /* if (shoulderAlpha(textureId) === 0) {
       generator.drawTexture(textureId, char.base.leftArm.left, [ox + 28, oy + 92, 48, 96], {
-        blend: { kind: "MultiplyHex", hex: tint },
+        blend: tint,
         flip: "Horizontal",
         rotate: 90,
       });
     } */
     minecraftGenerator.drawCuboid(textureId, char.base.leftArm, [ox, oy], dimensions, {
-      blend: { kind: "MultiplyHex", hex: tint },
+      blend: tint,
       flip: "Horizontal",
       rotate: 270,
     });
     generator.drawTexture(textureId, char.base.leftArm.back, [ox - 56, oy + 88, 40, 96], {
-      blend: { kind: "MultiplyHex", hex: tint },
+      blend: tint,
       flip: "Horizontal",
       rotate: 90,
     });
     generator.drawTexture(textureId, char.base.leftArm.back, [ox - 56, oy + 48, 40, 96], {
-      blend: { kind: "MultiplyHex", hex: tint },
+      blend: tint,
       flip: "Horizontal",
       rotate: 90,
     });
   }
   
-  function drawLeggingsBody(textureId: string, tint: string) {
+  function drawLeggingsBody(textureId: string, tint: Blend) {
     const ox = 193;
     const oy = 385;
     const dimensions: Dimensions = [64, 104, 40];
-    generator.drawTexture(textureId, [0, 40, 4, 24], [ox, oy + 135, 40, 104], { blend: { kind: "MultiplyHex", hex: tint } });
+    generator.drawTexture(textureId, [0, 40, 4, 24], [ox, oy + 135, 40, 104], { blend: tint });
     generator.drawTexture(textureId, [0, 40, 4, 24], [ox + 104, oy + 135, 40, 104], {
-      blend: { kind: "MultiplyHex", hex: tint },
+      blend: tint,
       flip: "Horizontal",
     });
-    minecraftGenerator.drawCuboid(textureId, char.base.body, [ox, oy], dimensions, { blend: { kind: "MultiplyHex", hex: tint } });
+    minecraftGenerator.drawCuboid(textureId, char.base.body, [ox, oy], dimensions, { blend: tint });
   }
   
-  function drawRightLegging(textureId: string, tint: string) {
+  function drawRightLegging(textureId: string, tint: Blend) {
     const ox = 49;
     const oy = 541;
     const dimensions: Dimensions = [32, 104, 40];
-    minecraftGenerator.drawCuboid(textureId, char.base.rightLeg, [ox, oy], dimensions, { blend: { kind: "MultiplyHex", hex: tint } });
-    generator.drawTexture(textureId, [16, 40, 4, 24], [ox, oy - 55, 40, 104], { blend: { kind: "MultiplyHex", hex: tint } });
-    generator.drawTexture(textureId, [0, 40, 4, 8], [ox + 72, oy + 20, 40, 34], { blend: { kind: "MultiplyHex", hex: tint } });
-    generator.drawTexture(textureId, [16, 40, 4, 24], [ox + 72, oy - 75, 40, 104], { blend: { kind: "MultiplyHex", hex: tint } });
+    minecraftGenerator.drawCuboid(textureId, char.base.rightLeg, [ox, oy], dimensions, { blend: tint });
+    generator.drawTexture(textureId, [16, 40, 4, 24], [ox, oy - 55, 40, 104], { blend: tint });
+    generator.drawTexture(textureId, [0, 40, 4, 8], [ox + 72, oy + 20, 40, 34], { blend: tint });
+    generator.drawTexture(textureId, [16, 40, 4, 24], [ox + 72, oy - 75, 40, 104], { blend: tint });
   }
   
-  function drawLeftLegging(textureId: string, tint: string) {
+  function drawLeftLegging(textureId: string, tint: Blend) {
     const ox = 401;
     const oy = 541;
     const dimensions: Dimensions = [32, 104, 40];
     minecraftGenerator.drawCuboid(textureId, char.base.leftLeg, [ox, oy], dimensions, {
-      blend: { kind: "MultiplyHex", hex: tint },
+      blend: tint,
       flip: "Horizontal",
     });
-    generator.drawTexture(textureId, [28, 40, 4, 24], [ox + 104, oy - 55, 40, 104], { blend: { kind: "MultiplyHex", hex: tint } });
+    generator.drawTexture(textureId, [28, 40, 4, 24], [ox + 104, oy - 55, 40, 104], { blend: tint });
     generator.drawTexture(textureId, [0, 40, 4, 8], [ox + 32, oy + 20, 40, 34], {
-      blend: { kind: "MultiplyHex", hex: tint },
+      blend: tint,
       flip: "Horizontal",
     });
     generator.drawTexture(textureId, [28, 40, 4, 24], [ox + 32, oy - 75, 40, 104], {
-      blend: { kind: "MultiplyHex", hex: tint },
+      blend: tint,
       flip: "Horizontal",
     });
   }
   
-  function drawRightBoot(textureId: string, tint: string) {
+  function drawRightBoot(textureId: string, tint: Blend) {
     const ox = 35;
     const oy = 597;
     const dimensions: Dimensions = [40, 96, 48];
-    minecraftGenerator.drawCuboid(textureId, char.base.rightLeg, [ox, oy], dimensions, { blend: { kind: "MultiplyHex", hex: tint } });
+    minecraftGenerator.drawCuboid(textureId, char.base.rightLeg, [ox, oy], dimensions, { blend: tint });
     minecraftGenerator.drawCuboid(textureId, char.base.rightLeg, [169, 613], [32, 96, 32], {
-      blend: { kind: "MultiplyHex", hex: tint },
+      blend: tint,
       rotate: 270,
       center: "Back",
     });
   }
   
-  function drawLeftBoot(textureId: string, tint: string) {
+  function drawLeftBoot(textureId: string, tint: Blend) {
     const ox = 383;
     const oy = 597;
     const dimensions: Dimensions = [40, 96, 48];
     minecraftGenerator.drawCuboid(textureId, char.base.leftLeg, [ox, oy], dimensions, {
-      blend: { kind: "MultiplyHex", hex: tint },
+      blend: tint,
       flip: "Horizontal",
     });
     minecraftGenerator.drawCuboid(textureId, char.base.leftLeg, [297, 613], [32, 96, 32], {
-      blend: { kind: "MultiplyHex", hex: tint },
+      blend: tint,
       rotate: 90,
       center: "Back",
       flip: "Horizontal",
@@ -390,52 +399,6 @@ const script: ScriptDef = (generator: Generator) => {
   function drawFolds() {
     generator.drawImage("Folds", [0, 0]);
     // Later replace with drawLineFold functions
-  }
-
-  function drawHelmetHead(textureId: string, showHeadOverlay: boolean, tint: string) {
-    const ox = 41;
-    const oy = 21;
-    const dimensions: Dimensions = [80, 80, 80];
-    minecraftGenerator.drawCuboid(textureId, char.base.head, [ox, oy], dimensions, {
-      blend: { kind: "MultiplyHex", hex: tint },
-    });
-    if (showHeadOverlay) {
-      minecraftGenerator.drawCuboid(textureId, char.overlay.head, [ox, oy], dimensions, {
-        blend: { kind: "MultiplyHex", hex: tint },
-      });
-    }
-  }
-  
-  function drawHelmetLiner(textureId: string, showHeadOverlay: boolean, tint: string) {
-    const ox = 329;
-    const oy = 37;
-    const dimensions: Dimensions = [64, 64, 64];
-    minecraftGenerator.drawCuboid(textureId, char.base.head, [ox, oy], dimensions, {
-      blend: { kind: "MultiplyHex", hex: tint },
-      rotate: 90,
-    });
-    generator.drawTexture(textureId, [0, 16, 8, 2], [ox + 100, oy + 28, 64, 8], {
-      blend: { kind: "MultiplyHex", hex: tint },
-      rotate: 90,
-    });
-    generator.drawTexture(textureId, [16, 16, 8, 2], [ox + 100, oy + 156, 64, 8], {
-      blend: { kind: "MultiplyHex", hex: tint },
-      rotate: 90,
-    });
-    if (showHeadOverlay) {
-      minecraftGenerator.drawCuboid(textureId, char.overlay.head, [ox, oy], dimensions, {
-        blend: { kind: "MultiplyHex", hex: tint },
-        rotate: 90,
-      });
-      generator.drawTexture(textureId, [32, 16, 8, 2], [ox + 100, oy + 28, 64, 8], {
-        blend: { kind: "MultiplyHex", hex: tint },
-        rotate: 90,
-      });
-      generator.drawTexture(textureId, [48, 16, 8, 2], [ox + 100, oy + 156, 64, 8], {
-        blend: { kind: "MultiplyHex", hex: tint },
-        rotate: 90,
-      });
-    }
   }
   
   function drawHelmet(showHeadOverlay: boolean) {
@@ -458,7 +421,7 @@ const script: ScriptDef = (generator: Generator) => {
       });
     }
     generator.defineBooleanInput("Show Head Overlay", true);
-    const tint = tintHelmet ? getTint("Helmet Color") : "None";
+    const tint: Blend = tintHelmet ? getTint("Helmet Color") : {kind: "None"};
   
     drawHelmetHead("Helmet", showHeadOverlay, tint);
     drawHelmetLiner("Helmet", showHeadOverlay, tint);
@@ -469,8 +432,8 @@ const script: ScriptDef = (generator: Generator) => {
         standardHeight: 64,
         choices: ["Leather Overlay"],
       });
-      drawHelmetHead("Helmet Overlay", showHeadOverlay, "None");
-      drawHelmetLiner("Helmet Overlay", showHeadOverlay, "None");
+      drawHelmetHead("Helmet Overlay", showHeadOverlay, {kind: "None"});
+      drawHelmetLiner("Helmet Overlay", showHeadOverlay, {kind: "None"});
     }
   
     generator.defineRegionInput([41, 21, 320, 160], () => {
@@ -486,11 +449,11 @@ const script: ScriptDef = (generator: Generator) => {
     });
   
     const tintChestplate = generator.defineAndGetBooleanInput("Tint Chestplate", false);
-    const tint = tintChestplate ? getTint("Chestplate Color") : "FFFFFF";
+    const tint: Blend = tintChestplate ? getTint("Chestplate Color") : {kind: "None"};
   
-    drawChestplateBody("Chestplate", { kind: "MultiplyHex", hex: tint });
-    drawLeftShoulder("Chestplate", { kind: "MultiplyHex", hex: tint });
-    drawRightShoulder("Chestplate", { kind: "MultiplyHex", hex: tint });
+    drawChestplateBody("Chestplate", tint);
+    drawLeftShoulder("Chestplate", tint);
+    drawRightShoulder("Chestplate", tint);
   
     if (tintChestplate) {
       generator.defineTextureInput("Chestplate Overlay", {
@@ -512,11 +475,11 @@ const script: ScriptDef = (generator: Generator) => {
     });
   
     const tintLeggings = generator.defineAndGetBooleanInput("Tint Leggings", false);
-    const tint = tintLeggings ? getTint("Leggings Color") : "FFFFFF";
+    const tint: Blend = tintLeggings ? getTint("Leggings Color") : {kind: "None"};
   
-    drawLeggingsBody("Leggings", { kind: "MultiplyHex", hex: tint });
-    drawRightLegging("Leggings", { kind: "MultiplyHex", hex: tint });
-    drawLeftLegging("Leggings", { kind: "MultiplyHex", hex: tint });
+    drawLeggingsBody("Leggings", tint);
+    drawRightLegging("Leggings", tint);
+    drawLeftLegging("Leggings", tint);
   
     if (tintLeggings) {
       generator.defineTextureInput("Leggings Overlay", {
@@ -538,7 +501,7 @@ const script: ScriptDef = (generator: Generator) => {
     });
   
     const tintBoots = generator.defineAndGetBooleanInput("Tint Boots", false);
-    const tint = tintBoots ? getTint("Boots Color") : "FFFFFF";
+    const tint: Blend = tintBoots ? getTint("Boots Color") : {kind: "None"};
   
     drawLeftBoot("Boots", tint);
     drawRightBoot("Boots", tint);
@@ -549,8 +512,8 @@ const script: ScriptDef = (generator: Generator) => {
         standardHeight: 64,
         choices: ["Leather Overlay"],
       });
-      drawLeftBoot("Boots Overlay", "FFFFFF");
-      drawRightBoot("Boots Overlay", "FFFFFF");
+      drawLeftBoot("Boots Overlay", {kind: "None"});
+      drawRightBoot("Boots Overlay", {kind: "None"});
     }
   }
   
@@ -629,24 +592,37 @@ const script: ScriptDef = (generator: Generator) => {
   const showFolds = generator.getBooleanInputValue("Show Folds");
   const showLabels = generator.getBooleanInputValue("Show Labels");
 
+  const showHeadOverlay = generator.getBooleanInputValueWithDefault("Show Head Overlay", true);
+
 
   // Draw
-  // drawHelmetHead(...)
-  // drawHelmetLiner(...)
-  // drawChestplateBody(...)
-  // drawRightShoulder(...)
-  // drawLeftShoulder(...)
-  // drawLeggingsBody(...)
-  // drawRightLegging(...)
-  // drawLeftLegging(...)
-  // drawRightBoot(...)
-  // drawLeftBoot(...)
-  // drawHelmetTrim(...)
-  // drawChestplateTrim(...)
-  // drawLeggingsTrim(...)
-  // drawBootsTrim(...)
+  // Helmet
+  drawHelmet(showHeadOverlay)
+  /*let trimHelmet = generator.defineAndGetBooleanInput("Trim Helmet", false)
+  if trimHelmet {
+    drawHelmetTrim(showHeadOverlay)
+  }*/
 
-  // Draw Folds
+  // Chestplate
+  drawChestplate()
+  //let trimChestplate = generator.defineAndGetBooleanInput("Trim Chestplate", false)
+  /*if trimChestplate {
+    drawChestplateTrim()
+  }*/
+
+  // Leggings
+  drawLeggings()
+  //let trimLeggings = generator.defineAndGetBooleanInput("Trim Leggings", false)
+  /*if trimLeggings {
+    drawLeggingsTrim()
+  }*/
+
+  // Boots
+  drawBoots()
+  //let trimBoots = generator.defineAndGetBooleanInput("Trim Boots", false)
+  /*if trimBoots {
+    drawBootsTrim()
+  }*/
 
   // Foreground
   generator.drawImage("Foreground", [0, 0])
