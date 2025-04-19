@@ -473,6 +473,7 @@ export class Minecraft {
     this.generator.drawTexture(textureId, source, dest.rectangle, {
       flip: dest.flip,
       rotateLegacy: dest.rotate,
+      blend: dest.blend,
     });
   }
 
