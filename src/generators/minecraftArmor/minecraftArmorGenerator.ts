@@ -46,6 +46,54 @@ import leather1OverlayTexture from "./textures/leather_layer_1_overlay.png";
 import leather2OverlayTexture from "./textures/leather_layer_2_overlay.png";
 import turtleShellTexture from "./textures/turtle_layer_1.png";
 import notchTexture from "./textures/Notch.png";
+import coastTexture from "./textures/trims/models/armor/coast.png";
+import coastLeggingsTexture from "./textures/trims/models/armor/coast_leggings.png";
+import duneTexture from "./textures/trims/models/armor/dune.png";
+import duneLeggingsTexture from "./textures/trims/models/armor/dune_leggings.png";
+import eyeTexture from "./textures/trims/models/armor/eye.png";
+import eyeLeggingsTexture from "./textures/trims/models/armor/eye_leggings.png";
+import hostTexture from "./textures/trims/models/armor/host.png";
+import hostLeggingsTexture from "./textures/trims/models/armor/host_leggings.png";
+import raiserTexture from "./textures/trims/models/armor/raiser.png";
+import raiserLeggingsTexture from "./textures/trims/models/armor/raiser_leggings.png";
+import ribTexture from "./textures/trims/models/armor/rib.png";
+import ribLeggingsTexture from "./textures/trims/models/armor/rib_leggings.png";
+import sentryTexture from "./textures/trims/models/armor/sentry.png";
+import sentryLeggingsTexture from "./textures/trims/models/armor/sentry_leggings.png";
+import shaperTexture from "./textures/trims/models/armor/shaper.png";
+import shaperLeggingsTexture from "./textures/trims/models/armor/shaper_leggings.png";
+import silenceTexture from "./textures/trims/models/armor/silence.png";
+import silenceLeggingsTexture from "./textures/trims/models/armor/silence_leggings.png";
+import snoutTexture from "./textures/trims/models/armor/snout.png";
+import snoutLeggingsTexture from "./textures/trims/models/armor/snout_leggings.png";
+import spireTexture from "./textures/trims/models/armor/spire.png";
+import spireLeggingsTexture from "./textures/trims/models/armor/spire_leggings.png";
+import tideTexture from "./textures/trims/models/armor/tide.png";
+import tideLeggingsTexture from "./textures/trims/models/armor/tide_leggings.png";
+import vexTexture from "./textures/trims/models/armor/vex.png";
+import vexLeggingsTexture from "./textures/trims/models/armor/vex_leggings.png";
+import wardTexture from "./textures/trims/models/armor/ward.png";
+import wardLeggingsTexture from "./textures/trims/models/armor/ward_leggings.png";
+import wayfinderTexture from "./textures/trims/models/armor/wayfinder.png";
+import wayfinderLeggingsTexture from "./textures/trims/models/armor/wayfinder_leggings.png";
+import wildTexture from "./textures/trims/models/armor/wild.png";
+import wildLeggingsTexture from "./textures/trims/models/armor/wild_leggings.png";
+import amethystTexture from "./textures/trims/color_palettes/amethyst.png";
+import copperTexture from "./textures/trims/color_palettes/copper.png";
+import diamondDarkerTexture from "./textures/trims/color_palettes/diamond_darker.png";
+import diamondTexture from "./textures/trims/color_palettes/diamond.png";
+import emeraldTexture from "./textures/trims/color_palettes/emerald.png";
+import goldDarkerTexture from "./textures/trims/color_palettes/gold_darker.png";
+import goldTexture from "./textures/trims/color_palettes/gold.png";
+import ironDarkerTexture from "./textures/trims/color_palettes/iron_darker.png";
+import ironTexture from "./textures/trims/color_palettes/iron.png";
+import lapisTexture from "./textures/trims/color_palettes/lapis.png";
+import netheriteDarkerTexture from "./textures/trims/color_palettes/netherite_darker.png";
+import netheriteTexture from "./textures/trims/color_palettes/netherite.png";
+import quartzTexture from "./textures/trims/color_palettes/quartz.png";
+import redstoneTexture from "./textures/trims/color_palettes/redstone.png";
+import trimPaletteTexture from "./textures/trims/color_palettes/trim_palette.png";
+
 import { Minecraft } from "../_common/minecraft";
 import { Blend } from "@genroot/builder/modules/renderers/drawTexture";
 
@@ -116,10 +164,61 @@ const textures: TextureDef[] = [
   { id: "Turtle Shell", url: turtleShellTexture.src, standardWidth: 64, standardHeight: 32 }, //
   { id: "Notch", url: notchTexture.src, standardWidth: 64, standardHeight: 32 }, //
   { id: "Enchanted Glint", url: enchantedGlint.src, standardWidth: 128, standardHeight: 128 },
+  { id: "Coast", url: coastTexture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Coast ", url: coastLeggingsTexture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Dune", url: duneTexture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Dune ", url: duneLeggingsTexture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Eye", url: eyeTexture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Eye ", url: eyeLeggingsTexture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Host", url: hostTexture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Host ", url: hostLeggingsTexture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Raiser", url: raiserTexture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Raiser ", url: raiserLeggingsTexture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Rib", url: ribTexture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Rib ", url: ribLeggingsTexture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Sentry", url: sentryTexture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Sentry ", url: sentryLeggingsTexture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Shaper", url: shaperTexture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Shaper ", url: shaperLeggingsTexture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Silence", url: silenceTexture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Silence ", url: silenceLeggingsTexture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Snout", url: snoutTexture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Snout ", url: snoutLeggingsTexture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Spire", url: spireTexture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Spire ", url: spireLeggingsTexture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Tide", url: tideTexture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Tide ", url: tideLeggingsTexture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Vex", url: vexTexture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Vex ", url: vexLeggingsTexture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Ward", url: wardTexture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Ward ", url: wardLeggingsTexture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Wayfinder", url: wayfinderTexture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Wayfinder ", url: wayfinderLeggingsTexture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Wild", url: wildTexture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Wild ", url: wildLeggingsTexture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Amethyst  ", url: amethystTexture.src, standardWidth: 8, standardHeight: 1 },
+  { id: "Copper  ", url: copperTexture.src, standardWidth: 8, standardHeight: 1 },
+  { id: "Diamond  ", url: diamondTexture.src, standardWidth: 8, standardHeight: 1 },
+  { id: "Diamond Darker  ", url: diamondDarkerTexture.src, standardWidth: 8, standardHeight: 1 },
+  { id: "Emerald  ", url: emeraldTexture.src, standardWidth: 8, standardHeight: 1 },
+  { id: "Gold  ", url: goldTexture.src, standardWidth: 8, standardHeight: 1 },
+  { id: "Gold Darker  ", url: goldDarkerTexture.src, standardWidth: 8, standardHeight: 1 },
+  { id: "Iron  ", url: ironTexture.src, standardWidth: 8, standardHeight: 1 },
+  { id: "Iron Darker  ", url: ironDarkerTexture.src, standardWidth: 8, standardHeight: 1 },
+  { id: "Lapis  ", url: lapisTexture.src, standardWidth: 8, standardHeight: 1 },
+  { id: "Netherite  ", url: netheriteTexture.src, standardWidth: 8, standardHeight: 1 },
+  { id: "Netherite Darker  ", url: netheriteDarkerTexture.src, standardWidth: 8, standardHeight: 1 },
+  { id: "Quartz  ", url: quartzTexture.src, standardWidth: 8, standardHeight: 1 },
+  { id: "Redstone  ", url: redstoneTexture.src, standardWidth: 8, standardHeight: 1 },
+  { id: "Trim Palette", url: trimPaletteTexture.src, standardWidth: 8, standardHeight: 1 },
+
 ];
 
 const materials = ["Leather", "Chainmail", "Gold", "Iron", "Diamond", "Netherite"];
 const materials2 = ["Leather ", "Chainmail ", "Gold ", "Iron ", "Diamond ", "Netherite "];
+const trimMaterials = ["Amethyst  ", "Copper  ", "Diamond  ", "Diamond Darker  ", "Emerald  ", "Gold  ", "Gold Darker  ", "Iron  ", "Iron Darker  ", "Lapis  ", "Netherite  ", "Netherite Darker  ", "Quartz  ", "Redstone  "];
+const trimTemplates = ["Coast", "Dune", "Eye", "Host", "Raiser", "Rib", "Sentry", "Shaper", "Silence", "Snout", "Spire", "Tide", "Vex", "Ward", "Wayfinder", "Wild"];
+const trimTemplates2 = ["Coast ", "Dune ", "Eye ", "Host ", "Raiser ", "Rib ", "Sentry ", "Shaper ", "Silence ", "Snout ", "Spire ", "Tide ", "Vex ", "Ward ", "Wayfinder ", "Wild "];
 
 const script: ScriptDef = (generator: Generator) => {
   const minecraftGenerator = new Minecraft(generator);
@@ -190,14 +289,14 @@ const script: ScriptDef = (generator: Generator) => {
 
     return { kind: "MultiplyHex", hex: hex };
   }
-/* 
+
   function rgbaToHex([r, g, b, a]: [number, number, number, number]): string {
     const toHex = (value: number) => value.toString(16).padStart(2, "0");
     return `#${toHex(r)}${toHex(g)}${toHex(b)}${toHex(a)}`;
   }
   
-  function getTexturePixelColor(id: string, x: number, y: number): string {
-    const color = generator.getTexturePixelColor(id, x, y);
+  function getTexturePixelColor(id: string, [x: number, y: number]): string {
+    const color = generator.getTexturePixelColor(id, [x, y]);
     return color ? rgbaToHex(color) : "Unknown";
   }
   
@@ -205,7 +304,7 @@ const script: ScriptDef = (generator: Generator) => {
     return Array.from({ length }, (_, i) => getTexturePixelColor(id, i, 0));
   }
   
-  const baseColors = getPalette("Trim Palette  ", 8);*/
+  const baseColors = getPalette("Trim Palette  ", 8);
   
   function shoulderAlpha(textureId: string): number {
     const color = generator.getTexturePixelColor(textureId, [51, 24]);
@@ -517,71 +616,71 @@ const script: ScriptDef = (generator: Generator) => {
     }
   }
   
-  // function drawHelmetTrim(showHeadOverlay: boolean) {
-  //   generator.defineTextureInput("Helmet Trim", {
-  //     standardWidth: 64,
-  //     standardHeight: 64,
-  //     choices: trimTemplates,
-  //   });
-  //   generator.defineTextureInput("Helmet Trim Material", {
-  //     standardWidth: 8,
-  //     standardHeight: 1,
-  //     choices: trimMaterials,
-  //   });
-  //   const colors = getPalette("Helmet Trim Material", 8);
-  //   drawHelmetHead("Helmet Trim", showHeadOverlay, { kind: "ReplaceHex", from: baseColors, to: colors });
-  //   drawHelmetLiner("Helmet Trim", showHeadOverlay, { kind: "ReplaceHex", from: baseColors, to: colors });
-  // }
+  function drawHelmetTrim(showHeadOverlay: boolean) {
+    generator.defineTextureInput("Helmet Trim", {
+      standardWidth: 64,
+      standardHeight: 64,
+      choices: trimTemplates,
+    });
+    generator.defineTextureInput("Helmet Trim Material", {
+      standardWidth: 8,
+      standardHeight: 1,
+      choices: trimMaterials,
+    });
+    const colors = getPalette("Helmet Trim Material", 8);
+    drawHelmetHead("Helmet Trim", showHeadOverlay, { kind: "ReplaceHex", from: baseColors, to: colors });
+    drawHelmetLiner("Helmet Trim", showHeadOverlay, { kind: "ReplaceHex", from: baseColors, to: colors });
+  }
   
-  // function drawChestplateTrim() {
-  //   generator.defineTextureInput("Chestplate Trim", {
-  //     standardWidth: 64,
-  //     standardHeight: 64,
-  //     choices: trimTemplates,
-  //   });
-  //   generator.defineTextureInput("Chestplate Trim Material", {
-  //     standardWidth: 8,
-  //     standardHeight: 1,
-  //     choices: trimMaterials,
-  //   });
-  //   const colors = getPalette("Chestplate Trim Material", 8);
-  //   drawChestplateBody("Chestplate Trim", { kind: "ReplaceHex", from: baseColors, to: colors });
-  //   drawLeftShoulder("Chestplate Trim", { kind: "ReplaceHex", from: baseColors, to: colors });
-  //   drawRightShoulder("Chestplate Trim", { kind: "ReplaceHex", from: baseColors, to: colors });
-  // }
+  function drawChestplateTrim() {
+    generator.defineTextureInput("Chestplate Trim", {
+      standardWidth: 64,
+      standardHeight: 64,
+      choices: trimTemplates,
+    });
+    generator.defineTextureInput("Chestplate Trim Material", {
+      standardWidth: 8,
+      standardHeight: 1,
+      choices: trimMaterials,
+    });
+    const colors = getPalette("Chestplate Trim Material", 8);
+    drawChestplateBody("Chestplate Trim", { kind: "ReplaceHex", from: baseColors, to: colors });
+    drawLeftShoulder("Chestplate Trim", { kind: "ReplaceHex", from: baseColors, to: colors });
+    drawRightShoulder("Chestplate Trim", { kind: "ReplaceHex", from: baseColors, to: colors });
+  }
   
-  // function drawLeggingsTrim() {
-  //   generator.defineTextureInput("Leggings Trim", {
-  //     standardWidth: 64,
-  //     standardHeight: 64,
-  //     choices: trimTemplates2,
-  //   });
-  //   generator.defineTextureInput("Leggings Trim Material", {
-  //     standardWidth: 8,
-  //     standardHeight: 1,
-  //     choices: trimMaterials,
-  //   });
-  //   const colors = getPalette("Leggings Trim Material", 8);
-  //   drawLeggingsBody("Leggings Trim", { kind: "ReplaceHex", from: baseColors, to: colors });
-  //   drawRightLegging("Leggings Trim", { kind: "ReplaceHex", from: baseColors, to: colors });
-  //   drawLeftLegging("Leggings Trim", { kind: "ReplaceHex", from: baseColors, to: colors });
-  // }
+  function drawLeggingsTrim() {
+    generator.defineTextureInput("Leggings Trim", {
+      standardWidth: 64,
+      standardHeight: 64,
+      choices: trimTemplates2,
+    });
+    generator.defineTextureInput("Leggings Trim Material", {
+      standardWidth: 8,
+      standardHeight: 1,
+      choices: trimMaterials,
+    });
+    const colors = getPalette("Leggings Trim Material", 8);
+    drawLeggingsBody("Leggings Trim", { kind: "ReplaceHex", from: baseColors, to: colors });
+    drawRightLegging("Leggings Trim", { kind: "ReplaceHex", from: baseColors, to: colors });
+    drawLeftLegging("Leggings Trim", { kind: "ReplaceHex", from: baseColors, to: colors });
+  }
   
-  // function drawBootsTrim() {
-  //   generator.defineTextureInput("Boots Trim", {
-  //     standardWidth: 64,
-  //     standardHeight: 64,
-  //     choices: trimTemplates,
-  //   });
-  //   generator.defineTextureInput("Boots Trim Material", {
-  //     standardWidth: 8,
-  //     standardHeight: 1,
-  //     choices: trimMaterials,
-  //   });
-  //   const colors = getPalette("Boots Trim Material", 8);
-  //   drawLeftBoot("Boots Trim", { kind: "ReplaceHex", from: baseColors, to: colors });
-  //   drawRightBoot("Boots Trim", { kind: "ReplaceHex", from: baseColors, to: colors });
-  // }
+  function drawBootsTrim() {
+    generator.defineTextureInput("Boots Trim", {
+      standardWidth: 64,
+      standardHeight: 64,
+      choices: trimTemplates,
+    });
+    generator.defineTextureInput("Boots Trim Material", {
+      standardWidth: 8,
+      standardHeight: 1,
+      choices: trimMaterials,
+    });
+    const colors = getPalette("Boots Trim Material", 8);
+    drawLeftBoot("Boots Trim", { kind: "ReplaceHex", from: baseColors, to: colors });
+    drawRightBoot("Boots Trim", { kind: "ReplaceHex", from: baseColors, to: colors });
+  }
 
   // Define user inputs
   generator.defineBooleanInput("Show Folds", true);
@@ -598,31 +697,31 @@ const script: ScriptDef = (generator: Generator) => {
   // Draw
   // Helmet
   drawHelmet(showHeadOverlay)
-  /*let trimHelmet = generator.defineAndGetBooleanInput("Trim Helmet", false)
-  if trimHelmet {
+  const trimHelmet = generator.defineAndGetBooleanInput("Trim Helmet", false)
+  if (trimHelmet) {
     drawHelmetTrim(showHeadOverlay)
-  }*/
+  }
 
   // Chestplate
   drawChestplate()
-  //let trimChestplate = generator.defineAndGetBooleanInput("Trim Chestplate", false)
-  /*if trimChestplate {
+  const trimChestplate = generator.defineAndGetBooleanInput("Trim Chestplate", false)
+  if (trimChestplate) {
     drawChestplateTrim()
-  }*/
+  }
 
   // Leggings
   drawLeggings()
-  //let trimLeggings = generator.defineAndGetBooleanInput("Trim Leggings", false)
-  /*if trimLeggings {
+  const trimLeggings = generator.defineAndGetBooleanInput("Trim Leggings", false)
+  if (trimLeggings) {
     drawLeggingsTrim()
-  }*/
+  }
 
   // Boots
   drawBoots()
-  //let trimBoots = generator.defineAndGetBooleanInput("Trim Boots", false)
-  /*if trimBoots {
+  const trimBoots = generator.defineAndGetBooleanInput("Trim Boots", false)
+  if (trimBoots) {
     drawBootsTrim()
-  }*/
+  }
 
   // Foreground
   generator.drawImage("Foreground", [0, 0])
