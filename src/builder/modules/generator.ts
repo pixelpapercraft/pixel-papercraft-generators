@@ -16,6 +16,7 @@ import { type TabOrientation, drawTab } from "./renderers/drawTab";
 import { fillBackgroundColor } from "./renderers/fillBackgroundColor";
 import { type Page } from "./modelPage";
 import { fillRect } from "./renderers/fillRect";
+import { Color, getCanvasWithContextPixelColor} from "./canvasWithContext";
 
 export type * from "./renderers/types";
 export type * from "./modelPage";
@@ -240,5 +241,44 @@ export class Generator {
       showFoldLine,
       tabAngle
     );
+  }
+  getImagePixelColor(id: string, [x, y]: [number, number]): Color | null {
+    const image = this.model.findImage(id);
+
+    if (!image) {
+      return null;
+    }
+
+   return getCanvasWithContextPixelColor(image.canvasWithContext, x, y);
+  }
+
+  getTexturePixelColor(id: string, [x, y]: [number, number]): Color | null {
+    const texture = this.model.findTexture(id);
+
+    if (!texture) {
+      return null;
+    }
+
+   return getCanvasWithContextPixelColor(texture.imageWithCanvas.canvasWithContext, x, y);
+  }
+
+  getPagePixelColor(id: string, [x, y]: [number, number]): Color | null {
+    const page = this.model.findPage(id);
+
+    if (!page) {
+      return null;
+    }
+
+   return getCanvasWithContextPixelColor(page.canvasWithContext, x, y);
+  }
+
+  getCurrentPagePixelColor([x, y]: [number, number]): Color | null {
+    const page = this.getCurrentPage();
+
+    if (!page) {
+      return null;
+    }
+
+   return getCanvasWithContextPixelColor(page.canvasWithContext, x, y);
   }
 }
