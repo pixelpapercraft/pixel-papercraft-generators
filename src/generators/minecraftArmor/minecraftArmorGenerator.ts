@@ -205,14 +205,14 @@ const script: ScriptDef = (generator: Generator) => {
     return Array.from({ length }, (_, i) => getTexturePixelColor(id, i, 0));
   }
   
-  const baseColors = getPalette("Trim Palette  ", 8);
+  const baseColors = getPalette("Trim Palette  ", 8);*/
   
   function shoulderAlpha(textureId: string): number {
-    const color = generator.getTexturePixelColor(textureId, 51, 24);
-    const a = color ? color[3] : 33;
+    const color = generator.getTexturePixelColor(textureId, [51, 24]);
+    const a = color ? color.a : 33;
     console.log(`${textureId}: ${a}`);
     return a;
-  } */
+  } 
 
   function drawHelmetHead(
     textureId: string,
@@ -279,12 +279,12 @@ const script: ScriptDef = (generator: Generator) => {
     const ox = -27;
     const oy = 233;
     const dimensions: Dimensions = [40, 96, 48];
-   /* if (shoulderAlpha(textureId) === 0) {
+   if (shoulderAlpha(textureId) === 0) {
       generator.drawTexture(textureId, char.base.rightArm.left, [ox + 100, oy + 92, 48, 96], {
         blend: tint,
         rotate: 270,
       });
-    } */
+    } 
     minecraftGenerator.drawCuboid(textureId, char.base.rightArm, [ox, oy], dimensions, {
       blend: tint,
       rotate: 90,
@@ -303,13 +303,13 @@ const script: ScriptDef = (generator: Generator) => {
     const ox = 445;
     const oy = 233;
     const dimensions: Dimensions = [40, 96, 48];
-    /* if (shoulderAlpha(textureId) === 0) {
+    if (shoulderAlpha(textureId) === 0) {
       generator.drawTexture(textureId, char.base.leftArm.left, [ox + 28, oy + 92, 48, 96], {
         blend: tint,
         flip: "Horizontal",
         rotate: 90,
       });
-    } */
+    } 
     minecraftGenerator.drawCuboid(textureId, char.base.leftArm, [ox, oy], dimensions, {
       blend: tint,
       flip: "Horizontal",
@@ -634,17 +634,17 @@ const script: ScriptDef = (generator: Generator) => {
   }
 
   // Shoulder Curve
-  /* if (
+   /*if (
     shoulderAlpha("Chestplate") == 0 &&
       (shoulderAlpha("Chestplate Trim") == 33 ||
       !trimChestplate ||
       shoulderAlpha("Chestplate Trim") == 0)
-  ) {
+  )*/ if (shoulderAlpha("Chestplate") == 0) {
     generator.drawImage("Foreground-Shoulders", [0, 0])
     if (showFolds) {
       generator.drawImage("Folds-Shoulders", [0, 0])
     }
-  } */
+  } 
 
   // (Chestplate.isEmpty() && (trim.isEmpty() || !trim.exists()))
 
