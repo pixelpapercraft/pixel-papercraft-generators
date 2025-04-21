@@ -148,6 +148,14 @@ const textures: TextureDef[] = [
   { id: "Chestplate Overlay", url: chestplateOverlayTexture.src, standardWidth: 64, standardHeight: 32 },
   { id: "Leggings Overlay", url: leggingsOverlayTexture.src, standardWidth: 64, standardHeight: 32 },
   { id: "Boots Overlay", url: bootsOverlayTexture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Helmet Trim", url: silenceTexture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Chestplate Trim", url: silenceTexture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Leggings Trim", url: silenceLeggingsTexture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Boots Trim", url: silenceTexture.src, standardWidth: 64, standardHeight: 32 },
+  { id: "Helmet Trim Material", url: netheriteTexture.src, standardWidth: 8, standardHeight: 1 },
+  { id: "Chestplate Trim Material", url: netheriteTexture.src, standardWidth: 8, standardHeight: 1 },
+  { id: "Leggings Trim Material", url: netheriteTexture.src, standardWidth: 8, standardHeight: 1 },
+  { id: "Boots Trim Material", url: netheriteTexture.src, standardWidth: 8, standardHeight: 1 },
   { id: "Chainmail", url: chainmail1Texture.src, standardWidth: 64, standardHeight: 32 }, //
   { id: "Chainmail ", url: chainmail2Texture.src, standardWidth: 64, standardHeight: 32 }, //
   { id: "Diamond", url: helmetTexture.src, standardWidth: 64, standardHeight: 32 }, //
