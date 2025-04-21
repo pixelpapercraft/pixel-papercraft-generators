@@ -1,5 +1,6 @@
 import {
   type CanvasWithContext,
+  Color,
   makeCanvasWithContext,
 } from "../canvasWithContext";
 import type { Texture } from "../texture";
@@ -17,6 +18,8 @@ export type Rotate = RotateNone | RotateCorner | RotateCenter;
 
 type BlendNone = { kind: "None" };
 
+type BlendMultiplyColor = {kind: "MultiplyColor"; color: Color};
+
 type BlendMultiplyHex = { kind: "MultiplyHex"; hex: string };
 
 type BlendMultiplyRGB = {
@@ -26,7 +29,21 @@ type BlendMultiplyRGB = {
   b: number;
 };
 
-export type Blend = BlendNone | BlendMultiplyHex | BlendMultiplyRGB;
+type BlendReplaceColor = {
+  kind: "ReplaceColor";
+  color1: Color[];
+  color2: Color[];
+}
+
+type BlendReplaceHex = { kind: "ReplaceHex"; hex1: string[], hex2: string[] };
+
+type BlendReplaceRGB = {
+  kind: "ReplaceRGB";
+  rgb1: [r1: number, g1: number, b1: number][];
+  rgb2: [r2: number, g2: number, b2: number][];
+};
+
+export type Blend = BlendNone | BlendMultiplyColor | BlendMultiplyHex | BlendMultiplyRGB | BlendReplaceColor | BlendReplaceHex | BlendReplaceRGB;
 
 type Coordinates = {
   sx: number;
@@ -100,7 +117,7 @@ export function hexToRGB(hex: string): [number, number, number] | null {
   return [r, g, b];
 }
 
-function blendColors(
+function multiplyColors(
   r1: number,
   g1: number,
   b1: number,
@@ -114,6 +131,36 @@ function blendColors(
     Math.floor((b1 * b2) / 255),
   ];
 }
+
+// replace works like this: if 1(texture) = 2(base palette), draw 3(color palette) else draw 1
+function replaceColors(
+  rgb1: [number, number, number],
+  rgb2: [number, number, number],
+  rgb3: [number, number, number]
+): [number, number, number] {
+  const [r1, g1, b1] = rgb1;
+  const [r2, g2, b2] = rgb2;
+  const [r3, g3, b3] = rgb3;
+
+  return [
+    r1 === r2 ? r3 : r1,
+    g1 === g2 ? g3 : g1,
+    b1 === b2 ? b3 : b1,
+  ];
+}
+
+function replaceColorsFromPalette(
+  rgb1: [number, number, number],
+  palette: [number, number, number][],
+  replacements: [number, number, number][]
+): [number, number, number] | undefined {
+  const index = palette.findIndex(color =>
+    color[0] === rgb1[0] && color[1] === rgb1[1] && color[2] === rgb1[2]
+  );
+
+  return index !== -1 ? replacements[index] : rgb1;
+}
+
 
 function makeInitialValues(
   texture: Texture,
@@ -199,6 +246,14 @@ function drawNearestNeighbor(
           ? [blendOption.r, blendOption.g, blendOption.b]
           : null;
 
+    const replace: [[number, number, number][], [number, number, number][]] | null =
+    blendOption.kind === "ReplaceHex"
+      ? [blendOption.hex1.map((hex) => hexToRGB(hex) ?? [0, 0, 0]), blendOption.hex2.map((hex) => hexToRGB(hex) ?? [0, 0, 0])]
+      : blendOption.kind === "ReplaceRGB"
+        ? [blendOption.rgb1, blendOption.rgb2]
+        : null;
+        // Replace is in Color, then there is also RGB and Hex. how to get it all to work together?
+
     for (let y = 0; y < sh; y++) {
       for (let x = 0; x < sw; x++) {
         const tx = x * deltax;
@@ -212,9 +267,17 @@ function drawNearestNeighbor(
         const b = pix[i + 2] ?? 0;
         const a = (pix[i + 3] ?? 0) / 255;
 
-        const [red, green, blue] = blend
-          ? blendColors(r, g, b, blend[0], blend[1], blend[2])
+        let [red, green, blue] = blend
+          ? multiplyColors(r, g, b, blend[0], blend[1], blend[2])
           : [r, g, b];
+
+          const replaced = replace
+          ? replaceColorsFromPalette([red, green, blue], replace[0], replace[1])
+          : undefined;
+        
+        if (replaced) {
+          [red, green, blue] = replaced;
+        }
 
         temp.context.fillStyle = `rgba(${red}, ${green}, ${blue}, ${a})`;
         temp.context.fillRect(Math.floor(tx), Math.floor(ty), pixw, pixh);
