@@ -96,6 +96,7 @@ import trimPaletteTexture from "./textures/trims/color_palettes/trim_palette.png
 
 import { Minecraft } from "../_common/minecraft";
 import { Blend } from "@genroot/builder/modules/renderers/drawTexture";
+import { Color } from "@genroot/builder/modules/canvasWithContext";
 
 const id = "minecraft-armor";
 const name = "Minecraft Armor";
@@ -210,7 +211,7 @@ const textures: TextureDef[] = [
   { id: "Netherite Darker  ", url: netheriteDarkerTexture.src, standardWidth: 8, standardHeight: 1 },
   { id: "Quartz  ", url: quartzTexture.src, standardWidth: 8, standardHeight: 1 },
   { id: "Redstone  ", url: redstoneTexture.src, standardWidth: 8, standardHeight: 1 },
-  { id: "Trim Palette", url: trimPaletteTexture.src, standardWidth: 8, standardHeight: 1 },
+  { id: "Trim Palette  ", url: trimPaletteTexture.src, standardWidth: 8, standardHeight: 1 },
 
 ];
 
@@ -289,19 +290,12 @@ const script: ScriptDef = (generator: Generator) => {
 
     return { kind: "MultiplyHex", hex: hex };
   }
-
-  function rgbaToHex([r, g, b, a]: [number, number, number, number]): string {
-    const toHex = (value: number) => value.toString(16).padStart(2, "0");
-    return `#${toHex(r)}${toHex(g)}${toHex(b)}${toHex(a)}`;
-  }
   
-  function getTexturePixelColor(id: string, [x: number, y: number]): string {
-    const color = generator.getTexturePixelColor(id, [x, y]);
-    return color ? rgbaToHex(color) : "Unknown";
-  }
-  
-  function getPalette(id: string, length: number): string[] {
-    return Array.from({ length }, (_, i) => getTexturePixelColor(id, i, 0));
+  function getPalette(id: string, length: number): Color[] {
+    return Array.from({ length }, (_, i) => {
+      const color = generator.getTexturePixelColor(id, [i, 0]);
+      return color ?? { r: 0, g: 0, b: 0, a: 255 };
+    });
   }
   
   const baseColors = getPalette("Trim Palette  ", 8);
@@ -628,8 +622,8 @@ const script: ScriptDef = (generator: Generator) => {
       choices: trimMaterials,
     });
     const colors = getPalette("Helmet Trim Material", 8);
-    drawHelmetHead("Helmet Trim", showHeadOverlay, { kind: "ReplaceHex", from: baseColors, to: colors });
-    drawHelmetLiner("Helmet Trim", showHeadOverlay, { kind: "ReplaceHex", from: baseColors, to: colors });
+    drawHelmetHead("Helmet Trim", showHeadOverlay, { kind: "ReplaceColor", color1: baseColors, color2: colors });
+    drawHelmetLiner("Helmet Trim", showHeadOverlay, { kind: "ReplaceColor", color1: baseColors, color2: colors });
   }
   
   function drawChestplateTrim() {
@@ -644,9 +638,9 @@ const script: ScriptDef = (generator: Generator) => {
       choices: trimMaterials,
     });
     const colors = getPalette("Chestplate Trim Material", 8);
-    drawChestplateBody("Chestplate Trim", { kind: "ReplaceHex", from: baseColors, to: colors });
-    drawLeftShoulder("Chestplate Trim", { kind: "ReplaceHex", from: baseColors, to: colors });
-    drawRightShoulder("Chestplate Trim", { kind: "ReplaceHex", from: baseColors, to: colors });
+    drawChestplateBody("Chestplate Trim", { kind: "ReplaceColor", color1: baseColors, color2: colors });
+    drawLeftShoulder("Chestplate Trim", { kind: "ReplaceColor", color1: baseColors, color2: colors });
+    drawRightShoulder("Chestplate Trim", { kind: "ReplaceColor", color1: baseColors, color2: colors });
   }
   
   function drawLeggingsTrim() {
@@ -661,9 +655,9 @@ const script: ScriptDef = (generator: Generator) => {
       choices: trimMaterials,
     });
     const colors = getPalette("Leggings Trim Material", 8);
-    drawLeggingsBody("Leggings Trim", { kind: "ReplaceHex", from: baseColors, to: colors });
-    drawRightLegging("Leggings Trim", { kind: "ReplaceHex", from: baseColors, to: colors });
-    drawLeftLegging("Leggings Trim", { kind: "ReplaceHex", from: baseColors, to: colors });
+    drawLeggingsBody("Leggings Trim", { kind: "ReplaceColor", color1: baseColors, color2: colors });
+    drawRightLegging("Leggings Trim", { kind: "ReplaceColor", color1: baseColors, color2: colors });
+    drawLeftLegging("Leggings Trim", { kind: "ReplaceColor", color1: baseColors, color2: colors });
   }
   
   function drawBootsTrim() {
@@ -678,8 +672,8 @@ const script: ScriptDef = (generator: Generator) => {
       choices: trimMaterials,
     });
     const colors = getPalette("Boots Trim Material", 8);
-    drawLeftBoot("Boots Trim", { kind: "ReplaceHex", from: baseColors, to: colors });
-    drawRightBoot("Boots Trim", { kind: "ReplaceHex", from: baseColors, to: colors });
+    drawLeftBoot("Boots Trim", { kind: "ReplaceColor", color1: baseColors, color2: colors });
+    drawRightBoot("Boots Trim", { kind: "ReplaceColor", color1: baseColors, color2: colors });
   }
 
   // Define user inputs
@@ -699,7 +693,7 @@ const script: ScriptDef = (generator: Generator) => {
   drawHelmet(showHeadOverlay)
   const trimHelmet = generator.defineAndGetBooleanInput("Trim Helmet", false)
   if (trimHelmet) {
-    drawHelmetTrim(showHeadOverlay)
+   drawHelmetTrim(showHeadOverlay)
   }
 
   // Chestplate
@@ -733,17 +727,17 @@ const script: ScriptDef = (generator: Generator) => {
   }
 
   // Shoulder Curve
-   /*if (
+   if (
     shoulderAlpha("Chestplate") == 0 &&
       (shoulderAlpha("Chestplate Trim") == 33 ||
       !trimChestplate ||
       shoulderAlpha("Chestplate Trim") == 0)
-  )*/ if (shoulderAlpha("Chestplate") == 0) {
+  ) if (shoulderAlpha("Chestplate") == 0) {
     generator.drawImage("Foreground-Shoulders", [0, 0])
     if (showFolds) {
       generator.drawImage("Folds-Shoulders", [0, 0])
     }
-  } 
+  } // not workingright- should when silence trim is on
 
   // (Chestplate.isEmpty() && (trim.isEmpty() || !trim.exists()))
 

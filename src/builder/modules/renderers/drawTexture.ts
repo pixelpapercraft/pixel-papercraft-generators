@@ -9,41 +9,32 @@ import type { Dimensions, Region } from "./types";
 export type Flip = "None" | "Horizontal" | "Vertical";
 
 type RotateNone = { kind: "None" };
-
 type RotateCorner = { kind: "Corner"; degrees: number };
-
 type RotateCenter = { kind: "Center"; degrees: number };
 
 export type Rotate = RotateNone | RotateCorner | RotateCenter;
 
 type BlendNone = { kind: "None" };
-
-type BlendMultiplyColor = {kind: "MultiplyColor"; color: Color};
-
+type BlendMultiplyColor = { kind: "MultiplyColor"; color: Color };
 type BlendMultiplyHex = { kind: "MultiplyHex"; hex: string };
-
-type BlendMultiplyRGB = {
-  kind: "MultiplyRGB";
-  r: number;
-  g: number;
-  b: number;
-};
 
 type BlendReplaceColor = {
   kind: "ReplaceColor";
   color1: Color[];
   color2: Color[];
-}
-
-type BlendReplaceHex = { kind: "ReplaceHex"; hex1: string[], hex2: string[] };
-
-type BlendReplaceRGB = {
-  kind: "ReplaceRGB";
-  rgb1: [r1: number, g1: number, b1: number][];
-  rgb2: [r2: number, g2: number, b2: number][];
+};
+type BlendReplaceHex = {
+  kind: "ReplaceHex";
+  hex1: string[];
+  hex2: string[];
 };
 
-export type Blend = BlendNone | BlendMultiplyColor | BlendMultiplyHex | BlendMultiplyRGB | BlendReplaceColor | BlendReplaceHex | BlendReplaceRGB;
+export type Blend =
+  | BlendNone
+  | BlendMultiplyColor
+  | BlendMultiplyHex
+  | BlendReplaceColor
+  | BlendReplaceHex;
 
 type Coordinates = {
   sx: number;
@@ -90,77 +81,43 @@ function preparePixelationCanvas(
   return canvasWithContext;
 }
 
-function parseHex(value: string): number | null {
-  const hex = value.startsWith("#") ? value.slice(1) : value;
-  if (hex.length === 6) {
-    const f = parseInt(hex, 16);
-    if (isNaN(f)) {
-      return null;
-    }
-    return Math.floor(f);
-  }
-  return null;
-}
-
 function shift(value: number, shift: number): number {
   return (value >> shift) & 255;
 }
 
-export function hexToRGB(hex: string): [number, number, number] | null {
-  const value = parseHex(hex);
-  if (value === null) {
-    return null;
-  }
-  const r = shift(value, 16);
-  const g = shift(value, 8);
-  const b = shift(value, 0);
-  return [r, g, b];
+export function hexToColor(hex: string): Color | null {
+  const clean = hex.startsWith("#") ? hex.slice(1) : hex;
+  if (!(clean.length === 6 || clean.length === 8)) return null;
+  const value = parseInt(clean, 16);
+  if (isNaN(value)) return null;
+
+  const r = shift(value, clean.length === 6 ? 16 : 24);
+  const g = shift(value, clean.length === 6 ? 8 : 16);
+  const b = shift(value, clean.length === 6 ? 0 : 8);
+  const a = clean.length === 8 ? shift(value, 0) : 255;
+
+  return { r, g, b, a };
 }
 
-function multiplyColors(
-  r1: number,
-  g1: number,
-  b1: number,
-  r2: number,
-  g2: number,
-  b2: number
-): [number, number, number] {
-  return [
-    Math.floor((r1 * r2) / 255),
-    Math.floor((g1 * g2) / 255),
-    Math.floor((b1 * b2) / 255),
-  ];
-}
-
-// replace works like this: if 1(texture) = 2(base palette), draw 3(color palette) else draw 1
-function replaceColors(
-  rgb1: [number, number, number],
-  rgb2: [number, number, number],
-  rgb3: [number, number, number]
-): [number, number, number] {
-  const [r1, g1, b1] = rgb1;
-  const [r2, g2, b2] = rgb2;
-  const [r3, g3, b3] = rgb3;
-
-  return [
-    r1 === r2 ? r3 : r1,
-    g1 === g2 ? g3 : g1,
-    b1 === b2 ? b3 : b1,
-  ];
+function multiplyColors(base: Color, blend: Color): Color {
+  return {
+    r: Math.floor((base.r * blend.r) / 255),
+    g: Math.floor((base.g * blend.g) / 255),
+    b: Math.floor((base.b * blend.b) / 255),
+    a: Math.floor((base.a * blend.a) / 255),
+  };
 }
 
 function replaceColorsFromPalette(
-  rgb1: [number, number, number],
-  palette: [number, number, number][],
-  replacements: [number, number, number][]
-): [number, number, number] | undefined {
-  const index = palette.findIndex(color =>
-    color[0] === rgb1[0] && color[1] === rgb1[1] && color[2] === rgb1[2]
+  color: Color,
+  palette: Color[],
+  replacements: Color[]
+): Color | undefined {
+  const index = palette.findIndex(
+    (c) => c.r === color.r && c.g === color.g && c.b === color.b && c.a === color.a
   );
-
-  return index !== -1 ? replacements[index] : rgb1;
+  return index !== -1 ? replacements[index] : undefined;
 }
-
 
 function makeInitialValues(
   texture: Texture,
@@ -216,7 +173,7 @@ function drawNearestNeighbor(
   options: DrawNearestNeighborOptions
 ): void {
   const rotateOption = options.rotate ?? { kind: "None" };
-  const flipOption = options.flip ?? { kind: "None" };
+  const flipOption = options.flip ?? "None";
   const blendOption = options.blend ?? { kind: "None" };
   const pixelateOption = options.pixelate ?? false;
 
@@ -225,94 +182,80 @@ function drawNearestNeighbor(
 
   if (sw > 0 && sh > 0 && dw > 0 && dh > 0) {
     const imageData = canvasWithContext.context.getImageData(sx, sy, sw, sh);
-
     const pix = imageData.data;
-
     const temp = makeCanvasWithContext(dw, dh);
 
     const deltax = dw / sw;
     const deltay = dh / sh;
 
-    const pixwInitial = Math.floor(deltax);
-    const pixhInitial = Math.floor(deltay);
+    const pixw = Math.ceil(deltax);
+    const pixh = Math.ceil(deltay);
 
-    const pixw = pixwInitial < deltax ? pixwInitial + 1 : pixwInitial;
-    const pixh = pixhInitial < deltay ? pixhInitial + 1 : pixhInitial;
-
-    const blend: [number, number, number] | null =
+    const blendColor: Color | null =
       blendOption.kind === "MultiplyHex"
-        ? hexToRGB(blendOption.hex)
-        : blendOption.kind === "MultiplyRGB"
-          ? [blendOption.r, blendOption.g, blendOption.b]
-          : null;
-
-    const replace: [[number, number, number][], [number, number, number][]] | null =
-    blendOption.kind === "ReplaceHex"
-      ? [blendOption.hex1.map((hex) => hexToRGB(hex) ?? [0, 0, 0]), blendOption.hex2.map((hex) => hexToRGB(hex) ?? [0, 0, 0])]
-      : blendOption.kind === "ReplaceRGB"
-        ? [blendOption.rgb1, blendOption.rgb2]
+        ? hexToColor(blendOption.hex)
+        : blendOption.kind === "MultiplyColor"
+        ? blendOption.color
         : null;
-        // Replace is in Color, then there is also RGB and Hex. how to get it all to work together?
+
+    const replace: [Color[], Color[]] | null =
+      blendOption.kind === "ReplaceHex"
+        ? [
+            blendOption.hex1.map((hex: string) => hexToColor(hex) ?? { r: 0, g: 0, b: 0, a: 255 }),
+            blendOption.hex2.map((hex: string) => hexToColor(hex) ?? { r: 0, g: 0, b: 0, a: 255 }),
+          ]
+        : blendOption.kind === "ReplaceColor"
+        ? [blendOption.color1, blendOption.color2]
+        : null;
 
     for (let y = 0; y < sh; y++) {
       for (let x = 0; x < sw; x++) {
         const tx = x * deltax;
         const ty = y * deltay;
 
-        // Source pixel
         const i = (y * sw + x) * 4;
+        const source: Color = {
+          r: pix[i + 0] ?? 0,
+          g: pix[i + 1] ?? 0,
+          b: pix[i + 2] ?? 0,
+          a: pix[i + 3] ?? 255,
+        };
 
-        const r = pix[i + 0] ?? 0;
-        const g = pix[i + 1] ?? 0;
-        const b = pix[i + 2] ?? 0;
-        const a = (pix[i + 3] ?? 0) / 255;
+        let out = blendColor ? multiplyColors(source, blendColor) : source;
 
-        let [red, green, blue] = blend
-          ? multiplyColors(r, g, b, blend[0], blend[1], blend[2])
-          : [r, g, b];
-
-          const replaced = replace
-          ? replaceColorsFromPalette([red, green, blue], replace[0], replace[1])
+        const replaced = replace
+          ? replaceColorsFromPalette(out, replace[0], replace[1])
           : undefined;
-        
-        if (replaced) {
-          [red, green, blue] = replaced;
-        }
 
-        temp.context.fillStyle = `rgba(${red}, ${green}, ${blue}, ${a})`;
+        if (replaced) out = replaced;
+
+        temp.context.fillStyle = `rgba(${out.r}, ${out.g}, ${out.b}, ${out.a / 255})`;
         temp.context.fillRect(Math.floor(tx), Math.floor(ty), pixw, pixh);
       }
     }
 
-    const pageContext = page.context;
-
-    // Save the current state of the page
-    pageContext.save();
-
-    // Move to the destination coordinate
-    pageContext.translate(dx, dy);
+    const ctx = page.context;
+    ctx.save();
+    ctx.translate(dx, dy);
 
     if (rotateOption.kind === "Corner") {
-      const radians = (rotateOption.degrees * Math.PI) / 180;
-      pageContext.rotate(radians);
+      ctx.rotate((rotateOption.degrees * Math.PI) / 180);
     } else if (rotateOption.kind === "Center") {
-      const radians = (rotateOption.degrees * Math.PI) / 180;
-      pageContext.translate(dw / 2, dh / 2);
-      pageContext.rotate(radians);
-      pageContext.translate(-dw / 2, -dh / 2);
+      ctx.translate(dw / 2, dh / 2);
+      ctx.rotate((rotateOption.degrees * Math.PI) / 180);
+      ctx.translate(-dw / 2, -dh / 2);
     }
 
     if (flipOption === "Horizontal") {
-      pageContext.translate(dw, 0);
-      pageContext.scale(-1, 1);
+      ctx.translate(dw, 0);
+      ctx.scale(-1, 1);
     } else if (flipOption === "Vertical") {
-      pageContext.translate(0, dh);
-      pageContext.scale(1, -1);
+      ctx.translate(0, dh);
+      ctx.scale(1, -1);
     }
 
-    pageContext.drawImage(temp.canvas, 0, 0);
-
-    pageContext.restore();
+    ctx.drawImage(temp.canvas, 0, 0);
+    ctx.restore();
   }
 }
 
@@ -321,8 +264,6 @@ export type DrawTextureOptions = {
   blend?: Blend;
   pixelate?: boolean;
   rotate?: number;
-
-  /** @deprecated Use `rotate` instead. */
   rotateLegacy?: number;
 };
 
@@ -336,10 +277,10 @@ export function drawTexture(
   const rotate: Rotate = options.rotateLegacy
     ? rotateCorner(options.rotateLegacy)
     : options.rotate
-      ? rotateCenter(options.rotate)
-      : rotateNone();
+    ? rotateCenter(options.rotate)
+    : rotateNone();
 
-  const drawNearestNeightbourOptions: DrawNearestNeighborOptions = {
+  const drawOpts: DrawNearestNeighborOptions = {
     rotate,
     flip: options.flip,
     blend: options.blend,
@@ -347,29 +288,23 @@ export function drawTexture(
   };
 
   if (sh > 0 && dh > 0 && sw > 0 && dw > 0) {
-    const sourceScaleX = texture.imageWithCanvas.width / texture.standardWidth;
-    const sourceScaleY =
-      texture.imageWithCanvas.height / texture.standardHeight;
-
-    const sxScaled = Math.floor(sx * sourceScaleX);
-    const syScaled = Math.floor(sy * sourceScaleY);
-    const swScaled = Math.floor(sw * sourceScaleX);
-    const shScaled = Math.floor(sh * sourceScaleY);
+    const scaleX = texture.imageWithCanvas.width / texture.standardWidth;
+    const scaleY = texture.imageWithCanvas.height / texture.standardHeight;
 
     drawNearestNeighbor(
       page,
       texture,
       {
-        sx: sxScaled,
-        sy: syScaled,
-        sw: swScaled,
-        sh: shScaled,
+        sx: Math.floor(sx * scaleX),
+        sy: Math.floor(sy * scaleY),
+        sw: Math.floor(sw * scaleX),
+        sh: Math.floor(sh * scaleY),
         dx,
         dy,
         dw,
         dh,
       },
-      drawNearestNeightbourOptions
+      drawOpts
     );
   }
 }
