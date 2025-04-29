@@ -10,7 +10,7 @@ import type {
 } from "@genroot/builder/modules/generatorDef";
 import { type Generator } from "@genroot/builder/modules/generator";
 import { Dimensions, old } from "../_common/minecraftCharacter";
-import thumbnailImage from "./thumbnail/v1-thumbnail-256.jpeg";
+import thumbnailImage from "./thumbnail/v2-thumbnail-256.jpg";
 
 import foregroundImage from "./images/Foreground.png";
 import foldsImage from "./images/Folds.png";
@@ -375,12 +375,26 @@ const script: ScriptDef = (generator: Generator) => {
     generator.drawTexture(textureId, [20, 22, 8, 1], [ox + 48, oy, 64, 48], { blend: tint });
     generator.drawTexture(textureId, [20, 21, 8, 1], [ox + 48, oy, 64, 48], { blend: tint });
   }
+
+  /*shoulder logic:
+  if chestplate has empty shoulder:
+    draw added back layer.
+    draw shoulder background & folds.
+    draw usual shoulder- over any part of the background that doesn't need to be covered.
+  if chestplate trim has empty shoulder:
+    draw ????
+
+    when there is a thing where there is a need for the exptra part but the normal body covers up some of the foreground. then it needs to do so. This can happen by making it so that the foreground is drawn in between the first and the second thingy. But is this alright for the silence trim?
   
-  function drawRightShoulder(textureId: string, tint: Blend) {
+  
+  */
+
+  
+  function drawRightShoulder(textureId: string, tint: Blend, shoulderOverlay: boolean) {
     const ox = -27;
     const oy = 233;
     const dimensions: Dimensions = [40, 96, 48];
-   if (shoulderAlpha(textureId) === 0) {
+   if (shoulderAlpha(textureId) === 0 && shoulderOverlay) {
       generator.drawTexture(textureId, char.base.rightArm.left, [ox + 100, oy + 92, 48, 96], {
         blend: tint,
         rotate: 270,
@@ -400,11 +414,11 @@ const script: ScriptDef = (generator: Generator) => {
     });
   }
   
-  function drawLeftShoulder(textureId: string, tint: Blend) {
+  function drawLeftShoulder(textureId: string, tint: Blend, shoulderOverlay: boolean) {
     const ox = 445;
     const oy = 233;
     const dimensions: Dimensions = [40, 96, 48];
-    if (shoulderAlpha(textureId) === 0) {
+    if (shoulderAlpha(textureId) === 0 && shoulderOverlay) {
       generator.drawTexture(textureId, char.base.leftArm.left, [ox + 28, oy + 92, 48, 96], {
         blend: tint,
         flip: "Horizontal",
@@ -553,8 +567,8 @@ const script: ScriptDef = (generator: Generator) => {
     const tint: Blend = tintChestplate ? getTint("Chestplate Color") : {kind: "None"};
   
     drawChestplateBody("Chestplate", tint);
-    drawLeftShoulder("Chestplate", tint);
-    drawRightShoulder("Chestplate", tint);
+    drawLeftShoulder("Chestplate", tint, true);
+    drawRightShoulder("Chestplate", tint, true);
   
     if (tintChestplate) {
       generator.defineTextureInput("Chestplate Overlay", {
@@ -563,8 +577,8 @@ const script: ScriptDef = (generator: Generator) => {
         choices: ["Leather Overlay"],
       });
       drawChestplateBody("Chestplate Overlay", { kind: "None" });
-      drawLeftShoulder("Chestplate Overlay", { kind: "None" });
-      drawRightShoulder("Chestplate Overlay", { kind: "None" });
+      drawLeftShoulder("Chestplate Overlay", { kind: "None" }, true);
+      drawRightShoulder("Chestplate Overlay", { kind: "None" }, true);
     }
   }
   
@@ -617,7 +631,7 @@ const script: ScriptDef = (generator: Generator) => {
       drawRightBoot("Boots Overlay", {kind: "None"});
     }
   }
-  
+  // Draw Trims
   function drawHelmetTrim(showHeadOverlay: boolean) {
     generator.defineTextureInput("Helmet Trim", {
       standardWidth: 64,
@@ -647,8 +661,8 @@ const script: ScriptDef = (generator: Generator) => {
     });
     const colors = getPalette("Chestplate Trim Material", 8);
     drawChestplateBody("Chestplate Trim", { kind: "ReplaceColor", color1: baseColors, color2: colors });
-    drawLeftShoulder("Chestplate Trim", { kind: "ReplaceColor", color1: baseColors, color2: colors });
-    drawRightShoulder("Chestplate Trim", { kind: "ReplaceColor", color1: baseColors, color2: colors });
+    drawLeftShoulder("Chestplate Trim", { kind: "ReplaceColor", color1: baseColors, color2: colors }, true); // shoulderOverlay functionality disabled for now
+    drawRightShoulder("Chestplate Trim", { kind: "ReplaceColor", color1: baseColors, color2: colors }, true);
   }
   
   function drawLeggingsTrim() {
@@ -684,6 +698,38 @@ const script: ScriptDef = (generator: Generator) => {
     drawRightBoot("Boots Trim", { kind: "ReplaceColor", color1: baseColors, color2: colors });
   }
 
+  // Draw Enchantment Glints
+  function drawHelmetGlint(showHeadOverlay: boolean) {
+
+      drawHelmetHead("Enchanted Glint", showHeadOverlay, {kind: "None"});
+      drawHelmetLiner("Enchanted Glint", showHeadOverlay, {kind: "None"});
+
+  }
+  
+  function drawChestplateGlint() {
+  
+
+      drawChestplateBody("Enchanted Glint", { kind: "None" });
+      drawLeftShoulder("Enchanted Glint", { kind: "None" }, true);
+      drawRightShoulder("Enchanted Glint", { kind: "None" }, true);
+ 
+  }
+  
+  function drawLeggingsGlint() {
+
+      drawLeggingsBody("Enchanted Glint", { kind: "None" });
+      drawRightLegging("Enchanted Glint", { kind: "None" });
+      drawLeftLegging("Enchanted Glint", { kind: "None" });
+
+  }
+  
+  function drawBootsGlint() {
+
+      drawLeftBoot("Enchanted Glint", {kind: "None"});
+      drawRightBoot("Enchanted Glint", {kind: "None"});
+
+  }
+
   // Define user inputs
   generator.defineBooleanInput("Show Folds", true);
   generator.defineBooleanInput("Show Labels", true);
@@ -703,12 +749,20 @@ const script: ScriptDef = (generator: Generator) => {
   if (trimHelmet) {
    drawHelmetTrim(showHeadOverlay)
   }
+  const enchantHelmet = generator.defineAndGetBooleanInput("Enchant Helmet", false)
+  if (enchantHelmet) {
+    drawHelmetGlint(showHeadOverlay)
+  }
 
   // Chestplate
   drawChestplate()
   const trimChestplate = generator.defineAndGetBooleanInput("Trim Chestplate", false)
   if (trimChestplate) {
     drawChestplateTrim()
+  }
+  const enchantChestplate = generator.defineAndGetBooleanInput("Enchant Chestplate", false)
+  if (enchantChestplate) {
+    drawChestplateGlint()
   }
 
   // Leggings
@@ -717,12 +771,28 @@ const script: ScriptDef = (generator: Generator) => {
   if (trimLeggings) {
     drawLeggingsTrim()
   }
+  const enchantLeggings = generator.defineAndGetBooleanInput("Enchant Leggings", false)
+  if (enchantLeggings) {
+    drawLeggingsGlint()
+  }
 
   // Boots
   drawBoots()
   const trimBoots = generator.defineAndGetBooleanInput("Trim Boots", false)
   if (trimBoots) {
     drawBootsTrim()
+  }
+  const enchantBoots = generator.defineAndGetBooleanInput("Enchant Boots", false)
+  if (enchantBoots) {
+    drawBootsGlint()
+  }
+
+  if (enchantHelmet || enchantChestplate || enchantLeggings || enchantBoots) {
+    generator.defineTextureInput("Enchanted Glint", {
+      standardWidth: 128,
+      standardHeight: 128,
+      choices: [],
+    });
   }
 
   // Foreground
@@ -737,7 +807,7 @@ const script: ScriptDef = (generator: Generator) => {
   // Shoulder Curve
    if (
     shoulderAlpha("Chestplate") == 0 &&
-      (shoulderAlpha("Chestplate Trim") == 33 ||
+      (
       !trimChestplate ||
       shoulderAlpha("Chestplate Trim") == 0)
   ) if (shoulderAlpha("Chestplate") == 0) {
@@ -745,7 +815,7 @@ const script: ScriptDef = (generator: Generator) => {
     if (showFolds) {
       generator.drawImage("Folds-Shoulders", [0, 0])
     }
-  } // not workingright- should when silence trim is on
+  } 
 
   // (Chestplate.isEmpty() && (trim.isEmpty() || !trim.exists()))
 
