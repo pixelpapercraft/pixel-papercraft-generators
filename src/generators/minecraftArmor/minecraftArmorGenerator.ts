@@ -318,48 +318,54 @@ const script: ScriptDef = (generator: Generator) => {
   function drawHelmetHead(
     textureId: string,
     showHeadOverlay: boolean,
-    tint: Blend
-  ) {
+    tint: Blend,
+    glintId: string
+   ) {
     const ox = 41;
     const oy = 21;
     const dimensions: Dimensions = [80, 80, 80];
-    minecraftGenerator.drawCuboid(textureId, char.base.head, [ox, oy], dimensions, { blend: tint });
+    minecraftGenerator.drawCuboid(textureId, char.base.head, [ox, oy], dimensions, { blend: tint, glint: { texture: glintId} });
     if (showHeadOverlay) {
-      minecraftGenerator.drawCuboid(textureId, char.overlay.head, [ox, oy], dimensions, { blend: tint });
+      minecraftGenerator.drawCuboid(textureId, char.overlay.head, [ox, oy], dimensions, { blend: tint, glint: { texture: glintId} });
     }
   }
   
   function drawHelmetLiner(
     textureId: string,
     showHeadOverlay: boolean,
-    tint: Blend
+    tint: Blend,
+    glintId: string,
   ) {
     const ox = 329;
     const oy = 37;
     const dimensions: Dimensions = [64, 64, 64];
-    minecraftGenerator.drawCuboid(textureId, char.base.head, [ox, oy], dimensions, { blend: tint, rotate: 90 });
+    minecraftGenerator.drawCuboid(textureId, char.base.head, [ox, oy], dimensions, { blend: tint, rotate: 90, glint: { texture: glintId} });
     generator.drawTexture(textureId, [0, 8, 8, 1], [ox + 100, oy + 28, 64, 8], {
       blend: tint,
       rotate: 90,
+      glint: { texture: glintId}
     });
     generator.drawTexture(textureId, [16, 8, 8, 1], [ox + 100, oy + 156, 64, 8], {
       blend: tint,
       rotate: 90,
+      glint: { texture: glintId}
     });
     if (showHeadOverlay) {
       minecraftGenerator.drawCuboid(textureId, char.overlay.head, [ox, oy], dimensions, { blend: tint, rotate: 90 });
       generator.drawTexture(textureId, [32, 8, 8, 1], [ox + 100, oy + 28, 64, 8], {
         blend: tint,
         rotate: 90,
+        glint: { texture: glintId}
       });
       generator.drawTexture(textureId, [48, 8, 8, 1], [ox + 100, oy + 156, 64, 8], {
         blend: tint,
         rotate: 90,
+        glint: { texture: glintId}
       });
     }
   }
   
-  function drawChestplateBody(textureId: string, tint: Blend) {
+  function drawChestplateBody(textureId: string, tint: Blend, glintId: string) {
     const ox = 185;
     const oy = 309;
     const dimensions: Dimensions = [64, 96, 48];
@@ -367,13 +373,15 @@ const script: ScriptDef = (generator: Generator) => {
     generator.drawTexture(textureId, char.base.body.back, [ox + 48, oy - 96, 64, 96], {
       rotate: 180,
       blend: tint,
+      glint: { texture: glintId}
     }); // Back texture that goes around over the head
     generator.drawTexture(textureId, [33, 24, 6, 8], [ox + 112, oy - 96, 48, 64], {
       rotate: 180,
       blend: tint,
+      glint: { texture: glintId}
     }); // Tab that goes inside the back face
-    generator.drawTexture(textureId, [20, 22, 8, 1], [ox + 48, oy, 64, 48], { blend: tint });
-    generator.drawTexture(textureId, [20, 21, 8, 1], [ox + 48, oy, 64, 48], { blend: tint });
+    generator.drawTexture(textureId, [20, 22, 8, 1], [ox + 48, oy, 64, 48], { blend: tint, glint: { texture: glintId} });
+    generator.drawTexture(textureId, [20, 21, 8, 1], [ox + 48, oy, 64, 48], { blend: tint, glint: { texture: glintId} });
   }
 
   /*shoulder logic:
@@ -390,7 +398,7 @@ const script: ScriptDef = (generator: Generator) => {
   */
 
   
-  function drawRightShoulder(textureId: string, tint: Blend, shoulderOverlay: boolean) {
+  function drawRightShoulder(textureId: string, tint: Blend, shoulderOverlay: boolean, glintId: string) {
     const ox = -27;
     const oy = 233;
     const dimensions: Dimensions = [40, 96, 48];
@@ -398,23 +406,27 @@ const script: ScriptDef = (generator: Generator) => {
       generator.drawTexture(textureId, char.base.rightArm.left, [ox + 100, oy + 92, 48, 96], {
         blend: tint,
         rotate: 270,
+        glint: { texture: glintId}
       });
     } 
     minecraftGenerator.drawCuboid(textureId, char.base.rightArm, [ox, oy], dimensions, {
       blend: tint,
       rotate: 90,
+      glint: { texture: glintId}
     });
     generator.drawTexture(textureId, char.base.rightArm.back, [ox + 192, oy + 88, 40, 96], {
       blend: tint,
       rotate: 270,
+      glint: { texture: glintId}
     });
     generator.drawTexture(textureId, char.base.rightArm.back, [ox + 192, oy + 48, 40, 96], {
       blend: tint,
       rotate: 270,
+      glint: { texture: glintId},
     });
   }
   
-  function drawLeftShoulder(textureId: string, tint: Blend, shoulderOverlay: boolean) {
+  function drawLeftShoulder(textureId: string, tint: Blend, shoulderOverlay: boolean, glintId: string) {
     const ox = 445;
     const oy = 233;
     const dimensions: Dimensions = [40, 96, 48];
@@ -423,91 +435,102 @@ const script: ScriptDef = (generator: Generator) => {
         blend: tint,
         flip: "Horizontal",
         rotate: 90,
+        glint: { texture: glintId},
       });
     } 
     minecraftGenerator.drawCuboid(textureId, char.base.leftArm, [ox, oy], dimensions, {
       blend: tint,
       flip: "Horizontal",
       rotate: 270,
+      glint: { texture: glintId},
     });
     generator.drawTexture(textureId, char.base.leftArm.back, [ox - 56, oy + 88, 40, 96], {
       blend: tint,
       flip: "Horizontal",
       rotate: 90,
+      glint: { texture: glintId},
     });
     generator.drawTexture(textureId, char.base.leftArm.back, [ox - 56, oy + 48, 40, 96], {
       blend: tint,
       flip: "Horizontal",
       rotate: 90,
+      glint: { texture: glintId},
     });
   }
   
-  function drawLeggingsBody(textureId: string, tint: Blend) {
+  function drawLeggingsBody(textureId: string, tint: Blend, glintId: string) {
     const ox = 193;
     const oy = 385;
     const dimensions: Dimensions = [64, 104, 40];
-    generator.drawTexture(textureId, [0, 20, 4, 12], [ox, oy + 135, 40, 104], { blend: tint });
+    generator.drawTexture(textureId, [0, 20, 4, 12], [ox, oy + 135, 40, 104], { blend: tint, glint: { texture: glintId} });
     generator.drawTexture(textureId, [0, 20, 4, 12], [ox + 104, oy + 135, 40, 104], {
       blend: tint,
       flip: "Horizontal",
+      glint: { texture: glintId}
     });
-    minecraftGenerator.drawCuboid(textureId, char.base.body, [ox, oy], dimensions, { blend: tint });
+    minecraftGenerator.drawCuboid(textureId, char.base.body, [ox, oy], dimensions, { blend: tint, glint: { texture: glintId} });
   }
   
-  function drawRightLegging(textureId: string, tint: Blend) {
+  function drawRightLegging(textureId: string, tint: Blend, glintId: string) {
     const ox = 49;
     const oy = 541;
     const dimensions: Dimensions = [32, 104, 40];
-    minecraftGenerator.drawCuboid(textureId, char.base.rightLeg, [ox, oy], dimensions, { blend: tint });
-    generator.drawTexture(textureId, [16, 20, 4, 12], [ox, oy - 55, 40, 104], { blend: tint });
-    generator.drawTexture(textureId, [0, 20, 4, 4], [ox + 72, oy + 20, 40, 34], { blend: tint });
-    generator.drawTexture(textureId, [16, 20, 4, 12], [ox + 72, oy - 75, 40, 104], { blend: tint });
+    minecraftGenerator.drawCuboid(textureId, char.base.rightLeg, [ox, oy], dimensions, { blend: tint, glint: { texture: glintId} });
+    generator.drawTexture(textureId, [16, 20, 4, 12], [ox, oy - 55, 40, 104], { blend: tint, glint: { texture: glintId} });
+    generator.drawTexture(textureId, [0, 20, 4, 4], [ox + 72, oy + 20, 40, 34], { blend: tint, glint: { texture: glintId}});
+    generator.drawTexture(textureId, [16, 20, 4, 12], [ox + 72, oy - 75, 40, 104], { blend: tint, glint: { texture: glintId} });
   }
   
-  function drawLeftLegging(textureId: string, tint: Blend) {
+  function drawLeftLegging(textureId: string, tint: Blend, glintId: string) {
     const ox = 401;
     const oy = 541;
     const dimensions: Dimensions = [32, 104, 40];
     minecraftGenerator.drawCuboid(textureId, char.base.leftLeg, [ox, oy], dimensions, {
       blend: tint,
       flip: "Horizontal",
+      glint: { texture: glintId}
     });
-    generator.drawTexture(textureId, [28, 20, 4, 12], [ox + 104, oy - 55, 40, 104], { blend: tint });
+    generator.drawTexture(textureId, [28, 20, 4, 12], [ox + 104, oy - 55, 40, 104], { blend: tint, glint: { texture: glintId} });
     generator.drawTexture(textureId, [0, 20, 4, 4], [ox + 32, oy + 20, 40, 34], {
       blend: tint,
       flip: "Horizontal",
+      glint: { texture: glintId}
     });
     generator.drawTexture(textureId, [28, 20, 4, 12], [ox + 32, oy - 75, 40, 104], {
       blend: tint,
       flip: "Horizontal",
+      glint: { texture: glintId}
     });
   }
   
-  function drawRightBoot(textureId: string, tint: Blend) {
+  function drawRightBoot(textureId: string, tint: Blend, glintId: string) {
     const ox = 35;
     const oy = 597;
     const dimensions: Dimensions = [40, 96, 48];
-    minecraftGenerator.drawCuboid(textureId, char.base.rightLeg, [ox, oy], dimensions, { blend: tint });
+    minecraftGenerator.drawCuboid(textureId, char.base.rightLeg, [ox, oy], dimensions, { blend: tint, glint: { texture: glintId} });
     minecraftGenerator.drawCuboid(textureId, char.base.rightLeg, [169, 613], [32, 96, 32], {
       blend: tint,
       rotate: 270,
       center: "Back",
+      glint: { texture: glintId}
     });
   }
   
-  function drawLeftBoot(textureId: string, tint: Blend) {
+  function drawLeftBoot(textureId: string, tint: Blend, glintId: string) {
     const ox = 383;
     const oy = 597;
     const dimensions: Dimensions = [40, 96, 48];
     minecraftGenerator.drawCuboid(textureId, char.base.leftLeg, [ox, oy], dimensions, {
       blend: tint,
       flip: "Horizontal",
+      glint: { texture: glintId}
     });
     minecraftGenerator.drawCuboid(textureId, char.base.leftLeg, [297, 613], [32, 96, 32], {
       blend: tint,
       rotate: 90,
       center: "Back",
       flip: "Horizontal",
+      glint: { texture: glintId}
     });
   }
   
@@ -516,7 +539,7 @@ const script: ScriptDef = (generator: Generator) => {
     // Later replace with drawLineFold functions
   }
   
-  function drawHelmet(showHeadOverlay: boolean) {
+  function drawHelmet(showHeadOverlay: boolean, enchantHelmet: boolean) {
     generator.defineTextureInput("Helmet", {
       standardWidth: 64,
       standardHeight: 64,
@@ -538,8 +561,8 @@ const script: ScriptDef = (generator: Generator) => {
     generator.defineBooleanInput("Show Head Overlay", true);
     const tint: Blend = tintHelmet ? getTint("Helmet Color") : {kind: "None"};
   
-    drawHelmetHead("Helmet", showHeadOverlay, tint);
-    drawHelmetLiner("Helmet", showHeadOverlay, tint);
+    drawHelmetHead("Helmet", showHeadOverlay, tint, enchantHelmet ? "Enchanted Glint" : "None");
+    drawHelmetLiner("Helmet", showHeadOverlay, tint, enchantHelmet ? "Enchanted Glint" : "None");
   
     if (tintHelmet) {
       generator.defineTextureInput("Helmet Overlay", {
@@ -547,8 +570,8 @@ const script: ScriptDef = (generator: Generator) => {
         standardHeight: 64,
         choices: ["Leather Overlay"],
       });
-      drawHelmetHead("Helmet Overlay", showHeadOverlay, {kind: "None"});
-      drawHelmetLiner("Helmet Overlay", showHeadOverlay, {kind: "None"});
+      drawHelmetHead("Helmet Overlay", showHeadOverlay, {kind: "None"}, enchantHelmet ? "Enchanted Glint" : "None");
+      drawHelmetLiner("Helmet Overlay", showHeadOverlay, {kind: "None"}, enchantHelmet ? "Enchanted Glint" : "None");
     }
   
     generator.defineRegionInput([41, 21, 320, 160], () => {
@@ -556,7 +579,7 @@ const script: ScriptDef = (generator: Generator) => {
     });
   }
   
-  function drawChestplate() {
+  function drawChestplate(enchantChestplate: boolean) {
     generator.defineTextureInput("Chestplate", {
       standardWidth: 64,
       standardHeight: 64,
@@ -566,9 +589,9 @@ const script: ScriptDef = (generator: Generator) => {
     const tintChestplate = generator.defineAndGetBooleanInput("Tint Chestplate", false);
     const tint: Blend = tintChestplate ? getTint("Chestplate Color") : {kind: "None"};
   
-    drawChestplateBody("Chestplate", tint);
-    drawLeftShoulder("Chestplate", tint, true);
-    drawRightShoulder("Chestplate", tint, true);
+    drawChestplateBody("Chestplate", tint, enchantChestplate ? "Enchanted Glint" : "None");
+    drawLeftShoulder("Chestplate", tint, true, enchantChestplate ? "Enchanted Glint" : "None");
+    drawRightShoulder("Chestplate", tint, true, enchantChestplate ? "Enchanted Glint" : "None");
   
     if (tintChestplate) {
       generator.defineTextureInput("Chestplate Overlay", {
@@ -576,13 +599,13 @@ const script: ScriptDef = (generator: Generator) => {
         standardHeight: 64,
         choices: ["Leather Overlay"],
       });
-      drawChestplateBody("Chestplate Overlay", { kind: "None" });
-      drawLeftShoulder("Chestplate Overlay", { kind: "None" }, true);
-      drawRightShoulder("Chestplate Overlay", { kind: "None" }, true);
+      drawChestplateBody("Chestplate Overlay", { kind: "None" }, enchantChestplate ? "Enchanted Glint" : "None");
+      drawLeftShoulder("Chestplate Overlay", { kind: "None" }, true, enchantChestplate ? "Enchanted Glint" : "None");
+      drawRightShoulder("Chestplate Overlay", { kind: "None" }, true, enchantChestplate ? "Enchanted Glint" : "None");
     }
   }
   
-  function drawLeggings() {
+  function drawLeggings(enchantLeggings: boolean) {
     generator.defineTextureInput("Leggings", {
       standardWidth: 64,
       standardHeight: 64,
@@ -592,9 +615,9 @@ const script: ScriptDef = (generator: Generator) => {
     const tintLeggings = generator.defineAndGetBooleanInput("Tint Leggings", false);
     const tint: Blend = tintLeggings ? getTint("Leggings Color") : {kind: "None"};
   
-    drawLeggingsBody("Leggings", tint);
-    drawRightLegging("Leggings", tint);
-    drawLeftLegging("Leggings", tint);
+    drawLeggingsBody("Leggings", tint, enchantLeggings ? "Enchanted Glint" : "None");
+    drawRightLegging("Leggings", tint, enchantLeggings ? "Enchanted Glint" : "None");
+    drawLeftLegging("Leggings", tint, enchantLeggings ? "Enchanted Glint" : "None");
   
     if (tintLeggings) {
       generator.defineTextureInput("Leggings Overlay", {
@@ -602,13 +625,13 @@ const script: ScriptDef = (generator: Generator) => {
         standardHeight: 64,
         choices: ["Leather Overlay "],
       });
-      drawLeggingsBody("Leggings Overlay", { kind: "None" });
-      drawRightLegging("Leggings Overlay", { kind: "None" });
-      drawLeftLegging("Leggings Overlay", { kind: "None" });
+      drawLeggingsBody("Leggings Overlay", { kind: "None" }, enchantLeggings ? "Enchanted Glint" : "None");
+      drawRightLegging("Leggings Overlay", { kind: "None" }, enchantLeggings ? "Enchanted Glint" : "None");
+      drawLeftLegging("Leggings Overlay", { kind: "None" }, enchantLeggings ? "Enchanted Glint" : "None");
     }
   }
   
-  function drawBoots() {
+  function drawBoots(enchantBoots: boolean) {
     generator.defineTextureInput("Boots", {
       standardWidth: 64,
       standardHeight: 64,
@@ -618,8 +641,8 @@ const script: ScriptDef = (generator: Generator) => {
     const tintBoots = generator.defineAndGetBooleanInput("Tint Boots", false);
     const tint: Blend = tintBoots ? getTint("Boots Color") : {kind: "None"};
   
-    drawLeftBoot("Boots", tint);
-    drawRightBoot("Boots", tint);
+    drawLeftBoot("Boots", tint, enchantBoots ? "Enchanted Glint" : "None");
+    drawRightBoot("Boots", tint, enchantBoots ? "Enchanted Glint" : "None");
   
     if (tintBoots) {
       generator.defineTextureInput("Boots Overlay", {
@@ -627,12 +650,12 @@ const script: ScriptDef = (generator: Generator) => {
         standardHeight: 64,
         choices: ["Leather Overlay"],
       });
-      drawLeftBoot("Boots Overlay", {kind: "None"});
-      drawRightBoot("Boots Overlay", {kind: "None"});
+      drawLeftBoot("Boots Overlay", {kind: "None"}, enchantBoots ? "Enchanted Glint" : "None");
+      drawRightBoot("Boots Overlay", {kind: "None"}, enchantBoots ? "Enchanted Glint" : "None");
     }
   }
   // Draw Trims
-  function drawHelmetTrim(showHeadOverlay: boolean) {
+  function drawHelmetTrim(showHeadOverlay: boolean, enchantHelmet: boolean) {
     generator.defineTextureInput("Helmet Trim", {
       standardWidth: 64,
       standardHeight: 64,
@@ -644,11 +667,11 @@ const script: ScriptDef = (generator: Generator) => {
       choices: trimMaterials,
     });
     const colors = getPalette("Helmet Trim Material", 8);
-    drawHelmetHead("Helmet Trim", showHeadOverlay, { kind: "ReplaceColor", color1: baseColors, color2: colors });
-    drawHelmetLiner("Helmet Trim", showHeadOverlay, { kind: "ReplaceColor", color1: baseColors, color2: colors });
+    drawHelmetHead("Helmet Trim", showHeadOverlay, { kind: "ReplaceColor", color1: baseColors, color2: colors }, enchantHelmet ? "Enchanted Glint" : "None");
+    drawHelmetLiner("Helmet Trim", showHeadOverlay, { kind: "ReplaceColor", color1: baseColors, color2: colors }, enchantHelmet ? "Enchanted Glint" : "None");
   }
   
-  function drawChestplateTrim() {
+  function drawChestplateTrim(enchantChestplate: boolean) {
     generator.defineTextureInput("Chestplate Trim", {
       standardWidth: 64,
       standardHeight: 64,
@@ -660,12 +683,12 @@ const script: ScriptDef = (generator: Generator) => {
       choices: trimMaterials,
     });
     const colors = getPalette("Chestplate Trim Material", 8);
-    drawChestplateBody("Chestplate Trim", { kind: "ReplaceColor", color1: baseColors, color2: colors });
-    drawLeftShoulder("Chestplate Trim", { kind: "ReplaceColor", color1: baseColors, color2: colors }, true); // shoulderOverlay functionality disabled for now
-    drawRightShoulder("Chestplate Trim", { kind: "ReplaceColor", color1: baseColors, color2: colors }, true);
+    drawChestplateBody("Chestplate Trim", { kind: "ReplaceColor", color1: baseColors, color2: colors }, enchantChestplate ? "Enchanted Glint" : "None");
+    drawLeftShoulder("Chestplate Trim", { kind: "ReplaceColor", color1: baseColors, color2: colors }, true, enchantChestplate ? "Enchanted Glint" : "None"); // shoulderOverlay functionality disabled for now
+    drawRightShoulder("Chestplate Trim", { kind: "ReplaceColor", color1: baseColors, color2: colors }, true, enchantChestplate ? "Enchanted Glint" : "None");
   }
   
-  function drawLeggingsTrim() {
+  function drawLeggingsTrim(enchantLeggings: boolean) {
     generator.defineTextureInput("Leggings Trim", {
       standardWidth: 64,
       standardHeight: 64,
@@ -677,12 +700,12 @@ const script: ScriptDef = (generator: Generator) => {
       choices: trimMaterials,
     });
     const colors = getPalette("Leggings Trim Material", 8);
-    drawLeggingsBody("Leggings Trim", { kind: "ReplaceColor", color1: baseColors, color2: colors });
-    drawRightLegging("Leggings Trim", { kind: "ReplaceColor", color1: baseColors, color2: colors });
-    drawLeftLegging("Leggings Trim", { kind: "ReplaceColor", color1: baseColors, color2: colors });
+    drawLeggingsBody("Leggings Trim", { kind: "ReplaceColor", color1: baseColors, color2: colors }, enchantLeggings ? "Enchanted Glint" : "None");
+    drawRightLegging("Leggings Trim", { kind: "ReplaceColor", color1: baseColors, color2: colors }, enchantLeggings ? "Enchanted Glint" : "None");
+    drawLeftLegging("Leggings Trim", { kind: "ReplaceColor", color1: baseColors, color2: colors }, enchantLeggings ? "Enchanted Glint" : "None");
   }
   
-  function drawBootsTrim() {
+  function drawBootsTrim(enchantBoots: boolean) {
     generator.defineTextureInput("Boots Trim", {
       standardWidth: 64,
       standardHeight: 64,
@@ -694,41 +717,41 @@ const script: ScriptDef = (generator: Generator) => {
       choices: trimMaterials,
     });
     const colors = getPalette("Boots Trim Material", 8);
-    drawLeftBoot("Boots Trim", { kind: "ReplaceColor", color1: baseColors, color2: colors });
-    drawRightBoot("Boots Trim", { kind: "ReplaceColor", color1: baseColors, color2: colors });
+    drawLeftBoot("Boots Trim", { kind: "ReplaceColor", color1: baseColors, color2: colors }, enchantBoots ? "Enchanted Glint" : "None");
+    drawRightBoot("Boots Trim", { kind: "ReplaceColor", color1: baseColors, color2: colors }, enchantBoots ? "Enchanted Glint" : "None");
   }
 
-  // Draw Enchantment Glints
+ /* // Draw Enchantment Glints
   function drawHelmetGlint(showHeadOverlay: boolean) {
 
-      drawHelmetHead("Enchanted Glint", showHeadOverlay, {kind: "None"});
-      drawHelmetLiner("Enchanted Glint", showHeadOverlay, {kind: "None"});
+      drawHelmetHead("Enchanted Glint", showHeadOverlay, {kind: "AddCanvas"});
+      drawHelmetLiner("Enchanted Glint", showHeadOverlay, {kind: "AddCanvas"});
 
   }
   
   function drawChestplateGlint() {
   
 
-      drawChestplateBody("Enchanted Glint", { kind: "None" });
-      drawLeftShoulder("Enchanted Glint", { kind: "None" }, true);
-      drawRightShoulder("Enchanted Glint", { kind: "None" }, true);
+      drawChestplateBody("Enchanted Glint", { kind: "AddCanvas" });
+      drawLeftShoulder("Enchanted Glint", { kind: "AddCanvas" }, true);
+      drawRightShoulder("Enchanted Glint", { kind: "AddCanvas" }, true);
  
   }
   
   function drawLeggingsGlint() {
 
-      drawLeggingsBody("Enchanted Glint", { kind: "None" });
-      drawRightLegging("Enchanted Glint", { kind: "None" });
-      drawLeftLegging("Enchanted Glint", { kind: "None" });
+      drawLeggingsBody("Enchanted Glint", { kind: "AddCanvas" });
+      drawRightLegging("Enchanted Glint", { kind: "AddCanvas" });
+      drawLeftLegging("Enchanted Glint", { kind: "AddCanvas" });
 
   }
   
   function drawBootsGlint() {
 
-      drawLeftBoot("Enchanted Glint", {kind: "None"});
-      drawRightBoot("Enchanted Glint", {kind: "None"});
+      drawLeftBoot("Enchanted Glint", {kind: "AddCanvas"});
+      drawRightBoot("Enchanted Glint", {kind: "AddCanvas"});
 
-  }
+  } */
 
   // Define user inputs
   generator.defineBooleanInput("Show Folds", true);
@@ -744,48 +767,40 @@ const script: ScriptDef = (generator: Generator) => {
 
   // Draw
   // Helmet
-  drawHelmet(showHeadOverlay)
+  const enchantHelmet = generator.getBooleanInputValueWithDefault("Enchant Helmet", false)
+  drawHelmet(showHeadOverlay, enchantHelmet)
   const trimHelmet = generator.defineAndGetBooleanInput("Trim Helmet", false)
   if (trimHelmet) {
-   drawHelmetTrim(showHeadOverlay)
+   drawHelmetTrim(showHeadOverlay, enchantHelmet)
   }
-  const enchantHelmet = generator.defineAndGetBooleanInput("Enchant Helmet", false)
-  if (enchantHelmet) {
-    drawHelmetGlint(showHeadOverlay)
-  }
+  generator.defineBooleanInput("Enchant Helmet", false)
 
   // Chestplate
-  drawChestplate()
+  const enchantChestplate = generator.getBooleanInputValueWithDefault("Enchant Chestplate", false)
+  drawChestplate(enchantChestplate)
   const trimChestplate = generator.defineAndGetBooleanInput("Trim Chestplate", false)
   if (trimChestplate) {
-    drawChestplateTrim()
+    drawChestplateTrim(enchantChestplate)
   }
-  const enchantChestplate = generator.defineAndGetBooleanInput("Enchant Chestplate", false)
-  if (enchantChestplate) {
-    drawChestplateGlint()
-  }
+  generator.defineBooleanInput("Enchant Chestplate", false)
 
   // Leggings
-  drawLeggings()
+  const enchantLeggings = generator.getBooleanInputValueWithDefault("Enchant Leggings", false)
+  drawLeggings(enchantLeggings)
   const trimLeggings = generator.defineAndGetBooleanInput("Trim Leggings", false)
   if (trimLeggings) {
-    drawLeggingsTrim()
+    drawLeggingsTrim(enchantLeggings)
   }
-  const enchantLeggings = generator.defineAndGetBooleanInput("Enchant Leggings", false)
-  if (enchantLeggings) {
-    drawLeggingsGlint()
-  }
+  generator.defineBooleanInput("Enchant Leggings", false)
 
   // Boots
-  drawBoots()
+  const enchantBoots = generator.getBooleanInputValueWithDefault("Enchant Boots", false)
+  drawBoots(enchantBoots)
   const trimBoots = generator.defineAndGetBooleanInput("Trim Boots", false)
   if (trimBoots) {
-    drawBootsTrim()
+    drawBootsTrim(enchantBoots)
   }
-  const enchantBoots = generator.defineAndGetBooleanInput("Enchant Boots", false)
-  if (enchantBoots) {
-    drawBootsGlint()
-  }
+  generator.defineBooleanInput("Enchant Boots", false)
 
   if (enchantHelmet || enchantChestplate || enchantLeggings || enchantBoots) {
     generator.defineTextureInput("Enchanted Glint", {
@@ -796,7 +811,7 @@ const script: ScriptDef = (generator: Generator) => {
   }
 
   // Foreground
-  generator.drawImage("Foreground", [0, 0])
+ // generator.drawImage("Foreground", [0, 0])
 
   // Folds
 

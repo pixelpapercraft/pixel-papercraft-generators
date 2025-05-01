@@ -6,7 +6,7 @@ import {
   type RegionLegacy,
   type Rectangle,
 } from "./renderers/types";
-import { type DrawTextureOptions, drawTexture } from "./renderers/drawTexture";
+import { type DrawTextureOptions, Glint, drawTexture } from "./renderers/drawTexture";
 import {
   type DrawRectangeOptions,
   drawRectangle,
@@ -199,7 +199,22 @@ export class Generator {
       return;
     }
 
-    drawTexture(currentPage.canvasWithContext, texture, source, dest, options);
+    let glint2: Glint | undefined = undefined;
+
+  if (options.glint) {
+    const glintInput = options.glint;
+    const glintTex = typeof glintInput.texture === "string"
+      ? this.model.findTexture(glintInput.texture)
+      : glintInput.texture;
+
+    if (glintTex) {
+      glint2 = {
+        texture: glintTex,
+      };
+    }
+  }
+
+    drawTexture(currentPage.canvasWithContext, texture, source, dest, { ...options, glint: glint2 });
   }
 
   /** @deprecated Use `drawTexture()` instead. */

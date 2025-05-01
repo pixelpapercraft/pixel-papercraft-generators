@@ -36,6 +36,11 @@ export type Blend =
   | BlendReplaceColor
   | BlendReplaceHex;
 
+export type Glint = {
+  texture: string | Texture;
+}
+
+
 type Coordinates = {
   sx: number;
   sy: number;
@@ -265,6 +270,7 @@ export type DrawTextureOptions = {
   pixelate?: boolean;
   rotate?: number;
   rotateLegacy?: number;
+  glint?: Glint;
 };
 
 export function drawTexture(

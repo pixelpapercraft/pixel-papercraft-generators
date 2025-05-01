@@ -2,6 +2,7 @@ import { type Generator } from "@genroot/builder/modules/generator";
 import {
   type Flip,
   type Blend,
+  Glint,
 } from "@genroot/builder/modules/renderers/drawTexture";
 import { type TabOrientation } from "@genroot/builder/modules/renderers/drawTab";
 import {
@@ -39,6 +40,7 @@ export type Face = {
   flip: Flip;
   rotate: RotationDegrees;
   blend: Blend;
+  glint: Glint;
 };
 
 export function makeFace(rect: Rectangle): Face {
@@ -47,6 +49,7 @@ export function makeFace(rect: Rectangle): Face {
     flip: "None",
     rotate: 0,
     blend: { kind: "None" },
+    glint: { texture: "None"},
   };
 }
 // Rotates the face using a point as an axis to rotate around. This is necessary because the faces of the cuboid need to rotate around the center of the cuboid and not their own centers.
@@ -64,6 +67,7 @@ function rotateOnAxis(face: Face, axis: Position, r: RotationDegrees): Face {
     flip: face.flip,
     rotate: addRotationDegrees(face.rotate, r),
     blend: face.blend,
+    glint: face.glint,
   };
 }
 
@@ -78,23 +82,24 @@ export function rotateFace(face: Face, r: RotationDegrees): Face {
     flip: face.flip,
     rotate: r0,
     blend: face.blend,
+    glint: face.glint,
   };
 }
 
 // rotate in relation to its own center. Uses rotateOnAxis with the axis as the face's center.
 export function rotateLocalFace(face: Face): Face {
-  const { rectangle, flip, rotate, blend } = face;
+  const { rectangle, flip, rotate, blend, glint } = face;
   let [x, y, w, h] = rectangle;
 
   const newFace =
     rotate >= 360
       ? rotateOnAxis(
-          { rectangle, flip, rotate: 0, blend },
+          { rectangle, flip, rotate: 0, blend, glint },
           [x - w / 2, y - h / 2],
           rotate
         )
       : rotateOnAxis(
-          { rectangle, flip, rotate: 0, blend },
+          { rectangle, flip, rotate: 0, blend, glint },
           [x + w / 2, y + h / 2],
           rotate
         );
@@ -118,6 +123,7 @@ export function rotateLocalFace(face: Face): Face {
     flip: newFace.flip,
     rotate: newFace.rotate,
     blend: newFace.blend,
+    glint: face.glint,
   };
 }
 
@@ -145,6 +151,7 @@ export function flipFace(
       flip: newFlip,
       rotate: face.rotate,
       blend: face.blend,
+      glint: face.glint,
     },
     newRotate
   );
@@ -156,6 +163,17 @@ export function blendFace(face: Face, blend: Blend): Face {
     flip: face.flip,
     rotate: face.rotate,
     blend,
+    glint: face.glint,
+  };
+}
+
+export function glintFace(face: Face, glint: Glint): Face {
+  return {
+    rectangle: face.rectangle,
+    flip: face.flip,
+    rotate: face.rotate,
+    blend: face.blend,
+    glint,
   };
 }
 
@@ -165,6 +183,7 @@ export function translateFace(face: Face, position: [number, number]): Face {
     flip: face.flip,
     rotate: face.rotate,
     blend: face.blend,
+    glint: face.glint,
   };
 }
 
@@ -417,13 +436,25 @@ function adjustDestBlend(dest: Dest, blend: Blend): Dest {
   };
 }
 
+function adjustDestGlint(dest: Dest, glint: Glint): Dest {
+  return {
+    right: glintFace(dest.right, glint),
+    front: glintFace(dest.front, glint),
+    left: glintFace(dest.left, glint),
+    back: glintFace(dest.back, glint),
+    top: glintFace(dest.top, glint),
+    bottom: glintFace(dest.bottom, glint),
+  };
+}
+
 function setLayout(
   dimensions: Dimensions,
   orientation: Orientation,
   center: Center,
   flip: Flip,
   rotate: RotationDegrees,
-  blend: Blend
+  blend: Blend,
+  glint: Glint
 ): Dest {
   // Depending of the center face of the cuboid, the width, height and depth as found in dimensions will have to change.
   const dimensionsAdjusted = adjustDimensionsForCenter(dimensions, center);
@@ -452,6 +483,8 @@ function setLayout(
   // Blend each face
   dest = adjustDestBlend(dest, blend);
 
+  dest = adjustDestGlint(dest, glint);
+
   // Return the destination
   return dest;
 }
@@ -464,6 +497,7 @@ export type DrawCuboidOptions = {
   flip: Flip;
   rotate: RotationDegrees;
   blend: Blend;
+  glint: Glint;
 };
 
 export class Minecraft {
@@ -490,10 +524,11 @@ export class Minecraft {
       flip = "None",
       rotate = 0,
       blend = { kind: "None" },
+      glint = { texture: "None" },
     } = options;
 
     const dest = translateDest(
-      setLayout(dimensions, orientation, center, flip, rotate, blend),
+      setLayout(dimensions, orientation, center, flip, rotate, blend, glint),
       position
     );
     this.drawFaceTexture(textureId, source.front, dest.front);
