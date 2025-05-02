@@ -508,6 +508,7 @@ export class Minecraft {
       flip: dest.flip,
       rotateLegacy: dest.rotate,
       blend: dest.blend,
+      glint: dest.glint,
     });
   }
 

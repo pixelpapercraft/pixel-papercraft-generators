@@ -369,7 +369,7 @@ const script: ScriptDef = (generator: Generator) => {
     const ox = 185;
     const oy = 309;
     const dimensions: Dimensions = [64, 96, 48];
-    minecraftGenerator.drawCuboid(textureId, char.base.body, [ox, oy], dimensions, { blend: tint });
+    minecraftGenerator.drawCuboid(textureId, char.base.body, [ox, oy], dimensions, { blend: tint, glint: { texture: glintId } });
     generator.drawTexture(textureId, char.base.body.back, [ox + 48, oy - 96, 64, 96], {
       rotate: 180,
       blend: tint,
@@ -762,6 +762,14 @@ const script: ScriptDef = (generator: Generator) => {
   const showFolds = generator.getBooleanInputValue("Show Folds");
   const showLabels = generator.getBooleanInputValue("Show Labels");
 
+
+    generator.defineTextureInput("Enchanted Glint", {
+      standardWidth: 128,
+      standardHeight: 128,
+      choices: [],
+    });
+
+
   const showHeadOverlay = generator.getBooleanInputValueWithDefault("Show Head Overlay", true);
 
 
@@ -802,13 +810,13 @@ const script: ScriptDef = (generator: Generator) => {
   }
   generator.defineBooleanInput("Enchant Boots", false)
 
-  if (enchantHelmet || enchantChestplate || enchantLeggings || enchantBoots) {
+/*  if (enchantHelmet || enchantChestplate || enchantLeggings || enchantBoots) {
     generator.defineTextureInput("Enchanted Glint", {
       standardWidth: 128,
       standardHeight: 128,
       choices: [],
     });
-  }
+  }*/
 
   // Foreground
  // generator.drawImage("Foreground", [0, 0])

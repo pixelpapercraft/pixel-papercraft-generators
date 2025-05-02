@@ -169,6 +169,7 @@ type DrawNearestNeighborOptions = {
   flip?: Flip;
   blend?: Blend;
   pixelate?: boolean;
+  glint?: Glint;
 };
 
 function drawNearestNeighbor(
@@ -181,6 +182,7 @@ function drawNearestNeighbor(
   const flipOption = options.flip ?? "None";
   const blendOption = options.blend ?? { kind: "None" };
   const pixelateOption = options.pixelate ?? false;
+  const glintOption = options.glint ?? undefined;
 
   const { canvasWithContext, sx, sy, sw, sh, dx, dy, dw, dh } =
     makeInitialValues(texture, coordinates, pixelateOption);
@@ -259,7 +261,37 @@ function drawNearestNeighbor(
       ctx.scale(1, -1);
     }
 
-    ctx.drawImage(temp.canvas, 0, 0);
+    ctx.drawImage(temp.canvas, 0, 0); // draw base texture
+
+    if (glintOption && typeof glintOption.texture !== "string") {
+      const glintTex: Texture = glintOption.texture;
+    
+      // 1. Create a base-only offscreen canvas
+      const baseOnly = makeCanvasWithContext(dw, dh);
+      baseOnly.context.drawImage(temp.canvas, 0, 0);
+    
+      // 2. Create a glint layer and draw base + glint
+      const glintLayer = makeCanvasWithContext(dw, dh);
+    
+      // Step 2.1: Start by copying the base
+      glintLayer.context.drawImage(temp.canvas, 0, 0);
+    
+      // Step 2.2: Add the glint on top (additive)
+      glintLayer.context.globalCompositeOperation = "lighter";
+      glintLayer.context.drawImage(
+        glintTex.imageWithCanvas.canvasWithContext.canvas,
+        sx, sy, sw, sh,
+        0, 0, dw, dh
+      );
+    
+      // Step 2.3: Clip result to where the base texture has alpha
+      glintLayer.context.globalCompositeOperation = "destination-in";
+      glintLayer.context.drawImage(baseOnly.canvas, 0, 0);
+    
+      // 3. Draw the final glint-masked result to the real canvas
+      ctx.drawImage(glintLayer.canvas, 0, 0);
+    }
+    
     ctx.restore();
   }
 }
@@ -291,6 +323,7 @@ export function drawTexture(
     flip: options.flip,
     blend: options.blend,
     pixelate: options.pixelate,
+    glint: options.glint,
   };
 
   if (sh > 0 && dh > 0 && sw > 0 && dw > 0) {
