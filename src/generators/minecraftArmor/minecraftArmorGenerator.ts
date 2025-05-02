@@ -762,14 +762,6 @@ const script: ScriptDef = (generator: Generator) => {
   const showFolds = generator.getBooleanInputValue("Show Folds");
   const showLabels = generator.getBooleanInputValue("Show Labels");
 
-
-    generator.defineTextureInput("Enchanted Glint", {
-      standardWidth: 128,
-      standardHeight: 128,
-      choices: [],
-    });
-
-
   const showHeadOverlay = generator.getBooleanInputValueWithDefault("Show Head Overlay", true);
 
 
@@ -810,16 +802,16 @@ const script: ScriptDef = (generator: Generator) => {
   }
   generator.defineBooleanInput("Enchant Boots", false)
 
-/*  if (enchantHelmet || enchantChestplate || enchantLeggings || enchantBoots) {
+  if (enchantHelmet || enchantChestplate || enchantLeggings || enchantBoots) {
     generator.defineTextureInput("Enchanted Glint", {
       standardWidth: 128,
       standardHeight: 128,
       choices: [],
     });
-  }*/
+  }
 
   // Foreground
- // generator.drawImage("Foreground", [0, 0])
+  generator.drawImage("Foreground", [0, 0])
 
   // Folds
 
