@@ -19,6 +19,7 @@ import foregroundShouldersImage from "./images/Foreground-Shoulders.png";
 import foldsShouldersImage from "./images/Folds-Shoulders.png";
 
 import enchantedGlint from "./textures/enchanted_glint_entity.png";
+import enchantedGlintOld from "./textures/enchanted_item_glint.png";
 
 import steveTexture from "./textures/steve.png";
 import alexTexture from "./textures/alex.png";
@@ -121,7 +122,8 @@ const instructions = `
   - Select either from the drop down menu or from "Choose file" to choose which trim pattern to apply to the armor.
   - Select either from the drop down menu or select "Choose file" to choose the material that the trim is made out of.
 #### Enchant Armor
-  - Coming Soon???
+  - Select either from the drop down menu or from "Choose file" to choose the enchanted glint texture.
+  - Adjust the sliders to choose the opacity, angle, and x and y offsets of the enchnted glint texture.
 `;
 
 const thumbnail: ThumbnailDef = {
@@ -173,6 +175,8 @@ const textures: TextureDef[] = [
   { id: "Turtle Shell", url: turtleShellTexture.src, standardWidth: 64, standardHeight: 32 }, //
   { id: "Notch", url: notchTexture.src, standardWidth: 64, standardHeight: 32 }, //
   { id: "Enchanted Glint", url: enchantedGlint.src, standardWidth: 128, standardHeight: 128 },
+  { id: "1.20+", url: enchantedGlint.src, standardWidth: 128, standardHeight: 128 },
+  { id: "Pre-1.20", url: enchantedGlintOld.src, standardWidth: 128, standardHeight: 128 },
   { id: "Coast", url: coastTexture.src, standardWidth: 64, standardHeight: 32 },
   { id: "Coast ", url: coastLeggingsTexture.src, standardWidth: 64, standardHeight: 32 },
   { id: "Dune", url: duneTexture.src, standardWidth: 64, standardHeight: 32 },
@@ -558,7 +562,6 @@ const script: ScriptDef = (generator: Generator) => {
         choices: ["Leather Overlay"],
       });
     }
-    generator.defineBooleanInput("Show Head Overlay", true);
     const tint: Blend = tintHelmet ? getTint("Helmet Color") : {kind: "None"};
   
     drawHelmetHead("Helmet", showHeadOverlay, tint, enchantHelmet ? "Enchanted Glint" : "None");
@@ -806,7 +809,7 @@ const script: ScriptDef = (generator: Generator) => {
     generator.defineTextureInput("Enchanted Glint", {
       standardWidth: 128,
       standardHeight: 128,
-      choices: [],
+      choices: ["1.20+", "Pre-1.20"],
     });
   }
 

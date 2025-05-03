@@ -38,6 +38,10 @@ export type Blend =
 
 export type Glint = {
   texture: string | Texture;
+  opacity?: number;
+  angle?: number;
+  xOffset?: number;
+  yOffset?: number;
 }
 
 
@@ -261,8 +265,6 @@ function drawNearestNeighbor(
       ctx.scale(1, -1);
     }
 
-    ctx.drawImage(temp.canvas, 0, 0); // draw base texture
-
     if (glintOption && typeof glintOption.texture !== "string") {
       const glintTex: Texture = glintOption.texture;
     
@@ -290,6 +292,8 @@ function drawNearestNeighbor(
     
       // 3. Draw the final glint-masked result to the real canvas
       ctx.drawImage(glintLayer.canvas, 0, 0);
+    } else {
+      ctx.drawImage(temp.canvas, 0, 0); // draw base texture
     }
     
     ctx.restore();
