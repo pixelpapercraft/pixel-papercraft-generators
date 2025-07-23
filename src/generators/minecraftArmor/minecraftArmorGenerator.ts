@@ -47,38 +47,42 @@ import leather1OverlayTexture from "./textures/leather_layer_1_overlay.png";
 import leather2OverlayTexture from "./textures/leather_layer_2_overlay.png";
 import turtleShellTexture from "./textures/turtle_layer_1.png";
 import notchTexture from "./textures/Notch.png";
-import coastTexture from "./textures/trims/models/armor/coast.png";
-import coastLeggingsTexture from "./textures/trims/models/armor/coast_leggings.png";
-import duneTexture from "./textures/trims/models/armor/dune.png";
-import duneLeggingsTexture from "./textures/trims/models/armor/dune_leggings.png";
-import eyeTexture from "./textures/trims/models/armor/eye.png";
-import eyeLeggingsTexture from "./textures/trims/models/armor/eye_leggings.png";
-import hostTexture from "./textures/trims/models/armor/host.png";
-import hostLeggingsTexture from "./textures/trims/models/armor/host_leggings.png";
-import raiserTexture from "./textures/trims/models/armor/raiser.png";
-import raiserLeggingsTexture from "./textures/trims/models/armor/raiser_leggings.png";
-import ribTexture from "./textures/trims/models/armor/rib.png";
-import ribLeggingsTexture from "./textures/trims/models/armor/rib_leggings.png";
-import sentryTexture from "./textures/trims/models/armor/sentry.png";
-import sentryLeggingsTexture from "./textures/trims/models/armor/sentry_leggings.png";
-import shaperTexture from "./textures/trims/models/armor/shaper.png";
-import shaperLeggingsTexture from "./textures/trims/models/armor/shaper_leggings.png";
-import silenceTexture from "./textures/trims/models/armor/silence.png";
-import silenceLeggingsTexture from "./textures/trims/models/armor/silence_leggings.png";
-import snoutTexture from "./textures/trims/models/armor/snout.png";
-import snoutLeggingsTexture from "./textures/trims/models/armor/snout_leggings.png";
-import spireTexture from "./textures/trims/models/armor/spire.png";
-import spireLeggingsTexture from "./textures/trims/models/armor/spire_leggings.png";
-import tideTexture from "./textures/trims/models/armor/tide.png";
-import tideLeggingsTexture from "./textures/trims/models/armor/tide_leggings.png";
-import vexTexture from "./textures/trims/models/armor/vex.png";
-import vexLeggingsTexture from "./textures/trims/models/armor/vex_leggings.png";
-import wardTexture from "./textures/trims/models/armor/ward.png";
-import wardLeggingsTexture from "./textures/trims/models/armor/ward_leggings.png";
-import wayfinderTexture from "./textures/trims/models/armor/wayfinder.png";
-import wayfinderLeggingsTexture from "./textures/trims/models/armor/wayfinder_leggings.png";
-import wildTexture from "./textures/trims/models/armor/wild.png";
-import wildLeggingsTexture from "./textures/trims/models/armor/wild_leggings.png";
+import boltTexture from "./textures/trims/entity/humanoid/bolt.png";
+import boltLeggingsTexture from "./textures/trims/entity/humanoid_leggings/bolt.png";
+import coastTexture from "./textures/trims/entity/humanoid/coast.png";
+import coastLeggingsTexture from "./textures/trims/entity/humanoid_leggings/coast.png";
+import duneTexture from "./textures/trims/entity/humanoid/dune.png";
+import duneLeggingsTexture from "./textures/trims/entity/humanoid_leggings/dune.png";
+import eyeTexture from "./textures/trims/entity/humanoid/eye.png";
+import eyeLeggingsTexture from "./textures/trims/entity/humanoid_leggings/eye.png";
+import flowTexture from "./textures/trims/entity/humanoid/flow.png";
+import flowLeggingsTexture from "./textures/trims/entity/humanoid_leggings/flow.png";
+import hostTexture from "./textures/trims/entity/humanoid/host.png";
+import hostLeggingsTexture from "./textures/trims/entity/humanoid_leggings/host.png";
+import raiserTexture from "./textures/trims/entity/humanoid/raiser.png";
+import raiserLeggingsTexture from "./textures/trims/entity/humanoid_leggings/raiser.png";
+import ribTexture from "./textures/trims/entity/humanoid/rib.png";
+import ribLeggingsTexture from "./textures/trims/entity/humanoid_leggings/rib.png";
+import sentryTexture from "./textures/trims/entity/humanoid/sentry.png";
+import sentryLeggingsTexture from "./textures/trims/entity/humanoid_leggings/sentry.png";
+import shaperTexture from "./textures/trims/entity/humanoid/shaper.png";
+import shaperLeggingsTexture from "./textures/trims/entity/humanoid_leggings/shaper.png";
+import silenceTexture from "./textures/trims/entity/humanoid/silence.png";
+import silenceLeggingsTexture from "./textures/trims/entity/humanoid_leggings/silence.png";
+import snoutTexture from "./textures/trims/entity/humanoid/snout.png";
+import snoutLeggingsTexture from "./textures/trims/entity/humanoid_leggings/snout.png";
+import spireTexture from "./textures/trims/entity/humanoid/spire.png";
+import spireLeggingsTexture from "./textures/trims/entity/humanoid_leggings/spire.png";
+import tideTexture from "./textures/trims/entity/humanoid/tide.png";
+import tideLeggingsTexture from "./textures/trims/entity/humanoid_leggings/tide.png";
+import vexTexture from "./textures/trims/entity/humanoid/vex.png";
+import vexLeggingsTexture from "./textures/trims/entity/humanoid_leggings/vex.png";
+import wardTexture from "./textures/trims/entity/humanoid/ward.png";
+import wardLeggingsTexture from "./textures/trims/entity/humanoid_leggings/ward.png";
+import wayfinderTexture from "./textures/trims/entity/humanoid/wayfinder.png";
+import wayfinderLeggingsTexture from "./textures/trims/entity/humanoid_leggings/wayfinder.png";
+import wildTexture from "./textures/trims/entity/humanoid/wild.png";
+import wildLeggingsTexture from "./textures/trims/entity/humanoid_leggings/wild.png";
 import amethystTexture from "./textures/trims/color_palettes/amethyst.png";
 import copperTexture from "./textures/trims/color_palettes/copper.png";
 import diamondDarkerTexture from "./textures/trims/color_palettes/diamond_darker.png";
@@ -93,6 +97,7 @@ import netheriteDarkerTexture from "./textures/trims/color_palettes/netherite_da
 import netheriteTexture from "./textures/trims/color_palettes/netherite.png";
 import quartzTexture from "./textures/trims/color_palettes/quartz.png";
 import redstoneTexture from "./textures/trims/color_palettes/redstone.png";
+import resinTexture from "./textures/trims/color_palettes/resin.png";
 import trimPaletteTexture from "./textures/trims/color_palettes/trim_palette.png";
 
 import { Minecraft } from "../_common/minecraft";
@@ -323,6 +328,13 @@ const textures: TextureDef[] = [
     standardWidth: 128,
     standardHeight: 128,
   },
+    { id: "Bolt", url: boltTexture.src, standardWidth: 64, standardHeight: 32 },
+  {
+    id: "Bolt ",
+    url: boltLeggingsTexture.src,
+    standardWidth: 64,
+    standardHeight: 32,
+  },
   { id: "Coast", url: coastTexture.src, standardWidth: 64, standardHeight: 32 },
   {
     id: "Coast ",
@@ -341,6 +353,13 @@ const textures: TextureDef[] = [
   {
     id: "Eye ",
     url: eyeLeggingsTexture.src,
+    standardWidth: 64,
+    standardHeight: 32,
+  },
+    { id: "Flow", url: flowTexture.src, standardWidth: 64, standardHeight: 32 },
+  {
+    id: "Flow ",
+    url: flowLeggingsTexture.src,
     standardWidth: 64,
     standardHeight: 32,
   },
@@ -529,6 +548,12 @@ const textures: TextureDef[] = [
     standardWidth: 8,
     standardHeight: 1,
   },
+    {
+    id: "Resin  ",
+    url: resinTexture.src,
+    standardWidth: 8,
+    standardHeight: 1,
+  },
   {
     id: "Trim Palette  ",
     url: trimPaletteTexture.src,
@@ -568,11 +593,14 @@ const trimMaterials = [
   "Netherite Darker  ",
   "Quartz  ",
   "Redstone  ",
+  "Resin  ",
 ];
 const trimTemplates = [
+  "Bolt",
   "Coast",
   "Dune",
   "Eye",
+  "Flow",
   "Host",
   "Raiser",
   "Rib",
@@ -588,9 +616,11 @@ const trimTemplates = [
   "Wild",
 ];
 const trimTemplates2 = [
+  "Bolt ",
   "Coast ",
   "Dune ",
   "Eye ",
+  "Flow ",
   "Host ",
   "Raiser ",
   "Rib ",
