@@ -436,8 +436,9 @@ function adjustDestBlend(dest: Dest, blend: Blend): Dest {
   };
 }
 
-function adjustDestGlint(dest: Dest, glint: Glint): Dest {
-  return {
+function adjustDestGlint(dest: Dest, glint: Glint | undefined): Dest {
+  if (glint) {
+    return {
     right: glintFace(dest.right, glint),
     front: glintFace(dest.front, glint),
     left: glintFace(dest.left, glint),
@@ -445,6 +446,9 @@ function adjustDestGlint(dest: Dest, glint: Glint): Dest {
     top: glintFace(dest.top, glint),
     bottom: glintFace(dest.bottom, glint),
   };
+} else {
+  return dest;
+}
 }
 
 function setLayout(
@@ -454,7 +458,7 @@ function setLayout(
   flip: Flip,
   rotate: RotationDegrees,
   blend: Blend,
-  glint: Glint
+  glint: Glint | undefined,
 ): Dest {
   // Depending of the center face of the cuboid, the width, height and depth as found in dimensions will have to change.
   const dimensionsAdjusted = adjustDimensionsForCenter(dimensions, center);
@@ -525,7 +529,7 @@ export class Minecraft {
       flip = "None",
       rotate = 0,
       blend = { kind: "None" },
-      glint = { texture: "None" },
+      glint = undefined,
     } = options;
 
     const dest = translateDest(

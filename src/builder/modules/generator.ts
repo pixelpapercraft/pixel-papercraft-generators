@@ -199,7 +199,7 @@ export class Generator {
       return;
     }
 
-    let glint2: Glint | undefined = undefined;
+    let newGlint: Glint | undefined = undefined;
 
   if (options.glint) {
     const glintInput = options.glint;
@@ -208,13 +208,13 @@ export class Generator {
       : glintInput.texture;
 
     if (glintTex) {
-      glint2 = {
-        texture: glintTex,
+      newGlint = {
+        ...options.glint, texture: glintTex,
       };
     }
   }
 
-    drawTexture(currentPage.canvasWithContext, texture, source, dest, { ...options, glint: glint2 });
+    drawTexture(currentPage.canvasWithContext, texture, source, dest, { ...options, glint: newGlint });
   }
 
   /** @deprecated Use `drawTexture()` instead. */

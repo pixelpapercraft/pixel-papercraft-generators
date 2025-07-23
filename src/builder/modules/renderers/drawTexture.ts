@@ -266,32 +266,7 @@ function drawNearestNeighbor(
     }
 
     if (glintOption && typeof glintOption.texture !== "string") {
-      const glintTex: Texture = glintOption.texture;
-    
-      // 1. Create a base-only offscreen canvas
-      const baseOnly = makeCanvasWithContext(dw, dh);
-      baseOnly.context.drawImage(temp.canvas, 0, 0);
-    
-      // 2. Create a glint layer and draw base + glint
-      const glintLayer = makeCanvasWithContext(dw, dh);
-    
-      // Step 2.1: Start by copying the base
-      glintLayer.context.drawImage(temp.canvas, 0, 0);
-    
-      // Step 2.2: Add the glint on top (additive)
-      glintLayer.context.globalCompositeOperation = "lighter";
-      glintLayer.context.drawImage(
-        glintTex.imageWithCanvas.canvasWithContext.canvas,
-        sx, sy, sw, sh,
-        0, 0, dw, dh
-      );
-    
-      // Step 2.3: Clip result to where the base texture has alpha
-      glintLayer.context.globalCompositeOperation = "destination-in";
-      glintLayer.context.drawImage(baseOnly.canvas, 0, 0);
-    
-      // 3. Draw the final glint-masked result to the real canvas
-      ctx.drawImage(glintLayer.canvas, 0, 0);
+      drawImageWithGlint(ctx, temp, [sx, sy, sw, sh, dw, dh], glintOption)
     } else {
       ctx.drawImage(temp.canvas, 0, 0); // draw base texture
     }
@@ -351,3 +326,64 @@ export function drawTexture(
     );
   }
 }
+function drawImageWithGlint(
+  ctx: CanvasRenderingContext2D,
+  temp: CanvasWithContext,
+  [sx, sy, sw, sh, dw, dh]: [number, number, number, number, number, number],
+  glint: Glint
+): void {
+  // Ensure glint.texture is a Texture
+  if (typeof glint.texture === "string") return;
+
+  console.log(glint);
+  const glintTex: Texture = glint.texture;
+  const opacity = glint.opacity ?? 1;
+  //const angle = (glint.angle ?? 0) * (Math.PI / 180); // convert to radians
+  const xOffset = glint.xOffset ?? 0;
+  const yOffset = glint.yOffset ?? 0;
+
+  // Create base-only canvas for masking
+  const baseOnly = makeCanvasWithContext(dw, dh);
+  baseOnly.context.drawImage(temp.canvas, 0, 0);
+
+  // Create glint layer
+  const glintLayer = makeCanvasWithContext(dw, dh);
+
+  // Step 1: Draw base to glint layer
+  glintLayer.context.drawImage(temp.canvas, 0, 0);
+
+  // Step 2: Add the glint with transformations
+  glintLayer.context.save();
+  glintLayer.context.globalAlpha = opacity;
+  glintLayer.context.globalCompositeOperation = "lighter";
+
+  // Move to center, rotate if needed
+  //glintLayer.context.translate(dw / 2, dh / 2);
+  //glintLayer.context.rotate(angle);
+  //glintLayer.context.translate(-dw / 2, -dh / 2);
+
+  // Apply wrapped offsets to the glint texture
+  const sourceX = (sx + xOffset) % glintTex.standardWidth;
+  const sourceY = (sy + yOffset) % glintTex.standardHeight;
+
+  // Wrap around if offsets push outside bounds
+  const wrappedX = (sourceX + glintTex.standardWidth) % glintTex.standardWidth;
+  const wrappedY = (sourceY + glintTex.standardHeight) % glintTex.standardHeight;
+
+  glintLayer.context.drawImage(
+    glintTex.imageWithCanvas.canvasWithContext.canvas,
+    wrappedX, wrappedY, sw, sh,
+    0, 0, dw, dh
+  );
+
+  glintLayer.context.restore();
+
+  // Step 3: Mask to original alpha
+  glintLayer.context.globalCompositeOperation = "destination-in";
+  glintLayer.context.drawImage(baseOnly.canvas, 0, 0);
+
+  // Step 4: Draw to final canvas
+  ctx.drawImage(glintLayer.canvas, 0, 0);
+}
+
+
