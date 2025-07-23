@@ -123,7 +123,8 @@ const instructions = `
   - Select either from the drop down menu or select "Choose file" to choose the material that the trim is made out of.
 #### Enchant Armor
   - Select either from the drop down menu or from "Choose file" to choose the enchanted glint texture.
-  - Adjust the sliders to choose the opacity, angle, and x and y offsets of the enchnted glint texture.
+  - Adjust the sliders to choose the opacity, x and y offsets of the enchanted glint texture.
+  - Click in the papercraft template to turn on and off the enchanted glint for each part.
 `;
 
 const thumbnail: ThumbnailDef = {
@@ -1301,7 +1302,13 @@ const script: ScriptDef = (generator: Generator) => {
         enchantChestplate
       );
     }
-    generator.defineRegionInput([33, 213, 528, 240], () => {
+    generator.defineRegionInput([185, 213, 224, 240], () => {
+      generator.setBooleanInputValue("Enchant Chestplate", !enchantChestplate);
+    });
+    generator.defineRegionInput([33, 261, 160, 176], () => {
+      generator.setBooleanInputValue("Enchant Chestplate", !enchantChestplate);
+    });
+    generator.defineRegionInput([401, 261, 160, 176], () => {
       generator.setBooleanInputValue("Enchant Chestplate", !enchantChestplate);
     });
   }
@@ -1335,7 +1342,13 @@ const script: ScriptDef = (generator: Generator) => {
       drawRightLegging("Leggings Overlay", { kind: "None" }, enchantLeggings);
       drawLeftLegging("Leggings Overlay", { kind: "None" }, enchantLeggings);
     }
-    generator.defineRegionInput([49, 485, 496, 174], () => {
+    generator.defineRegionInput([193, 485, 208, 57], () => {
+      generator.setBooleanInputValue("Enchant Leggings", !enchantLeggings);
+    });
+    generator.defineRegionInput([49, 568, 144, 91], () => {
+      generator.setBooleanInputValue("Enchant Leggings", !enchantLeggings);
+    });
+    generator.defineRegionInput([401, 568, 144, 91], () => {
       generator.setBooleanInputValue("Enchant Leggings", !enchantLeggings);
     });
   }
@@ -1363,7 +1376,10 @@ const script: ScriptDef = (generator: Generator) => {
       drawRightBoot("Boots Overlay", { kind: "None" }, enchantBoots);
     }
 
-    generator.defineRegionInput([35, 693, 524, 96], () => {
+    generator.defineRegionInput([35, 693, 176, 96], () => {
+      generator.setBooleanInputValue("Enchant Boots", !enchantBoots);
+    });
+    generator.defineRegionInput([383, 693, 176, 96], () => {
       generator.setBooleanInputValue("Enchant Boots", !enchantBoots);
     });
   }
@@ -1503,7 +1519,6 @@ const script: ScriptDef = (generator: Generator) => {
   if (trimHelmet) {
     drawHelmetTrim(showHeadOverlay, enchantHelmet);
   }
-  generator.defineBooleanInput("Enchant Helmet", false);
 
   // Chestplate
   const enchantChestplate = generator.getBooleanInputValueWithDefault(
@@ -1518,7 +1533,6 @@ const script: ScriptDef = (generator: Generator) => {
   if (trimChestplate) {
     drawChestplateTrim(enchantChestplate);
   }
-  generator.defineBooleanInput("Enchant Chestplate", false);
 
   // Leggings
   const enchantLeggings = generator.getBooleanInputValueWithDefault(
@@ -1533,7 +1547,6 @@ const script: ScriptDef = (generator: Generator) => {
   if (trimLeggings) {
     drawLeggingsTrim(enchantLeggings);
   }
-  generator.defineBooleanInput("Enchant Leggings", false);
 
   // Boots
   const enchantBoots = generator.getBooleanInputValueWithDefault(
@@ -1545,7 +1558,6 @@ const script: ScriptDef = (generator: Generator) => {
   if (trimBoots) {
     drawBootsTrim(enchantBoots);
   }
-  generator.defineBooleanInput("Enchant Boots", false);
 
   // Foreground
   generator.drawImage("Foreground", [0, 0]);
