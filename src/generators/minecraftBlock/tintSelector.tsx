@@ -1,6 +1,6 @@
 import React from "react";
 import { type Tint, tintGroups, tints } from "./tints";
-import { hexToRGB } from "@genroot/builder/modules/renderers/drawTexture";
+import { hexToColor } from "@genroot/builder/modules/renderers/drawTexture";
 import {
   type SelectOptionGroup,
   type SelectOption,
@@ -21,7 +21,7 @@ function makeOptions(tints: Tint[]): SelectOption[] {
 }
 
 function isValidTint(tint: string): boolean {
-  const value = hexToRGB(tint);
+  const value = hexToColor(tint);
   return value !== null;
 }
 
