@@ -335,7 +335,6 @@ function drawImageWithGlint(
   // Ensure glint.texture is a Texture
   if (typeof glint.texture === "string") return;
 
-  console.log(glint);
   const glintTex: Texture = glint.texture;
   const opacity = glint.opacity ?? 1;
   //const angle = (glint.angle ?? 0) * (Math.PI / 180); // convert to radians

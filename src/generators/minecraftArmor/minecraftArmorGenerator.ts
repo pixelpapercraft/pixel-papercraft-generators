@@ -768,7 +768,6 @@ const script: ScriptDef = (generator: Generator) => {
   function shoulderAlpha(textureId: string): number {
     const color = generator.getTexturePixelColor(textureId, [51, 24]);
     const a = color ? color.a : 33;
-    console.log(`${textureId}: ${a}`);
     return a;
   }
 
