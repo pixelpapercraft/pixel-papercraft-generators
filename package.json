@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "types:check": "tsc",
-    "makeTextures": "ts-node src/tools/makeTextures/makeTextures.ts"
+    "makeTextures": "ts-node src/tools/makeTextures/makeTextures.ts",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "@heroicons/react": "2.1.3",

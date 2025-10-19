@@ -78,13 +78,19 @@ export function Generator({ generatorDef }: { generatorDef: GeneratorDef }) {
         </div>
       ) : null}
 
-      <Controls model={model} onChange={onControlsChange} />
+      <div className="lg:flex gap-8">
+        <div className="flex-1 min-w-0">
+          <Controls model={model} onChange={onControlsChange} />
+        </div>
 
-      <Pages
-        generatorDef={generatorDef}
-        model={model}
-        onChange={onPagesChange}
-      />
+        <div className="flex-1 min-w-0">
+          <Pages
+            generatorDef={generatorDef}
+            model={model}
+            onChange={onPagesChange}
+          />
+        </div>
+      </div>
 
       <History generatorDef={generatorDef} />
     </div>
