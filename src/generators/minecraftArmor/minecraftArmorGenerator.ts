@@ -37,6 +37,8 @@ import chainmail2Texture from "./textures/chainmail_layer_2.png";
 import diamond2Texture from "./textures/diamond_layer_2.png";
 import gold1Texture from "./textures/gold_layer_1.png";
 import gold2Texture from "./textures/gold_layer_2.png";
+import copper1Texture from "./textures/copper_layer_1.png";
+import copper2Texture from "./textures/copper_layer_2.png";
 import iron1Texture from "./textures/iron_layer_1.png";
 import iron2Texture from "./textures/iron_layer_2.png";
 import netherite1Texture from "./textures/netherite_layer_1.png";
@@ -85,6 +87,7 @@ import wildTexture from "./textures/trims/entity/humanoid/wild.png";
 import wildLeggingsTexture from "./textures/trims/entity/humanoid_leggings/wild.png";
 import amethystTexture from "./textures/trims/color_palettes/amethyst.png";
 import copperTexture from "./textures/trims/color_palettes/copper.png";
+import copperDarkerTexture from "./textures/trims/color_palettes/copper_darker.png";
 import diamondDarkerTexture from "./textures/trims/color_palettes/diamond_darker.png";
 import diamondTexture from "./textures/trims/color_palettes/diamond.png";
 import emeraldTexture from "./textures/trims/color_palettes/emerald.png";
@@ -265,6 +268,8 @@ const textures: TextureDef[] = [
   }, //
   { id: "Gold", url: gold1Texture.src, standardWidth: 64, standardHeight: 32 }, //
   { id: "Gold ", url: gold2Texture.src, standardWidth: 64, standardHeight: 32 }, //
+    { id: "Copper", url: copper1Texture.src, standardWidth: 64, standardHeight: 32 }, //
+  { id: "Copper ", url: copper2Texture.src, standardWidth: 64, standardHeight: 32 }, //
   { id: "Iron", url: iron1Texture.src, standardWidth: 64, standardHeight: 32 }, //
   { id: "Iron ", url: iron2Texture.src, standardWidth: 64, standardHeight: 32 }, //
   {
@@ -491,6 +496,12 @@ const textures: TextureDef[] = [
     standardWidth: 8,
     standardHeight: 1,
   },
+    {
+    id: "Copper Darker  ",
+    url: copperDarkerTexture.src,
+    standardWidth: 8,
+    standardHeight: 1,
+  },
   {
     id: "Diamond  ",
     url: diamondTexture.src,
@@ -566,6 +577,7 @@ const materials = [
   "Leather",
   "Chainmail",
   "Gold",
+  "Copper",
   "Iron",
   "Diamond",
   "Netherite",
@@ -574,6 +586,7 @@ const materials2 = [
   "Leather ",
   "Chainmail ",
   "Gold ",
+  "Copper ",
   "Iron ",
   "Diamond ",
   "Netherite ",
@@ -581,6 +594,7 @@ const materials2 = [
 const trimMaterials = [
   "Amethyst  ",
   "Copper  ",
+  "Copper Darker  ",
   "Diamond  ",
   "Diamond Darker  ",
   "Emerald  ",
@@ -1222,6 +1236,7 @@ const script: ScriptDef = (generator: Generator) => {
         "Leather",
         "Chainmail",
         "Gold",
+        "Copper",
         "Iron",
         "Diamond",
         "Netherite",
