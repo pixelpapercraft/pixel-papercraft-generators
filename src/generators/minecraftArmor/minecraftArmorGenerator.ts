@@ -1244,32 +1244,7 @@ const script: ScriptDef = (generator: Generator) => {
     });
     generator.defineBooleanInput("Tint Helmet", false);
     const tintHelmet = generator.getBooleanInputValue("Tint Helmet");
-    if (tintHelmet) {
-      generator.defineSelectInput("Helmet Color", [
-        "Leather",
-        "Black",
-        "Red",
-        "Green",
-        "Brown",
-        "Blue",
-        "Purple",
-        "Cyan",
-        "Light Gray",
-        "Gray",
-        "Pink",
-        "Lime",
-        "Yellow",
-        "Light Blue",
-        "Magenta",
-        "Orange",
-        "White",
-      ]);
-      generator.defineTextureInput("Helmet Overlay", {
-        standardWidth: 64,
-        standardHeight: 64,
-        choices: ["Leather Overlay"],
-      });
-    }
+
     const tint: Blend = tintHelmet ? getTint("Helmet Color") : { kind: "None" };
 
     drawHelmetHead("Helmet", showHeadOverlay, tint, enchantHelmet);
