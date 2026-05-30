@@ -19,6 +19,9 @@ It includes many generators that turn characters, creatures, items, and other ga
   - Split unrelated generator work into separate PRs.
   - Split builder changes and new-generator work into separate PRs unless the builder change is fully proven by tests first and the follow-on generator change is clearly dependent.
   - If a request mixes unrelated work, propose the smallest safe slice and leave the rest for a follow-up PR.
+- Treat `src/builder` as the generator framework layer, but keep generator-authored content in `src/generators` unless the task is explicitly moving shared framework behavior.
+  - Shared contracts and framework behavior can live in `src/builder`.
+  - Generator-owned assets, version registries, and other content should stay under `src/generators`, typically in `_common` or the specific generator directory.
 
 ## Verification
 
