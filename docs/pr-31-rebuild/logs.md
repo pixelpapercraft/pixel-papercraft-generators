@@ -14,6 +14,22 @@ Record one entry per work session before handing off.
 ## Log
 
 - Date: 2026-05-31
+- Session focus: Task 14 review completion
+- Work completed: Reviewed the remaining PR 31 UI divergences, confirmed the remaining visible differences were intentional, and closed out the reconstruction checklist with no open items left for this workstream.
+- Verification: Reused the earlier screenshot comparison and Playwright coverage for the block and item generators, plus direct inspection of the remaining PR 31 delta set.
+- Open follow-up: None from this reconstruction thread.
+- Next step: None.
+- Commit hash: uncommitted
+
+- Date: 2026-05-31
+- Session focus: PR 31 UI divergence review
+- Work completed: Compared the overlapping block and item screenshot set against the PR 31 reference worktree, confirmed the remaining differences cluster around block orientation, the tinted preview, and item scale/layout snapshots, and turned that into a dedicated follow-up slice.
+- Verification: Byte-for-byte comparison of the overlapping screenshot set plus direct image inspection of the differing block, preview, and item renders.
+- Open follow-up: Reconcile the remaining visible UI differences before any merge-planning decision.
+- Next step: Start the new UI divergence reconciliation slice.
+- Commit hash: uncommitted
+
+- Date: 2026-05-31
 - Session focus: PR 31 comparison and handoff
 - Work completed: Compared the PR 31 description against this branch, confirmed the PR-level goals are represented here, and documented the remaining hard UI divergence follow-up for the next session.
 - Verification: `gh pr view 31 --json body,title,url`, file-level diff and branch comparison checks against `pr-31-reference`.
