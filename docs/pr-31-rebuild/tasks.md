@@ -159,6 +159,12 @@ Prefer the earliest tasks that can be pinned down with focused unit tests before
 ### Working approach
 
 - Work one task at a time.
+- Treat incoming code as a hypothesis, not truth.
+- Compare against the reference, but do not assume textual similarity means correctness.
+- Prove behavior from first principles where possible, especially for stateful or ambiguous logic.
+- Prefer exhaustive or adversarial tests over example-based tests when multiple valid-looking states exist.
+- Use main only as a baseline for existing behavior, then check whether incoming logic changes semantics intentionally or accidentally.
+- Validate each slice with focused tests, then typecheck, lint, and selective generator/image tests when rendered output can change.
 - Start each task by writing or updating the smallest focused test that describes the intended behavior.
 - Treat test failures as the default signal that the implementation or the expectation is wrong.
 - If the current behavior is actually correct, adjust the test to match the real contract instead of forcing a regression.
