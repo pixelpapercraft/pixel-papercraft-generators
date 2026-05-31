@@ -50,6 +50,7 @@ Notes:
 ### Handover Procedure
 
 - When a slice is complete, mark the matching checklist item as done before handing over.
+- Append a short entry to `docs/pr-31-rebuild/logs.md` for the session before handing over.
 - Save the minimal context needed to resume cleanly: the completed task number, the next task number, the verification status, and any open follow-up notes.
 - Leave the next-session entry point explicit so a resume prompt like `Let's continue working on the tasks in docs/pr-31-rebuild/tasks.md` can pick up immediately.
 - If the slice introduced a follow-up that belongs to a later task, note that separately rather than leaving the current task ambiguous.
