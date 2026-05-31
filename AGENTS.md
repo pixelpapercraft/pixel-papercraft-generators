@@ -32,6 +32,7 @@ It includes many generators that turn characters, creatures, items, and other ga
   - expand to broader checks when shared behavior changes
 - Run the smallest relevant verification set first, then expand to the broader checks if the change touches shared behavior.
 - Verify the smallest relevant surface first, then widen coverage only as far as the behavior actually propagates.
+- After each completed change slice, run `npm run types:check` and `npm run lint` once the focused tests pass.
 
 ## Visual Regressions
 

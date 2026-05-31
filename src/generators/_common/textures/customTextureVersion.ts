@@ -1,10 +1,10 @@
-import { type TextureDef } from "../../builder/modules/generatorDef";
+import { type TextureDef } from "../../../builder/modules/generatorDef";
 import {
   type Atlas,
   type TextureFrame,
-} from "./textureData";
+} from "../../../builder/modules/textureData";
 
-import image from "./textures/texture_custom.png";
+import image from "./texture_custom.png";
 
 export const customTextureDef: TextureDef = {
   id: "custom",
@@ -13,13 +13,11 @@ export const customTextureDef: TextureDef = {
   standardHeight: 16,
 };
 
-// The custom texture is represented as a singleton frame by default.
 export const customFrame: TextureFrame = {
   id: "custom",
-  name: "Custom",
+  label: "Custom",
   rectangle: [0, 0, 16, 16],
-  frameIndex: 0,
-  frameCount: 1,
+  crop: [0, 0, 16, 16],
 };
 
 export const customFrames: TextureFrame[] = [customFrame];
@@ -34,7 +32,6 @@ export function updateCustomTextureUrl(url: string): void {
 }
 
 export function updateCustomTextureAtlas(url: string, atlas: Atlas): void {
-  // Update the shared singleton in place so all consumers see the new image.
   customTextureDef.url = url;
   customTextureDef.standardWidth = atlas.atlasWidth;
   customTextureDef.standardHeight = atlas.atlasHeight;

@@ -1,7 +1,8 @@
 import { type Atlas, type Rectangle } from "./textureData";
 
 // PackableImage is the builder-side input shape for atlas packing.
-// The rectangle describes the source image bounds, and crop preserves the visible subregion.
+// The rectangle describes the source image bounds.
+// The crop is [left inset, top inset, visible width, visible height] within that rectangle.
 export type PackableImage = {
   id: string;
   label?: string;

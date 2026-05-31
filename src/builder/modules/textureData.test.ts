@@ -3,52 +3,62 @@ import { imageToTextureFrames, tilesToTextureFrames } from "./textureData";
 
 describe("imageToTextureFrames", () => {
   it("splits vertically stacked animation frames", () => {
-    expect(imageToTextureFrames("lava_flow", 32, 64)).toEqual([
+    expect(imageToTextureFrames("lava_flow", 64, 128)).toEqual([
       {
         id: "lava_flow_0",
         label: "lava flow (Frame 1)",
-        rectangle: [0, 0, 32, 32],
-        crop: [0, 0, 32, 32],
+        rectangle: [0, 0, 64, 64],
+        crop: [0, 0, 64, 64],
       },
       {
         id: "lava_flow_1",
         label: "lava flow (Frame 2)",
-        rectangle: [0, 32, 32, 32],
-        crop: [0, 0, 32, 32],
+        rectangle: [0, 64, 64, 64],
+        crop: [0, 0, 64, 64],
       },
     ]);
   });
 
   it("uses the image width as the frame size", () => {
-    expect(imageToTextureFrames("sword.png", 16, 32)).toEqual([
+    expect(imageToTextureFrames("sword.png", 64, 64)).toEqual([
       {
-        id: "sword.png_0",
-        label: "sword (Frame 1)",
-        rectangle: [0, 0, 16, 16],
-        crop: [0, 0, 16, 16],
+        id: "sword.png",
+        label: "sword",
+        rectangle: [0, 0, 64, 64],
+        crop: [0, 0, 64, 64],
       },
+    ]);
+  });
+
+  it("treats a square image as a single frame", () => {
+    expect(imageToTextureFrames("shield.png", 32, 32)).toEqual([
       {
-        id: "sword.png_1",
-        label: "sword (Frame 2)",
-        rectangle: [0, 16, 16, 16],
-        crop: [0, 0, 16, 16],
+        id: "shield.png",
+        label: "shield",
+        rectangle: [0, 0, 32, 32],
+        crop: [0, 0, 32, 32],
       },
     ]);
   });
 
   it("truncates a trailing partial frame row", () => {
-    expect(imageToTextureFrames("sword.png", 16, 33)).toEqual([
+    expect(imageToTextureFrames("sword.png", 64, 96)).toEqual([
       {
-        id: "sword.png_0",
-        label: "sword (Frame 1)",
-        rectangle: [0, 0, 16, 16],
-        crop: [0, 0, 16, 16],
+        id: "sword.png",
+        label: "sword",
+        rectangle: [0, 0, 64, 64],
+        crop: [0, 0, 64, 64],
       },
+    ]);
+  });
+
+  it("does not add a frame number until there are two full rows", () => {
+    expect(imageToTextureFrames("sword.png", 64, 65)).toEqual([
       {
-        id: "sword.png_1",
-        label: "sword (Frame 2)",
-        rectangle: [0, 16, 16, 16],
-        crop: [0, 0, 16, 16],
+        id: "sword.png",
+        label: "sword",
+        rectangle: [0, 0, 64, 64],
+        crop: [0, 0, 64, 64],
       },
     ]);
   });

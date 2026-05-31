@@ -121,6 +121,14 @@ function textureDataTileCategory(
 }
 
 // Split a vertically stacked image into frames when the image height encodes animation frames.
+// Examples:
+// - 32x32 -> 1 frame
+// - 64x64 -> 1 frame
+// - 64x65 -> 1 frame
+// - 64x128 -> 2 frames
+// - 64x96 -> 1 frame, with the trailing 32px ignored
+// A single frame keeps the base file name as its label, so `sword.png` becomes `sword`.
+// Frame numbers only appear when the image contains at least two full width-sized rows.
 // The frame count is derived from the image width, so any trailing partial row is ignored.
 // TODO: handle non-multiple animation sheets explicitly instead of truncating the trailing pixels.
 export function imageToTextureFrames(
