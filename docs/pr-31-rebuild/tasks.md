@@ -54,6 +54,7 @@ Notes:
 - When a slice is complete, mark the matching checklist item as done before handing over.
 - Append a short entry to `docs/pr-31-rebuild/logs.md` for the session before handing over.
 - Commit the approved slice before handing over so the next session starts from a concrete revision, and record the commit hash in the handoff notes.
+- If the user says `Perform the handoff` or `perform the handover`, treat that as explicit approval for the current slice and the handoff signal: update the log, mark the approved task complete, and commit all changes before handing over.
 - Save the minimal context needed to resume cleanly: the completed task number, the next task number, the verification status, and any open follow-up notes.
 - Leave the next-session entry point explicit so a resume prompt like `Let's continue working on the tasks in docs/pr-31-rebuild/tasks.md` can pick up immediately.
 - If the slice introduced a follow-up that belongs to a later task, note that separately rather than leaving the current task ambiguous.
@@ -170,7 +171,7 @@ Notes:
   - Verification: compare the picker preview with the template-rendered output for a tinted texture and document the expected contract.
   - Do Not Commit: keep this investigation uncommitted until it has been reviewed and explicitly approved.
 
-11. [ ] Rebuild the texture generation tooling in `src/tools/makeTextures`
+11. [x] Rebuild the texture generation tooling in `src/tools/makeTextures`
   - Includes the new packing workflow, crop detection, generated TypeScript output, and output-directory move.
   - Depends on the shared texture data and packing foundation.
   - Also depends on the new texture asset layout under `src/generators/_common/textures`.

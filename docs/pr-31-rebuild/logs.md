@@ -14,6 +14,13 @@ Record one entry per work session before handing off.
 ## Log
 
 - Date: 2026-05-31
+- Session focus: Task 11 handoff and approval
+- Work completed: Marked task 11 complete after your explicit approval, so the texture generation tooling slice is now reflected as done in the reconstruction notes.
+- Verification: Reused the prior task 11 verification set: `npx vitest run src/tools/makeTextures/utils.test.ts`, `npm run types:check`, `npm run lint`, `npm run test:generators`
+- Open follow-up: The historical note about legacy `texture_minecraft_1_18_2_*` and `texture_minecraft_1_20_4_*` outputs remains in the prior task 11 session entry.
+- Next step: Continue with task 12 if you want the next reconstruction slice.
+
+- Date: 2026-05-31
 - Session focus: Task 11, texture generation tooling rebuild
 - Work completed: Rebuilt `src/tools/makeTextures` around the shared packing and crop-detection helpers, switched the CLI output path to `src/generators/_common/textures`, added an end-to-end test that pins down the crop-aware generated output, and removed the stale JSON sidecars that the old tool emitted.
 - Verification: `npx vitest run src/tools/makeTextures/utils.test.ts`, `npm run types:check`, `npm run lint`, `npm run test:generators`
