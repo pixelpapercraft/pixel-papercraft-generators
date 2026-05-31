@@ -4,9 +4,9 @@ export type ButtonColor = "Gray" | "Blue" | "Red" | "Green";
 function makeButtonSizeClassNames(size: ButtonSize): string {
   switch (size) {
     case "Medium":
-      return "px-10 py-3 ";
+      return "px-6 py-3 ";
     case "Small":
-      return "px-8 py-2 ";
+      return "px-4 py-2 ";
     case "Icon":
       return "px-4 py-2 ";
   }
@@ -61,7 +61,7 @@ export function makeButtonClassNames({
   return (
     sizeClassNames +
     colorClassNames +
-    "flex-inline relative items-center " +
+    "inline-flex relative items-center " +
     "rounded-lg " +
     "text-nowrap " +
     "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 " +

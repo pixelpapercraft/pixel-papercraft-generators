@@ -12,7 +12,7 @@ export function SaveAsImageButton({
 
   const onClick = () => setHref(dataUrl);
 
-  const className = makeButtonClassNames({ color: "Blue", size: "Small" });
+  const className = makeButtonClassNames({ color: "Blue", size: "Medium" });
 
   return (
     <a className={className} href={href} onClick={onClick} download={download}>

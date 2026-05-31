@@ -11,12 +11,27 @@ describe("makeButtonClassNames", () => {
     ).toContain("px-4 py-2 ");
   });
 
-  it("keeps the existing small size unchanged", () => {
+  it("keeps the small button smaller than medium", () => {
     expect(
       makeButtonClassNames({
         size: "Small",
         color: "Blue",
       })
-    ).toContain("px-8 py-2 ");
+    ).toContain("px-4 py-2 ");
+    expect(
+      makeButtonClassNames({
+        size: "Medium",
+        color: "Blue",
+      })
+    ).toContain("px-6 py-3 ");
+  });
+
+  it("uses inline-flex for button alignment", () => {
+    expect(
+      makeButtonClassNames({
+        size: "Medium",
+        color: "Blue",
+      })
+    ).toContain("inline-flex ");
   });
 });

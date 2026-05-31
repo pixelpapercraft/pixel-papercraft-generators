@@ -32,10 +32,11 @@ export function SaveAsPDFButton({
       title="Save all pages as PDF"
       state="Ready"
       color="Blue"
-      size="Small"
+      size="Medium"
       onClick={onSavePDF}
     >
-      Save all pages as PDF
+      <span className="sm:hidden">PDF</span>
+      <span className="hidden sm:inline">Save as PDF</span>
     </Button>
   );
 }
