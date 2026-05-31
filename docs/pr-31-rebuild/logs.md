@@ -54,3 +54,17 @@ Record one entry per work session before handing off.
 - Verification: `npx vitest run src/generators/minecraftBlock/face.test.ts src/generators/minecraftBlock/shapes/shelf.test.ts`, `npx playwright test tests/generators/minecraftBlockGenerator/minecraftBlockGenerator.spec.ts --update-snapshots`, `npx playwright test tests/generators/minecraftBlockGenerator/minecraftBlockGenerator.spec.ts`, `npm run types:check`, `npm run lint`, `npm run test:generators`
 - Open follow-up: None from task 7. The next approved slice is task 8; the tint preview behavior remains tracked separately as task 10b.
 - Next step: Begin task 8, the item generator migration.
+
+- Date: 2026-05-31
+- Session focus: Task 8, item generator migration
+- Work completed: Moved the item generator onto the shared selected-texture model and shared texture-version registry, extracted the crop-aware item layout math into `src/generators/minecraftItem/itemLayout.ts`, updated the item picker wrapper to use the builder picker primitives, and refreshed the affected item snapshots.
+- Verification: `npx vitest run src/generators/minecraftItem/itemLayout.test.ts src/generators/minecraftItem/selectedTextureWithBlend.test.ts src/generators/minecraftItem/ui/textureVersions.test.ts`, `npx playwright test tests/generators/minecraftItemGenerator/minecraftItemGenerator.spec.ts --update-snapshots`, `npx playwright test tests/generators/minecraftItemGenerator/minecraftItemGenerator.spec.ts`, `npm run types:check`, `npm run lint`, `npm run test:generators`
+- Open follow-up: The item generator slice is implemented locally but remains unapproved, so the task checkbox stays open until you explicitly approve this slice.
+- Next step: Begin task 9, the armor and horse glint migration.
+
+- Date: 2026-05-31
+- Session focus: Task 8 handoff and approval
+- Work completed: Marked task 8 complete after explicit approval and recorded the item migration handoff so the next session can begin with task 9.
+- Verification: Same as the task 8 implementation verification set: `npx vitest run src/generators/minecraftItem/itemLayout.test.ts src/generators/minecraftItem/selectedTextureWithBlend.test.ts src/generators/minecraftItem/ui/textureVersions.test.ts`, `npx playwright test tests/generators/minecraftItemGenerator/minecraftItemGenerator.spec.ts --update-snapshots`, `npx playwright test tests/generators/minecraftItemGenerator/minecraftItemGenerator.spec.ts`, `npm run types:check`, `npm run lint`, `npm run test:generators`
+- Open follow-up: None from task 8.
+- Next step: Begin task 9, the armor and horse glint migration.

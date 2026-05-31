@@ -1,5 +1,5 @@
-import { TexturePicker as CommonTexturePicker } from "@genroot/generators/_common/texturePicker/texturePicker";
-import { type SelectedTexture } from "@genroot/generators/_common/texturePicker/selectedTexture";
+import { TexturePicker as CommonTexturePicker } from "../../../builder/ui/texturePicker/texturePicker";
+import { type SelectedTexture } from "../../../builder/ui/texturePicker/selectedTexture";
 import { TintSelector } from "@genroot/generators/_common/tintSelector/tintSelector";
 import { itemTintChoiceGroups } from "@genroot/generators/_common/tintSelector/tints";
 import { type TextureVersion } from "./textureVersions";
@@ -19,9 +19,8 @@ export function TexturePicker(props: {
           textureDef={textureDef}
           frames={frames}
           onSelect={props.onSelect}
-          enableRotation={true}
           enableErase={false}
-          tint={props.blend ?? null}
+          blend={props.blend ?? null}
         />
       </div>
       <div className="mb-4">

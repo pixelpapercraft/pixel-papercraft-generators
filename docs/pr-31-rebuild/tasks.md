@@ -43,6 +43,7 @@ Notes:
 - Task 5 is complete and approved.
 - Task 6 is the next slice to work on in the next session.
 - Keep the `Do Not Commit` rule in place for every task until you explicitly approve the slice.
+- After you explicitly approve a slice, the handoff should include committing the approved changes before the task is handed off.
 - Keep the builder-framework versus generator-content boundary in mind:
   - `src/builder` owns shared framework behavior.
   - `src/generators/_common/textures` owns tiled texture assets and version registries.
@@ -52,6 +53,7 @@ Notes:
 
 - When a slice is complete, mark the matching checklist item as done before handing over.
 - Append a short entry to `docs/pr-31-rebuild/logs.md` for the session before handing over.
+- Commit the approved slice before handing over so the next session starts from a concrete revision.
 - Save the minimal context needed to resume cleanly: the completed task number, the next task number, the verification status, and any open follow-up notes.
 - Leave the next-session entry point explicit so a resume prompt like `Let's continue working on the tasks in docs/pr-31-rebuild/tasks.md` can pick up immediately.
 - If the slice introduced a follow-up that belongs to a later task, note that separately rather than leaving the current task ambiguous.
@@ -131,7 +133,7 @@ Notes:
   - Do not mark this task done unless the user explicitly approves the slice.
   - Do Not Commit: keep this slice uncommitted until it has been reviewed and explicitly approved.
 
-8. [ ] Migrate the item generator to the shared picker and the new item layout logic
+8. [x] Migrate the item generator to the shared picker and the new item layout logic
   - Includes `minecraftItemGenerator.tsx`, `itemLayout.ts`, and the new item-specific tests.
   - Depends on the shared texture picker primitives, the shared texture-version registry, and the shared texture data model.
   - Also depends on the new crop-aware frame model, because the item layout uses crop bounds instead of raw frame bounds.
@@ -218,5 +220,5 @@ Prefer the earliest tasks that can be pinned down with focused unit tests before
 - Also run `npm run test:generators` when the change can affect rendered output, but keep it selective and only target the relevant generator tests for the slice.
 - Add more visual regression tests when a change can regress appearance; use them to narrow the blast radius before broader snapshot refreshes.
 - Each slice must leave the project in a working state.
-- Do not commit any changes for a slice until the slice has been reviewed and explicitly approved.
+- Do not commit any changes for a slice until the slice has been reviewed and explicitly approved; once approved, include the commit in the handoff.
 - Only mark a task as done after you explicitly approve the slice.
