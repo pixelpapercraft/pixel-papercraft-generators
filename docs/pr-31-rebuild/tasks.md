@@ -5,6 +5,7 @@ Working reference:
 - A separate reference worktree was checked out at `/Users/kevanstannard/dev/pixel-papercraft-generators-pr-31-rebuild`
 - The reference worktree is at PR 31 head commit `9212a25337f115fb4b1ad8d31c9fa25bcf70d462`
 - `npm install` and `npm run setup` were run successfully in that reference worktree
+- Do not mark any task as done unless the user explicitly approves that slice.
 
 What we have confirmed so far:
 
@@ -38,7 +39,8 @@ Notes:
 - Task 1 is complete and approved.
 - Task 2 is complete and approved.
 - Task 3 is complete and approved.
-- Task 4 is the next slice to work on in the next session.
+- Task 4 is complete and approved.
+- Task 5 is the next slice to work on in the next session.
 - Keep the `Do Not Commit` rule in place for every task until you explicitly approve the slice.
 - Keep the builder-framework versus generator-content boundary in mind:
   - `src/builder` owns shared framework behavior.
@@ -70,12 +72,14 @@ Notes:
   - Framework-only slice: do not move generator-authored texture assets or version registries into `src/builder`.
   - Depends on nothing else in this PR.
   - Blocks most of the other texture work.
+  - Do not mark this task done unless the user explicitly approves the slice.
   - Do Not Commit: keep this slice uncommitted until it has been reviewed and explicitly approved.
 
 2. [x] Reorganize generated texture assets and the texture-version registry into `src/generators/_common/textures`
   - Includes the new generated `texture_*.ts` files, the moved PNG fixtures, `customTextureVersion`, and the shared `textureVersions` registry.
   - Depends on the shared texture data foundation above.
   - Blocks the shared picker wrapper and every generator that reads texture versions.
+  - Do not mark this task done unless the user explicitly approves the slice.
   - Do Not Commit: keep this slice uncommitted until it has been reviewed and explicitly approved.
   - Next session start point: begin with task 3 after task 2 is complete and approved.
 
@@ -83,19 +87,23 @@ Notes:
   - Includes `rotation.ts`, `flip.ts`, `selectedTexture.ts`, and the new picker UI.
   - Depends on the shared texture frame model and on the shared texture-version registry.
   - Blocks the block/item picker integrations and the new serialized selected-texture format.
+  - Do not mark this task done unless the user explicitly approves the slice.
   - Do Not Commit: keep this slice uncommitted until it has been reviewed and explicitly approved.
   - Next session start point: begin with task 4 after task 3 is complete and approved.
 
-4. [ ] Rebuild the shared glint control plumbing in `src/generators/_common/plugins/glint`
+4. [x] Rebuild the shared glint control plumbing in `src/generators/_common/plugins/glint`
   - Includes the shared glint texture defs, shared control inputs, and shared plugin creation.
   - Depends on the existing generator/plugin infrastructure, but not on the texture picker work.
   - Can be tackled in parallel with the texture foundation work.
+  - Do not mark this task done unless the user explicitly approves the slice.
   - Do Not Commit: keep this slice uncommitted until it has been reviewed and explicitly approved.
+  - Completed in this session; resume with task 5 next time.
 
 5. [ ] Apply the general builder UI polish
   - Includes button sizing/style changes, page action layout changes, and the move to the shared PDF button placement.
   - Depends on no texture work.
   - Can be done independently, but should be checked against the updated picker and page flows.
+  - Do not mark this task done unless the user explicitly approves the slice.
   - Do Not Commit: keep this slice uncommitted until it has been reviewed and explicitly approved.
 
 ### Dependent slices
@@ -104,40 +112,47 @@ Notes:
   - Includes `src/builder/ui/controls/atlasControl.tsx`, `textureUpload.ts`, and the atlas-related tests.
   - Depends on the shared texture data and packing foundation.
   - Also depends on the new crop-aware frame model because the atlas now preserves frame crops.
+  - Do not mark this task done unless the user explicitly approves the slice.
   - Do Not Commit: keep this slice uncommitted until it has been reviewed and explicitly approved.
 
 7. [ ] Migrate the block generator to the shared picker and shared texture registry
   - Includes `minecraftBlockGenerator.tsx`, `face.ts`, and the block-specific texture/version cleanup.
   - Depends on the shared texture picker primitives, the shared texture-version registry, and the shared glint plumbing.
   - Also depends on the new selected-texture serialization format.
+  - Do not mark this task done unless the user explicitly approves the slice.
   - Do Not Commit: keep this slice uncommitted until it has been reviewed and explicitly approved.
 
 8. [ ] Migrate the item generator to the shared picker and the new item layout logic
   - Includes `minecraftItemGenerator.tsx`, `itemLayout.ts`, and the new item-specific tests.
   - Depends on the shared texture picker primitives, the shared texture-version registry, and the shared texture data model.
   - Also depends on the new crop-aware frame model, because the item layout uses crop bounds instead of raw frame bounds.
+  - Do not mark this task done unless the user explicitly approves the slice.
   - Do Not Commit: keep this slice uncommitted until it has been reviewed and explicitly approved.
 
 9. [ ] Migrate the armor and horse generators onto the shared glint controls
   - Includes the generator changes that remove their local glint input code.
   - Depends on the shared glint plumbing.
+  - Do not mark this task done unless the user explicitly approves the slice.
   - Do Not Commit: keep this slice uncommitted until it has been reviewed and explicitly approved.
 
 10. [ ] Update the remaining generators and state consumers to the new `SelectedTexture` shape
   - Includes any code that used `SelectedTextureWithBlend` or the old encode/decode helpers.
   - Depends on the shared picker primitives and the new serialization format.
+  - Do not mark this task done unless the user explicitly approves the slice.
   - Do Not Commit: keep this slice uncommitted until it has been reviewed and explicitly approved.
 
 11. [ ] Rebuild the texture generation tooling in `src/tools/makeTextures`
   - Includes the new packing workflow, crop detection, generated TypeScript output, and output-directory move.
   - Depends on the shared texture data and packing foundation.
   - Also depends on the new texture asset layout under `src/generators/_common/textures`.
+  - Do not mark this task done unless the user explicitly approves the slice.
   - Do Not Commit: keep this slice uncommitted until it has been reviewed and explicitly approved.
 
 12. [ ] Finish the test and snapshot migration
   - Includes the new Vitest config, updated unit tests, and the screenshot/snapshot refreshes.
   - Depends on the features it covers being implemented first.
   - This is the final validation layer, not a first-step task.
+  - Do not mark this task done unless you explicitly approve the slice.
   - Do Not Commit: keep this slice uncommitted until it has been reviewed and explicitly approved.
 
 ### Suggested order
