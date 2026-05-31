@@ -115,7 +115,7 @@ Notes:
 
 ### Dependent slices
 
-6. [ ] Migrate the atlas upload/control flow to the new texture model
+6. [x] Migrate the atlas upload/control flow to the new texture model
   - Includes `src/builder/ui/controls/atlasControl.tsx`, `textureUpload.ts`, and the atlas-related tests.
   - Depends on the shared texture data and packing foundation.
   - Also depends on the new crop-aware frame model because the atlas now preserves frame crops.
@@ -152,6 +152,13 @@ Notes:
   - Verification: run `npm run test:generators` on the full suite before handing off.
   - Do not mark this task done unless the user explicitly approves the slice.
   - Do Not Commit: keep this slice uncommitted until it has been reviewed and explicitly approved.
+
+10a. [ ] Investigate custom texture identity collisions when switching between uploaded texture sets
+  - Includes the image generator and item generator flows where existing placed items disappear after swapping one custom upload set for another.
+  - Suspected cause: reused tile/frame indices across different custom atlas sets causing stale item references to resolve to the wrong or missing frame.
+  - Do not fix in this slice; capture the failure mode first and then decide whether the identity or serialization model needs to change.
+  - Verification: reproduce the issue manually in the UI and add a focused test or note that pins down the collision behavior.
+  - Do Not Commit: keep this investigation uncommitted until it has been reviewed and explicitly approved.
 
 11. [ ] Rebuild the texture generation tooling in `src/tools/makeTextures`
   - Includes the new packing workflow, crop detection, generated TypeScript output, and output-directory move.

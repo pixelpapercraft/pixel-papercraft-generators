@@ -3,12 +3,14 @@ import React from "react";
 import {
   type Texture,
   makeTextureFromUrl,
-} from "@genroot/builder/modules/texture";
+} from "../../modules/texture";
 import { type SelectOption, Select } from "../form/select";
 import {
-  packAtlasImages,
-  type AtlasImage,
-} from "./atlasControlLogic";
+  isSupportedTextureUploadFile,
+  loadTextureUploadImage,
+  textureUploadAccept,
+} from "./textureUpload";
+import { createAtlas } from "./atlasControlLogic";
 
 export function AtlasControl({
   id,
@@ -31,6 +33,7 @@ export function AtlasControl({
   const legendId = `${baseId}-legend`;
   const selectId = `${baseId}-select`;
   const fileInputId = `${baseId}-file`;
+  const displayLabel = label ?? id;
   const selectChoices: SelectOption[] =
     choices.length > 0
       ? [
@@ -39,70 +42,6 @@ export function AtlasControl({
         ]
       : [];
 
-  const acceptedFileTypes = ["image/png", "image/jpeg"];
-  const acceptedFileExtensions = [".png", ".jpg", ".jpeg"];
-  const acceptAttribute = "image/png,image/jpeg,.png,.jpg,.jpeg";
-
-  const isSupportedFile = (file: File) => {
-    const lowerFileName = file.name.toLowerCase();
-    return (
-      acceptedFileTypes.includes(file.type) ||
-      acceptedFileExtensions.some((extension) =>
-        lowerFileName.endsWith(extension)
-      )
-    );
-  };
-
-  const loadImageFromFile = (file: File): Promise<HTMLImageElement> => {
-    return new Promise((resolve, reject) => {
-      const image = new Image();
-      const url = URL.createObjectURL(file);
-      image.onload = () => {
-        URL.revokeObjectURL(url);
-        resolve(image);
-      };
-      image.onerror = (error) => {
-        URL.revokeObjectURL(url);
-        reject(error);
-      };
-      image.src = url;
-      (image as HTMLImageElement & { fileName?: string }).fileName = file.name;
-    });
-  };
-
-  const createAtlas = (
-    images: HTMLImageElement[]
-  ): { url: string; framesJson: string; atlasWidth: number; atlasHeight: number } => {
-    const atlasImages: AtlasImage[] = images.map((image, index) => ({
-      name:
-        (image as HTMLImageElement & { fileName?: string }).fileName ??
-        `image_${index}`,
-      width: image.width,
-      height: image.height,
-    }));
-
-    const atlas = packAtlasImages(atlasImages, standardWidth, standardHeight);
-    const { atlasWidth, atlasHeight, frames } = atlas;
-
-    const canvas = document.createElement("canvas");
-    canvas.width = atlasWidth;
-    canvas.height = atlasHeight;
-    const context = canvas.getContext("2d");
-    if (!context) {
-      throw new Error("Failed to get canvas context");
-    }
-
-    images.forEach((image, index) => {
-      const [x, y] = frames[index]!.rectangle;
-      context.drawImage(image, x, y);
-    });
-
-    const url = canvas.toDataURL("image/png");
-    const framesJson = JSON.stringify(atlas);
-
-    return { url, framesJson, atlasWidth, atlasHeight };
-  };
-
   const onInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files ? Array.from(e.target.files) : [];
     if (files.length === 0) {
@@ -110,14 +49,14 @@ export function AtlasControl({
       return;
     }
 
-    const supportedFiles = files.filter(isSupportedFile);
+    const supportedFiles = files.filter(isSupportedTextureUploadFile);
     if (supportedFiles.length === 0) {
       onChange(null, null);
       return;
     }
 
     const loadedImages = await Promise.allSettled(
-      supportedFiles.map(loadImageFromFile)
+      supportedFiles.map(loadTextureUploadImage)
     );
 
     const images = loadedImages
@@ -132,7 +71,11 @@ export function AtlasControl({
       return;
     }
 
-    const { url, framesJson, atlasWidth, atlasHeight } = createAtlas(images);
+    const { url, framesJson, atlasWidth, atlasHeight } = createAtlas(
+      images,
+      standardWidth,
+      standardHeight
+    );
     const texture = await makeTextureFromUrl(url, atlasWidth, atlasHeight);
     onChange(texture, framesJson);
   };
@@ -145,7 +88,7 @@ export function AtlasControl({
   return (
     <fieldset className="mb-4 min-w-0">
       <legend className="font-bold mb-1" id={legendId}>
-        {label ?? id}
+        {displayLabel}
       </legend>
       <div className="flex flex-wrap">
         <div className="flex mb-4 space-x-4 items-center mr-4">
@@ -169,7 +112,7 @@ export function AtlasControl({
               id={fileInputId}
               className="border border-gray-300 p-1 bg-white text-gray-400"
               type="file"
-              accept={acceptAttribute}
+              accept={textureUploadAccept}
               multiple
               onChange={onInputChange}
             />

@@ -1,132 +1,80 @@
-import { describe, expect, it } from "vitest";
-import { packAtlasImages } from "./atlasControlLogic";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
-describe("packAtlasImages", () => {
-  it("packs multiple same-size images into a single row when possible", () => {
-    const atlas = packAtlasImages(
-      [
-        { name: "first", width: 16, height: 16 },
-        { name: "second", width: 16, height: 16 },
-      ],
-      16,
-      16
-    );
+import { createAtlas } from "./atlasControlLogic";
 
-    expect(atlas).toEqual({
-      atlasWidth: 32,
+describe("createAtlas", () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+    vi.unstubAllGlobals();
+  });
+
+  it("packs uploaded images and preserves crop bounds", () => {
+    const atlasDrawImage = vi.fn();
+    const cropDrawImage = vi.fn();
+    const getImageData = vi.fn(() => {
+      const pixels = new Uint8ClampedArray(16 * 16 * 4);
+      for (let y = 3; y < 9; y += 1) {
+        for (let x = 2; x < 6; x += 1) {
+          pixels[(y * 16 + x) * 4 + 3] = 255;
+        }
+      }
+      return { data: pixels };
+    });
+    let canvasIndex = 0;
+    vi.stubGlobal("document", {
+      createElement: vi.fn(() => {
+        canvasIndex += 1;
+        if (canvasIndex === 1) {
+          return {
+            width: 0,
+            height: 0,
+            getContext: vi.fn(() => ({
+              drawImage: cropDrawImage,
+              getImageData,
+            })),
+          };
+        }
+
+        return {
+          width: 0,
+          height: 0,
+          getContext: vi.fn(() => ({
+            drawImage: atlasDrawImage,
+          })),
+          toDataURL: vi.fn(() => "data:image/png;base64,atlas"),
+        };
+      }),
+    });
+
+    const image = {
+      name: "sword.png",
+      width: 16,
+      height: 16,
+    } as HTMLImageElement;
+
+    const atlas = createAtlas([image], 16, 16);
+
+    expect(atlas.atlasWidth).toBe(16);
+    expect(atlas.atlasHeight).toBe(16);
+    expect(atlas.url).toBe("data:image/png;base64,atlas");
+    expect(atlasDrawImage).toHaveBeenCalledWith(image, 0, 0, 16, 16, 0, 0, 16, 16);
+    expect(cropDrawImage).toHaveBeenCalledWith(image, 0, 0);
+    expect(getImageData).toHaveBeenCalledWith(0, 0, 16, 16);
+    expect(JSON.parse(atlas.framesJson)).toEqual({
+      atlasWidth: 16,
       atlasHeight: 16,
       frames: [
         {
-          id: "first",
-          name: "first",
+          id: "sword.png",
+          label: "sword",
           rectangle: [0, 0, 16, 16],
-          frameIndex: 0,
-          frameCount: 1,
-        },
-        {
-          id: "second",
-          name: "second",
-          rectangle: [16, 0, 16, 16],
-          frameIndex: 0,
-          frameCount: 1,
+          crop: [2, 3, 4, 6],
         },
       ],
     });
   });
 
-  it("wraps when the current row is full and preserves image sizes", () => {
-    const atlas = packAtlasImages(
-      [
-        { name: "wide", width: 20, height: 10 },
-        { name: "tall", width: 12, height: 12 },
-        { name: "third", width: 16, height: 8 },
-      ],
-      16,
-      16
-    );
-
-    expect(atlas).toEqual({
-      atlasWidth: 32,
-      atlasHeight: 20,
-      frames: [
-        {
-          id: "wide",
-          name: "wide",
-          rectangle: [0, 0, 20, 10],
-          frameIndex: 0,
-          frameCount: 1,
-        },
-        {
-          id: "tall",
-          name: "tall",
-          rectangle: [20, 0, 12, 12],
-          frameIndex: 0,
-          frameCount: 1,
-        },
-        {
-          id: "third",
-          name: "third",
-          rectangle: [0, 12, 16, 8],
-          frameIndex: 0,
-          frameCount: 1,
-        },
-      ],
-    });
-  });
-
-  it("uses the widest image when estimating atlas width", () => {
-    const atlas = packAtlasImages(
-      [
-        { name: "wide", width: 48, height: 16 },
-        { name: "small", width: 16, height: 16 },
-      ],
-      16,
-      16
-    );
-
-    expect(atlas.atlasWidth).toBe(48);
-    expect(atlas.frames[0]).toEqual({
-      id: "wide",
-      name: "wide",
-      rectangle: [0, 0, 48, 16],
-      frameIndex: 0,
-      frameCount: 1,
-    });
-    expect(atlas.frames[1]).toEqual({
-      id: "small",
-      name: "small",
-      rectangle: [0, 16, 16, 16],
-      frameIndex: 0,
-      frameCount: 1,
-    });
-  });
-
-  it("keeps duplicate file names stable by making frame ids unique", () => {
-    const atlas = packAtlasImages(
-      [
-        { name: "shared", width: 16, height: 16 },
-        { name: "shared", width: 16, height: 16 },
-        { name: "shared", width: 16, height: 16 },
-      ],
-      16,
-      16
-    );
-
-    expect(atlas.frames.map((frame) => frame.id)).toEqual([
-      "shared",
-      "shared_1",
-      "shared_2",
-    ]);
-    expect(atlas.frames.map((frame) => frame.name)).toEqual([
-      "shared",
-      "shared",
-      "shared",
-    ]);
-  });
-
-  it("rejects empty image lists", () => {
-    expect(() => packAtlasImages([], 16, 16)).toThrow(
-      "No images to pack into atlas"
-    );
+  it("rejects an empty image list", () => {
+    expect(() => createAtlas([], 16, 16)).toThrow("No images to pack into atlas");
   });
 });

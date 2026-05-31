@@ -1,10 +1,12 @@
 import React from "react";
 
-import {
-  type Texture,
-  makeTextureFromUrl,
-} from "@genroot/builder/modules/texture";
+import { type Texture } from "../../modules/texture";
 import { type SelectOption, Select } from "../form/select";
+import {
+  isSupportedTextureUploadFile,
+  loadTextureUploadFile,
+  textureUploadAccept,
+} from "./textureUpload";
 
 export function TextureControl({
   id,
@@ -41,21 +43,13 @@ export function TextureControl({
       return;
     }
 
-    const fileReader = new FileReader();
+    if (!isSupportedTextureUploadFile(file)) {
+      return;
+    }
 
-    fileReader.onload = (event) => {
-      const result = event.target ? event.target.result : null;
-
-      if (typeof result !== "string") {
-        return;
-      }
-
-      makeTextureFromUrl(result, standardWidth, standardHeight)
-        .then(onChange)
-        .catch((error) => console.error(error));
-    };
-
-    fileReader.readAsDataURL(file);
+    loadTextureUploadFile(file, standardWidth, standardHeight)
+      .then(onChange)
+      .catch((error) => console.error(error));
   };
 
   const onChoiceChange = (choice: SelectOption) => {
@@ -90,6 +84,7 @@ export function TextureControl({
               id={fileInputId}
               className="border border-gray-300 p-1 bg-white text-gray-400"
               type="file"
+              accept={textureUploadAccept}
               onChange={onInputChange}
             />
           </div>

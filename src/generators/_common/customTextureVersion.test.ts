@@ -16,10 +16,9 @@ describe("parseAtlas", () => {
           frames: [
             {
               id: "first",
-              name: "first",
+              label: "first",
               rectangle: [0, 0, 16, 16],
-              frameIndex: 0,
-              frameCount: 1,
+              crop: [0, 0, 16, 16],
             },
           ],
         })
@@ -30,10 +29,9 @@ describe("parseAtlas", () => {
       frames: [
         {
           id: "first",
-          name: "first",
+          label: "first",
           rectangle: [0, 0, 16, 16],
-          frameIndex: 0,
-          frameCount: 1,
+          crop: [0, 0, 16, 16],
         },
       ],
     });
@@ -55,10 +53,9 @@ describe("custom texture version", () => {
       frames: [
         {
           id: "first",
-          name: "First",
+          label: "First",
           rectangle: [0, 0, 16, 16] as [number, number, number, number],
-          frameIndex: 0,
-          frameCount: 1,
+          crop: [0, 0, 16, 16] as [number, number, number, number],
         },
       ],
     };
@@ -72,7 +69,15 @@ describe("custom texture version", () => {
         standardWidth: 64,
         standardHeight: 32,
       });
-      expect(customFrames).toEqual(atlas.frames);
+      expect([...customFrames]).toEqual([
+        {
+          id: "First",
+          name: "First",
+          rectangle: [0, 0, 16, 16],
+          frameIndex: 0,
+          frameCount: 1,
+        },
+      ]);
     } finally {
       customTextureDef.url = originalTextureDef.url;
       customTextureDef.standardWidth = originalTextureDef.standardWidth;

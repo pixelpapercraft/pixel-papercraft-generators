@@ -1,19 +1,12 @@
 import { type TextureDef } from "../../builder/modules/generatorDef";
-import {
-  type Atlas,
-  type TextureFrame,
-} from "./textureData";
+import { type Atlas } from "../../builder/modules/textureData";
+import { type TextureFrame } from "./textureData";
 
-import image from "./textures/texture_custom.png";
+import { customTextureDef as sharedCustomTextureDef } from "./textures/customTextureVersion";
 
-export const customTextureDef: TextureDef = {
-  id: "custom",
-  url: image.src,
-  standardWidth: 16,
-  standardHeight: 16,
-};
+export const customTextureDef: TextureDef = sharedCustomTextureDef;
 
-// The custom texture is represented as a singleton frame by default.
+// The compatibility layer keeps the legacy picker shape alive for the current block/item flows.
 export const customFrame: TextureFrame = {
   id: "custom",
   name: "Custom",
@@ -33,12 +26,34 @@ export function updateCustomTextureUrl(url: string): void {
   customTextureDef.url = url;
 }
 
+function toLegacyTextureFrame(
+  frame: Atlas["frames"][number],
+  frameIndex: number,
+  frameCount: number
+): TextureFrame {
+  const name = frame.label.replace(/ \(Frame \d+\)$/, "").replace(/ /g, "_");
+  return {
+    id: frameCount > 1 ? `${name}_${frameIndex}` : name,
+    name,
+    rectangle: frame.rectangle,
+    frameIndex,
+    frameCount,
+  };
+}
+
 export function updateCustomTextureAtlas(url: string, atlas: Atlas): void {
   // Update the shared singleton in place so all consumers see the new image.
   customTextureDef.url = url;
   customTextureDef.standardWidth = atlas.atlasWidth;
   customTextureDef.standardHeight = atlas.atlasHeight;
-  customFrames.splice(0, customFrames.length, ...atlas.frames);
+  const frameCount = atlas.frames.length;
+  customFrames.splice(
+    0,
+    customFrames.length,
+    ...atlas.frames.map((frame, frameIndex) =>
+      toLegacyTextureFrame(frame, frameIndex, frameCount)
+    )
+  );
 }
 
 export function parseAtlas(framesJson: string | null): Atlas | null {
