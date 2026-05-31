@@ -1,8 +1,14 @@
 import { describe, expect, it, vi } from "vitest";
 import { type Generator } from "@genroot/builder/modules/generator";
 import { type DrawTextureOptions } from "@genroot/builder/modules/renderers/drawTexture";
-import { encodeSelectedTextureWithBlendArray } from "./selectedTextureWithBlend";
-import { drawFace } from "./face";
+import { makeNextFlip } from "../../builder/ui/texturePicker/flip";
+import { currentBlockTextureId } from "./constants";
+import {
+  decodeSelectedTextureWithBlendArray,
+  encodeSelectedTextureWithBlend,
+  encodeSelectedTextureWithBlendArray,
+} from "./selectedTextureWithBlend";
+import { defineInputRegion, drawFace } from "./face";
 
 function makeGenerator(faceId: string, faceJson: string): Generator {
   return {
@@ -26,13 +32,13 @@ function makeFaceJson({
         textureDefId: "test-texture",
         frame: {
           id: "frame",
-          name: "frame",
+          label: "frame",
           rectangle,
-          frameIndex: 0,
-          frameCount: 1,
+          crop: [0, 0, rectangle[2], rectangle[3]],
         },
         rotation,
         flip,
+        blend: null,
       },
       blend: null,
     },
@@ -137,6 +143,7 @@ describe("drawFace", () => {
   cases.forEach(({ name, rotation, flip, expectedRotate }) => {
     it(`forwards orientation correctly for ${name}`, () => {
       const generator = makeGenerator(faceId, makeFaceJson({ rotation, flip }));
+      const [expectedFlip] = makeNextFlip("None", flip, rotation);
 
       drawFace(generator, faceId, source, destination);
 
@@ -147,7 +154,7 @@ describe("drawFace", () => {
         makeExpectedDestination(rotation, destination),
         expect.objectContaining<DrawTextureOptions>({
           rotate: expectedRotate,
-          flip,
+          flip: expectedFlip,
           blend: undefined,
         })
       );
@@ -176,6 +183,106 @@ describe("drawFace", () => {
         flip: "None",
         blend: undefined,
       })
+    );
+  });
+});
+
+describe("defineInputRegion", () => {
+  const faceId = "BlockFaceTop1";
+  const region: [number, number, number, number] = [0, 0, 16, 16];
+
+  function makeSelectedTextureJson(textureDefId: string): string {
+    return encodeSelectedTextureWithBlend({
+        selectedTexture: {
+          textureDefId,
+        frame: {
+          id: "frame",
+            label: "frame",
+            rectangle: [0, 0, 16, 16],
+            crop: [0, 0, 16, 16],
+          },
+          rotation: "Rot0",
+          flip: "None",
+          blend: null,
+        },
+      blend: null,
+    });
+  }
+
+  function makeRegionGenerator({
+    currentTextureJson,
+    faceJson,
+  }: {
+    currentTextureJson: string;
+    faceJson: string;
+  }) {
+    let onRegionClick: (() => void) | undefined;
+    let nextFaceJson: string | null = null;
+    const generator = {
+      defineRegionInput: vi.fn((_region: unknown, callback: () => void) => {
+        onRegionClick = callback;
+      }),
+      getStringInputValue: vi.fn((id: string) => {
+        if (id === currentBlockTextureId) {
+          return currentTextureJson;
+        }
+        if (id === faceId) {
+          return faceJson;
+        }
+        return null;
+      }),
+      setStringInputValue: vi.fn((id: string, value: string) => {
+        if (id === faceId) {
+          nextFaceJson = value;
+        }
+      }),
+    } as unknown as Generator;
+
+    defineInputRegion(generator, faceId, region);
+
+    const click = onRegionClick;
+    if (!click) {
+      throw new Error("Region callback was not registered");
+    }
+
+    return {
+      click,
+      getNextFaceTextures: () =>
+        nextFaceJson ? decodeSelectedTextureWithBlendArray(nextFaceJson) : [],
+    };
+  }
+
+  it("appends the selected texture to the face", () => {
+    const currentTextureJson = makeSelectedTextureJson("stone");
+    const { click, getNextFaceTextures } = makeRegionGenerator({
+      currentTextureJson,
+      faceJson: "",
+    });
+
+    click();
+
+    expect(getNextFaceTextures()).toHaveLength(1);
+    expect(getNextFaceTextures()[0]?.selectedTexture?.textureDefId).toBe(
+      "stone"
+    );
+  });
+
+  it("erases the last face texture when the picker selection is empty", () => {
+    const currentTextureJson = makeSelectedTextureJson("");
+    const faceJson = encodeSelectedTextureWithBlendArray([
+      JSON.parse(makeSelectedTextureJson("stone")),
+      JSON.parse(makeSelectedTextureJson("dirt")),
+    ]);
+    const { click, getNextFaceTextures } = makeRegionGenerator({
+      currentTextureJson,
+      faceJson,
+    });
+
+    click();
+
+    expect(getNextFaceTextures()).toHaveLength(1);
+    expect(getNextFaceTextures()[0]?.selectedTexture?.textureDefId).toBe(
+      "stone"
     );
   });
 });

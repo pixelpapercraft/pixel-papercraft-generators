@@ -1,8 +1,8 @@
-import { TexturePicker as CommonTexturePicker } from "@genroot/generators/_common/texturePicker/texturePicker";
-import { type SelectedTexture } from "@genroot/generators/_common/texturePicker/selectedTexture";
+import { TexturePicker as BuilderTexturePicker } from "../../builder/ui/texturePicker/texturePicker";
+import { type SelectedTexture } from "../../builder/ui/texturePicker/selectedTexture";
 import { TintSelector } from "@genroot/generators/_common/tintSelector/tintSelector";
 import { defaultTintChoiceGroups } from "@genroot/generators/_common/tintSelector/tints";
-import { findVersion } from "./textureVersions";
+import { findVersion } from "../_common/textures/textureVersions";
 
 export function TexturePicker({
   versionId,
@@ -23,13 +23,12 @@ export function TexturePicker({
   return (
     <div>
       <div className="mb-8">
-        <CommonTexturePicker
+        <BuilderTexturePicker
           key={textureDef.id}
           textureDef={textureDef}
           frames={frames}
           onSelect={onTextureSelected}
-          enableRotation={true}
-          tint={blend ?? null}
+          blend={blend ?? null}
         />
       </div>
       <div className="mb-4">

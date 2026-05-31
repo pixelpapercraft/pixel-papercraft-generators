@@ -6,7 +6,7 @@ import {
   type Generator,
   type Region,
 } from "@genroot/builder/modules/generator";
-import { makeNextFlip } from "../_common/texturePicker/flip";
+import { makeNextFlip } from "../../builder/ui/texturePicker/flip";
 import { currentBlockTextureId } from "./constants";
 import {
   type SelectedTextureWithBlend,
@@ -29,17 +29,22 @@ export function defineInputRegion(
       ? decodeSelectedTextureWithBlend(selectedTextureJson)
       : null;
 
-    if (selectedTexture) {
-      const curentFaceTexturesJson = generator.getStringInputValue(faceId);
-      const currentFaceTextures = curentFaceTexturesJson
-        ? decodeSelectedTextureWithBlendArray(curentFaceTexturesJson)
-        : [];
-
-      const newFaceTextures = currentFaceTextures.concat([selectedTexture]);
-      const newFaceTexturesJson =
-        encodeSelectedTextureWithBlendArray(newFaceTextures);
-      generator.setStringInputValue(faceId, newFaceTexturesJson);
+    if (!selectedTexture) {
+      return;
     }
+
+    const curentFaceTexturesJson = generator.getStringInputValue(faceId);
+    const currentFaceTextures = curentFaceTexturesJson
+      ? decodeSelectedTextureWithBlendArray(curentFaceTexturesJson)
+      : [];
+
+    const shouldErase = selectedTexture.selectedTexture?.textureDefId === "";
+    const newFaceTextures = shouldErase
+      ? currentFaceTextures.slice(0, -1)
+      : currentFaceTextures.concat([selectedTexture]);
+    const newFaceTexturesJson =
+      encodeSelectedTextureWithBlendArray(newFaceTextures);
+    generator.setStringInputValue(faceId, newFaceTexturesJson);
   }, faceId);
 }
 
@@ -50,7 +55,7 @@ function drawTexture(
   destination: Region,
   options?: DrawTextureOptions
 ) {
-  if (!face.selectedTexture) {
+  if (!face.selectedTexture || face.selectedTexture.textureDefId === "") {
     return;
   }
 

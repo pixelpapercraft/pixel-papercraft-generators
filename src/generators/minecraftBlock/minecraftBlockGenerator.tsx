@@ -14,14 +14,17 @@ import {
   encodeSelectedTextureWithBlend,
   decodeSelectedTextureWithBlend,
 } from "./selectedTextureWithBlend";
-import { textureDefs, textureVersionIds } from "./textureVersions";
+import {
+  allTextureDefs,
+  versionIdsBlocksFirst,
+} from "../_common/textures/textureVersions";
 import { TexturePicker } from "./texturePicker";
 import { currentBlockTextureId } from "./constants";
 import {
   parseAtlas,
   updateCustomTextureAtlas,
   updateCustomTextureUrl,
-} from "../_common/customTextureVersion";
+} from "../_common/textures/customTextureVersion";
 import { drawBlock } from "./shapes/block";
 import { drawSlab } from "./shapes/slab";
 import { drawStair } from "./shapes/stair";
@@ -109,10 +112,10 @@ const images: ImageDef[] = [
   { id: "Tabs-Shelf", url: tabsShelfImage.src },
 ];
 
-const textures: TextureDef[] = textureDefs;
+const textures: TextureDef[] = allTextureDefs;
 
 const script: ScriptDef = (generator: Generator) => {
-  generator.defineSelectInput("Version", textureVersionIds);
+  generator.defineSelectInput("Version", versionIdsBlocksFirst);
 
   const versionId = generator.getSelectInputValue("Version");
 
@@ -170,7 +173,12 @@ const script: ScriptDef = (generator: Generator) => {
         onTextureSelected={(selectedTexture) => {
           const newTexture: SelectedTextureWithBlend = {
             selectedTexture,
-            blend: resolvedCurrentTexture ? resolvedCurrentTexture.blend : null,
+            blend:
+              selectedTexture.textureDefId === ""
+                ? null
+                : resolvedCurrentTexture
+                  ? resolvedCurrentTexture.blend
+                  : null,
           };
           onChange(encodeSelectedTextureWithBlend(newTexture));
         }}

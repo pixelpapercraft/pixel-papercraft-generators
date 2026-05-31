@@ -33,3 +33,24 @@ Record one entry per work session before handing off.
 - Verification: Smoke test plan was reviewed successfully by the user; full automated verification for the slice remains `npx vitest run src/builder/ui/controls/textureUpload.test.ts src/builder/ui/controls/atlasControlLogic.test.ts src/generators/_common/customTextureVersion.test.ts src/generators/_common/textures/customTextureVersion.test.ts`, `npx playwright test tests/generators/minecraftBlockGenerator/minecraftBlockGenerator.spec.ts`, `npx playwright test tests/generators/minecraftItemGenerator/minecraftItemGenerator.spec.ts`, `npm run test:generators`, `npm run types:check`, `npm run lint`
 - Open follow-up: Investigate the custom texture identity collision issue tracked as task 10a before broader state-consumer cleanup.
 - Next step: Begin task 7, the block generator migration.
+
+- Date: 2026-05-31
+- Session focus: Task 7, block generator migration
+- Work completed: Migrated the block generator onto the shared texture registry and builder texture picker, wired the custom atlas flow to the shared custom texture module, updated the block face serialization tests for the erase path, and refreshed the affected block generator snapshots.
+- Verification: `npx vitest run src/generators/minecraftBlock/face.test.ts src/generators/minecraftBlock/shapes/shelf.test.ts`, `npx playwright test tests/generators/minecraftBlockGenerator/minecraftBlockGenerator.spec.ts --update-snapshots`, `npx playwright test tests/generators/minecraftBlockGenerator/minecraftBlockGenerator.spec.ts`, `npm run types:check`, `npm run lint`, `npm run test:generators`
+- Open follow-up: Task 7 is implemented locally and verified, but the checklist remains unchecked pending explicit user approval. The block snapshots were updated to match the new picker UI.
+- Next step: Begin task 8, the item generator migration.
+
+- Date: 2026-05-31
+- Session focus: Investigation note, tinted preview fill behavior
+- Work completed: Added a follow-up note that the tile preview tint fills transparent pixels while the template-rendered image only tints non-transparent pixels, and flagged the template renderer as the likely source of truth.
+- Verification: Manual observation from the tinted block preview versus rendered template comparison.
+- Open follow-up: Investigate whether the preview should mirror the template-rendered alpha masking behavior or whether the current template output is the intended contract.
+- Next step: Continue with task 8 unless the tint preview investigation becomes the next approved slice.
+
+- Date: 2026-05-31
+- Session focus: Task 7 handoff and approval
+- Work completed: Marked task 7 complete after explicit approval, recorded the block migration verification set, and left the tint preview issue as a separate investigation note.
+- Verification: `npx vitest run src/generators/minecraftBlock/face.test.ts src/generators/minecraftBlock/shapes/shelf.test.ts`, `npx playwright test tests/generators/minecraftBlockGenerator/minecraftBlockGenerator.spec.ts --update-snapshots`, `npx playwright test tests/generators/minecraftBlockGenerator/minecraftBlockGenerator.spec.ts`, `npm run types:check`, `npm run lint`, `npm run test:generators`
+- Open follow-up: None from task 7. The next approved slice is task 8; the tint preview behavior remains tracked separately as task 10b.
+- Next step: Begin task 8, the item generator migration.
