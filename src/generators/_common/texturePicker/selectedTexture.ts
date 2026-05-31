@@ -1,22 +1,16 @@
+import { type TextureFrame } from "../../../builder/modules/textureData";
 import { type Flip } from "./flip";
 import { type Rotation } from "./rotation";
-
-/** [x, y, width, height] */
-type Rectangle = [number, number, number, number];
-
-export type TextureFrame = {
-  id: string;
-  name: string;
-  rectangle: Rectangle;
-  frameIndex: number;
-  frameCount: number;
-};
 
 export type SelectedTexture = {
   textureDefId: string;
   frame: TextureFrame;
   rotation: Rotation;
   flip: Flip;
+  blend: string | null;
+  itemScale?: number | null;
+  itemLayers?: SelectedTexture[];
+  enchanted?: boolean;
 };
 
 export const encodeSelectedTexture = (

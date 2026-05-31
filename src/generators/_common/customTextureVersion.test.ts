@@ -71,11 +71,10 @@ describe("custom texture version", () => {
       });
       expect([...customFrames]).toEqual([
         {
-          id: "First",
-          name: "First",
+          id: "first",
+          label: "First",
           rectangle: [0, 0, 16, 16],
-          frameIndex: 0,
-          frameCount: 1,
+          crop: [0, 0, 16, 16],
         },
       ]);
     } finally {

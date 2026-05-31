@@ -2,18 +2,20 @@ import { describe, expect, it } from "vitest";
 import { makeFrameLabel, tilesToTextureFrames } from "./textureData";
 
 describe("tilesToTextureFrames", () => {
-  it("preserves frame indices for multi-frame textures", () => {
+  it("preserves frame labels and crops for multi-frame textures", () => {
     const frames = tilesToTextureFrames(
       [
         {
           name: "animated_block",
-          x: 0,
-          y: 0,
-          width: 16,
-          height: 32,
           frames: [
-            { x: 0, y: 0, width: 16, height: 16 },
-            { x: 0, y: 16, width: 16, height: 16 },
+            {
+              rectangle: [0, 0, 16, 16],
+              crop: [0, 0, 16, 16],
+            },
+            {
+              rectangle: [0, 16, 16, 16],
+              crop: [0, 0, 16, 16],
+            },
           ],
         },
       ],
@@ -23,17 +25,15 @@ describe("tilesToTextureFrames", () => {
     expect(frames).toHaveLength(2);
     expect(frames[0]).toEqual({
       id: "animated_block_0",
-      name: "animated_block",
+      label: "animated block (Frame 1)",
       rectangle: [0, 0, 16, 16],
-      frameIndex: 0,
-      frameCount: 2,
+      crop: [0, 0, 16, 16],
     });
     expect(frames[1]).toEqual({
       id: "animated_block_1",
-      name: "animated_block",
+      label: "animated block (Frame 2)",
       rectangle: [0, 16, 16, 16],
-      frameIndex: 1,
-      frameCount: 2,
+      crop: [0, 0, 16, 16],
     });
   });
 
@@ -42,11 +42,12 @@ describe("tilesToTextureFrames", () => {
       [
         {
           name: "large_single_frame",
-          x: 0,
-          y: 0,
-          width: 32,
-          height: 32,
-          frames: [{ x: 0, y: 0, width: 32, height: 32 }],
+          frames: [
+            {
+              rectangle: [0, 0, 32, 32],
+              crop: [0, 0, 32, 32],
+            },
+          ],
         },
       ],
       16
@@ -55,34 +56,22 @@ describe("tilesToTextureFrames", () => {
     expect(frames).toHaveLength(1);
     expect(frames[0]).toEqual({
       id: "large_single_frame",
-      name: "large_single_frame",
+      label: "large single frame",
       rectangle: [0, 0, 32, 32],
-      frameIndex: 0,
-      frameCount: 1,
+      crop: [0, 0, 32, 32],
     });
   });
 });
 
 describe("makeFrameLabel", () => {
-  it("adds a frame suffix only for multi-frame textures", () => {
+  it("returns the frame label", () => {
     expect(
       makeFrameLabel({
         id: "animated_block_1",
-        name: "animated_block",
+        label: "animated block (Frame 2)",
         rectangle: [0, 16, 16, 16],
-        frameIndex: 1,
-        frameCount: 2,
+        crop: [0, 0, 16, 16],
       })
     ).toBe("animated block (Frame 2)");
-
-    expect(
-      makeFrameLabel({
-        id: "large_single_frame",
-        name: "large_single_frame",
-        rectangle: [0, 0, 32, 32],
-        frameIndex: 0,
-        frameCount: 1,
-      })
-    ).toBe("large single frame");
   });
 });

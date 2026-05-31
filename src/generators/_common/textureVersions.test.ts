@@ -39,10 +39,9 @@ describe("makeTextureVersions", () => {
         frames: [
           {
             id: "example_tile",
-            name: "example_tile",
+            label: "example tile",
             rectangle: [0, 0, 16, 16],
-            frameIndex: 0,
-            frameCount: 1,
+            crop: [0, 0, 16, 16],
           },
         ],
       },

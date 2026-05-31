@@ -8,10 +8,7 @@ import {
   XMarkIcon,
 } from "@genroot/builder/ui/icon";
 import { type TextureDef } from "@genroot/builder/modules/generatorDef";
-import {
-  type TextureFrame,
-  makeFrameLabel,
-} from "../textureData";
+import { type TextureFrame, makeFrameLabel } from "../textureData";
 import { type SelectedTexture } from "./selectedTexture";
 import { type Rotation, makeNextRotation } from "./rotation";
 import {
@@ -269,7 +266,7 @@ export function TexturePicker({
   }, [frames, selectedFrame]);
 
   const framesFiltered = search
-    ? frames.filter((frame) => matchesTextureSearch(frame.name, search))
+    ? frames.filter((frame) => matchesTextureSearch(frame.label, search))
     : frames;
 
   const onRotateClick = () => {
@@ -281,6 +278,7 @@ export function TexturePicker({
         frame: selectedFrame,
         rotation: nextRotation,
         flip: flip,
+        blend: null,
       };
       onSelect(selectedTexture);
     }
@@ -294,13 +292,13 @@ export function TexturePicker({
       textureDefId: "",
       frame: {
         id: "",
-        name: "",
+        label: "",
         rectangle: [0, 0, 0, 0],
-        frameIndex: 0,
-        frameCount: 0,
+        crop: [0, 0, 0, 0],
       },
       rotation: "Rot0",
       flip: "None",
+      blend: null,
     };
     onSelect(selectedTexture);
   };
@@ -316,6 +314,7 @@ export function TexturePicker({
         frame: selectedFrame,
         rotation: nextRotation,
         flip: nextFlip,
+        blend: null,
       };
       onSelect(selectedTexture);
     }
@@ -332,6 +331,7 @@ export function TexturePicker({
         frame: selectedFrame,
         rotation: nextRotation,
         flip: nextFlip,
+        blend: null,
       };
       onSelect(selectedTexture);
     }
@@ -346,6 +346,7 @@ export function TexturePicker({
       frame: frame,
       rotation: "Rot0" as const,
       flip: "None" as const,
+      blend: null,
     };
     onSelect(selectedTexture);
   };

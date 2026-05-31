@@ -14,6 +14,13 @@ Record one entry per work session before handing off.
 ## Log
 
 - Date: 2026-05-31
+- Session focus: Task 10, remaining `SelectedTexture` consumer cleanup
+- Work completed: Aligned the generator-side texture data and custom atlas helpers with the shared `TextureFrame`/`SelectedTexture` shape, removed the last legacy frame conversion layer, and updated the stale unit expectations for texture labels and crops.
+- Verification: `npx vitest run src/generators/_common/textureData.test.ts src/generators/_common/customTextureVersion.test.ts src/generators/_common/textureVersions.test.ts`, `npx playwright test tests/generators/minecraftBlockGenerator/minecraftBlockGenerator.spec.ts tests/generators/minecraftItemGenerator/minecraftItemGenerator.spec.ts`, `npm run types:check`, `npm run lint`
+- Open follow-up: Task 10a and task 10b remain intentionally open for separate investigation.
+- Next step: Begin task 11, the texture generation tooling rebuild.
+
+- Date: 2026-05-31
 - Session focus: Task 10, renderer-side block orientation coverage
 - Work completed: Added a unit test in `src/generators/minecraftBlock/face.test.ts` that exercises composed stored texture orientation plus generator flip state, so the renderer contract for block placement is pinned down directly in tests.
 - Verification: `npx vitest run src/builder/ui/texturePicker/flip.test.ts src/generators/minecraftBlock/face.test.ts`, `npx playwright test tests/generators/minecraftBlockGenerator/minecraftBlockGenerator.spec.ts`, `npm run types:check`, `npm run lint`, `npm run test:generators`

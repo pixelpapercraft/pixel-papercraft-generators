@@ -148,12 +148,13 @@ Notes:
   - Do not mark this task done unless the user explicitly approves the slice.
   - Do Not Commit: keep this slice uncommitted until it has been reviewed and explicitly approved.
 
-10. [ ] Update the remaining generators and state consumers to the new `SelectedTexture` shape
+10. [x] Update the remaining generators and state consumers to the new `SelectedTexture` shape
   - Includes any code that used `SelectedTextureWithBlend` or the old encode/decode helpers.
   - Depends on the shared picker primitives and the new serialization format.
   - Verification: run `npm run test:generators` on the full suite before handing off.
   - Do not mark this task done unless the user explicitly approves the slice.
   - Do Not Commit: keep this slice uncommitted until it has been reviewed and explicitly approved.
+  - Next session start point: begin with task 11 after task 10 is complete and approved.
 
 10a. [ ] Investigate custom texture identity collisions when switching between uploaded texture sets
   - Includes the image generator and item generator flows where existing placed items disappear after swapping one custom upload set for another.
