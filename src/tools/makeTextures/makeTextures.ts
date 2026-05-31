@@ -26,7 +26,10 @@ function showHelp() {
 const argv = process.argv;
 const textureId = argv[2];
 const sourceDirectory = argv[3];
-const outputDirectory = Path.resolve(__dirname, "../../textures");
+const outputDirectory = Path.resolve(
+  __dirname,
+  "../../generators/_common/textures"
+);
 
 if (textureId && sourceDirectory) {
   const sourceDir = checkSourceDirectory(sourceDirectory);

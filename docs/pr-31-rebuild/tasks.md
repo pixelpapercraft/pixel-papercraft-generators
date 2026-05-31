@@ -53,7 +53,7 @@ Notes:
 
 - When a slice is complete, mark the matching checklist item as done before handing over.
 - Append a short entry to `docs/pr-31-rebuild/logs.md` for the session before handing over.
-- Commit the approved slice before handing over so the next session starts from a concrete revision.
+- Commit the approved slice before handing over so the next session starts from a concrete revision, and record the commit hash in the handoff notes.
 - Save the minimal context needed to resume cleanly: the completed task number, the next task number, the verification status, and any open follow-up notes.
 - Leave the next-session entry point explicit so a resume prompt like `Let's continue working on the tasks in docs/pr-31-rebuild/tasks.md` can pick up immediately.
 - If the slice introduced a follow-up that belongs to a later task, note that separately rather than leaving the current task ambiguous.
@@ -178,8 +178,16 @@ Notes:
   - Do not mark this task done unless the user explicitly approves the slice.
   - Do Not Commit: keep this slice uncommitted until it has been reviewed and explicitly approved.
 
-12. [ ] Finish the test and snapshot migration
-  - Includes the new Vitest config, updated unit tests, and the screenshot/snapshot refreshes.
+12. [ ] Update the tests to resolve `@genroot`
+  - Includes the Vitest alias config and any test files that still import using relative `src/` paths.
+  - Depends on the alias convention being chosen for generated texture modules and other test fixtures.
+  - Keep this slice focused on test/runtime resolution only; do not fold in screenshot refreshes here.
+  - Verification: run the focused unit tests and the full generator suite before handing off.
+  - Do not mark this task done unless you explicitly approve the slice.
+  - Do Not Commit: keep this slice uncommitted until it has been reviewed and explicitly approved.
+
+13. [ ] Finish the test and snapshot migration
+  - Includes the remaining screenshot/snapshot refreshes and any follow-on unit test cleanups.
   - Depends on the features it covers being implemented first.
   - This is the final validation layer, not a first-step task.
   - Verification: run `npm run test:generators` on the full suite before handing off.

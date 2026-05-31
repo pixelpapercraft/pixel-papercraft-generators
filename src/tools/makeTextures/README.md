@@ -20,4 +20,4 @@ For example:
 npm run makeTextures minecraft-1.7.10-items ~/Downloads/InventivetalentDev-minecraft-assets-4a457a3/assets/minecraft/textures/items
 ```
 
-This will generate new files in the `src/textures/items` directory.
+This will generate new files in the `src/generators/_common/textures` directory.

@@ -14,6 +14,13 @@ Record one entry per work session before handing off.
 ## Log
 
 - Date: 2026-05-31
+- Session focus: Task 11, texture generation tooling rebuild
+- Work completed: Rebuilt `src/tools/makeTextures` around the shared packing and crop-detection helpers, switched the CLI output path to `src/generators/_common/textures`, added an end-to-end test that pins down the crop-aware generated output, and removed the stale JSON sidecars that the old tool emitted.
+- Verification: `npx vitest run src/tools/makeTextures/utils.test.ts`, `npm run types:check`, `npm run lint`, `npm run test:generators`
+- Open follow-up: Task 11 is implemented locally but remains unapproved, and the legacy `texture_minecraft_1_18_2_*` and `texture_minecraft_1_20_4_*` outputs were left untouched.
+- Next step: Review and approve task 11, then decide whether any legacy generated texture modules should be refreshed separately.
+
+- Date: 2026-05-31
 - Session focus: Task 10, remaining `SelectedTexture` consumer cleanup
 - Work completed: Aligned the generator-side texture data and custom atlas helpers with the shared `TextureFrame`/`SelectedTexture` shape, removed the last legacy frame conversion layer, and updated the stale unit expectations for texture labels and crops.
 - Verification: `npx vitest run src/generators/_common/textureData.test.ts src/generators/_common/customTextureVersion.test.ts src/generators/_common/textureVersions.test.ts`, `npx playwright test tests/generators/minecraftBlockGenerator/minecraftBlockGenerator.spec.ts tests/generators/minecraftItemGenerator/minecraftItemGenerator.spec.ts`, `npm run types:check`, `npm run lint`
