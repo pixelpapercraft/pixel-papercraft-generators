@@ -14,6 +14,14 @@ Record one entry per work session before handing off.
 ## Log
 
 - Date: 2026-05-31
+- Session focus: Task 10 follow-up classification
+- Work completed: Marked the custom texture identity collision investigation as deferred for now, and confirmed the tint preview issue is fixed by the canvas-based preview path.
+- Verification: Reused the prior task 13 verification set and the item/block generator screenshots already validated in that slice.
+- Open follow-up: 10a remains deferred without a code change; revisit only if a future identity or serialization change is planned.
+- Next step: None from this classification update.
+- Commit hash: uncommitted
+
+- Date: 2026-05-31
 - Session focus: Task 13 handoff and approval
 - Work completed: Replaced the shared texture picker preview tint path with a canvas-based render so the preview now matches the template renderer, fixed the preview spacing regression so the item sits inside the border again, removed the unused CSS tint overlay helper, and updated the remaining item preview selector to the new DOM structure.
 - Verification: `npx vitest run src/builder/ui/texturePicker/texturePicker.test.ts`, `npx playwright test tests/generators/minecraftBlockGenerator/minecraftBlockGenerator.spec.ts -g "selected tint in the preview" --update-snapshots`, `npx playwright test tests/generators/minecraftBlockGenerator/minecraftBlockGenerator.spec.ts tests/generators/minecraftItemGenerator/minecraftItemGenerator.spec.ts`, `npm run types:check`, `npm run lint`

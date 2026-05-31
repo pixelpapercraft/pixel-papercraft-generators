@@ -157,19 +157,19 @@ Notes:
   - Do Not Commit: keep this slice uncommitted until it has been reviewed and explicitly approved.
   - Next session start point: begin with task 11 after task 10 is complete and approved.
 
-10a. [ ] Investigate custom texture identity collisions when switching between uploaded texture sets
+10a. [x] Investigate custom texture identity collisions when switching between uploaded texture sets
   - Includes the image generator and item generator flows where existing placed items disappear after swapping one custom upload set for another.
   - Suspected cause: reused tile/frame indices across different custom atlas sets causing stale item references to resolve to the wrong or missing frame.
-  - Do not fix in this slice; capture the failure mode first and then decide whether the identity or serialization model needs to change.
+  - Won't fix for now: capture the failure mode is complete, but the behavior stays deferred until a future identity or serialization change is justified.
   - Verification: reproduce the issue manually in the UI and add a focused test or note that pins down the collision behavior.
-  - Do Not Commit: keep this investigation uncommitted until it has been reviewed and explicitly approved.
+  - Explicitly approved as a deferral decision and handed off.
 
-10b. [ ] Investigate the tint preview fill behavior versus template rendering
+10b. [x] Investigate the tint preview fill behavior versus template rendering
   - In the tile preview, tint currently fills the entire preview square, including transparent pixels.
   - In the rendered template image, tint only affects non-transparent pixels, which appears to match the intended output path.
-  - Do not change the behavior in this slice; first confirm whether the template renderer should remain the source of truth and whether the preview should mirror it.
+  - Fixed: the preview now mirrors the template renderer via the canvas-based preview path.
   - Verification: compare the picker preview with the template-rendered output for a tinted texture and document the expected contract.
-  - Do Not Commit: keep this investigation uncommitted until it has been reviewed and explicitly approved.
+  - Explicitly approved and handed off.
 
 11. [x] Rebuild the texture generation tooling in `src/tools/makeTextures`
   - Includes the new packing workflow, crop detection, generated TypeScript output, and output-directory move.
