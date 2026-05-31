@@ -185,7 +185,7 @@ Notes:
   - Keep this slice focused on test/runtime resolution only; do not fold in screenshot refreshes here.
   - Verification: run the focused unit tests and the full generator suite before handing off.
   - Explicitly approved and handed off after verification.
-  - Commit hash: pending.
+  - Commit hash: cd50343.
 
 13. [ ] Finish the test and snapshot migration
   - Includes the remaining screenshot/snapshot refreshes and any follow-on unit test cleanups.

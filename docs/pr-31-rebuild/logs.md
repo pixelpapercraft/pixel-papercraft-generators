@@ -19,6 +19,7 @@ Record one entry per work session before handing off.
 - Verification: `npx vitest run src/generators/minecraftItem/itemLayout.test.ts src/generators/minecraftBlock/face.test.ts src/generators/minecraftBlock/shapes/shelf.test.ts`, `npx vitest run`, `npm run types:check`, `npm run lint`
 - Open follow-up: None from this slice.
 - Next step: Begin task 13, the remaining test and snapshot migration.
+- Commit hash: cd50343
 
 - Date: 2026-05-31
 - Session focus: Task 11 handoff and approval
