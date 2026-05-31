@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { flipToTransform, makeNextFlip } from "./flip";
+import { flipToTransform, flipForRotation, makeNextFlip } from "./flip";
 
 type Rotation = "Rot0" | "Rot90" | "Rot180" | "Rot270";
 type Flip = "None" | "Horizontal" | "Vertical";
@@ -62,9 +62,7 @@ function matricesEqual(
   b: [[number, number], [number, number]]
 ): boolean {
   return a.every((row, rowIndex) =>
-    row.every(
-      (value, columnIndex) => value === b[rowIndex]![columnIndex]!
-    )
+    row.every((value, columnIndex) => value === b[rowIndex]![columnIndex]!)
   );
 }
 
@@ -82,44 +80,6 @@ function expectedNextMatrix(
 }
 
 describe("makeNextFlip", () => {
-  it("returns the expected tuple for every rotation, current flip, and button press", () => {
-    const cases: Array<{
-      rotation: Rotation;
-      current: Flip;
-      requestedFlip: Exclude<Flip, "None">;
-      expected: [Flip, Rotation];
-    }> = [
-      { rotation: "Rot0", current: "None", requestedFlip: "Horizontal", expected: ["Horizontal", "Rot0"] },
-      { rotation: "Rot0", current: "None", requestedFlip: "Vertical", expected: ["Vertical", "Rot0"] },
-      { rotation: "Rot0", current: "Horizontal", requestedFlip: "Horizontal", expected: ["None", "Rot0"] },
-      { rotation: "Rot0", current: "Horizontal", requestedFlip: "Vertical", expected: ["None", "Rot180"] },
-      { rotation: "Rot0", current: "Vertical", requestedFlip: "Horizontal", expected: ["None", "Rot180"] },
-      { rotation: "Rot0", current: "Vertical", requestedFlip: "Vertical", expected: ["None", "Rot0"] },
-      { rotation: "Rot90", current: "None", requestedFlip: "Horizontal", expected: ["Vertical", "Rot90"] },
-      { rotation: "Rot90", current: "None", requestedFlip: "Vertical", expected: ["Horizontal", "Rot90"] },
-      { rotation: "Rot90", current: "Horizontal", requestedFlip: "Horizontal", expected: ["None", "Rot270"] },
-      { rotation: "Rot90", current: "Horizontal", requestedFlip: "Vertical", expected: ["None", "Rot90"] },
-      { rotation: "Rot90", current: "Vertical", requestedFlip: "Horizontal", expected: ["None", "Rot90"] },
-      { rotation: "Rot90", current: "Vertical", requestedFlip: "Vertical", expected: ["None", "Rot270"] },
-      { rotation: "Rot180", current: "None", requestedFlip: "Horizontal", expected: ["Horizontal", "Rot180"] },
-      { rotation: "Rot180", current: "None", requestedFlip: "Vertical", expected: ["Vertical", "Rot180"] },
-      { rotation: "Rot180", current: "Horizontal", requestedFlip: "Horizontal", expected: ["None", "Rot180"] },
-      { rotation: "Rot180", current: "Horizontal", requestedFlip: "Vertical", expected: ["None", "Rot0"] },
-      { rotation: "Rot180", current: "Vertical", requestedFlip: "Horizontal", expected: ["None", "Rot0"] },
-      { rotation: "Rot180", current: "Vertical", requestedFlip: "Vertical", expected: ["None", "Rot180"] },
-      { rotation: "Rot270", current: "None", requestedFlip: "Horizontal", expected: ["Vertical", "Rot270"] },
-      { rotation: "Rot270", current: "None", requestedFlip: "Vertical", expected: ["Horizontal", "Rot270"] },
-      { rotation: "Rot270", current: "Horizontal", requestedFlip: "Horizontal", expected: ["None", "Rot90"] },
-      { rotation: "Rot270", current: "Horizontal", requestedFlip: "Vertical", expected: ["None", "Rot270"] },
-      { rotation: "Rot270", current: "Vertical", requestedFlip: "Horizontal", expected: ["None", "Rot270"] },
-      { rotation: "Rot270", current: "Vertical", requestedFlip: "Vertical", expected: ["None", "Rot90"] },
-    ];
-
-    for (const { rotation, current, requestedFlip, expected } of cases) {
-      expect(makeNextFlip(current, requestedFlip, rotation)).toEqual(expected);
-    }
-  });
-
   it("matches the transform model for every rotation, current flip, and button press", () => {
     for (const rotation of rotations) {
       for (const current of flips) {
@@ -129,6 +89,7 @@ describe("makeNextFlip", () => {
             requestedFlip,
             rotation
           );
+
           expect(
             matricesEqual(
               matrixForState(nextFlip, nextRotation),
@@ -146,6 +107,7 @@ describe("makeNextFlip", () => {
         for (const requestedFlip of ["Horizontal", "Vertical"] as const) {
           const once = makeNextFlip(current, requestedFlip, rotation);
           const twice = makeNextFlip(once[0], requestedFlip, once[1]);
+
           expect(
             matricesEqual(
               matrixForState(twice[0], twice[1]),
@@ -156,7 +118,32 @@ describe("makeNextFlip", () => {
       }
     }
   });
+});
 
+describe("flipForRotation", () => {
+  it("swaps flips for quarter-turn rotations", () => {
+    for (const rotation of rotations) {
+      const expected =
+        rotation === "Rot90" || rotation === "Rot270"
+          ? {
+              None: "None",
+              Horizontal: "Vertical",
+              Vertical: "Horizontal",
+            }
+          : {
+              None: "None",
+              Horizontal: "Horizontal",
+              Vertical: "Vertical",
+            };
+
+      for (const flip of flips) {
+        expect(flipForRotation(flip, rotation)).toBe(expected[flip]);
+      }
+    }
+  });
+});
+
+describe("flipToTransform", () => {
   it("maps flip states to CSS transforms", () => {
     expect(flipToTransform("None")).toBe("");
     expect(flipToTransform("Horizontal")).toBe("scaleX(-1)");

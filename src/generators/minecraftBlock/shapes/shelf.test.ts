@@ -1,23 +1,20 @@
 import { describe, expect, it, vi } from "vitest";
 import { type Generator } from "@genroot/builder/modules/generator";
-import { encodeSelectedTextureWithBlendArray } from "../selectedTextureWithBlend";
+import { encodeSelectedTextures } from "../../../builder/ui/texturePicker/selectedTexture";
 import { drawShelf } from "./shelf";
 
 function makeShelfFaceJson(): string {
-  return encodeSelectedTextureWithBlendArray([
+  return encodeSelectedTextures([
     {
-      selectedTexture: {
-        textureDefId: "test-texture",
-        frame: {
-          id: "frame",
-          label: "frame",
-          rectangle: [0, 0, 16, 16] as [number, number, number, number],
-          crop: [0, 0, 16, 16] as [number, number, number, number],
-        },
-        rotation: "Rot0",
-        flip: "None",
-        blend: null,
+      textureDefId: "test-texture",
+      frame: {
+        id: "frame",
+        label: "frame",
+        rectangle: [0, 0, 16, 16] as [number, number, number, number],
+        crop: [0, 0, 16, 16] as [number, number, number, number],
       },
+      rotation: "Rot0",
+      flip: "None",
       blend: null,
     },
   ]);

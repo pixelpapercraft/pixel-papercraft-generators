@@ -73,6 +73,54 @@ test("minecraft block generator matches the rotated and horizontally flipped scr
   );
 });
 
+test("minecraft block generator places rotated and horizontally flipped amethyst cluster on the left face", async ({
+  page,
+}) => {
+  await page.goto("/generator/minecraft-block");
+
+  await page.getByPlaceholder("Search...").fill("amethyst cluster");
+  await page.getByTitle("amethyst cluster").click();
+  await page.getByLabel("Rotate texture").click();
+  await page.getByLabel("Flip texture horizontal").click();
+  await page.getByTestId("region-BlockFaceLeft1").click();
+
+  const outputPages = page.getByTestId("generator-page-image");
+  await expect(outputPages).toHaveCount(1);
+
+  const outputPage = outputPages.nth(0);
+  await expect(outputPage).toBeVisible();
+  await expect(outputPage).toHaveAttribute("src", /data:image\/png/);
+  await renderImageAtNaturalSize(outputPage);
+
+  await expect(outputPage).toHaveScreenshot(
+    "minecraft-block-amethyst-cluster-rotated-and-horizontal-flipped-left-face-page-1.png"
+  );
+});
+
+test("minecraft block generator places rotated and horizontally flipped amethyst cluster on the right face", async ({
+  page,
+}) => {
+  await page.goto("/generator/minecraft-block");
+
+  await page.getByPlaceholder("Search...").fill("amethyst cluster");
+  await page.getByTitle("amethyst cluster").click();
+  await page.getByLabel("Rotate texture").click();
+  await page.getByLabel("Flip texture horizontal").click();
+  await page.getByTestId("region-BlockFaceRight1").click();
+
+  const outputPages = page.getByTestId("generator-page-image");
+  await expect(outputPages).toHaveCount(1);
+
+  const outputPage = outputPages.nth(0);
+  await expect(outputPage).toBeVisible();
+  await expect(outputPage).toHaveAttribute("src", /data:image\/png/);
+  await renderImageAtNaturalSize(outputPage);
+
+  await expect(outputPage).toHaveScreenshot(
+    "minecraft-block-amethyst-cluster-rotated-and-horizontal-flipped-right-face-page-1.png"
+  );
+});
+
 test("minecraft block generator renders the shelf block", async ({ page }) => {
   await page.goto("/generator/minecraft-block");
 

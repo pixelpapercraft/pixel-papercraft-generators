@@ -2,6 +2,25 @@ import { type Rotation } from "./rotation";
 
 export type Flip = "None" | "Horizontal" | "Vertical";
 
+export function flipForRotation(flip: Flip, rotation: Rotation): Flip {
+  switch (rotation) {
+    case "Rot90":
+    case "Rot270":
+      switch (flip) {
+        case "Horizontal":
+          return "Vertical";
+        case "Vertical":
+          return "Horizontal";
+        case "None":
+          return "None";
+      }
+      break;
+    case "Rot0":
+    case "Rot180":
+      return flip;
+  }
+}
+
 function rotationToQuarterTurns(rotation: Rotation): number {
   switch (rotation) {
     case "Rot0":
@@ -30,25 +49,14 @@ function quarterTurnsToRotation(quarterTurns: number): Rotation {
   return "Rot0";
 }
 
-function rotateBy(rotation: Rotation, quarterTurns: number, flip: Flip) {
+function rotateBy(
+  rotation: Rotation,
+  quarterTurns: number,
+  flip: Flip
+): Rotation {
   const current = rotationToQuarterTurns(rotation);
-  const next =
-    flip === "None" ? current + quarterTurns : current - quarterTurns;
+  const next = flip === "None" ? current + quarterTurns : current - quarterTurns;
   return quarterTurnsToRotation(next);
-}
-
-function getRotationOrientedFlip(flip: Flip, rotation: Rotation): Flip {
-  if (rotation === "Rot90" || rotation === "Rot270") {
-    switch (flip) {
-      case "Horizontal":
-        return "Vertical";
-      case "Vertical":
-        return "Horizontal";
-      case "None":
-        return "None";
-    }
-  }
-  return flip;
 }
 
 export function makeNextFlip(
@@ -58,7 +66,7 @@ export function makeNextFlip(
 ): [Flip, Rotation] {
   let nextFlip: Flip = "None";
   let extraQuarterTurns = 0;
-  const orientedFlip = getRotationOrientedFlip(flip, rotation);
+  const orientedFlip = flipForRotation(flip, rotation);
 
   if (orientedFlip !== current) {
     if (orientedFlip === "None") {

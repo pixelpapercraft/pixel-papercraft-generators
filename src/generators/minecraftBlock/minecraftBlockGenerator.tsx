@@ -10,10 +10,10 @@ import type {
 } from "@genroot/builder/modules/generatorDef";
 import { type Generator } from "@genroot/builder/modules/generator";
 import {
-  type SelectedTextureWithBlend,
-  encodeSelectedTextureWithBlend,
-  decodeSelectedTextureWithBlend,
-} from "./selectedTextureWithBlend";
+  type SelectedTexture,
+  encodeSelectedTexture,
+  decodeSelectedTexture,
+} from "../../builder/ui/texturePicker/selectedTexture";
 import {
   allTextureDefs,
   versionIdsBlocksFirst,
@@ -145,12 +145,11 @@ const script: ScriptDef = (generator: Generator) => {
     currentBlockTextureId
   );
   const currentTexture = currentTextureJson
-    ? decodeSelectedTextureWithBlend(currentTextureJson)
+    ? decodeSelectedTexture(currentTextureJson)
     : null;
   if (
     currentTexture !== null &&
-    currentTexture.selectedTexture !== null &&
-    currentTexture.selectedTexture.textureDefId !== versionId
+    currentTexture.textureDefId !== versionId
   ) {
     // Clear stale selections when the active texture version changes.
     generator.setStringInputValue(currentBlockTextureId, "");
@@ -159,7 +158,7 @@ const script: ScriptDef = (generator: Generator) => {
     currentBlockTextureId
   );
   const resolvedCurrentTexture = resolvedCurrentTextureJson
-    ? decodeSelectedTextureWithBlend(resolvedCurrentTextureJson)
+    ? decodeSelectedTexture(resolvedCurrentTextureJson)
     : null;
 
   generator.defineCustomStringInput(currentBlockTextureId, (onChange) => {
@@ -171,8 +170,8 @@ const script: ScriptDef = (generator: Generator) => {
         versionId={versionId}
         blend={resolvedCurrentTexture ? resolvedCurrentTexture.blend : null}
         onTextureSelected={(selectedTexture) => {
-          const newTexture: SelectedTextureWithBlend = {
-            selectedTexture,
+          const newTexture: SelectedTexture = {
+            ...selectedTexture,
             blend:
               selectedTexture.textureDefId === ""
                 ? null
@@ -180,16 +179,18 @@ const script: ScriptDef = (generator: Generator) => {
                   ? resolvedCurrentTexture.blend
                   : null,
           };
-          onChange(encodeSelectedTextureWithBlend(newTexture));
+          onChange(encodeSelectedTexture(newTexture));
         }}
         onBlendSelected={(blend) => {
-          const newTexture: SelectedTextureWithBlend = {
-            selectedTexture: resolvedCurrentTexture
-              ? resolvedCurrentTexture.selectedTexture
-              : null,
-            blend,
-          };
-          onChange(encodeSelectedTextureWithBlend(newTexture));
+          if (!resolvedCurrentTexture) {
+            return;
+          }
+          onChange(
+            encodeSelectedTexture({
+              ...resolvedCurrentTexture,
+              blend,
+            })
+          );
         }}
       />
     );
