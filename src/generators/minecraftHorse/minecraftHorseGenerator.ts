@@ -38,12 +38,13 @@ import copperTexture from "./textures/copper.png";
 import ironTexture from "./textures/iron.png";
 import diamondTexture from "./textures/diamond.png";
 import netheriteTexture from "./textures/netherite.png";
-import enchantedGlint from "./textures/enchanted_glint_entity.png";
-import enchantedGlintOld from "./textures/enchanted_item_glint.png";
 import { Blend } from "@genroot/builder/modules/renderers/drawTexture";
 import { Dimensions, Minecraft } from "../_common/minecraft";
 import { horse } from "../_common/minecraftEntity";
-import { GlintPluginOptions, makeGlintPlugin } from "../_common/plugins/glint";
+import {
+  defineGlintControls,
+  entityGlintTextureDefs,
+} from "../_common/plugins/glint";
 import { defineTintInput } from "../_common/tintSelector/tintSelector";
 import { armorTintChoiceGroups } from "../_common/tintSelector/tints";
 
@@ -228,28 +229,12 @@ const textures: TextureDef[] = [
     standardWidth: 64,
     standardHeight: 64,
   },
-  {
-    id: "Enchanted Glint",
-    url: enchantedGlint.src,
-    standardWidth: 128,
-    standardHeight: 128,
-  },
-  {
-    id: "1.20+",
-    url: enchantedGlint.src,
-    standardWidth: 128,
-    standardHeight: 128,
-  },
-  {
-    id: "Pre-1.20",
-    url: enchantedGlintOld.src,
-    standardWidth: 128,
-    standardHeight: 128,
-  },
+  ...entityGlintTextureDefs,
 ];
 
 const script: ScriptDef = (generator: Generator) => {
   const minecraftGenerator = new Minecraft(generator);
+  const glint = defineGlintControls(generator);
   function getTint(colorId: string): Blend {
     const hex =
       defineTintInput(generator, colorId, {
@@ -293,39 +278,6 @@ const script: ScriptDef = (generator: Generator) => {
     choices: ["Leather", "Gold", "Copper", "Iron", "Diamond", "Netherite"],
   });
 
-  generator.defineTextureInput("Enchanted Glint", {
-    standardWidth: 128,
-    standardHeight: 128,
-    choices: ["1.20+", "Pre-1.20"],
-  });
-
-  const glinta = generator.defineAndGetRangeInput("Glint Opacity", {
-    min: 0,
-    max: 255,
-    value: 255,
-    step: 1,
-  });
-  const glintx = generator.defineAndGetRangeInput("Glint X Offset", {
-    min: 0,
-    max: 128,
-    value: 0,
-    step: 1,
-  });
-  const glinty = generator.defineAndGetRangeInput("Glint Y Offset", {
-    min: 0,
-    max: 128,
-    value: 0,
-    step: 1,
-  });
-
-  const glintTexture = generator.getTexture("Enchanted Glint");
-
-  const glintPluginOptions: GlintPluginOptions = {
-    opacity: glinta / 255,
-    xOffset: glintx,
-    yOffset: glinty,
-  };
-
   // Define user variables
 
   const tintArmor = generator.defineAndGetBooleanInput("Tint Armor", false);
@@ -359,10 +311,7 @@ const script: ScriptDef = (generator: Generator) => {
     let oy: number;
     let dimensions: Dimensions;
 
-    const plugin =
-      glintTexture && enchanted
-        ? makeGlintPlugin(glintTexture, glintPluginOptions)
-        : undefined;
+    const plugin = glint.getPlugin(enchanted);
 
     // Head
     [ox, oy] = [20, 20];

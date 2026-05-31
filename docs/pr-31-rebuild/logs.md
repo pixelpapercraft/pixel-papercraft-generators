@@ -14,6 +14,13 @@ Record one entry per work session before handing off.
 ## Log
 
 - Date: 2026-05-31
+- Session focus: Task 9, armor and horse glint migration
+- Work completed: Rewired the armor and horse generators to the shared glint control helper, removed their duplicated inline glint input plumbing, and switched both generators to the shared glint texture registry.
+- Verification: `npx playwright test tests/generators/minecraftArmorGenerator/minecraftArmorGenerator.spec.ts tests/generators/minecraftHorseGenerator/minecraftHorseGenerator.spec.ts`, `npm run types:check`, `npm run lint`
+- Open follow-up: None from this slice.
+- Next step: Begin task 10, the remaining `SelectedTexture` state-consumer cleanup.
+
+- Date: 2026-05-31
 - Session focus: Task 5, general builder UI polish
 - Work completed: Tightened shared button sizing, moved the shared PDF button into the first page action row, updated page action spacing and labels, and refreshed the affected item generator sidebar snapshot.
 - Verification: `npx vitest run src/builder/ui/button/buttonStyles.test.ts`, `npm run types:check`, `npm run lint`, `npm run test:generators`

@@ -141,7 +141,7 @@ Notes:
   - Do not mark this task done unless the user explicitly approves the slice.
   - Do Not Commit: keep this slice uncommitted until it has been reviewed and explicitly approved.
 
-9. [ ] Migrate the armor and horse generators onto the shared glint controls
+9. [x] Migrate the armor and horse generators onto the shared glint controls
   - Includes the generator changes that remove their local glint input code.
   - Depends on the shared glint plumbing.
   - Verification: run `npm run test:generators` on the full suite before handing off.
