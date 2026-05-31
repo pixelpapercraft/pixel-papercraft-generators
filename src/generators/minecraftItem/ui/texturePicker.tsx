@@ -1,5 +1,5 @@
-import { TexturePicker as CommonTexturePicker } from "../../../builder/ui/texturePicker/texturePicker";
-import { type SelectedTexture } from "../../../builder/ui/texturePicker/selectedTexture";
+import { TexturePicker as CommonTexturePicker } from "@genroot/builder/ui/texturePicker/texturePicker";
+import { type SelectedTexture } from "@genroot/builder/ui/texturePicker/selectedTexture";
 import { TintSelector } from "@genroot/generators/_common/tintSelector/tintSelector";
 import { itemTintChoiceGroups } from "@genroot/generators/_common/tintSelector/tints";
 import { type TextureVersion } from "./textureVersions";

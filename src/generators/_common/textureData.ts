@@ -7,7 +7,7 @@ import {
   type TextureFrame,
   imageToTextureFrames,
   tilesToTextureFrames,
-} from "../../builder/modules/textureData";
+} from "@genroot/builder/modules/textureData";
 
 export type {
   Atlas,

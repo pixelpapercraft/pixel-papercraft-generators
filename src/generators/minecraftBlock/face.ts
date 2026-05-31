@@ -11,9 +11,9 @@ import {
   encodeSelectedTextures,
   decodeSelectedTextures,
   decodeSelectedTexture,
-} from "../../builder/ui/texturePicker/selectedTexture";
-import { makeNextFlip } from "../../builder/ui/texturePicker/flip";
-import { currentBlockTextureId } from "./constants";
+} from "@genroot/builder/ui/texturePicker/selectedTexture";
+import { makeNextFlip } from "@genroot/builder/ui/texturePicker/flip";
+import { currentBlockTextureId } from "@genroot/generators/minecraftBlock/constants";
 
 export function defineInputRegion(
   generator: Generator,

@@ -13,27 +13,27 @@ import {
   type SelectedTexture,
   encodeSelectedTexture,
   decodeSelectedTexture,
-} from "../../builder/ui/texturePicker/selectedTexture";
+} from "@genroot/builder/ui/texturePicker/selectedTexture";
 import {
   allTextureDefs,
   versionIdsBlocksFirst,
-} from "../_common/textures/textureVersions";
-import { TexturePicker } from "./texturePicker";
-import { currentBlockTextureId } from "./constants";
+} from "@genroot/generators/_common/textures/textureVersions";
+import { TexturePicker } from "@genroot/generators/minecraftBlock/texturePicker";
+import { currentBlockTextureId } from "@genroot/generators/minecraftBlock/constants";
 import {
   parseAtlas,
   updateCustomTextureAtlas,
   updateCustomTextureUrl,
-} from "../_common/textures/customTextureVersion";
-import { drawBlock } from "./shapes/block";
-import { drawSlab } from "./shapes/slab";
-import { drawStair } from "./shapes/stair";
-import { drawFence } from "./shapes/fence";
-import { drawDoor } from "./shapes/door";
-import { drawTrapdoor } from "./shapes/trapdoor";
-import { drawSnow } from "./shapes/snow";
-import { drawCake } from "./shapes/cake";
-import { drawShelf } from "./shapes/shelf";
+} from "@genroot/generators/_common/textures/customTextureVersion";
+import { drawBlock } from "@genroot/generators/minecraftBlock/shapes/block";
+import { drawSlab } from "@genroot/generators/minecraftBlock/shapes/slab";
+import { drawStair } from "@genroot/generators/minecraftBlock/shapes/stair";
+import { drawFence } from "@genroot/generators/minecraftBlock/shapes/fence";
+import { drawDoor } from "@genroot/generators/minecraftBlock/shapes/door";
+import { drawTrapdoor } from "@genroot/generators/minecraftBlock/shapes/trapdoor";
+import { drawSnow } from "@genroot/generators/minecraftBlock/shapes/snow";
+import { drawCake } from "@genroot/generators/minecraftBlock/shapes/cake";
+import { drawShelf } from "@genroot/generators/minecraftBlock/shapes/shelf";
 
 import thumnbailImage from "./thumbnail/v2-thumbnail-256.jpeg";
 import backgroundImage from "./images/Background.png";

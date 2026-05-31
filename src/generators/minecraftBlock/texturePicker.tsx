@@ -1,8 +1,8 @@
-import { TexturePicker as BuilderTexturePicker } from "../../builder/ui/texturePicker/texturePicker";
-import { type SelectedTexture } from "../../builder/ui/texturePicker/selectedTexture";
+import { TexturePicker as BuilderTexturePicker } from "@genroot/builder/ui/texturePicker/texturePicker";
+import { type SelectedTexture } from "@genroot/builder/ui/texturePicker/selectedTexture";
 import { TintSelector } from "@genroot/generators/_common/tintSelector/tintSelector";
 import { defaultTintChoiceGroups } from "@genroot/generators/_common/tintSelector/tints";
-import { findVersion } from "../_common/textures/textureVersions";
+import { findVersion } from "@genroot/generators/_common/textures/textureVersions";
 
 export function TexturePicker({
   versionId,

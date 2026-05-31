@@ -5,9 +5,9 @@ import {
 } from "@genroot/builder/modules/generator";
 import { type Texture } from "@genroot/builder/modules/texture";
 import { type TextureDef } from "@genroot/builder/modules/generatorDef";
-import enchantedGlintEntity from "../textures/enchanted_glint_entity.png";
-import enchantedGlintItem from "../textures/enchanted_glint_item.png";
-import enchantedGlintOld from "../textures/enchanted_item_glint.png";
+import enchantedGlintEntity from "@genroot/generators/_common/textures/enchanted_glint_entity.png";
+import enchantedGlintItem from "@genroot/generators/_common/textures/enchanted_glint_item.png";
+import enchantedGlintOld from "@genroot/generators/_common/textures/enchanted_item_glint.png";
 
 export type GlintPluginOptions = {
   opacity: number;

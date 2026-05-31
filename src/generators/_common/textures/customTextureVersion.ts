@@ -1,8 +1,8 @@
-import { type TextureDef } from "../../../builder/modules/generatorDef";
+import { type TextureDef } from "@genroot/builder/modules/generatorDef";
 import {
   type Atlas,
   type TextureFrame,
-} from "../../../builder/modules/textureData";
+} from "@genroot/builder/modules/textureData";
 
 import image from "./texture_custom.png";
 

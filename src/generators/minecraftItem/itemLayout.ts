@@ -2,9 +2,9 @@ import { type TextureFrame } from "@genroot/builder/modules/textureData";
 import {
   type Flip,
   makeNextFlip,
-} from "../../builder/ui/texturePicker/flip";
-import { type Rotation } from "../../builder/ui/texturePicker/rotation";
-import { type SelectedTexture } from "../../builder/ui/texturePicker/selectedTexture";
+} from "@genroot/builder/ui/texturePicker/flip";
+import { type Rotation } from "@genroot/builder/ui/texturePicker/rotation";
+import { type SelectedTexture } from "@genroot/builder/ui/texturePicker/selectedTexture";
 
 /** [x, y, width, height] */
 export type Rectangle = [number, number, number, number];

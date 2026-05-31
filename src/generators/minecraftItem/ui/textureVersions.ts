@@ -3,4 +3,4 @@ export {
   allTextureDefs,
   findVersion,
   versionIdsItemsFirst as versionIds,
-} from "../../_common/textures/textureVersions";
+} from "@genroot/generators/_common/textures/textureVersions";

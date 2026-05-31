@@ -8,7 +8,7 @@ import {
   XMarkIcon,
 } from "@genroot/builder/ui/icon";
 import { type TextureDef } from "@genroot/builder/modules/generatorDef";
-import { type TextureFrame, makeFrameLabel } from "../textureData";
+import { type TextureFrame, makeFrameLabel } from "@genroot/generators/_common/textureData";
 import { type SelectedTexture } from "./selectedTexture";
 import { type Rotation, makeNextRotation } from "./rotation";
 import {

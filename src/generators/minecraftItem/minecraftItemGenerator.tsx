@@ -17,37 +17,37 @@ import { A4 } from "@genroot/builder/modules/modelPage";
 import {
   type Flip,
   makeNextFlip,
-} from "../../builder/ui/texturePicker/flip";
-import { rotationToDegrees } from "../../builder/ui/texturePicker/rotation";
+} from "@genroot/builder/ui/texturePicker/flip";
+import { rotationToDegrees } from "@genroot/builder/ui/texturePicker/rotation";
 import {
   type SelectedTexture,
   encodeSelectedTexture,
   decodeSelectedTexture,
   encodeSelectedTextures,
   decodeSelectedTextures,
-} from "../../builder/ui/texturePicker/selectedTexture";
+} from "@genroot/builder/ui/texturePicker/selectedTexture";
 import {
   allTextureDefs,
   versionIdsItemsFirst as versionIds,
   findVersion,
-} from "../_common/textures/textureVersions";
-import { TexturePicker } from "./ui/texturePicker";
+} from "@genroot/generators/_common/textures/textureVersions";
+import { TexturePicker } from "@genroot/generators/minecraftItem/ui/texturePicker";
 import {
   defineGlintControls,
   itemGlintTextureDefs,
-} from "../_common/plugins/glint";
+} from "@genroot/generators/_common/plugins/glint";
 import {
   parseAtlas,
   updateCustomTextureAtlas,
   updateCustomTextureUrl,
-} from "../_common/textures/customTextureVersion";
+} from "@genroot/generators/_common/textures/customTextureVersion";
 import {
   type Rectangle,
   getItemDimensions,
   getItemLayers,
   getItemLayout,
   getLayerHalfDestination,
-} from "./itemLayout";
+} from "@genroot/generators/minecraftItem/itemLayout";
 
 import thumnbailImage from "./thumbnail/v2-thumbnail-256.jpeg";
 import backgroundImage from "./images/Background.png";

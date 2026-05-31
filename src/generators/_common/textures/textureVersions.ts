@@ -1,9 +1,9 @@
-import { type TextureDef } from "../../../builder/modules/generatorDef";
+import { type TextureDef } from "@genroot/builder/modules/generatorDef";
 import {
   type TextureData,
   type TextureFrame,
   tilesToTextureFrames,
-} from "../../../builder/modules/textureData";
+} from "@genroot/builder/modules/textureData";
 
 import { customTextureVersion } from "./customTextureVersion";
 import * as Texture_1_7_10_Blocks from "./texture_minecraft_1_7_10_blocks";
