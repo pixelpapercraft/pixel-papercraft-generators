@@ -14,6 +14,14 @@ Record one entry per work session before handing off.
 ## Log
 
 - Date: 2026-05-31
+- Session focus: PR 31 comparison and handoff
+- Work completed: Compared the PR 31 description against this branch, confirmed the PR-level goals are represented here, and documented the remaining hard UI divergence follow-up for the next session.
+- Verification: `gh pr view 31 --json body,title,url`, file-level diff and branch comparison checks against `pr-31-reference`.
+- Open follow-up: Investigate the visible picker, preview, and snapshot differences between PR 31 and this branch before any merge-planning decision.
+- Next step: Pick up the hard UI divergence review in the next session.
+- Commit hash: uncommitted
+
+- Date: 2026-05-31
 - Session focus: Task 10 follow-up classification
 - Work completed: Marked the custom texture identity collision investigation as deferred for now, and confirmed the tint preview issue is fixed by the canvas-based preview path.
 - Verification: Reused the prior task 13 verification set and the item/block generator screenshots already validated in that slice.

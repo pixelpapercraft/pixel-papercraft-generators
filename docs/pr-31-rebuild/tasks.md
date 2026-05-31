@@ -34,6 +34,9 @@ Notes:
 
 ## Current Findings
 
+- Follow up on the hard UI divergences between PR 31 and this branch before any merge-planning decision. Focus on visible picker, preview, and snapshot differences rather than internal refactors.
+- Next session should start there.
+
 ### Handoff Summary
 
 - Task 1 is complete and approved.
