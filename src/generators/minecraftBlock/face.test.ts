@@ -57,6 +57,19 @@ function makeExpectedDestination(
   }
 }
 
+function rotationToDegrees(rotation: "Rot0" | "Rot90" | "Rot180" | "Rot270") {
+  switch (rotation) {
+    case "Rot0":
+      return 0;
+    case "Rot90":
+      return 90;
+    case "Rot180":
+      return 180;
+    case "Rot270":
+      return 270;
+  }
+}
+
 describe("drawFace", () => {
   const source: [number, number, number, number] = [0, 0, 16, 16];
   const destination: [number, number, number, number] = [20, 30, 40, 50];
@@ -156,6 +169,31 @@ describe("drawFace", () => {
         })
       );
     });
+  });
+
+  it("composes a generator flip with the stored selected texture orientation", () => {
+    const rotation: "Rot0" | "Rot90" | "Rot180" | "Rot270" = "Rot90";
+    const flip: "None" | "Horizontal" | "Vertical" = "Horizontal";
+    const generator = makeGenerator(faceId, makeFaceJson({ rotation, flip }));
+    const [expectedFlip, expectedRotation] = makeNextFlip(
+      flip,
+      "Horizontal",
+      rotation
+    );
+
+    drawFace(generator, faceId, source, destination, { flip: "Horizontal" });
+
+    expect(generator.drawTexture).toHaveBeenCalledTimes(1);
+    expect(generator.drawTexture).toHaveBeenCalledWith(
+      "test-texture",
+      [16, 32, 16, 16],
+      makeExpectedDestination(expectedRotation, destination),
+      expect.objectContaining<DrawTextureOptions>({
+        rotate: rotationToDegrees(expectedRotation),
+        flip: expectedFlip,
+        blend: undefined,
+      })
+    );
   });
 
   it("scales partial source regions to match larger atlas frames", () => {

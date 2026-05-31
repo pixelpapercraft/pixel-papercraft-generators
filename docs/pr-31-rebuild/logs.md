@@ -14,6 +14,13 @@ Record one entry per work session before handing off.
 ## Log
 
 - Date: 2026-05-31
+- Session focus: Task 10, renderer-side block orientation coverage
+- Work completed: Added a unit test in `src/generators/minecraftBlock/face.test.ts` that exercises composed stored texture orientation plus generator flip state, so the renderer contract for block placement is pinned down directly in tests.
+- Verification: `npx vitest run src/builder/ui/texturePicker/flip.test.ts src/generators/minecraftBlock/face.test.ts`, `npx playwright test tests/generators/minecraftBlockGenerator/minecraftBlockGenerator.spec.ts`, `npm run types:check`, `npm run lint`, `npm run test:generators`
+- Open follow-up: None from this slice.
+- Next step: Continue task 10, then move to the remaining follow-up investigations once the state-consumer cleanup is complete.
+
+- Date: 2026-05-31
 - Session focus: Task 9, armor and horse glint migration
 - Work completed: Rewired the armor and horse generators to the shared glint control helper, removed their duplicated inline glint input plumbing, and switched both generators to the shared glint texture registry.
 - Verification: `npx playwright test tests/generators/minecraftArmorGenerator/minecraftArmorGenerator.spec.ts tests/generators/minecraftHorseGenerator/minecraftHorseGenerator.spec.ts`, `npm run types:check`, `npm run lint`
