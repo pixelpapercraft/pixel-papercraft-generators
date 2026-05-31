@@ -9,6 +9,9 @@ import {
 } from "@genroot/builder/ui/icon";
 import { type TextureDef } from "@genroot/builder/modules/generatorDef";
 import { type TextureFrame } from "@genroot/builder/modules/textureData";
+import { makeCanvasWithContext } from "@genroot/builder/modules/canvasWithContext";
+import { drawTexture } from "@genroot/builder/modules/renderers/drawTexture";
+import { makeTextureFromImage } from "@genroot/builder/modules/texture";
 import {
   type Flip,
   flipToTransform,
@@ -21,6 +24,7 @@ import {
 } from "./rotation";
 import { type SelectedTexture } from "./selectedTexture";
 import { shouldClearSelectedFrame } from "./selectionState";
+import { makeTileStyle } from "./texturePickerStyle";
 
 function px(n: number): string {
   return n + "px";
@@ -28,18 +32,6 @@ function px(n: number): string {
 
 function deg(n: number): string {
   return n + "deg";
-}
-
-function makeBackgroundImage(url: string): string {
-  return "url(" + url + ")";
-}
-
-function makeBackgroundPosition(x: number, y: number): string {
-  return px(x) + " " + px(y);
-}
-
-function makeBackgroundSize(x: number, y: number): string {
-  return px(x) + " " + px(y);
 }
 
 function makeBorder(size: number, style: string, color: string): string {
@@ -67,33 +59,82 @@ function makeTileBaseStyle(isSelected: boolean, tileSize: number) {
   };
 }
 
-function makeTileStyle(
-  textureDef: TextureDef,
-  frame: TextureFrame,
-  isSelected: boolean,
-  isHover: boolean,
-  tileSize: number
-) {
-  const [x, y, width, height] = frame.rectangle;
-  const widthScale = tileSize / width;
-  const heightScale = tileSize / height;
+function PreviewCanvas({
+  textureDef,
+  frame,
+  rotation,
+  flip,
+  blend,
+}: {
+  textureDef: TextureDef;
+  frame: TextureFrame;
+  rotation: Rotation;
+  flip: Flip;
+  blend: string | null;
+}) {
+  const canvasRef = React.useRef<HTMLCanvasElement>(null);
 
-  const baseStyle = makeTileBaseStyle(isSelected || isHover, tileSize);
-  const backgroundStyle = {
-    backgroundImage: makeBackgroundImage(textureDef.url),
-    backgroundPosition: makeBackgroundPosition(
-      -x * widthScale,
-      -y * heightScale
-    ),
-    backgroundRepeat: "no-repeat",
-    backgroundSize: makeBackgroundSize(
-      textureDef.standardWidth * widthScale,
-      textureDef.standardHeight * heightScale
-    ),
-    imageRendering: "pixelated" as const,
-  };
+  React.useEffect(() => {
+    let cancelled = false;
+    const canvas = canvasRef.current;
+    if (!canvas) {
+      return;
+    }
 
-  return { ...baseStyle, ...backgroundStyle };
+    const context = canvas.getContext("2d");
+    if (!context) {
+      return;
+    }
+
+    const image = new Image();
+    image.src = textureDef.url;
+    image.onload = () => {
+      if (cancelled) {
+        return;
+      }
+
+      const texture = makeTextureFromImage(
+        image,
+        textureDef.standardWidth,
+        textureDef.standardHeight
+      );
+      const page = makeCanvasWithContext(128, 128);
+      drawTexture(
+        page,
+        texture,
+        frame.rectangle,
+        [0, 0, 128, 128],
+        {
+          pixelate: true,
+          rotate: rotationToDegrees(rotation),
+          flip,
+          blend: blend ? { kind: "MultiplyHex", hex: blend } : undefined,
+        }
+      );
+
+      context.clearRect(0, 0, 128, 128);
+      context.imageSmoothingEnabled = false;
+      context.drawImage(page.canvas, 0, 0);
+    };
+    image.onerror = () => {
+      if (!cancelled) {
+        context.clearRect(0, 0, 128, 128);
+      }
+    };
+
+    return () => {
+      cancelled = true;
+    };
+  }, [blend, flip, frame, rotation, textureDef.standardHeight, textureDef.standardWidth, textureDef.url]);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      width={128}
+      height={128}
+      style={{ display: "block" }}
+    />
+  );
 }
 
 function TileButton({
@@ -108,11 +149,15 @@ function TileButton({
   onClick: () => void;
 }) {
   const [isHover, setIsHover] = React.useState(false);
-  const tileStyle = makeTileStyle(textureDef, frame, isSelected, isHover, 32);
+  const tileStyle = makeTileStyle(textureDef, frame, 32);
   const buttonStyle = {
     margin: makeMargin(0, borderSize, borderSize, 0),
   };
-  const style = { ...tileStyle, ...buttonStyle };
+  const style = {
+    ...makeTileBaseStyle(isSelected || isHover, 32),
+    ...tileStyle,
+    ...buttonStyle,
+  };
   return (
     <button
       title={frame.label}
@@ -175,15 +220,7 @@ export function Preview({
 
   const rotationDegrees = rotationToDegrees(rotation);
   const flipTransform = flipToTransform(flip);
-  const tileStyle = makeTileStyle(textureDef, frame, false, false, 128);
-  const tintStyle = blend
-    ? {
-        backgroundColor: blend,
-        backgroundBlendMode: "multiply" as const,
-      }
-    : undefined;
   const transform = `rotate(${deg(rotationDegrees)}) ${flipTransform}`.trim();
-  const style = { ...tileStyle, ...tintStyle, transform };
 
   return (
     <div
@@ -191,7 +228,33 @@ export function Preview({
       data-testid="texture-picker-preview"
       style={{ width: "148px" }}
     >
-      <div style={style}></div>
+      <div
+        style={{
+          ...makeTileBaseStyle(false, 128),
+          position: "relative",
+        }}
+      >
+        <div
+          style={{
+            position: "absolute",
+            top: px(0),
+            left: px(0),
+            width: px(128),
+            height: px(128),
+            transform,
+            transformOrigin: "center",
+            imageRendering: "pixelated",
+          }}
+        >
+          <PreviewCanvas
+            textureDef={textureDef}
+            frame={frame}
+            rotation={rotation}
+            flip={flip}
+            blend={blend}
+          />
+        </div>
+      </div>
       <div className="text-center text-gray-500 p-2 pt-0">{frame.label}</div>
     </div>
   );

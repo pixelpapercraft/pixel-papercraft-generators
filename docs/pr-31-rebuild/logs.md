@@ -14,6 +14,14 @@ Record one entry per work session before handing off.
 ## Log
 
 - Date: 2026-05-31
+- Session focus: Task 13 handoff and approval
+- Work completed: Replaced the shared texture picker preview tint path with a canvas-based render so the preview now matches the template renderer, fixed the preview spacing regression so the item sits inside the border again, removed the unused CSS tint overlay helper, and updated the remaining item preview selector to the new DOM structure.
+- Verification: `npx vitest run src/builder/ui/texturePicker/texturePicker.test.ts`, `npx playwright test tests/generators/minecraftBlockGenerator/minecraftBlockGenerator.spec.ts -g "selected tint in the preview" --update-snapshots`, `npx playwright test tests/generators/minecraftBlockGenerator/minecraftBlockGenerator.spec.ts tests/generators/minecraftItemGenerator/minecraftItemGenerator.spec.ts`, `npm run types:check`, `npm run lint`
+- Open follow-up: None from this slice.
+- Next step: The reconstruction checklist is complete; no next task remains.
+- Commit hash: pending handoff commit
+
+- Date: 2026-05-31
 - Session focus: Task 12 handoff and approval
 - Work completed: Added the Vitest `@genroot` alias config, converted the remaining generator tests that still imported builder modules via relative `src/` paths, and verified the unit suite plus repo-level checks.
 - Verification: `npx vitest run src/generators/minecraftItem/itemLayout.test.ts src/generators/minecraftBlock/face.test.ts src/generators/minecraftBlock/shapes/shelf.test.ts`, `npx vitest run`, `npm run types:check`, `npm run lint`

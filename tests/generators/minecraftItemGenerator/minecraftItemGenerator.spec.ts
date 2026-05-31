@@ -26,7 +26,7 @@ async function setItemSize(
 }
 
 function getPreviewTile(page: Page) {
-  return page.getByTestId("texture-picker-preview").locator("div").first();
+  return page.getByTestId("texture-picker-preview").locator("div").nth(1);
 }
 
 test("minecraft item generator matches the default screenshots", async ({ page }) => {

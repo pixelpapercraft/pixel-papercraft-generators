@@ -187,13 +187,12 @@ Notes:
   - Explicitly approved and handed off after verification.
   - Commit hash: cd50343.
 
-13. [ ] Finish the test and snapshot migration
+13. [x] Finish the test and snapshot migration
   - Includes the remaining screenshot/snapshot refreshes and any follow-on unit test cleanups.
   - Depends on the features it covers being implemented first.
   - This is the final validation layer, not a first-step task.
   - Verification: run `npm run test:generators` on the full suite before handing off.
-  - Do not mark this task done unless you explicitly approve the slice.
-  - Do Not Commit: keep this slice uncommitted until it has been reviewed and explicitly approved.
+  - Explicitly approved and handed off after verification.
 
 ### Suggested order
 
