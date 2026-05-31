@@ -19,7 +19,7 @@ Record one entry per work session before handing off.
 - Verification: `npx vitest run src/builder/ui/texturePicker/texturePicker.test.ts`, `npx playwright test tests/generators/minecraftBlockGenerator/minecraftBlockGenerator.spec.ts -g "selected tint in the preview" --update-snapshots`, `npx playwright test tests/generators/minecraftBlockGenerator/minecraftBlockGenerator.spec.ts tests/generators/minecraftItemGenerator/minecraftItemGenerator.spec.ts`, `npm run types:check`, `npm run lint`
 - Open follow-up: None from this slice.
 - Next step: The reconstruction checklist is complete; no next task remains.
-- Commit hash: pending handoff commit
+- Commit hash: 1987830
 
 - Date: 2026-05-31
 - Session focus: Task 12 handoff and approval
