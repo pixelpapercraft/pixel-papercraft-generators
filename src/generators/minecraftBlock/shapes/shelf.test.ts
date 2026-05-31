@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { type Generator } from "@genroot/builder/modules/generator";
-import { encodeSelectedTextures } from "../../../builder/ui/texturePicker/selectedTexture";
+import { encodeSelectedTextures } from "@genroot/builder/ui/texturePicker/selectedTexture";
 import { drawShelf } from "./shelf";
 
 function makeShelfFaceJson(): string {

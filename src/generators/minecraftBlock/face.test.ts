@@ -5,8 +5,8 @@ import {
   encodeSelectedTexture,
   encodeSelectedTextures,
   decodeSelectedTextures,
-} from "../../builder/ui/texturePicker/selectedTexture";
-import { makeNextFlip } from "../../builder/ui/texturePicker/flip";
+} from "@genroot/builder/ui/texturePicker/selectedTexture";
+import { makeNextFlip } from "@genroot/builder/ui/texturePicker/flip";
 import { currentBlockTextureId } from "./constants";
 import { defineInputRegion, drawFace } from "./face";
 

@@ -14,6 +14,13 @@ Record one entry per work session before handing off.
 ## Log
 
 - Date: 2026-05-31
+- Session focus: Task 12 handoff and approval
+- Work completed: Added the Vitest `@genroot` alias config, converted the remaining generator tests that still imported builder modules via relative `src/` paths, and verified the unit suite plus repo-level checks.
+- Verification: `npx vitest run src/generators/minecraftItem/itemLayout.test.ts src/generators/minecraftBlock/face.test.ts src/generators/minecraftBlock/shapes/shelf.test.ts`, `npx vitest run`, `npm run types:check`, `npm run lint`
+- Open follow-up: None from this slice.
+- Next step: Begin task 13, the remaining test and snapshot migration.
+
+- Date: 2026-05-31
 - Session focus: Task 11 handoff and approval
 - Work completed: Marked task 11 complete after your explicit approval, so the texture generation tooling slice is now reflected as done in the reconstruction notes.
 - Verification: Reused the prior task 11 verification set: `npx vitest run src/tools/makeTextures/utils.test.ts`, `npm run types:check`, `npm run lint`, `npm run test:generators`

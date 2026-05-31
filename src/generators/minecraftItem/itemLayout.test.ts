@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { type TextureFrame } from "@genroot/builder/modules/textureData";
-import { type SelectedTexture } from "../../builder/ui/texturePicker/selectedTexture";
+import { type SelectedTexture } from "@genroot/builder/ui/texturePicker/selectedTexture";
 import { findVersion } from "../_common/textures/textureVersions";
 import {
   getFrameLogicalCrop,

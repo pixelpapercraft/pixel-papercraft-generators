@@ -179,13 +179,13 @@ Notes:
   - Do not mark this task done unless the user explicitly approves the slice.
   - Do Not Commit: keep this slice uncommitted until it has been reviewed and explicitly approved.
 
-12. [ ] Update the tests to resolve `@genroot`
+12. [x] Update the tests to resolve `@genroot`
   - Includes the Vitest alias config and any test files that still import using relative `src/` paths.
   - Depends on the alias convention being chosen for generated texture modules and other test fixtures.
   - Keep this slice focused on test/runtime resolution only; do not fold in screenshot refreshes here.
   - Verification: run the focused unit tests and the full generator suite before handing off.
-  - Do not mark this task done unless you explicitly approve the slice.
-  - Do Not Commit: keep this slice uncommitted until it has been reviewed and explicitly approved.
+  - Explicitly approved and handed off after verification.
+  - Commit hash: pending.
 
 13. [ ] Finish the test and snapshot migration
   - Includes the remaining screenshot/snapshot refreshes and any follow-on unit test cleanups.
