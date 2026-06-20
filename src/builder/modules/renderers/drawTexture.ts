@@ -359,8 +359,14 @@ export function drawTexture(
 
     const sxScaled = Math.floor(sx * sourceScaleX);
     const syScaled = Math.floor(sy * sourceScaleY);
-    const swScaled = Math.floor(sw * sourceScaleX);
-    const shScaled = Math.floor(sh * sourceScaleY);
+    const swScaled = Math.max(
+      1,
+      Math.ceil((sx + sw) * sourceScaleX) - sxScaled
+    );
+    const shScaled = Math.max(
+      1,
+      Math.ceil((sy + sh) * sourceScaleY) - syScaled
+    );
 
     drawNearestNeighbor(
       page,

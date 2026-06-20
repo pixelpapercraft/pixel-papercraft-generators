@@ -11,7 +11,7 @@ test("minecraft armor generator exposes a typeable helmet tint input", async ({
     .evaluate((element) => (element as HTMLInputElement).click());
   await page.getByLabel("Helmet Color").selectOption({ label: "Custom tint" });
 
-  const tintInput = page.getByPlaceholder("Enter hex color");
+  const tintInput = page.getByPlaceholder("RRGGBB");
   await expect(tintInput).toBeVisible();
   await tintInput.fill("123abc");
   await expect(tintInput).toHaveValue("123abc");

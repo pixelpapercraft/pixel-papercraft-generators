@@ -5,10 +5,11 @@ type Params = {
 };
 
 type Props = {
-  params: Params;
+  params: Params | Promise<Params>;
 };
 
-export default function Page(props: Props) {
+export default async function Page(props: Props) {
   const { params } = props;
-  return <GeneratorPage generatorId={params.generatorId} />;
+  const { generatorId } = await params;
+  return <GeneratorPage generatorId={generatorId} />;
 }

@@ -234,7 +234,6 @@ const textures: TextureDef[] = [
 
 const script: ScriptDef = (generator: Generator) => {
   const minecraftGenerator = new Minecraft(generator);
-  const glint = defineGlintControls(generator);
   function getTint(colorId: string): Blend {
     const hex =
       defineTintInput(generator, colorId, {
@@ -296,6 +295,9 @@ const script: ScriptDef = (generator: Generator) => {
 
   generator.defineBooleanInput("Show Folds", true);
   generator.defineBooleanInput("Show Labels", true);
+
+  const glint = defineGlintControls(generator);
+  
   generator.defineRegionInput([256, 249, 124, 72], () => {
     generator.setBooleanInputValue("Donkey / Mule Model", !muleModel);
   });

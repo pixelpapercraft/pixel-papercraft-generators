@@ -1,9 +1,15 @@
 import React from "react";
-import { A4 } from "@genroot/builder/modules/modelPage";
+import { type Page } from "@genroot/builder/modules/modelPage";
 import { Button } from "../button/button";
 import { printElement } from "../utils/printHtmlElement";
 
-export function PrintImageButton({ dataUrl }: { dataUrl: string }) {
+export function PrintImageButton({
+  dataUrl,
+  page,
+}: {
+  dataUrl: string;
+  page: Page;
+}) {
   const onClick = (event: React.SyntheticEvent) => {
     event.preventDefault();
 
@@ -15,8 +21,8 @@ export function PrintImageButton({ dataUrl }: { dataUrl: string }) {
           html, body, img {
             margin: 0;
             padding: 0;
-            width: ${A4.mm.width}mm;
-            height: ${A4.mm.height}mm;
+            width: ${page.sizes.mm.width}mm;
+            height: ${page.sizes.mm.height}mm;
           }
         }
       `;
@@ -28,7 +34,13 @@ export function PrintImageButton({ dataUrl }: { dataUrl: string }) {
   };
 
   return (
-    <Button title="Print page" state="Ready" size="Medium" onClick={onClick}>
+    <Button
+      title="Print page"
+      state="Ready"
+      color="Green"
+      size="Medium"
+      onClick={onClick}
+    >
       <span className="sm:hidden">Print</span>
       <span className="hidden sm:inline">Print page</span>
     </Button>

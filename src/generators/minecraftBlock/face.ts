@@ -12,39 +12,52 @@ import {
   decodeSelectedTextures,
   decodeSelectedTexture,
 } from "@genroot/builder/ui/texturePicker/selectedTexture";
-import { makeNextFlip } from "@genroot/builder/ui/texturePicker/flip";
+import {
+  type Flip,
+  makeNextFlip,
+} from "@genroot/builder/ui/texturePicker/flip";
+import { type Rotation } from "@genroot/builder/ui/texturePicker/rotation";
 import { currentBlockTextureId } from "@genroot/generators/minecraftBlock/constants";
+
+export type FaceTextureTransform = {
+  rotate: 0 | 90 | 180 | 270;
+  flip: Flip;
+};
 
 export function defineInputRegion(
   generator: Generator,
   faceId: string,
   region: Region
 ) {
-  generator.defineRegionInput(region, () => {
-    const selectedTextureJson = generator.getStringInputValue(
-      currentBlockTextureId
-    );
+  generator.defineRegionInput(
+    region,
+    () => {
+      const selectedTextureJson = generator.getStringInputValue(
+        currentBlockTextureId
+      );
 
-    const selectedTexture = selectedTextureJson
-      ? decodeSelectedTexture(selectedTextureJson)
-      : null;
+      const selectedTexture = selectedTextureJson
+        ? decodeSelectedTexture(selectedTextureJson)
+        : null;
 
-    if (!selectedTexture) {
-      return;
-    }
+      if (!selectedTexture) {
+        return;
+      }
 
-    const curentFaceTexturesJson = generator.getStringInputValue(faceId);
-    const currentFaceTextures = curentFaceTexturesJson
-      ? decodeSelectedTextures(curentFaceTexturesJson)
-      : [];
+      const curentFaceTexturesJson = generator.getStringInputValue(faceId);
+      const currentFaceTextures = curentFaceTexturesJson
+        ? decodeSelectedTextures(curentFaceTexturesJson)
+        : [];
 
-    const shouldErase = selectedTexture.textureDefId === "";
-    const newFaceTextures = shouldErase
-      ? currentFaceTextures.slice(0, -1)
-      : currentFaceTextures.concat([selectedTexture]);
-    const newFaceTexturesJson = encodeSelectedTextures(newFaceTextures);
-    generator.setStringInputValue(faceId, newFaceTexturesJson);
-  }, faceId);
+      const shouldErase = selectedTexture.textureDefId === "";
+      const newFaceTextures = shouldErase
+        ? currentFaceTextures.slice(0, -1)
+        : currentFaceTextures.concat([selectedTexture]);
+      const newFaceTexturesJson = encodeSelectedTextures(newFaceTextures);
+      generator.setStringInputValue(faceId, newFaceTexturesJson);
+    },
+    faceId
+  );
 }
 
 function drawTexture(
@@ -67,9 +80,14 @@ function drawTexture(
   const flipOption = options?.flip ?? "None";
   const [nextFlip, nextRotation] = makeNextFlip(flip, flipOption, rotation);
 
-  const scale =
-    fw === fh && fw > 0 && fw % 16 === 0 && fh % 16 === 0 ? fw / 16 : 1;
-  const scaledSource = [sx * scale, sy * scale, sw * scale, sh * scale] as const;
+  const scaleX = fw / 16;
+  const scaleY = fh / 16;
+  const scaledSource = [
+    sx * scaleX,
+    sy * scaleY,
+    sw * scaleX,
+    sh * scaleY,
+  ] as const;
   const [ssx, ssy, ssw, ssh] = scaledSource;
 
   const sourceRegion: Region = (() => {
@@ -77,11 +95,21 @@ function drawTexture(
       case "Rot0":
         return [fx + ssx, fy + ssy, ssw, ssh];
       case "Rot90":
-        return [fx + ssy, fy + fw - (ssw + ssx), ssh, ssw];
+        return [
+          fx + sy * scaleX,
+          fy + (16 - (sx + sw)) * scaleY,
+          sh * scaleX,
+          sw * scaleY,
+        ];
       case "Rot180":
         return [fx + fw - (ssw + ssx), fy + fh - (ssh + ssy), ssw, ssh];
       case "Rot270":
-        return [fx + fh - (ssh + ssy), fy + ssx, ssh, ssw];
+        return [
+          fx + (16 - (sy + sh)) * scaleX,
+          fy + sx * scaleY,
+          sh * scaleX,
+          sw * scaleY,
+        ];
     }
   })();
 
@@ -147,4 +175,42 @@ export function drawFace(
       drawTexture(generator, selectedTexture, source, destination, options);
     });
   }
+}
+
+export function drawFaceWithTextureTransform(
+  generator: Generator,
+  faceId: string,
+  source: Region,
+  destination: Region,
+  transform: FaceTextureTransform
+) {
+  const faceTexturesJson = generator.getStringInputValue(faceId);
+  if (faceTexturesJson) {
+    const faceTextures = decodeSelectedTextures(faceTexturesJson);
+    faceTextures.forEach((selectedTexture: SelectedTexture) => {
+      drawTexture(
+        generator,
+        {
+          ...selectedTexture,
+          rotation: rotateTextureRotation(
+            selectedTexture.rotation,
+            transform.rotate
+          ),
+        },
+        source,
+        destination,
+        { flip: transform.flip }
+      );
+    });
+  }
+}
+
+function rotateTextureRotation(
+  rotation: Rotation,
+  degrees: FaceTextureTransform["rotate"]
+): Rotation {
+  const rotations: Rotation[] = ["Rot0", "Rot90", "Rot180", "Rot270"];
+  const currentIndex = rotations.indexOf(rotation);
+  const addIndex = degrees / 90;
+  return rotations[(currentIndex + addIndex) % rotations.length] ?? "Rot0";
 }

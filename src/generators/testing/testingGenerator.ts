@@ -10,7 +10,7 @@ import type {
   ThumbnailDef,
 } from "@genroot/builder/modules/generatorDef";
 import { type Generator } from "@genroot/builder/modules/generator";
-import { type Atlas } from "../_common/textureData";
+import { type Atlas } from "@genroot/builder/modules/textureData";
 
 import thumbnailImage from "./images/thumbnail.png";
 import testSheetImage from "./images/testSheet.png";
@@ -68,10 +68,15 @@ const script: ScriptDef = (generator: Generator) => {
     flips.forEach((flip, col) => {
       const x = 32 + col * pitch;
       const y = 32 + row * pitch;
-      generator.drawTexture("TestSheet", [0, 0, 16, 16], [x, y, tileSize, tileSize], {
-        rotate,
-        flip,
-      });
+      generator.drawTexture(
+        "TestSheet",
+        [0, 0, 16, 16],
+        [x, y, tileSize, tileSize],
+        {
+          rotate,
+          flip,
+        }
+      );
     });
   });
 

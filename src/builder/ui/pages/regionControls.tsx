@@ -4,7 +4,8 @@ import {
   type Control,
   type RegionControl,
 } from "@genroot/builder/modules/modelControls";
-import { A4 } from "@genroot/builder/modules/modelPage";
+import { type PageSize } from "@genroot/builder/modules/modelPage";
+import { type ElementSize } from "./useElementSizeListener";
 import { px, pageBorderWidth } from "./utils";
 
 /** [x, y, w, h] */
@@ -14,25 +15,32 @@ function scaleNumber(value: number, scale: number): number {
   return Math.round(value * scale);
 }
 
-function scaleRegion([x, y, w, h]: Region, actualWidth: number): Region {
-  const scale = actualWidth / A4.px.width;
+function scaleRegion(
+  [x, y, w, h]: Region,
+  actualSize: ElementSize,
+  pageSize: PageSize
+): Region {
+  const scaleX = actualSize.width / pageSize.width;
+  const scaleY = actualSize.height / pageSize.height;
   return [
-    scaleNumber(x, scale),
-    scaleNumber(y, scale),
-    scaleNumber(w, scale),
-    scaleNumber(h, scale),
+    scaleNumber(x, scaleX),
+    scaleNumber(y, scaleY),
+    scaleNumber(w, scaleX),
+    scaleNumber(h, scaleY),
   ];
 }
 
 export function RegionControls({
   model,
   currentPageId,
-  containerWidth,
+  pageElementSize,
+  pageSize,
   onClick,
 }: {
   model: Model;
   currentPageId: string;
-  containerWidth: number;
+  pageElementSize: ElementSize;
+  pageSize: PageSize;
   onClick: (callback: () => void) => void;
 }) {
   const regionControls = model.controls.reduce(
@@ -52,7 +60,11 @@ export function RegionControls({
   return (
     <div>
       {regionControls.map((regionControl, i) => {
-        const [x, y, w, h] = scaleRegion(regionControl.region, containerWidth);
+        const [x, y, w, h] = scaleRegion(
+          regionControl.region,
+          pageElementSize,
+          pageSize
+        );
         const style: CSSProperties = {
           top: px(y + pageBorderWidth),
           left: px(x + pageBorderWidth),

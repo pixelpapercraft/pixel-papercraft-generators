@@ -10,30 +10,30 @@ import type {
 } from "@genroot/builder/modules/generatorDef";
 import { type Generator } from "@genroot/builder/modules/generator";
 import {
-  type SelectedTexture,
   encodeSelectedTexture,
   decodeSelectedTexture,
 } from "@genroot/builder/ui/texturePicker/selectedTexture";
 import {
   allTextureDefs,
   versionIdsBlocksFirst,
-} from "@genroot/generators/_common/textures/textureVersions";
-import { TexturePicker } from "@genroot/generators/minecraftBlock/texturePicker";
-import { currentBlockTextureId } from "@genroot/generators/minecraftBlock/constants";
+} from "../_common/textures/textureVersions";
+import { TexturePicker } from "../_common/plugins/texturePicker/texturePicker";
+import { blockTintChoiceGroups } from "../_common/tintSelector/tints";
+import { currentBlockTextureId } from "./constants";
 import {
   parseAtlas,
   updateCustomTextureAtlas,
   updateCustomTextureUrl,
-} from "@genroot/generators/_common/textures/customTextureVersion";
-import { drawBlock } from "@genroot/generators/minecraftBlock/shapes/block";
-import { drawSlab } from "@genroot/generators/minecraftBlock/shapes/slab";
-import { drawStair } from "@genroot/generators/minecraftBlock/shapes/stair";
-import { drawFence } from "@genroot/generators/minecraftBlock/shapes/fence";
-import { drawDoor } from "@genroot/generators/minecraftBlock/shapes/door";
-import { drawTrapdoor } from "@genroot/generators/minecraftBlock/shapes/trapdoor";
-import { drawSnow } from "@genroot/generators/minecraftBlock/shapes/snow";
-import { drawCake } from "@genroot/generators/minecraftBlock/shapes/cake";
-import { drawShelf } from "@genroot/generators/minecraftBlock/shapes/shelf";
+} from "../_common/textures/customTextureVersion";
+import { drawBlock } from "./shapes/block";
+import { drawSlab } from "./shapes/slab";
+import { drawStair } from "./shapes/stair";
+import { drawFence } from "./shapes/fence";
+import { drawDoor } from "./shapes/door";
+import { drawTrapdoor } from "./shapes/trapdoor";
+import { drawSnow } from "./shapes/snow";
+import { drawCake } from "./shapes/cake";
+import { drawShelf } from "./shapes/shelf";
 
 import thumnbailImage from "./thumbnail/v2-thumbnail-256.jpeg";
 import backgroundImage from "./images/Background.png";
@@ -76,6 +76,25 @@ const history: HistoryDef = [
   "May 2026 NinjolasNJM - Add Shelf Block type.",
   "May 2026 NinjolasNJM - Changed to use new glint and tint input.",
 ];
+
+const instructions = `
+## How to use the Minecraft Block Generator?
+
+### Selecting and Adding Block Textures
+* Click in the texture picker to select a block texture. 
+* Block textures can be rotated, flipped, and tinted different colors.
+* Click in the papercraft template to add the selected texture to the block.
+* Multiple textures can be added to the same block face.
+* Click the erase button in the texture picker to clear the selected texture. Clicking a face without a specified texture will remove the last texture placed on it.
+* Textures from different versions can be selected from the "Versions" dropdown menu. Custom textures can also be added from files.
+
+### Block Types
+* Up to two blocks can be placed on a page, using the drop down "Number of Blocks" menu.
+* For each block, the shape can be selected from the "Block # Type" dropdown menu.
+* Some block types have different options to choose within them, and some block types can be used to create blocks other than the one the type is named after. 
+* For example, the Snow Layers type allows choosing how many layers it has, which lets blocks like carpets, path blocks, and enchanting tables also be created.
+
+`;
 
 const thumbnail: ThumbnailDef = {
   url: thumnbailImage.src,
@@ -169,29 +188,10 @@ const script: ScriptDef = (generator: Generator) => {
     return (
       <TexturePicker
         versionId={versionId}
-        blend={resolvedCurrentTexture ? resolvedCurrentTexture.blend : null}
-        onTextureSelected={(selectedTexture) => {
-          const newTexture: SelectedTexture = {
-            ...selectedTexture,
-            blend:
-              selectedTexture.textureDefId === ""
-                ? null
-                : resolvedCurrentTexture
-                  ? resolvedCurrentTexture.blend
-                  : null,
-          };
-          onChange(encodeSelectedTexture(newTexture));
-        }}
-        onBlendSelected={(blend) => {
-          if (!resolvedCurrentTexture) {
-            return;
-          }
-          onChange(
-            encodeSelectedTexture({
-              ...resolvedCurrentTexture,
-              blend,
-            })
-          );
+        selectedTexture={resolvedCurrentTexture}
+        tintChoiceGroups={blockTintChoiceGroups}
+        onChange={(selectedTexture) => {
+          onChange(encodeSelectedTexture(selectedTexture));
         }}
       />
     );
@@ -273,20 +273,24 @@ const script: ScriptDef = (generator: Generator) => {
     }
   }
 
-  generator.defineButtonInput("Clear", () => {
-    const currentTextureChoice = generator.getStringInputValue(
-      currentBlockTextureId
-    );
-
-    generator.clearAllVariables();
-
-    if (currentTextureChoice) {
-      generator.setStringInputValue(
-        currentBlockTextureId,
-        currentTextureChoice
+  generator.defineButtonInput(
+    "Clear",
+    () => {
+      const currentTextureChoice = generator.getStringInputValue(
+        currentBlockTextureId
       );
-    }
-  });
+
+      generator.clearAllVariables();
+
+      if (currentTextureChoice) {
+        generator.setStringInputValue(
+          currentBlockTextureId,
+          currentTextureChoice
+        );
+      }
+    },
+    "Red"
+  );
 
   generator.drawImage("Title", [0, 0]);
 };
@@ -297,7 +301,7 @@ export const generator: GeneratorDef = {
   history,
   thumbnail,
   video: null,
-  instructions: null,
+  instructions,
   images,
   textures,
   script,

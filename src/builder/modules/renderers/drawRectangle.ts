@@ -10,8 +10,11 @@ export function drawRectangle(
   ptops: LineProps
 ) {
   const [x, y, width, height] = rectangle;
-  drawLine(page, [x, y], [x + width, y], ptops);
-  drawLine(page, [x + width, y], [x + width, y + height], ptops);
-  drawLine(page, [x + width, y + height], [x, y + height], ptops);
-  drawLine(page, [x, y + height], [x, y], ptops);
+  const x2 = x + width - 1;
+  const y2 = y + height - 1;
+
+  drawLine(page, [x, y], [x2, y], ptops);
+  drawLine(page, [x2, y], [x2, y2], ptops);
+  drawLine(page, [x2, y2], [x, y2], ptops);
+  drawLine(page, [x, y2], [x, y], ptops);
 }

@@ -8,7 +8,11 @@ import {
 } from "@genroot/builder/ui/texturePicker/selectedTexture";
 import { makeNextFlip } from "@genroot/builder/ui/texturePicker/flip";
 import { currentBlockTextureId } from "./constants";
-import { defineInputRegion, drawFace } from "./face";
+import {
+  defineInputRegion,
+  drawFace,
+  drawFaceWithTextureTransform,
+} from "./face";
 
 function makeGenerator(faceId: string, faceJson: string): Generator {
   return {
@@ -215,6 +219,55 @@ describe("drawFace", () => {
       destination,
       expect.objectContaining<DrawTextureOptions>({
         rotate: 0,
+        flip: "None",
+        blend: undefined,
+      })
+    );
+  });
+
+  it("scales normalized source regions to match non-square atlas frames", () => {
+    const generator = makeGenerator(
+      faceId,
+      makeFaceJson({
+        rotation: "Rot0",
+        flip: "None",
+        rectangle: [0, 0, 32, 16],
+      })
+    );
+
+    drawFace(generator, faceId, [8, 0, 8, 16], destination);
+
+    expect(generator.drawTexture).toHaveBeenCalledTimes(1);
+    expect(generator.drawTexture).toHaveBeenCalledWith(
+      "test-texture",
+      [16, 0, 16, 16],
+      destination,
+      expect.objectContaining<DrawTextureOptions>({
+        rotate: 0,
+        flip: "None",
+        blend: undefined,
+      })
+    );
+  });
+
+  it("applies face transforms through the texture rotation path", () => {
+    const generator = makeGenerator(
+      faceId,
+      makeFaceJson({ rotation: "Rot0", flip: "None" })
+    );
+
+    drawFaceWithTextureTransform(generator, faceId, source, destination, {
+      rotate: 90,
+      flip: "None",
+    });
+
+    expect(generator.drawTexture).toHaveBeenCalledTimes(1);
+    expect(generator.drawTexture).toHaveBeenCalledWith(
+      "test-texture",
+      [16, 32, 16, 16],
+      makeExpectedDestination("Rot90", destination),
+      expect.objectContaining<DrawTextureOptions>({
+        rotate: 90,
         flip: "None",
         blend: undefined,
       })

@@ -16,6 +16,7 @@ import { generator as minecraftCharacterMiniGenerator } from "@genroot/generator
 import { generator as minecraftCowCharacterGenerator } from "@genroot/generators/minecraftCowCharacter/minecraftCowCharacterGenerator";
 import { generator as minecraftCreeperGenerator } from "@genroot/generators/minecraftCreeper/minecraftCreeperGenerator";
 import { generator as minecraftCreeperCharacterGenerator } from "@genroot/generators/minecraftCreeperCharacter/minecraftCreeperCharacterGenerator";
+import { generator as minecraftDioramaGenerator } from "@genroot/generators/minecraftDiorama/minecraftDioramaGenerator";
 import { generator as minecraftEndermanGenerator } from "@genroot/generators/minecraftEnderman/minecraftEndermanGenerator";
 import { generator as minecraftEndermanCharacterGenerator } from "@genroot/generators/minecraftEndermanCharacter/minecraftEndermanCharacterGenerator";
 import { generator as minecraftGolemGenerator } from "@genroot/generators/minecraftGolem/minecraftGolemGenerator";
@@ -35,7 +36,8 @@ import { generator as minecraftArmorGenerator } from "@genroot/generators/minecr
 import { generator as testingGenerator } from "@genroot/generators/testing/testingGenerator";
 
 const isProductionEnvironment: boolean = process.env.NODE_ENV === "production";
-const isDevelopmentEnvironment: boolean = process.env.NODE_ENV === "development";
+const isDevelopmentEnvironment: boolean =
+  process.env.NODE_ENV === "development";
 
 export const character: GeneratorDef[] = [
   minecraftCharacterGenerator,
@@ -72,6 +74,7 @@ export const mob: GeneratorDef[] = [
 // Blocks, Items and Accessories
 export const utility: GeneratorDef[] = [
   minecraftBlockGenerator,
+  minecraftDioramaGenerator,
   minecraftItemGenerator,
   minecraftArmorGenerator,
   minecraftCapeAndElytraGenerator,

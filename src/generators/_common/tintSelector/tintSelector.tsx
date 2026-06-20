@@ -92,31 +92,38 @@ export function TintSelector({
       <div id={labelId} className="font-bold mb-1">
         {label}
       </div>
-      <div className="flex space-x-4">
-        <Select
-          choices={choices}
-          value={selectedOption}
-          ariaLabelledBy={labelId}
-          onChange={(selectedOption) => {
-            const selectedTint = getTintFromOption(selectedOption, tintChoices);
-            const color = getColorFromSelectedTint(selectedTint);
-            const nextState = {
-              selectedOption,
-              selectedTint,
-              customTintInput: color ? color.replace(/^#/, "") : "",
-              color,
-            };
-            setState(nextState);
-            onChange(selectedTint.kind === "CustomTint" ? "#" : color);
-          }}
-        />
+      <div className="flex flex-wrap items-center gap-3">
+        <div className="min-w-0 max-w-full">
+          <Select
+            choices={choices}
+            value={selectedOption}
+            ariaLabelledBy={labelId}
+            onChange={(selectedOption) => {
+              const selectedTint = getTintFromOption(
+                selectedOption,
+                tintChoices
+              );
+              const color = getColorFromSelectedTint(selectedTint);
+              const nextState = {
+                selectedOption,
+                selectedTint,
+                customTintInput: color ? color.replace(/^#/, "") : "",
+                color,
+              };
+              setState(nextState);
+              onChange(selectedTint.kind === "CustomTint" ? "#" : color);
+            }}
+          />
+        </div>
 
         {selectedTint.kind === "CustomTint" ? (
-          <div>
+          <div className="flex items-center">
             <span className="mr-1">#</span>
             <input
-              placeholder="Enter hex color"
-              className="p-2 border border-gray-300"
+              placeholder="RRGGBB"
+              maxLength={6}
+              size={6}
+              className="w-[8ch] p-2 border border-gray-300 font-mono"
               value={customTintInput}
               onChange={onInputChange}
             />
