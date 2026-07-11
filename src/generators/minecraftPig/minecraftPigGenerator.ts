@@ -423,10 +423,12 @@ const script: ScriptDef = (generator: Generator) => {
 
   // Define Layer variables
 
+  generator.defineInputRowStart();
   generator.defineBooleanInput("Show Folds", true);
   generator.defineBooleanInput("Show Labels", true);
   generator.defineBooleanInput("Show Titles", true);
   generator.defineBooleanInput("Transparent Background", false);
+  generator.defineInputRowEnd();
 
   const showFolds = generator.getBooleanInputValue("Show Folds");
   const showLabels = generator.getBooleanInputValue("Show Labels");
@@ -440,19 +442,23 @@ const script: ScriptDef = (generator: Generator) => {
 
   // Define Texture variables
 
+  generator.defineInputRowStart();
   generator.defineSelectInput("Nose Style", ["Flat", "3D"]);
   generator.defineSelectInput("Head Style", [
     "Simple",
     "Advanced",
     "Advanced (Standard)",
   ]);
+  generator.defineInputRowEnd();
 
   const noseStyle = generator.getSelectInputValue("Nose Style");
   const headStyle = generator.getSelectInputValue("Head Style");
 
+  generator.defineInputRowStart();
   generator.defineSelectInput("Saddle Style", ["Attached", "Separate"]);
   generator.defineSelectInput("Helmet Style", ["Attached", "Separate"]);
   generator.defineSelectInput("Boots Style", ["Attached", "Separate"]);
+  generator.defineInputRowEnd();
 
   const saddleStyle = generator.getSelectInputValue("Saddle Style");
   const helmetStyle = generator.getSelectInputValue("Helmet Style");

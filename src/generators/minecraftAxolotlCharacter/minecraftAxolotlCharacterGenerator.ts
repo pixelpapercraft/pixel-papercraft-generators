@@ -468,9 +468,11 @@ const script: ScriptDef = (generator: Generator) => {
 
   // Define user variables
 
+  generator.defineInputRowStart();
   generator.defineBooleanInput("Show Folds", true);
   generator.defineBooleanInput("Show Labels", true);
   generator.defineBooleanInput("Show Overlay", true);
+  generator.defineInputRowEnd();
   generator.defineRangeInput("Axolotl Face", {
     min: 0,
     max: 5,

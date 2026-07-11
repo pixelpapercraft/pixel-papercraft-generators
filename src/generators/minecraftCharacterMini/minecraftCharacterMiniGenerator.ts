@@ -8,25 +8,19 @@ import type {
   ScriptDef,
   ThumbnailDef,
 } from "@genroot/builder/modules/generatorDef";
-import {
-  Position,
-  Rectangle,
-  type Generator,
-} from "@genroot/builder/modules/generator";
-import {
-  type Layer,
-  steve,
-  alex,
-  Dimensions,
-} from "../_common/minecraftCharacter";
+import { Position, type Generator } from "@genroot/builder/modules/generator";
+import { type Layer, steve, alex } from "../_common/minecraftCharacter";
+import { drawCuboidFolds, drawRectangleFolds } from "../_common/cuboidFolds";
 
 import thumbnailImage from "./thumbnail/v2-thumbnail-256.jpeg";
 import foregroundImage from "./images/Foreground.png";
 import titleImage from "./images/Title.png";
 import { getSkinUrl } from "../_common/skins";
+import { makeDefaultMinecraftSkinPresetOptions } from "../_common/skins/options";
 import {
-  makeDefaultMinecraftSkinPresetOptions,
-} from "../_common/skins/options";
+  getMinecraftSkinInputValueKey,
+  serializeMinecraftSkinInputValue,
+} from "@genroot/builder/modules/minecraftSkinInputValue";
 
 const id = "minecraft-character-mini";
 
@@ -241,73 +235,58 @@ const script: ScriptDef = (generator: Generator) => {
     );
   };
 
-  function drawFoldLineRectangle(rectangle: Rectangle) {
-    const [x, y, w, h] = rectangle;
-
-    generator.drawFoldLine([x, y - 1], [x + w, y - 1]);
-    generator.drawFoldLine([x + w, y], [x + w, y + h]);
-    generator.drawFoldLine([x + w, y + h + 1], [x, y + h + 1]);
-    generator.drawFoldLine([x, y + h], [x, y]);
-  }
-
-  function drawFoldLineCuboid(
-    position: Position,
-    dimensions: Dimensions,
-    leftSide: boolean = false
-  ): void {
-    const [x, y] = position;
-    const [w, h, l] = dimensions;
-
-    if (!leftSide) {
-      drawFoldLineRectangle([x + l, y, w, l * 2 + h]);
-      drawFoldLineRectangle([x, y + l, l * 2 + w * 2, h]);
-      generator.drawFoldLine(
-        [x + l * 2 + w - 1, y + l],
-        [x + l * 2 + w - 1, y + l + h]
-      );
-    } else {
-      drawFoldLineRectangle([x + l + w, y, w, l * 2 + h]);
-      drawFoldLineRectangle([x, y + l, l * 2 + w * 2, h]);
-      generator.drawFoldLine([x + w, y + l], [x + w, y + l + h]);
-    }
-  }
-
   function drawFolds([x, y]: Position): void {
     generator.fillRectangle([x + 49, y + 90, 64, 64], "#ffffff80");
     generator.fillRectangle([x + 177, y + 90, 64, 64], "#ffffff80");
 
-    drawFoldLineCuboid([x + 49, y + 26], [64, 128, 64]);
+    drawCuboidFolds(generator, [x + 49, y + 26], [64, 128, 64]);
     generator.drawFoldLine([x + 49, y + 25], [x + 241, y + 25]);
 
-    drawFoldLineRectangle([x + 1, y + 10, 48, 64]);
-    generator.drawFoldLine([x + 1, y + 41], [x + 49, y + 41]);
-    generator.drawFoldLine([x + 48, y + 74], [x + 48, y + 90]);
-    generator.drawLine([x + 49, y + 26], [x + 49, y + 42], {
+    drawRectangleFolds(generator, [x + 1, y + 10, 48, 64]);
+    generator.drawFoldLine([x + 1, y + 41], [x + 48, y + 41]);
+    generator.drawFoldLine([x + 48, y + 74], [x + 48, y + 89]);
+    generator.drawLine([x + 49, y + 26], [x + 49, y + 41], {
       color: "#ff0000",
     });
 
-    drawFoldLineRectangle([x + 241, y + 10, 48, 64]);
-    generator.drawFoldLine([x + 241, y + 41], [x + 290, y + 41]);
-    generator.drawFoldLine([x + 241, y + 74], [x + 241, y + 90]);
-    generator.drawLine([x + 240, y + 26], [x + 240, y + 42], {
+    drawRectangleFolds(generator, [x + 241, y + 10, 48, 64]);
+    generator.drawFoldLine([x + 241, y + 41], [x + 289, y + 41]);
+    generator.drawFoldLine([x + 241, y + 74], [x + 241, y + 89]);
+    generator.drawLine([x + 240, y + 26], [x + 240, y + 41], {
       color: "#ff0000",
     });
 
-    generator.drawLine([x + 49, y + 89], [x + 113, y + 89], {
+    generator.drawLine([x + 49, y + 89], [x + 112, y + 89], {
       color: "#ff0000",
     });
-    generator.drawLine([x + 177, y + 89], [x + 241, y + 89], {
+    generator.drawLine([x + 177, y + 89], [x + 240, y + 89], {
       color: "#ff0000",
     });
   }
 
-  const drawMini = (textureId: string, x: number, y: number) => {
+  const drawMini = (
+    textureId: string,
+    x: number,
+    y: number,
+    defaultToNone = false
+  ) => {
     generator.defineMinecraftSkinInput(textureId, {
       standardWidth: 64,
       standardHeight: 64,
       options: makeDefaultMinecraftSkinPresetOptions(),
       showModelType: true,
     });
+
+    const skinInputValueKey = getMinecraftSkinInputValueKey(textureId);
+    if (defaultToNone && !generator.getStringInputValue(skinInputValueKey)) {
+      generator.setStringInputValue(
+        skinInputValueKey,
+        serializeMinecraftSkinInputValue({
+          modelType: "Wide",
+          selection: { kind: "none" },
+        })
+      );
+    }
 
     if (generator.hasTexture(textureId)) {
       const modelType = generator.getMinecraftSkinInputModelType(textureId);
@@ -342,6 +321,7 @@ const script: ScriptDef = (generator: Generator) => {
         true
       );
 
+      generator.defineInputRowStart();
       const bodyHeight = generator.defineAndGetRangeInput(
         textureId + " Body Height",
         { min: 0, max: 64, value: 32, step: 1 }
@@ -351,6 +331,7 @@ const script: ScriptDef = (generator: Generator) => {
         textureId + " Texture Style",
         ["Simple", "Detailed"]
       );
+      generator.defineInputRowEnd();
 
       const isSlimModel = modelType === "Slim";
       const pixelate = textureStyle === "Simple";
@@ -488,7 +469,7 @@ const script: ScriptDef = (generator: Generator) => {
   };
 
   drawMini("Mini 1", 121, 108);
-  drawMini("Mini 2", 121, 453);
+  drawMini("Mini 2", 121, 453, true);
 
   generator.drawImage("Title", [0, 0]);
   generator.fillBackgroundColorWithWhite();

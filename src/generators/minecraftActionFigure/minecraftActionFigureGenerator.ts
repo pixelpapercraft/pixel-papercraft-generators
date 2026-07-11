@@ -75,9 +75,11 @@ const script: ScriptDef = (generator: Generator) => {
 
   // Define user variables
 
+  generator.defineInputRowStart();
   generator.defineBooleanInput("Show Folds", true);
   generator.defineBooleanInput("Show Labels", true);
   generator.defineBooleanInput("Hand Notches", true);
+  generator.defineInputRowEnd();
   // Get user variable values
   const isSlimModel =
     generator.getMinecraftSkinInputModelType("Skin") === "Slim";

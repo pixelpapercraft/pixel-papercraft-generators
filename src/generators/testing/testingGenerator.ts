@@ -10,7 +10,7 @@ import type {
   ThumbnailDef,
 } from "@genroot/builder/modules/generatorDef";
 import { type Generator } from "@genroot/builder/modules/generator";
-import { type Atlas } from "../_common/textureData";
+import { type Atlas } from "@genroot/builder/modules/textureData";
 
 import thumbnailImage from "./images/thumbnail.png";
 import testSheetImage from "./images/testSheet.png";

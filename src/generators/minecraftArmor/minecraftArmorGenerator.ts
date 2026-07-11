@@ -1146,10 +1146,10 @@ const script: ScriptDef = (generator: Generator) => {
     // Later replace with drawLineFold functions
   }
 
-  function drawHelmet(showHeadOverlay: boolean, enchantHelmet: boolean) {
+  function defineHelmetTextureInput() {
     generator.defineTextureInput("Helmet", {
       standardWidth: 64,
-      standardHeight: 64,
+      standardHeight: 32,
       choices: [
         "Leather",
         "Chainmail",
@@ -1161,20 +1161,21 @@ const script: ScriptDef = (generator: Generator) => {
         "Turtle Shell",
       ],
     });
-    generator.defineBooleanInput("Tint Helmet", false);
-    const tintHelmet = generator.getBooleanInputValue("Tint Helmet");
+  }
 
-    const blend: Blend = tintHelmet
-      ? getTint("Helmet Color")
-      : { kind: "None" };
-
+  function drawHelmet(
+    showHeadOverlay: boolean,
+    enchantHelmet: boolean,
+    tintHelmet: boolean,
+    blend: Blend
+  ) {
     drawHelmetHead("Helmet", showHeadOverlay, blend, enchantHelmet);
     drawHelmetLiner("Helmet", showHeadOverlay, blend, enchantHelmet);
 
     if (tintHelmet) {
       generator.defineTextureInput("Helmet Overlay", {
         standardWidth: 64,
-        standardHeight: 64,
+        standardHeight: 32,
         choices: ["Leather Overlay"],
       });
       drawHelmetHead(
@@ -1199,21 +1200,19 @@ const script: ScriptDef = (generator: Generator) => {
     });
   }
 
-  function drawChestplate(enchantChestplate: boolean) {
+  function defineChestplateTextureInput() {
     generator.defineTextureInput("Chestplate", {
       standardWidth: 64,
-      standardHeight: 64,
+      standardHeight: 32,
       choices: materials,
     });
+  }
 
-    const tintChestplate = generator.defineAndGetBooleanInput(
-      "Tint Chestplate",
-      false
-    );
-    const tint: Blend = tintChestplate
-      ? getTint("Chestplate Color")
-      : { kind: "None" };
-
+  function drawChestplate(
+    enchantChestplate: boolean,
+    tintChestplate: boolean,
+    tint: Blend
+  ) {
     drawChestplateBody("Chestplate", tint, enchantChestplate);
     drawLeftShoulder("Chestplate", tint, true, enchantChestplate);
     drawRightShoulder("Chestplate", tint, true, enchantChestplate);
@@ -1221,7 +1220,7 @@ const script: ScriptDef = (generator: Generator) => {
     if (tintChestplate) {
       generator.defineTextureInput("Chestplate Overlay", {
         standardWidth: 64,
-        standardHeight: 64,
+        standardHeight: 32,
         choices: ["Leather Overlay"],
       });
       drawChestplateBody(
@@ -1253,21 +1252,19 @@ const script: ScriptDef = (generator: Generator) => {
     });
   }
 
-  function drawLeggings(enchantLeggings: boolean) {
+  function defineLeggingsTextureInput() {
     generator.defineTextureInput("Leggings", {
       standardWidth: 64,
-      standardHeight: 64,
+      standardHeight: 32,
       choices: materials2,
     });
+  }
 
-    const tintLeggings = generator.defineAndGetBooleanInput(
-      "Tint Leggings",
-      false
-    );
-    const tint: Blend = tintLeggings
-      ? getTint("Leggings Color")
-      : { kind: "None" };
-
+  function drawLeggings(
+    enchantLeggings: boolean,
+    tintLeggings: boolean,
+    tint: Blend
+  ) {
     drawLeggingsBody("Leggings", tint, enchantLeggings);
     drawRightLegging("Leggings", tint, enchantLeggings);
     drawLeftLegging("Leggings", tint, enchantLeggings);
@@ -1275,7 +1272,7 @@ const script: ScriptDef = (generator: Generator) => {
     if (tintLeggings) {
       generator.defineTextureInput("Leggings Overlay", {
         standardWidth: 64,
-        standardHeight: 64,
+        standardHeight: 32,
         choices: ["Leather Overlay "],
       });
       drawLeggingsBody("Leggings Overlay", { kind: "None" }, enchantLeggings);
@@ -1293,23 +1290,22 @@ const script: ScriptDef = (generator: Generator) => {
     });
   }
 
-  function drawBoots(enchantBoots: boolean) {
+  function defineBootsTextureInput() {
     generator.defineTextureInput("Boots", {
       standardWidth: 64,
-      standardHeight: 64,
+      standardHeight: 32,
       choices: materials,
     });
+  }
 
-    const tintBoots = generator.defineAndGetBooleanInput("Tint Boots", false);
-    const tint: Blend = tintBoots ? getTint("Boots Color") : { kind: "None" };
-
+  function drawBoots(enchantBoots: boolean, tintBoots: boolean, tint: Blend) {
     drawLeftBoot("Boots", tint, enchantBoots);
     drawRightBoot("Boots", tint, enchantBoots);
 
     if (tintBoots) {
       generator.defineTextureInput("Boots Overlay", {
         standardWidth: 64,
-        standardHeight: 64,
+        standardHeight: 32,
         choices: ["Leather Overlay"],
       });
       drawLeftBoot("Boots Overlay", { kind: "None" }, enchantBoots);
@@ -1327,7 +1323,7 @@ const script: ScriptDef = (generator: Generator) => {
   function drawHelmetTrim(showHeadOverlay: boolean, enchantHelmet: boolean) {
     generator.defineTextureInput("Helmet Trim", {
       standardWidth: 64,
-      standardHeight: 64,
+      standardHeight: 32,
       choices: trimTemplates,
     });
     generator.defineTextureInput("Helmet Trim Material", {
@@ -1353,7 +1349,7 @@ const script: ScriptDef = (generator: Generator) => {
   function drawChestplateTrim(enchantChestplate: boolean) {
     generator.defineTextureInput("Chestplate Trim", {
       standardWidth: 64,
-      standardHeight: 64,
+      standardHeight: 32,
       choices: trimTemplates,
     });
     generator.defineTextureInput("Chestplate Trim Material", {
@@ -1384,7 +1380,7 @@ const script: ScriptDef = (generator: Generator) => {
   function drawLeggingsTrim(enchantLeggings: boolean) {
     generator.defineTextureInput("Leggings Trim", {
       standardWidth: 64,
-      standardHeight: 64,
+      standardHeight: 32,
       choices: trimTemplates2,
     });
     generator.defineTextureInput("Leggings Trim Material", {
@@ -1413,7 +1409,7 @@ const script: ScriptDef = (generator: Generator) => {
   function drawBootsTrim(enchantBoots: boolean) {
     generator.defineTextureInput("Boots Trim", {
       standardWidth: 64,
-      standardHeight: 64,
+      standardHeight: 32,
       choices: trimTemplates,
     });
     generator.defineTextureInput("Boots Trim Material", {
@@ -1435,8 +1431,10 @@ const script: ScriptDef = (generator: Generator) => {
   }
 
   // Define user inputs
+  generator.defineInputRowStart();
   generator.defineBooleanInput("Show Folds", true);
   generator.defineBooleanInput("Show Labels", true);
+  generator.defineInputRowEnd();
 
   // Get user variable values
 
@@ -1454,8 +1452,15 @@ const script: ScriptDef = (generator: Generator) => {
     "Enchant Helmet",
     false
   );
-  drawHelmet(showHeadOverlay, enchantHelmet);
+  defineHelmetTextureInput();
+  generator.defineInputRowStart();
+  const tintHelmet = generator.defineAndGetBooleanInput("Tint Helmet", false);
   const trimHelmet = generator.defineAndGetBooleanInput("Trim Helmet", false);
+  generator.defineInputRowEnd();
+  const helmetBlend: Blend = tintHelmet
+    ? getTint("Helmet Color")
+    : { kind: "None" };
+  drawHelmet(showHeadOverlay, enchantHelmet, tintHelmet, helmetBlend);
   if (trimHelmet) {
     drawHelmetTrim(showHeadOverlay, enchantHelmet);
   }
@@ -1465,11 +1470,21 @@ const script: ScriptDef = (generator: Generator) => {
     "Enchant Chestplate",
     false
   );
-  drawChestplate(enchantChestplate);
+  defineChestplateTextureInput();
+  generator.defineInputRowStart();
+  const tintChestplate = generator.defineAndGetBooleanInput(
+    "Tint Chestplate",
+    false
+  );
   const trimChestplate = generator.defineAndGetBooleanInput(
     "Trim Chestplate",
     false
   );
+  generator.defineInputRowEnd();
+  const chestplateBlend: Blend = tintChestplate
+    ? getTint("Chestplate Color")
+    : { kind: "None" };
+  drawChestplate(enchantChestplate, tintChestplate, chestplateBlend);
   if (trimChestplate) {
     drawChestplateTrim(enchantChestplate);
   }
@@ -1479,11 +1494,21 @@ const script: ScriptDef = (generator: Generator) => {
     "Enchant Leggings",
     false
   );
-  drawLeggings(enchantLeggings);
+  defineLeggingsTextureInput();
+  generator.defineInputRowStart();
+  const tintLeggings = generator.defineAndGetBooleanInput(
+    "Tint Leggings",
+    false
+  );
   const trimLeggings = generator.defineAndGetBooleanInput(
     "Trim Leggings",
     false
   );
+  generator.defineInputRowEnd();
+  const leggingsBlend: Blend = tintLeggings
+    ? getTint("Leggings Color")
+    : { kind: "None" };
+  drawLeggings(enchantLeggings, tintLeggings, leggingsBlend);
   if (trimLeggings) {
     drawLeggingsTrim(enchantLeggings);
   }
@@ -1493,8 +1518,15 @@ const script: ScriptDef = (generator: Generator) => {
     "Enchant Boots",
     false
   );
-  drawBoots(enchantBoots);
+  defineBootsTextureInput();
+  generator.defineInputRowStart();
+  const tintBoots = generator.defineAndGetBooleanInput("Tint Boots", false);
   const trimBoots = generator.defineAndGetBooleanInput("Trim Boots", false);
+  generator.defineInputRowEnd();
+  const bootsBlend: Blend = tintBoots
+    ? getTint("Boots Color")
+    : { kind: "None" };
+  drawBoots(enchantBoots, tintBoots, bootsBlend);
   if (trimBoots) {
     drawBootsTrim(enchantBoots);
   }

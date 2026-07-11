@@ -84,9 +84,11 @@ const script: ScriptDef = (generator: Generator) => {
 
   // Define user variables
 
+  generator.defineInputRowStart();
   generator.defineBooleanInput("Show Folds", true);
   generator.defineBooleanInput("Show Labels", true);
   generator.defineBooleanInput("Action Figure", false);
+  generator.defineInputRowEnd();
 
   // Get user variables
 

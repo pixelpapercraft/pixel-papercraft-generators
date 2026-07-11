@@ -295,8 +295,10 @@ const script: ScriptDef = (generator: Generator) => {
 
   const glint = defineGlintControls(generator);
 
+  generator.defineInputRowStart();
   generator.defineBooleanInput("Show Folds", true);
   generator.defineBooleanInput("Show Labels", true);
+  generator.defineInputRowEnd();
   generator.defineRegionInput([256, 249, 124, 72], () => {
     generator.setBooleanInputValue("Donkey / Mule Model", !muleModel);
   });

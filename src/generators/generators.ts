@@ -35,13 +35,33 @@ import { generator as minecraftArmorGenerator } from "@genroot/generators/minecr
 import { generator as testingGenerator } from "@genroot/generators/testing/testingGenerator";
 
 const isProductionEnvironment: boolean = process.env.NODE_ENV === "production";
-const isDevelopmentEnvironment: boolean = process.env.NODE_ENV === "development";
+const isDevelopmentEnvironment: boolean =
+  process.env.NODE_ENV === "development";
 
 export const character: GeneratorDef[] = [
   minecraftCharacterGenerator,
   minecraftActionFigureGenerator,
   minecraftUltimateBendableGenerator,
   minecraftCharacterMiniGenerator,
+];
+
+// Blocks, Items and Accessories
+export const utility: GeneratorDef[] = [
+  minecraftBlockGenerator,
+  minecraftItemGenerator,
+  minecraftArmorGenerator,
+  minecraftCapeAndElytraGenerator,
+  minecraftCharacterHeadsGenerator,
+];
+
+export const mob: GeneratorDef[] = [
+  minecraftCreeperGenerator,
+  minecraftEndermanGenerator,
+  minecraftGolemGenerator,
+  minecraftHorseGenerator,
+  minecraftPigGenerator,
+  minecraftCatGenerator,
+  minecraftVillagerGenerator,
 ];
 
 export const mobCharacter: GeneratorDef[] = [
@@ -57,25 +77,6 @@ export const mobCharacter: GeneratorDef[] = [
   minecraftAxolotlCharacterGenerator,
   minecraftAllayCharacterGenerator,
   minecraftBeeCharacterGenerator,
-];
-
-export const mob: GeneratorDef[] = [
-  minecraftCreeperGenerator,
-  minecraftEndermanGenerator,
-  minecraftGolemGenerator,
-  minecraftHorseGenerator,
-  minecraftPigGenerator,
-  minecraftCatGenerator,
-  minecraftVillagerGenerator,
-];
-
-// Blocks, Items and Accessories
-export const utility: GeneratorDef[] = [
-  minecraftBlockGenerator,
-  minecraftItemGenerator,
-  minecraftArmorGenerator,
-  minecraftCapeAndElytraGenerator,
-  minecraftCharacterHeadsGenerator,
 ];
 
 export const mod: GeneratorDef[] = [
@@ -100,9 +101,9 @@ function concatArrays<GeneratorDef>(arrays: Array<Array<GeneratorDef>>) {
 
 export const generators = concatArrays([
   character,
-  mobCharacter,
-  mob,
   utility,
+  mob,
+  mobCharacter,
   mod,
   other,
   dev,
@@ -120,9 +121,9 @@ export type GeneratorGroup = {
 
 export const generatorGroups: GeneratorGroup[] = [
   { label: "Characters", generators: character },
-  { label: "Mob Characters", generators: mobCharacter },
-  { label: "Mobs", generators: mob },
   { label: "Blocks, Items and Accessories", generators: utility },
+  { label: "Mobs", generators: mob },
+  { label: "Mob Characters", generators: mobCharacter },
   { label: "Mods", generators: mod },
   { label: "Other", generators: other },
   { label: "Development", generators: dev },

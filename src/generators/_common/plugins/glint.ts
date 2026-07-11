@@ -70,6 +70,8 @@ export function defineGlintControlInputs(generator: Generator): void {
     choices: ["1.20+", "Pre-1.20"],
   });
 
+  generator.defineInputRowStart();
+
   generator.defineAndGetRangeInput("Glint Opacity", {
     min: 0,
     max: 255,
@@ -88,6 +90,8 @@ export function defineGlintControlInputs(generator: Generator): void {
     value: 0,
     step: 1,
   });
+
+  generator.defineInputRowEnd();
 }
 
 export function getGlintControls(generator: Generator): GlintControls {

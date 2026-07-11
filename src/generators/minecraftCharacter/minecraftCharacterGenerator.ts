@@ -80,9 +80,10 @@ const script: ScriptDef = (generator: Generator) => {
     options: makeDefaultMinecraftSkinPresetOptions(),
     showModelType: true,
   });
+  generator.defineInputRowStart();
   generator.defineBooleanInput("Show Folds", true);
-
   generator.defineBooleanInput("Show Labels", true);
+  generator.defineInputRowEnd();
 
   generator.defineText(
     "Click in the papercraft template to turn on and off the overlay for each part."

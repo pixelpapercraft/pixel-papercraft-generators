@@ -224,6 +224,7 @@ const script: ScriptDef = (generator: Generator) => {
 
     const typeName = `Block ${blockId} Type`;
 
+    generator.defineInputRowStart();
     const blockType = generator.defineAndGetSelectInput(typeName, [
       "Block",
       "Slab",
@@ -277,8 +278,10 @@ const script: ScriptDef = (generator: Generator) => {
         break;
       }
     }
+    generator.defineInputRowEnd();
   }
 
+  generator.defineInputRowStart();
   generator.defineButtonInput(
     "Clear Faces",
     () => {
@@ -305,6 +308,7 @@ const script: ScriptDef = (generator: Generator) => {
     },
     "Red"
   );
+  generator.defineInputRowEnd();
 
   generator.drawImage("Title", [0, 0]);
 };

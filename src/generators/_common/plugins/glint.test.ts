@@ -194,10 +194,14 @@ describe("defineGlintControlInputs", () => {
   it("defines the shared glint input controls", () => {
     const defineTextureInput = vi.fn();
     const defineAndGetRangeInput = vi.fn();
+    const defineInputRowStart = vi.fn();
+    const defineInputRowEnd = vi.fn();
 
     defineGlintControlInputs({
       defineTextureInput,
       defineAndGetRangeInput,
+      defineInputRowStart,
+      defineInputRowEnd,
     } as unknown as Generator);
 
     expect(defineTextureInput).toHaveBeenCalledWith("Enchanted Glint", {

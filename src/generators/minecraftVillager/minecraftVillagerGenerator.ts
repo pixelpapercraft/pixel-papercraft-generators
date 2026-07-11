@@ -586,8 +586,9 @@ const script: ScriptDef = (generator: Generator) => {
     },
   };
 
-  generator.defineSelectInput("Type", ["Normal", "Zombie"]);
+  generator.defineInputRowStart();
 
+  generator.defineSelectInput("Type", ["Normal", "Zombie"]);
   generator.defineSelectInput("Biome", [
     "Plains",
     "Desert",
@@ -597,7 +598,6 @@ const script: ScriptDef = (generator: Generator) => {
     "Swamp",
     "Taiga",
   ]);
-
   generator.defineSelectInput("Profession", [
     "None",
     "Armorer",
@@ -615,6 +615,7 @@ const script: ScriptDef = (generator: Generator) => {
     "Toolsmith",
     "Weaponsmith",
   ]);
+  generator.defineInputRowEnd();
 
   const villagertype = generator.getSelectInputValue("Type") === "Normal";
   const zombietype = generator.getSelectInputValue("Type") === "Zombie";

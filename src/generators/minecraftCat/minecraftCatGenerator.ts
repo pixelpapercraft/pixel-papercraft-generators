@@ -12,7 +12,7 @@ import { type Generator } from "@genroot/builder/modules/generator";
 import { defineTintInput } from "@genroot/generators/_common/tintSelector/tintSelector";
 import { catTintChoiceGroups } from "@genroot/generators/_common/tintSelector/tints";
 
-import thumnbailImage from "./thumbnail/thumbnail-v2-256.jpeg";
+import thumbnailImage from "./thumbnail/thumbnail-v2-256.jpeg";
 import whiteCatImage from "./textures/white.png";
 import backgroundImage from "./images/Background.png";
 import foldsImage from "./images/Folds.png";
@@ -38,13 +38,13 @@ const name = "Minecraft Cat";
 const history: HistoryDef = [
   "Originally created by Micaias32.",
   "15 Mar 2021 Micaias32 - All cats of 1.14.",
-  "03 Feb 2022 NinjolasNJM - Converted to new generator builder, with updated backgrounds, folds and labels, as well as improved texture mappping and collar handling.",
+  "03 Feb 2022 NinjolasNJM - Converted to new generator builder, with updated backgrounds, folds and labels, as well as improved texture mapping and collar handling.",
   "06 Aug 2022 M16 - Update thumbnail photo.",
   "16 May 2026 NinjolasNJM - Changed to use new tint input.",
 ];
 
 const thumbnail: ThumbnailDef = {
-  url: thumnbailImage.src,
+  url: thumbnailImage.src,
 };
 
 const instructions = `
@@ -196,9 +196,10 @@ const script: ScriptDef = (generator: Generator) => {
       includeNoTint: false,
     }) ?? "#B02E26";
 
+  generator.defineInputRowStart();
   generator.defineBooleanInput("Show Folds", true);
-
   generator.defineBooleanInput("Show Labels", true);
+  generator.defineInputRowEnd();
 
   // Get user variable values
 
