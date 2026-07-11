@@ -3,13 +3,13 @@
 import { type TextureDef } from "@genroot/builder/modules/generatorDef";
 import { type TextureData } from "@genroot/builder/modules/textureData";
 
-import image from "./texture_minecraft_26_1_2_items.png";
+import image from "./texture_minecraft_26_2_items.png";
 
 const textureDef: TextureDef = {
-  id: "minecraft-26.1.2-items",
+  id: "minecraft-26.2-items",
   url: image.src,
   standardWidth: 512,
-  standardHeight: 416,
+  standardHeight: 448,
 };
 
 export const tiles = [
@@ -1986,1200 +1986,1216 @@ export const tiles = [
     frames: [{ rectangle: [192, 240, 16, 16], crop: [0, 3, 15, 10] }],
   },
   {
-    name: "music_disc_cat",
+    name: "music_disc_bounce",
     frames: [{ rectangle: [208, 240, 16, 16], crop: [0, 3, 15, 10] }],
   },
   {
-    name: "music_disc_chirp",
+    name: "music_disc_cat",
     frames: [{ rectangle: [224, 240, 16, 16], crop: [0, 3, 15, 10] }],
   },
   {
-    name: "music_disc_creator",
+    name: "music_disc_chirp",
     frames: [{ rectangle: [240, 240, 16, 16], crop: [0, 3, 15, 10] }],
   },
   {
-    name: "music_disc_creator_music_box",
+    name: "music_disc_creator",
     frames: [{ rectangle: [256, 240, 16, 16], crop: [0, 3, 15, 10] }],
   },
   {
-    name: "music_disc_far",
+    name: "music_disc_creator_music_box",
     frames: [{ rectangle: [272, 240, 16, 16], crop: [0, 3, 15, 10] }],
   },
   {
-    name: "music_disc_lava_chicken",
+    name: "music_disc_far",
     frames: [{ rectangle: [288, 240, 16, 16], crop: [0, 3, 15, 10] }],
   },
   {
-    name: "music_disc_mall",
+    name: "music_disc_lava_chicken",
     frames: [{ rectangle: [304, 240, 16, 16], crop: [0, 3, 15, 10] }],
   },
   {
-    name: "music_disc_mellohi",
+    name: "music_disc_mall",
     frames: [{ rectangle: [320, 240, 16, 16], crop: [0, 3, 15, 10] }],
   },
   {
-    name: "music_disc_otherside",
+    name: "music_disc_mellohi",
     frames: [{ rectangle: [336, 240, 16, 16], crop: [0, 3, 15, 10] }],
   },
   {
-    name: "music_disc_pigstep",
+    name: "music_disc_otherside",
     frames: [{ rectangle: [352, 240, 16, 16], crop: [0, 3, 15, 10] }],
   },
   {
-    name: "music_disc_precipice",
+    name: "music_disc_pigstep",
     frames: [{ rectangle: [368, 240, 16, 16], crop: [0, 3, 15, 10] }],
   },
   {
-    name: "music_disc_relic",
+    name: "music_disc_precipice",
     frames: [{ rectangle: [384, 240, 16, 16], crop: [0, 3, 15, 10] }],
   },
   {
-    name: "music_disc_stal",
+    name: "music_disc_relic",
     frames: [{ rectangle: [400, 240, 16, 16], crop: [0, 3, 15, 10] }],
   },
   {
-    name: "music_disc_strad",
+    name: "music_disc_stal",
     frames: [{ rectangle: [416, 240, 16, 16], crop: [0, 3, 15, 10] }],
   },
   {
-    name: "music_disc_tears",
+    name: "music_disc_strad",
     frames: [{ rectangle: [432, 240, 16, 16], crop: [0, 3, 15, 10] }],
   },
   {
-    name: "music_disc_wait",
+    name: "music_disc_tears",
     frames: [{ rectangle: [448, 240, 16, 16], crop: [0, 3, 15, 10] }],
   },
   {
-    name: "music_disc_ward",
+    name: "music_disc_wait",
     frames: [{ rectangle: [464, 240, 16, 16], crop: [0, 3, 15, 10] }],
   },
   {
+    name: "music_disc_ward",
+    frames: [{ rectangle: [480, 240, 16, 16], crop: [0, 3, 15, 10] }],
+  },
+  {
     name: "mutton",
-    frames: [{ rectangle: [480, 240, 16, 16], crop: [2, 1, 12, 15] }],
+    frames: [{ rectangle: [496, 240, 16, 16], crop: [2, 1, 12, 15] }],
   },
   {
     name: "name_tag",
-    frames: [{ rectangle: [496, 240, 16, 16], crop: [0, 1, 15, 15] }],
+    frames: [{ rectangle: [0, 256, 16, 16], crop: [0, 1, 15, 15] }],
   },
   {
     name: "nautilus_shell",
-    frames: [{ rectangle: [0, 256, 16, 16], crop: [1, 1, 14, 14] }],
+    frames: [{ rectangle: [16, 256, 16, 16], crop: [1, 1, 14, 14] }],
   },
   {
     name: "nautilus_spawn_egg",
-    frames: [{ rectangle: [16, 256, 16, 16], crop: [0, 0, 16, 16] }],
+    frames: [{ rectangle: [32, 256, 16, 16], crop: [0, 0, 16, 16] }],
   },
   {
     name: "nether_brick",
-    frames: [{ rectangle: [32, 256, 16, 16], crop: [0, 2, 16, 12] }],
+    frames: [{ rectangle: [48, 256, 16, 16], crop: [0, 2, 16, 12] }],
   },
   {
     name: "nether_sprouts",
-    frames: [{ rectangle: [48, 256, 16, 16], crop: [1, 5, 14, 5] }],
+    frames: [{ rectangle: [64, 256, 16, 16], crop: [1, 5, 14, 5] }],
   },
   {
     name: "nether_star",
-    frames: [{ rectangle: [64, 256, 16, 16], crop: [2, 2, 13, 13] }],
+    frames: [{ rectangle: [80, 256, 16, 16], crop: [2, 2, 13, 13] }],
   },
   {
     name: "nether_wart",
-    frames: [{ rectangle: [80, 256, 16, 16], crop: [4, 4, 8, 9] }],
+    frames: [{ rectangle: [96, 256, 16, 16], crop: [4, 4, 8, 9] }],
   },
   {
     name: "netherite_axe",
-    frames: [{ rectangle: [96, 256, 16, 16], crop: [2, 1, 12, 14] }],
+    frames: [{ rectangle: [112, 256, 16, 16], crop: [2, 1, 12, 14] }],
   },
   {
     name: "netherite_boots",
-    frames: [{ rectangle: [112, 256, 16, 16], crop: [1, 3, 14, 10] }],
+    frames: [{ rectangle: [128, 256, 16, 16], crop: [1, 3, 14, 10] }],
   },
   {
     name: "netherite_chestplate",
-    frames: [{ rectangle: [128, 256, 16, 16], crop: [1, 2, 14, 13] }],
+    frames: [{ rectangle: [144, 256, 16, 16], crop: [1, 2, 14, 13] }],
   },
   {
     name: "netherite_helmet",
-    frames: [{ rectangle: [144, 256, 16, 16], crop: [3, 3, 10, 9] }],
+    frames: [{ rectangle: [160, 256, 16, 16], crop: [3, 3, 10, 9] }],
   },
   {
     name: "netherite_hoe",
-    frames: [{ rectangle: [160, 256, 16, 16], crop: [2, 1, 12, 14] }],
+    frames: [{ rectangle: [176, 256, 16, 16], crop: [2, 1, 12, 14] }],
   },
   {
     name: "netherite_horse_armor",
-    frames: [{ rectangle: [176, 256, 16, 16], crop: [1, 3, 14, 11] }],
+    frames: [{ rectangle: [192, 256, 16, 16], crop: [1, 3, 14, 11] }],
   },
   {
     name: "netherite_ingot",
-    frames: [{ rectangle: [192, 256, 16, 16], crop: [0, 2, 16, 12] }],
+    frames: [{ rectangle: [208, 256, 16, 16], crop: [0, 2, 16, 12] }],
   },
   {
     name: "netherite_leggings",
-    frames: [{ rectangle: [208, 256, 16, 16], crop: [3, 2, 10, 12] }],
+    frames: [{ rectangle: [224, 256, 16, 16], crop: [3, 2, 10, 12] }],
   },
   {
     name: "netherite_nautilus_armor",
-    frames: [{ rectangle: [224, 256, 16, 16], crop: [0, 1, 16, 14] }],
+    frames: [{ rectangle: [240, 256, 16, 16], crop: [0, 1, 16, 14] }],
   },
   {
     name: "netherite_pickaxe",
-    frames: [{ rectangle: [240, 256, 16, 16], crop: [2, 2, 13, 13] }],
+    frames: [{ rectangle: [256, 256, 16, 16], crop: [2, 2, 13, 13] }],
   },
   {
     name: "netherite_scrap",
-    frames: [{ rectangle: [256, 256, 16, 16], crop: [1, 1, 14, 14] }],
+    frames: [{ rectangle: [272, 256, 16, 16], crop: [1, 1, 14, 14] }],
   },
   {
     name: "netherite_shovel",
-    frames: [{ rectangle: [272, 256, 16, 16], crop: [2, 2, 13, 13] }],
+    frames: [{ rectangle: [288, 256, 16, 16], crop: [2, 2, 13, 13] }],
   },
   {
     name: "netherite_spear",
-    frames: [{ rectangle: [288, 256, 16, 16], crop: [0, 0, 16, 16] }],
-  },
-  {
-    name: "netherite_sword",
     frames: [{ rectangle: [304, 256, 16, 16], crop: [0, 0, 16, 16] }],
   },
   {
+    name: "netherite_sword",
+    frames: [{ rectangle: [320, 256, 16, 16], crop: [0, 0, 16, 16] }],
+  },
+  {
     name: "netherite_upgrade_smithing_template",
-    frames: [{ rectangle: [320, 256, 16, 16], crop: [3, 1, 11, 14] }],
+    frames: [{ rectangle: [336, 256, 16, 16], crop: [3, 1, 11, 14] }],
   },
   {
     name: "oak_boat",
-    frames: [{ rectangle: [336, 256, 16, 16], crop: [0, 1, 16, 14] }],
+    frames: [{ rectangle: [352, 256, 16, 16], crop: [0, 1, 16, 14] }],
   },
   {
     name: "oak_chest_boat",
-    frames: [{ rectangle: [352, 256, 16, 16], crop: [0, 0, 16, 15] }],
+    frames: [{ rectangle: [368, 256, 16, 16], crop: [0, 0, 16, 15] }],
   },
   {
     name: "oak_door",
-    frames: [{ rectangle: [368, 256, 16, 16], crop: [3, 2, 10, 14] }],
+    frames: [{ rectangle: [384, 256, 16, 16], crop: [3, 2, 10, 14] }],
   },
   {
     name: "oak_hanging_sign",
-    frames: [{ rectangle: [384, 256, 16, 16], crop: [1, 1, 14, 14] }],
+    frames: [{ rectangle: [400, 256, 16, 16], crop: [1, 1, 14, 14] }],
   },
   {
     name: "oak_sign",
-    frames: [{ rectangle: [400, 256, 16, 16], crop: [2, 2, 13, 14] }],
+    frames: [{ rectangle: [416, 256, 16, 16], crop: [2, 2, 13, 14] }],
   },
   {
     name: "ocelot_spawn_egg",
-    frames: [{ rectangle: [416, 256, 16, 16], crop: [3, 3, 10, 11] }],
+    frames: [{ rectangle: [432, 256, 16, 16], crop: [3, 3, 10, 11] }],
   },
   {
     name: "ominous_bottle",
-    frames: [{ rectangle: [432, 256, 16, 16], crop: [3, 2, 10, 13] }],
+    frames: [{ rectangle: [448, 256, 16, 16], crop: [3, 2, 10, 13] }],
   },
   {
     name: "ominous_trial_key",
-    frames: [{ rectangle: [448, 256, 16, 16], crop: [2, 0, 12, 16] }],
+    frames: [{ rectangle: [464, 256, 16, 16], crop: [2, 0, 12, 16] }],
   },
   {
     name: "orange_bundle",
-    frames: [{ rectangle: [464, 256, 16, 16], crop: [2, 1, 12, 14] }],
+    frames: [{ rectangle: [480, 256, 16, 16], crop: [2, 1, 12, 14] }],
   },
   {
     name: "orange_bundle_open_back",
-    frames: [{ rectangle: [480, 256, 16, 16], crop: [0, 4, 16, 6] }],
+    frames: [{ rectangle: [496, 256, 16, 16], crop: [0, 4, 16, 6] }],
   },
   {
     name: "orange_bundle_open_front",
-    frames: [{ rectangle: [496, 256, 16, 16], crop: [0, 7, 16, 9] }],
+    frames: [{ rectangle: [0, 272, 16, 16], crop: [0, 7, 16, 9] }],
   },
   {
     name: "orange_candle",
-    frames: [{ rectangle: [0, 272, 16, 16], crop: [5, 1, 7, 15] }],
+    frames: [{ rectangle: [16, 272, 16, 16], crop: [5, 1, 7, 15] }],
   },
   {
     name: "orange_dye",
-    frames: [{ rectangle: [16, 272, 16, 16], crop: [0, 2, 16, 14] }],
+    frames: [{ rectangle: [32, 272, 16, 16], crop: [0, 2, 16, 14] }],
   },
   {
     name: "orange_harness",
-    frames: [{ rectangle: [32, 272, 16, 16], crop: [0, 1, 16, 14] }],
+    frames: [{ rectangle: [48, 272, 16, 16], crop: [0, 1, 16, 14] }],
   },
   {
     name: "oxidized_copper_chain",
-    frames: [{ rectangle: [48, 272, 16, 16], crop: [6, 1, 3, 14] }],
+    frames: [{ rectangle: [64, 272, 16, 16], crop: [6, 1, 3, 14] }],
   },
   {
     name: "oxidized_copper_door",
-    frames: [{ rectangle: [64, 272, 16, 16], crop: [3, 2, 10, 14] }],
+    frames: [{ rectangle: [80, 272, 16, 16], crop: [3, 2, 10, 14] }],
   },
   {
     name: "oxidized_copper_lantern",
-    frames: [{ rectangle: [80, 272, 16, 16], crop: [5, 1, 6, 13] }],
+    frames: [{ rectangle: [96, 272, 16, 16], crop: [5, 1, 6, 13] }],
   },
   {
     name: "painting",
-    frames: [{ rectangle: [96, 272, 16, 16], crop: [2, 1, 13, 14] }],
+    frames: [{ rectangle: [112, 272, 16, 16], crop: [2, 1, 13, 14] }],
   },
   {
     name: "pale_oak_boat",
-    frames: [{ rectangle: [112, 272, 16, 16], crop: [0, 1, 16, 14] }],
+    frames: [{ rectangle: [128, 272, 16, 16], crop: [0, 1, 16, 14] }],
   },
   {
     name: "pale_oak_chest_boat",
-    frames: [{ rectangle: [128, 272, 16, 16], crop: [0, 0, 16, 15] }],
+    frames: [{ rectangle: [144, 272, 16, 16], crop: [0, 0, 16, 15] }],
   },
   {
     name: "pale_oak_door",
-    frames: [{ rectangle: [144, 272, 16, 16], crop: [3, 2, 10, 14] }],
+    frames: [{ rectangle: [160, 272, 16, 16], crop: [3, 2, 10, 14] }],
   },
   {
     name: "pale_oak_hanging_sign",
-    frames: [{ rectangle: [160, 272, 16, 16], crop: [1, 1, 14, 14] }],
+    frames: [{ rectangle: [176, 272, 16, 16], crop: [1, 1, 14, 14] }],
   },
   {
     name: "pale_oak_sign",
-    frames: [{ rectangle: [176, 272, 16, 16], crop: [2, 2, 13, 14] }],
+    frames: [{ rectangle: [192, 272, 16, 16], crop: [2, 2, 13, 14] }],
   },
   {
     name: "panda_spawn_egg",
-    frames: [{ rectangle: [192, 272, 16, 16], crop: [0, 0, 16, 16] }],
+    frames: [{ rectangle: [208, 272, 16, 16], crop: [0, 0, 16, 16] }],
   },
   {
     name: "paper",
-    frames: [{ rectangle: [208, 272, 16, 16], crop: [1, 2, 15, 12] }],
+    frames: [{ rectangle: [224, 272, 16, 16], crop: [1, 2, 15, 12] }],
   },
   {
     name: "parched_spawn_egg",
-    frames: [{ rectangle: [224, 272, 16, 16], crop: [2, 1, 12, 14] }],
+    frames: [{ rectangle: [240, 272, 16, 16], crop: [2, 1, 12, 14] }],
   },
   {
     name: "parrot_spawn_egg",
-    frames: [{ rectangle: [240, 272, 16, 16], crop: [3, 0, 10, 14] }],
+    frames: [{ rectangle: [256, 272, 16, 16], crop: [3, 0, 10, 14] }],
   },
   {
     name: "phantom_membrane",
-    frames: [{ rectangle: [256, 272, 16, 16], crop: [1, 2, 15, 13] }],
+    frames: [{ rectangle: [272, 272, 16, 16], crop: [1, 2, 15, 13] }],
   },
   {
     name: "phantom_spawn_egg",
-    frames: [{ rectangle: [272, 272, 16, 16], crop: [2, 1, 12, 14] }],
-  },
-  {
-    name: "pig_spawn_egg",
     frames: [{ rectangle: [288, 272, 16, 16], crop: [2, 1, 12, 14] }],
   },
   {
-    name: "piglin_banner_pattern",
-    frames: [{ rectangle: [304, 272, 16, 16], crop: [1, 1, 14, 14] }],
+    name: "pig_spawn_egg",
+    frames: [{ rectangle: [304, 272, 16, 16], crop: [2, 1, 12, 14] }],
   },
   {
-    name: "piglin_brute_spawn_egg",
+    name: "piglin_banner_pattern",
     frames: [{ rectangle: [320, 272, 16, 16], crop: [1, 1, 14, 14] }],
   },
   {
-    name: "piglin_spawn_egg",
+    name: "piglin_brute_spawn_egg",
     frames: [{ rectangle: [336, 272, 16, 16], crop: [1, 1, 14, 14] }],
   },
   {
-    name: "pillager_spawn_egg",
-    frames: [{ rectangle: [352, 272, 16, 16], crop: [2, 1, 12, 14] }],
+    name: "piglin_spawn_egg",
+    frames: [{ rectangle: [352, 272, 16, 16], crop: [1, 1, 14, 14] }],
   },
   {
-    name: "pink_bundle",
+    name: "pillager_spawn_egg",
     frames: [{ rectangle: [368, 272, 16, 16], crop: [2, 1, 12, 14] }],
   },
   {
+    name: "pink_bundle",
+    frames: [{ rectangle: [384, 272, 16, 16], crop: [2, 1, 12, 14] }],
+  },
+  {
     name: "pink_bundle_open_back",
-    frames: [{ rectangle: [384, 272, 16, 16], crop: [0, 4, 16, 6] }],
+    frames: [{ rectangle: [400, 272, 16, 16], crop: [0, 4, 16, 6] }],
   },
   {
     name: "pink_bundle_open_front",
-    frames: [{ rectangle: [400, 272, 16, 16], crop: [0, 7, 16, 9] }],
+    frames: [{ rectangle: [416, 272, 16, 16], crop: [0, 7, 16, 9] }],
   },
   {
     name: "pink_candle",
-    frames: [{ rectangle: [416, 272, 16, 16], crop: [5, 1, 7, 15] }],
+    frames: [{ rectangle: [432, 272, 16, 16], crop: [5, 1, 7, 15] }],
   },
   {
     name: "pink_dye",
-    frames: [{ rectangle: [432, 272, 16, 16], crop: [0, 2, 16, 14] }],
+    frames: [{ rectangle: [448, 272, 16, 16], crop: [0, 2, 16, 14] }],
   },
   {
     name: "pink_harness",
-    frames: [{ rectangle: [448, 272, 16, 16], crop: [0, 1, 16, 14] }],
+    frames: [{ rectangle: [464, 272, 16, 16], crop: [0, 1, 16, 14] }],
   },
   {
     name: "pink_petals",
-    frames: [{ rectangle: [464, 272, 16, 16], crop: [0, 0, 16, 16] }],
+    frames: [{ rectangle: [480, 272, 16, 16], crop: [0, 0, 16, 16] }],
   },
   {
     name: "pitcher_plant",
-    frames: [{ rectangle: [480, 272, 16, 16], crop: [3, 1, 10, 15] }],
+    frames: [{ rectangle: [496, 272, 16, 16], crop: [3, 1, 10, 15] }],
   },
   {
     name: "pitcher_pod",
-    frames: [{ rectangle: [496, 272, 16, 16], crop: [2, 1, 13, 14] }],
+    frames: [{ rectangle: [0, 288, 16, 16], crop: [2, 1, 13, 14] }],
   },
   {
     name: "plenty_pottery_sherd",
-    frames: [{ rectangle: [0, 288, 16, 16], crop: [1, 1, 14, 14] }],
+    frames: [{ rectangle: [16, 288, 16, 16], crop: [1, 1, 14, 14] }],
   },
   {
     name: "pointed_dripstone",
-    frames: [{ rectangle: [16, 288, 16, 16], crop: [4, 0, 8, 11] }],
+    frames: [{ rectangle: [32, 288, 16, 16], crop: [4, 0, 8, 11] }],
   },
   {
     name: "poisonous_potato",
-    frames: [{ rectangle: [32, 288, 16, 16], crop: [1, 2, 13, 12] }],
+    frames: [{ rectangle: [48, 288, 16, 16], crop: [1, 2, 13, 12] }],
   },
   {
     name: "polar_bear_spawn_egg",
-    frames: [{ rectangle: [48, 288, 16, 16], crop: [1, 0, 14, 16] }],
+    frames: [{ rectangle: [64, 288, 16, 16], crop: [1, 0, 14, 16] }],
   },
   {
     name: "popped_chorus_fruit",
-    frames: [{ rectangle: [64, 288, 16, 16], crop: [1, 1, 14, 13] }],
+    frames: [{ rectangle: [80, 288, 16, 16], crop: [1, 1, 14, 13] }],
   },
   {
     name: "porkchop",
-    frames: [{ rectangle: [80, 288, 16, 16], crop: [2, 2, 13, 13] }],
+    frames: [{ rectangle: [96, 288, 16, 16], crop: [2, 2, 13, 13] }],
   },
   {
     name: "potato",
-    frames: [{ rectangle: [96, 288, 16, 16], crop: [2, 4, 12, 10] }],
+    frames: [{ rectangle: [112, 288, 16, 16], crop: [2, 4, 12, 10] }],
   },
   {
     name: "potion",
-    frames: [{ rectangle: [112, 288, 16, 16], crop: [4, 2, 9, 13] }],
+    frames: [{ rectangle: [128, 288, 16, 16], crop: [4, 2, 9, 13] }],
   },
   {
     name: "potion_overlay",
-    frames: [{ rectangle: [128, 288, 16, 16], crop: [5, 8, 7, 6] }],
+    frames: [{ rectangle: [144, 288, 16, 16], crop: [5, 8, 7, 6] }],
   },
   {
     name: "powder_snow_bucket",
-    frames: [{ rectangle: [144, 288, 16, 16], crop: [2, 0, 12, 15] }],
+    frames: [{ rectangle: [160, 288, 16, 16], crop: [2, 0, 12, 15] }],
   },
   {
     name: "prismarine_crystals",
-    frames: [{ rectangle: [160, 288, 16, 16], crop: [2, 3, 13, 11] }],
+    frames: [{ rectangle: [176, 288, 16, 16], crop: [2, 3, 13, 11] }],
   },
   {
     name: "prismarine_shard",
-    frames: [{ rectangle: [176, 288, 16, 16], crop: [2, 2, 13, 13] }],
+    frames: [{ rectangle: [192, 288, 16, 16], crop: [2, 2, 13, 13] }],
   },
   {
     name: "prize_pottery_sherd",
-    frames: [{ rectangle: [192, 288, 16, 16], crop: [1, 1, 14, 14] }],
+    frames: [{ rectangle: [208, 288, 16, 16], crop: [1, 1, 14, 14] }],
   },
   {
     name: "pufferfish",
-    frames: [{ rectangle: [208, 288, 16, 16], crop: [0, 1, 16, 14] }],
+    frames: [{ rectangle: [224, 288, 16, 16], crop: [0, 1, 16, 14] }],
   },
   {
     name: "pufferfish_bucket",
-    frames: [{ rectangle: [224, 288, 16, 16], crop: [1, 1, 14, 15] }],
+    frames: [{ rectangle: [240, 288, 16, 16], crop: [1, 1, 14, 15] }],
   },
   {
     name: "pufferfish_spawn_egg",
-    frames: [{ rectangle: [240, 288, 16, 16], crop: [1, 2, 14, 14] }],
+    frames: [{ rectangle: [256, 288, 16, 16], crop: [1, 2, 14, 14] }],
   },
   {
     name: "pumpkin_pie",
-    frames: [{ rectangle: [256, 288, 16, 16], crop: [1, 4, 14, 11] }],
+    frames: [{ rectangle: [272, 288, 16, 16], crop: [1, 4, 14, 11] }],
   },
   {
     name: "pumpkin_seeds",
-    frames: [{ rectangle: [272, 288, 16, 16], crop: [3, 4, 11, 9] }],
+    frames: [{ rectangle: [288, 288, 16, 16], crop: [3, 4, 11, 9] }],
   },
   {
     name: "purple_bundle",
-    frames: [{ rectangle: [288, 288, 16, 16], crop: [2, 1, 12, 14] }],
+    frames: [{ rectangle: [304, 288, 16, 16], crop: [2, 1, 12, 14] }],
   },
   {
     name: "purple_bundle_open_back",
-    frames: [{ rectangle: [304, 288, 16, 16], crop: [0, 4, 16, 6] }],
+    frames: [{ rectangle: [320, 288, 16, 16], crop: [0, 4, 16, 6] }],
   },
   {
     name: "purple_bundle_open_front",
-    frames: [{ rectangle: [320, 288, 16, 16], crop: [0, 7, 16, 9] }],
+    frames: [{ rectangle: [336, 288, 16, 16], crop: [0, 7, 16, 9] }],
   },
   {
     name: "purple_candle",
-    frames: [{ rectangle: [336, 288, 16, 16], crop: [5, 1, 7, 15] }],
+    frames: [{ rectangle: [352, 288, 16, 16], crop: [5, 1, 7, 15] }],
   },
   {
     name: "purple_dye",
-    frames: [{ rectangle: [352, 288, 16, 16], crop: [0, 2, 16, 14] }],
+    frames: [{ rectangle: [368, 288, 16, 16], crop: [0, 2, 16, 14] }],
   },
   {
     name: "purple_harness",
-    frames: [{ rectangle: [368, 288, 16, 16], crop: [0, 1, 16, 14] }],
+    frames: [{ rectangle: [384, 288, 16, 16], crop: [0, 1, 16, 14] }],
   },
   {
     name: "quartz",
-    frames: [{ rectangle: [384, 288, 16, 16], crop: [1, 0, 14, 15] }],
+    frames: [{ rectangle: [400, 288, 16, 16], crop: [1, 0, 14, 15] }],
   },
   {
     name: "rabbit",
-    frames: [{ rectangle: [400, 288, 16, 16], crop: [1, 1, 15, 13] }],
+    frames: [{ rectangle: [416, 288, 16, 16], crop: [1, 1, 15, 13] }],
   },
   {
     name: "rabbit_foot",
-    frames: [{ rectangle: [416, 288, 16, 16], crop: [2, 2, 12, 12] }],
+    frames: [{ rectangle: [432, 288, 16, 16], crop: [2, 2, 12, 12] }],
   },
   {
     name: "rabbit_hide",
-    frames: [{ rectangle: [432, 288, 16, 16], crop: [3, 0, 10, 15] }],
+    frames: [{ rectangle: [448, 288, 16, 16], crop: [3, 0, 10, 15] }],
   },
   {
     name: "rabbit_spawn_egg",
-    frames: [{ rectangle: [448, 288, 16, 16], crop: [1, 0, 12, 14] }],
+    frames: [{ rectangle: [464, 288, 16, 16], crop: [1, 0, 12, 14] }],
   },
   {
     name: "rabbit_stew",
-    frames: [{ rectangle: [464, 288, 16, 16], crop: [2, 5, 12, 9] }],
+    frames: [{ rectangle: [480, 288, 16, 16], crop: [2, 5, 12, 9] }],
   },
   {
     name: "raiser_armor_trim_smithing_template",
-    frames: [{ rectangle: [480, 288, 16, 16], crop: [1, 0, 15, 16] }],
+    frames: [{ rectangle: [496, 288, 16, 16], crop: [1, 0, 15, 16] }],
   },
   {
     name: "ravager_spawn_egg",
-    frames: [{ rectangle: [496, 288, 16, 16], crop: [0, 0, 16, 16] }],
+    frames: [{ rectangle: [0, 304, 16, 16], crop: [0, 0, 16, 16] }],
   },
   {
     name: "raw_copper",
-    frames: [{ rectangle: [0, 304, 16, 16], crop: [0, 2, 16, 13] }],
+    frames: [{ rectangle: [16, 304, 16, 16], crop: [0, 2, 16, 13] }],
   },
   {
     name: "raw_gold",
-    frames: [{ rectangle: [16, 304, 16, 16], crop: [1, 2, 15, 13] }],
+    frames: [{ rectangle: [32, 304, 16, 16], crop: [1, 2, 15, 13] }],
   },
   {
     name: "raw_iron",
-    frames: [{ rectangle: [32, 304, 16, 16], crop: [0, 1, 16, 14] }],
-  },
-  {
-    name: "recovery_compass_00",
     frames: [{ rectangle: [48, 304, 16, 16], crop: [0, 1, 16, 14] }],
   },
   {
-    name: "recovery_compass_01",
+    name: "recovery_compass_00",
     frames: [{ rectangle: [64, 304, 16, 16], crop: [0, 1, 16, 14] }],
   },
   {
-    name: "recovery_compass_02",
+    name: "recovery_compass_01",
     frames: [{ rectangle: [80, 304, 16, 16], crop: [0, 1, 16, 14] }],
   },
   {
-    name: "recovery_compass_03",
+    name: "recovery_compass_02",
     frames: [{ rectangle: [96, 304, 16, 16], crop: [0, 1, 16, 14] }],
   },
   {
-    name: "recovery_compass_04",
+    name: "recovery_compass_03",
     frames: [{ rectangle: [112, 304, 16, 16], crop: [0, 1, 16, 14] }],
   },
   {
-    name: "recovery_compass_05",
+    name: "recovery_compass_04",
     frames: [{ rectangle: [128, 304, 16, 16], crop: [0, 1, 16, 14] }],
   },
   {
-    name: "recovery_compass_06",
+    name: "recovery_compass_05",
     frames: [{ rectangle: [144, 304, 16, 16], crop: [0, 1, 16, 14] }],
   },
   {
-    name: "recovery_compass_07",
+    name: "recovery_compass_06",
     frames: [{ rectangle: [160, 304, 16, 16], crop: [0, 1, 16, 14] }],
   },
   {
-    name: "recovery_compass_08",
+    name: "recovery_compass_07",
     frames: [{ rectangle: [176, 304, 16, 16], crop: [0, 1, 16, 14] }],
   },
   {
-    name: "recovery_compass_09",
+    name: "recovery_compass_08",
     frames: [{ rectangle: [192, 304, 16, 16], crop: [0, 1, 16, 14] }],
   },
   {
-    name: "recovery_compass_10",
+    name: "recovery_compass_09",
     frames: [{ rectangle: [208, 304, 16, 16], crop: [0, 1, 16, 14] }],
   },
   {
-    name: "recovery_compass_11",
+    name: "recovery_compass_10",
     frames: [{ rectangle: [224, 304, 16, 16], crop: [0, 1, 16, 14] }],
   },
   {
-    name: "recovery_compass_12",
+    name: "recovery_compass_11",
     frames: [{ rectangle: [240, 304, 16, 16], crop: [0, 1, 16, 14] }],
   },
   {
-    name: "recovery_compass_13",
+    name: "recovery_compass_12",
     frames: [{ rectangle: [256, 304, 16, 16], crop: [0, 1, 16, 14] }],
   },
   {
-    name: "recovery_compass_14",
+    name: "recovery_compass_13",
     frames: [{ rectangle: [272, 304, 16, 16], crop: [0, 1, 16, 14] }],
   },
   {
-    name: "recovery_compass_15",
+    name: "recovery_compass_14",
     frames: [{ rectangle: [288, 304, 16, 16], crop: [0, 1, 16, 14] }],
   },
   {
-    name: "recovery_compass_16",
+    name: "recovery_compass_15",
     frames: [{ rectangle: [304, 304, 16, 16], crop: [0, 1, 16, 14] }],
   },
   {
-    name: "recovery_compass_17",
+    name: "recovery_compass_16",
     frames: [{ rectangle: [320, 304, 16, 16], crop: [0, 1, 16, 14] }],
   },
   {
-    name: "recovery_compass_18",
+    name: "recovery_compass_17",
     frames: [{ rectangle: [336, 304, 16, 16], crop: [0, 1, 16, 14] }],
   },
   {
-    name: "recovery_compass_19",
+    name: "recovery_compass_18",
     frames: [{ rectangle: [352, 304, 16, 16], crop: [0, 1, 16, 14] }],
   },
   {
-    name: "recovery_compass_20",
+    name: "recovery_compass_19",
     frames: [{ rectangle: [368, 304, 16, 16], crop: [0, 1, 16, 14] }],
   },
   {
-    name: "recovery_compass_21",
+    name: "recovery_compass_20",
     frames: [{ rectangle: [384, 304, 16, 16], crop: [0, 1, 16, 14] }],
   },
   {
-    name: "recovery_compass_22",
+    name: "recovery_compass_21",
     frames: [{ rectangle: [400, 304, 16, 16], crop: [0, 1, 16, 14] }],
   },
   {
-    name: "recovery_compass_23",
+    name: "recovery_compass_22",
     frames: [{ rectangle: [416, 304, 16, 16], crop: [0, 1, 16, 14] }],
   },
   {
-    name: "recovery_compass_24",
+    name: "recovery_compass_23",
     frames: [{ rectangle: [432, 304, 16, 16], crop: [0, 1, 16, 14] }],
   },
   {
-    name: "recovery_compass_25",
+    name: "recovery_compass_24",
     frames: [{ rectangle: [448, 304, 16, 16], crop: [0, 1, 16, 14] }],
   },
   {
-    name: "recovery_compass_26",
+    name: "recovery_compass_25",
     frames: [{ rectangle: [464, 304, 16, 16], crop: [0, 1, 16, 14] }],
   },
   {
-    name: "recovery_compass_27",
+    name: "recovery_compass_26",
     frames: [{ rectangle: [480, 304, 16, 16], crop: [0, 1, 16, 14] }],
   },
   {
-    name: "recovery_compass_28",
+    name: "recovery_compass_27",
     frames: [{ rectangle: [496, 304, 16, 16], crop: [0, 1, 16, 14] }],
   },
   {
-    name: "recovery_compass_29",
+    name: "recovery_compass_28",
     frames: [{ rectangle: [0, 320, 16, 16], crop: [0, 1, 16, 14] }],
   },
   {
-    name: "recovery_compass_30",
+    name: "recovery_compass_29",
     frames: [{ rectangle: [16, 320, 16, 16], crop: [0, 1, 16, 14] }],
   },
   {
-    name: "recovery_compass_31",
+    name: "recovery_compass_30",
     frames: [{ rectangle: [32, 320, 16, 16], crop: [0, 1, 16, 14] }],
   },
   {
+    name: "recovery_compass_31",
+    frames: [{ rectangle: [48, 320, 16, 16], crop: [0, 1, 16, 14] }],
+  },
+  {
     name: "red_bundle",
-    frames: [{ rectangle: [48, 320, 16, 16], crop: [2, 1, 12, 14] }],
+    frames: [{ rectangle: [64, 320, 16, 16], crop: [2, 1, 12, 14] }],
   },
   {
     name: "red_bundle_open_back",
-    frames: [{ rectangle: [64, 320, 16, 16], crop: [0, 4, 16, 6] }],
+    frames: [{ rectangle: [80, 320, 16, 16], crop: [0, 4, 16, 6] }],
   },
   {
     name: "red_bundle_open_front",
-    frames: [{ rectangle: [80, 320, 16, 16], crop: [0, 7, 16, 9] }],
+    frames: [{ rectangle: [96, 320, 16, 16], crop: [0, 7, 16, 9] }],
   },
   {
     name: "red_candle",
-    frames: [{ rectangle: [96, 320, 16, 16], crop: [5, 1, 7, 15] }],
+    frames: [{ rectangle: [112, 320, 16, 16], crop: [5, 1, 7, 15] }],
   },
   {
     name: "red_dye",
-    frames: [{ rectangle: [112, 320, 16, 16], crop: [0, 3, 16, 13] }],
+    frames: [{ rectangle: [128, 320, 16, 16], crop: [0, 3, 16, 13] }],
   },
   {
     name: "red_harness",
-    frames: [{ rectangle: [128, 320, 16, 16], crop: [0, 1, 16, 14] }],
+    frames: [{ rectangle: [144, 320, 16, 16], crop: [0, 1, 16, 14] }],
   },
   {
     name: "redstone",
-    frames: [{ rectangle: [144, 320, 16, 16], crop: [2, 3, 12, 11] }],
+    frames: [{ rectangle: [160, 320, 16, 16], crop: [2, 3, 12, 11] }],
   },
   {
     name: "repeater",
-    frames: [{ rectangle: [160, 320, 16, 16], crop: [1, 2, 13, 12] }],
+    frames: [{ rectangle: [176, 320, 16, 16], crop: [1, 2, 13, 12] }],
   },
   {
     name: "resin_brick",
-    frames: [{ rectangle: [176, 320, 16, 16], crop: [0, 2, 16, 12] }],
+    frames: [{ rectangle: [192, 320, 16, 16], crop: [0, 2, 16, 12] }],
   },
   {
     name: "resin_clump",
-    frames: [{ rectangle: [192, 320, 16, 16], crop: [1, 2, 15, 13] }],
+    frames: [{ rectangle: [208, 320, 16, 16], crop: [1, 2, 15, 13] }],
   },
   {
     name: "rib_armor_trim_smithing_template",
-    frames: [{ rectangle: [208, 320, 16, 16], crop: [1, 0, 15, 16] }],
+    frames: [{ rectangle: [224, 320, 16, 16], crop: [1, 0, 15, 16] }],
   },
   {
     name: "rotten_flesh",
-    frames: [{ rectangle: [224, 320, 16, 16], crop: [1, 1, 15, 14] }],
+    frames: [{ rectangle: [240, 320, 16, 16], crop: [1, 1, 15, 14] }],
   },
   {
     name: "saddle",
-    frames: [{ rectangle: [240, 320, 16, 16], crop: [2, 4, 13, 11] }],
+    frames: [{ rectangle: [256, 320, 16, 16], crop: [2, 4, 13, 11] }],
   },
   {
     name: "salmon",
-    frames: [{ rectangle: [256, 320, 16, 16], crop: [2, 1, 13, 14] }],
+    frames: [{ rectangle: [272, 320, 16, 16], crop: [2, 1, 13, 14] }],
   },
   {
     name: "salmon_bucket",
-    frames: [{ rectangle: [272, 320, 16, 16], crop: [2, 1, 12, 15] }],
+    frames: [{ rectangle: [288, 320, 16, 16], crop: [2, 1, 12, 15] }],
   },
   {
     name: "salmon_spawn_egg",
-    frames: [{ rectangle: [288, 320, 16, 16], crop: [1, 3, 14, 13] }],
+    frames: [{ rectangle: [304, 320, 16, 16], crop: [1, 3, 14, 13] }],
   },
   {
     name: "scrape_pottery_sherd",
-    frames: [{ rectangle: [304, 320, 16, 16], crop: [1, 1, 14, 14] }],
+    frames: [{ rectangle: [320, 320, 16, 16], crop: [1, 1, 14, 14] }],
   },
   {
     name: "sea_pickle",
-    frames: [{ rectangle: [320, 320, 16, 16], crop: [6, 2, 4, 14] }],
+    frames: [{ rectangle: [336, 320, 16, 16], crop: [6, 2, 4, 14] }],
   },
   {
     name: "seagrass",
-    frames: [{ rectangle: [336, 320, 16, 16], crop: [0, 4, 15, 12] }],
+    frames: [{ rectangle: [352, 320, 16, 16], crop: [0, 4, 15, 12] }],
   },
   {
     name: "sentry_armor_trim_smithing_template",
-    frames: [{ rectangle: [352, 320, 16, 16], crop: [1, 0, 15, 16] }],
-  },
-  {
-    name: "shaper_armor_trim_smithing_template",
     frames: [{ rectangle: [368, 320, 16, 16], crop: [1, 0, 15, 16] }],
   },
   {
+    name: "shaper_armor_trim_smithing_template",
+    frames: [{ rectangle: [384, 320, 16, 16], crop: [1, 0, 15, 16] }],
+  },
+  {
     name: "sheaf_pottery_sherd",
-    frames: [{ rectangle: [384, 320, 16, 16], crop: [1, 1, 14, 14] }],
+    frames: [{ rectangle: [400, 320, 16, 16], crop: [1, 1, 14, 14] }],
   },
   {
     name: "shears",
-    frames: [{ rectangle: [400, 320, 16, 16], crop: [2, 2, 12, 12] }],
+    frames: [{ rectangle: [416, 320, 16, 16], crop: [2, 2, 12, 12] }],
   },
   {
     name: "sheep_spawn_egg",
-    frames: [{ rectangle: [416, 320, 16, 16], crop: [2, 1, 12, 14] }],
+    frames: [{ rectangle: [432, 320, 16, 16], crop: [2, 1, 12, 14] }],
   },
   {
     name: "shelter_pottery_sherd",
-    frames: [{ rectangle: [432, 320, 16, 16], crop: [1, 1, 14, 14] }],
+    frames: [{ rectangle: [448, 320, 16, 16], crop: [1, 1, 14, 14] }],
   },
   {
     name: "shulker_shell",
-    frames: [{ rectangle: [448, 320, 16, 16], crop: [2, 1, 13, 14] }],
+    frames: [{ rectangle: [464, 320, 16, 16], crop: [2, 1, 13, 14] }],
   },
   {
     name: "shulker_spawn_egg",
-    frames: [{ rectangle: [464, 320, 16, 16], crop: [2, 1, 12, 14] }],
+    frames: [{ rectangle: [480, 320, 16, 16], crop: [2, 1, 12, 14] }],
   },
   {
     name: "silence_armor_trim_smithing_template",
-    frames: [{ rectangle: [480, 320, 16, 16], crop: [1, 0, 15, 16] }],
+    frames: [{ rectangle: [496, 320, 16, 16], crop: [1, 0, 15, 16] }],
   },
   {
     name: "silverfish_spawn_egg",
-    frames: [{ rectangle: [496, 320, 16, 16], crop: [1, 2, 14, 12] }],
+    frames: [{ rectangle: [0, 336, 16, 16], crop: [1, 2, 14, 12] }],
   },
   {
     name: "skeleton_horse_spawn_egg",
-    frames: [{ rectangle: [0, 336, 16, 16], crop: [1, 0, 14, 16] }],
+    frames: [{ rectangle: [16, 336, 16, 16], crop: [1, 0, 14, 16] }],
   },
   {
     name: "skeleton_spawn_egg",
-    frames: [{ rectangle: [16, 336, 16, 16], crop: [2, 1, 12, 14] }],
+    frames: [{ rectangle: [32, 336, 16, 16], crop: [2, 1, 12, 14] }],
   },
   {
     name: "skull_banner_pattern",
-    frames: [{ rectangle: [32, 336, 16, 16], crop: [1, 1, 14, 14] }],
-  },
-  {
-    name: "skull_pottery_sherd",
     frames: [{ rectangle: [48, 336, 16, 16], crop: [1, 1, 14, 14] }],
   },
   {
+    name: "skull_pottery_sherd",
+    frames: [{ rectangle: [64, 336, 16, 16], crop: [1, 1, 14, 14] }],
+  },
+  {
     name: "slime_ball",
-    frames: [{ rectangle: [64, 336, 16, 16], crop: [2, 2, 12, 12] }],
+    frames: [{ rectangle: [80, 336, 16, 16], crop: [2, 2, 12, 12] }],
   },
   {
     name: "slime_spawn_egg",
-    frames: [{ rectangle: [80, 336, 16, 16], crop: [1, 0, 14, 16] }],
+    frames: [{ rectangle: [96, 336, 16, 16], crop: [1, 0, 14, 16] }],
   },
   {
     name: "sniffer_egg",
-    frames: [{ rectangle: [96, 336, 16, 16], crop: [0, 0, 16, 16] }],
+    frames: [{ rectangle: [112, 336, 16, 16], crop: [0, 0, 16, 16] }],
   },
   {
     name: "sniffer_spawn_egg",
-    frames: [{ rectangle: [112, 336, 16, 16], crop: [1, 0, 14, 16] }],
+    frames: [{ rectangle: [128, 336, 16, 16], crop: [1, 0, 14, 16] }],
   },
   {
     name: "snort_pottery_sherd",
-    frames: [{ rectangle: [128, 336, 16, 16], crop: [1, 1, 14, 14] }],
+    frames: [{ rectangle: [144, 336, 16, 16], crop: [1, 1, 14, 14] }],
   },
   {
     name: "snout_armor_trim_smithing_template",
-    frames: [{ rectangle: [144, 336, 16, 16], crop: [1, 0, 15, 16] }],
+    frames: [{ rectangle: [160, 336, 16, 16], crop: [1, 0, 15, 16] }],
   },
   {
     name: "snow_golem_spawn_egg",
-    frames: [{ rectangle: [160, 336, 16, 16], crop: [0, 0, 16, 15] }],
+    frames: [{ rectangle: [176, 336, 16, 16], crop: [0, 0, 16, 15] }],
   },
   {
     name: "snowball",
-    frames: [{ rectangle: [176, 336, 16, 16], crop: [2, 2, 12, 12] }],
+    frames: [{ rectangle: [192, 336, 16, 16], crop: [2, 2, 12, 12] }],
   },
   {
     name: "soul_campfire",
-    frames: [{ rectangle: [192, 336, 16, 16], crop: [1, 1, 14, 14] }],
+    frames: [{ rectangle: [208, 336, 16, 16], crop: [1, 1, 14, 14] }],
   },
   {
     name: "soul_lantern",
-    frames: [{ rectangle: [208, 336, 16, 16], crop: [5, 1, 6, 13] }],
+    frames: [{ rectangle: [224, 336, 16, 16], crop: [5, 1, 6, 13] }],
   },
   {
     name: "spectral_arrow",
-    frames: [{ rectangle: [224, 336, 16, 16], crop: [2, 2, 13, 13] }],
+    frames: [{ rectangle: [240, 336, 16, 16], crop: [2, 2, 13, 13] }],
   },
   {
     name: "spider_eye",
-    frames: [{ rectangle: [240, 336, 16, 16], crop: [5, 5, 7, 10] }],
+    frames: [{ rectangle: [256, 336, 16, 16], crop: [5, 5, 7, 10] }],
   },
   {
     name: "spider_spawn_egg",
-    frames: [{ rectangle: [256, 336, 16, 16], crop: [0, 1, 16, 15] }],
+    frames: [{ rectangle: [272, 336, 16, 16], crop: [0, 1, 16, 15] }],
   },
   {
     name: "spire_armor_trim_smithing_template",
-    frames: [{ rectangle: [272, 336, 16, 16], crop: [1, 0, 15, 16] }],
+    frames: [{ rectangle: [288, 336, 16, 16], crop: [1, 0, 15, 16] }],
   },
   {
     name: "splash_potion",
-    frames: [{ rectangle: [288, 336, 16, 16], crop: [4, 2, 9, 13] }],
+    frames: [{ rectangle: [304, 336, 16, 16], crop: [4, 2, 9, 13] }],
   },
   {
     name: "spruce_boat",
-    frames: [{ rectangle: [304, 336, 16, 16], crop: [0, 1, 16, 14] }],
+    frames: [{ rectangle: [320, 336, 16, 16], crop: [0, 1, 16, 14] }],
   },
   {
     name: "spruce_chest_boat",
-    frames: [{ rectangle: [320, 336, 16, 16], crop: [0, 0, 16, 15] }],
+    frames: [{ rectangle: [336, 336, 16, 16], crop: [0, 0, 16, 15] }],
   },
   {
     name: "spruce_door",
-    frames: [{ rectangle: [336, 336, 16, 16], crop: [3, 2, 10, 14] }],
+    frames: [{ rectangle: [352, 336, 16, 16], crop: [3, 2, 10, 14] }],
   },
   {
     name: "spruce_hanging_sign",
-    frames: [{ rectangle: [352, 336, 16, 16], crop: [1, 1, 14, 14] }],
+    frames: [{ rectangle: [368, 336, 16, 16], crop: [1, 1, 14, 14] }],
   },
   {
     name: "spruce_sign",
-    frames: [{ rectangle: [368, 336, 16, 16], crop: [2, 2, 13, 14] }],
+    frames: [{ rectangle: [384, 336, 16, 16], crop: [2, 2, 13, 14] }],
   },
   {
     name: "spyglass",
-    frames: [{ rectangle: [384, 336, 16, 16], crop: [1, 1, 14, 14] }],
+    frames: [{ rectangle: [400, 336, 16, 16], crop: [1, 1, 14, 14] }],
   },
   {
     name: "spyglass_model",
-    frames: [{ rectangle: [400, 336, 16, 16], crop: [0, 0, 2, 15] }],
+    frames: [{ rectangle: [416, 336, 16, 16], crop: [0, 0, 2, 15] }],
   },
   {
     name: "squid_spawn_egg",
-    frames: [{ rectangle: [416, 336, 16, 16], crop: [1, 2, 14, 14] }],
+    frames: [{ rectangle: [432, 336, 16, 16], crop: [1, 2, 14, 14] }],
   },
   {
     name: "stick",
-    frames: [{ rectangle: [432, 336, 16, 16], crop: [2, 2, 13, 13] }],
+    frames: [{ rectangle: [448, 336, 16, 16], crop: [2, 2, 13, 13] }],
   },
   {
     name: "stone_axe",
-    frames: [{ rectangle: [448, 336, 16, 16], crop: [2, 1, 12, 14] }],
-  },
-  {
-    name: "stone_hoe",
     frames: [{ rectangle: [464, 336, 16, 16], crop: [2, 1, 12, 14] }],
   },
   {
-    name: "stone_pickaxe",
-    frames: [{ rectangle: [480, 336, 16, 16], crop: [2, 2, 13, 13] }],
+    name: "stone_hoe",
+    frames: [{ rectangle: [480, 336, 16, 16], crop: [2, 1, 12, 14] }],
   },
   {
-    name: "stone_shovel",
+    name: "stone_pickaxe",
     frames: [{ rectangle: [496, 336, 16, 16], crop: [2, 2, 13, 13] }],
   },
   {
-    name: "stone_spear",
-    frames: [{ rectangle: [0, 352, 16, 16], crop: [0, 0, 16, 16] }],
+    name: "stone_shovel",
+    frames: [{ rectangle: [0, 352, 16, 16], crop: [2, 2, 13, 13] }],
   },
   {
-    name: "stone_sword",
+    name: "stone_spear",
     frames: [{ rectangle: [16, 352, 16, 16], crop: [0, 0, 16, 16] }],
   },
   {
+    name: "stone_sword",
+    frames: [{ rectangle: [32, 352, 16, 16], crop: [0, 0, 16, 16] }],
+  },
+  {
     name: "stray_spawn_egg",
-    frames: [{ rectangle: [32, 352, 16, 16], crop: [2, 1, 12, 14] }],
+    frames: [{ rectangle: [48, 352, 16, 16], crop: [2, 1, 12, 14] }],
   },
   {
     name: "strider_spawn_egg",
-    frames: [{ rectangle: [48, 352, 16, 16], crop: [0, 0, 16, 16] }],
+    frames: [{ rectangle: [64, 352, 16, 16], crop: [0, 0, 16, 16] }],
   },
   {
     name: "string",
-    frames: [{ rectangle: [64, 352, 16, 16], crop: [2, 1, 13, 14] }],
+    frames: [{ rectangle: [80, 352, 16, 16], crop: [2, 1, 13, 14] }],
   },
   {
     name: "structure_void",
-    frames: [{ rectangle: [80, 352, 16, 16], crop: [1, 1, 14, 14] }],
+    frames: [{ rectangle: [96, 352, 16, 16], crop: [1, 1, 14, 14] }],
   },
   {
     name: "sugar",
-    frames: [{ rectangle: [96, 352, 16, 16], crop: [2, 3, 12, 11] }],
+    frames: [{ rectangle: [112, 352, 16, 16], crop: [2, 3, 12, 11] }],
   },
   {
     name: "sugar_cane",
-    frames: [{ rectangle: [112, 352, 16, 16], crop: [2, 2, 13, 13] }],
+    frames: [{ rectangle: [128, 352, 16, 16], crop: [2, 2, 13, 13] }],
+  },
+  {
+    name: "sulfur_cube_bucket",
+    frames: [{ rectangle: [144, 352, 16, 16], crop: [2, 0, 12, 16] }],
+  },
+  {
+    name: "sulfur_cube_spawn_egg",
+    frames: [{ rectangle: [160, 352, 16, 16], crop: [2, 1, 12, 14] }],
+  },
+  {
+    name: "sulfur_spike",
+    frames: [{ rectangle: [176, 352, 16, 16], crop: [3, 0, 10, 12] }],
   },
   {
     name: "suspicious_stew",
-    frames: [{ rectangle: [128, 352, 16, 16], crop: [2, 5, 12, 8] }],
+    frames: [{ rectangle: [192, 352, 16, 16], crop: [2, 5, 12, 8] }],
   },
   {
     name: "sweet_berries",
-    frames: [{ rectangle: [144, 352, 16, 16], crop: [1, 2, 14, 12] }],
+    frames: [{ rectangle: [208, 352, 16, 16], crop: [1, 2, 14, 12] }],
   },
   {
     name: "tadpole_bucket",
-    frames: [{ rectangle: [160, 352, 16, 16], crop: [2, 2, 12, 14] }],
+    frames: [{ rectangle: [224, 352, 16, 16], crop: [2, 2, 12, 14] }],
   },
   {
     name: "tadpole_spawn_egg",
-    frames: [{ rectangle: [176, 352, 16, 16], crop: [0, 3, 14, 13] }],
+    frames: [{ rectangle: [240, 352, 16, 16], crop: [0, 3, 14, 13] }],
   },
   {
     name: "tide_armor_trim_smithing_template",
-    frames: [{ rectangle: [192, 352, 16, 16], crop: [1, 0, 15, 16] }],
+    frames: [{ rectangle: [256, 352, 16, 16], crop: [1, 0, 15, 16] }],
   },
   {
     name: "tipped_arrow_base",
-    frames: [{ rectangle: [208, 352, 16, 16], crop: [2, 4, 10, 11] }],
+    frames: [{ rectangle: [272, 352, 16, 16], crop: [2, 4, 10, 11] }],
   },
   {
     name: "tipped_arrow_head",
-    frames: [{ rectangle: [224, 352, 16, 16], crop: [0, 2, 15, 13] }],
+    frames: [{ rectangle: [288, 352, 16, 16], crop: [0, 2, 15, 13] }],
   },
   {
     name: "tnt_minecart",
-    frames: [{ rectangle: [240, 352, 16, 16], crop: [1, 0, 14, 15] }],
+    frames: [{ rectangle: [304, 352, 16, 16], crop: [1, 0, 14, 15] }],
   },
   {
     name: "torchflower_seeds",
-    frames: [{ rectangle: [256, 352, 16, 16], crop: [2, 1, 13, 14] }],
+    frames: [{ rectangle: [320, 352, 16, 16], crop: [2, 1, 13, 14] }],
   },
   {
     name: "totem_of_undying",
-    frames: [{ rectangle: [272, 352, 16, 16], crop: [1, 1, 14, 15] }],
+    frames: [{ rectangle: [336, 352, 16, 16], crop: [1, 1, 14, 15] }],
   },
   {
     name: "trader_llama_spawn_egg",
-    frames: [{ rectangle: [288, 352, 16, 16], crop: [1, 0, 14, 16] }],
+    frames: [{ rectangle: [352, 352, 16, 16], crop: [1, 0, 14, 16] }],
   },
   {
     name: "trial_key",
-    frames: [{ rectangle: [304, 352, 16, 16], crop: [4, 0, 8, 16] }],
+    frames: [{ rectangle: [368, 352, 16, 16], crop: [4, 0, 8, 16] }],
   },
   {
     name: "trident",
-    frames: [{ rectangle: [320, 352, 16, 16], crop: [0, 1, 15, 15] }],
+    frames: [{ rectangle: [384, 352, 16, 16], crop: [0, 1, 15, 15] }],
   },
   {
     name: "tropical_fish",
-    frames: [{ rectangle: [336, 352, 16, 16], crop: [2, 1, 13, 14] }],
+    frames: [{ rectangle: [400, 352, 16, 16], crop: [2, 1, 13, 14] }],
   },
   {
     name: "tropical_fish_bucket",
-    frames: [{ rectangle: [352, 352, 16, 16], crop: [2, 1, 12, 15] }],
+    frames: [{ rectangle: [416, 352, 16, 16], crop: [2, 1, 12, 15] }],
   },
   {
     name: "tropical_fish_spawn_egg",
-    frames: [{ rectangle: [368, 352, 16, 16], crop: [1, 3, 14, 13] }],
+    frames: [{ rectangle: [432, 352, 16, 16], crop: [1, 3, 14, 13] }],
   },
   {
     name: "turtle_egg",
-    frames: [{ rectangle: [384, 352, 16, 16], crop: [2, 2, 12, 13] }],
+    frames: [{ rectangle: [448, 352, 16, 16], crop: [2, 2, 12, 13] }],
   },
   {
     name: "turtle_helmet",
-    frames: [{ rectangle: [400, 352, 16, 16], crop: [3, 4, 10, 8] }],
+    frames: [{ rectangle: [464, 352, 16, 16], crop: [3, 4, 10, 8] }],
   },
   {
     name: "turtle_scute",
-    frames: [{ rectangle: [416, 352, 16, 16], crop: [2, 5, 12, 7] }],
+    frames: [{ rectangle: [480, 352, 16, 16], crop: [2, 5, 12, 7] }],
   },
   {
     name: "turtle_spawn_egg",
-    frames: [{ rectangle: [432, 352, 16, 16], crop: [0, 1, 16, 14] }],
+    frames: [{ rectangle: [496, 352, 16, 16], crop: [0, 1, 16, 14] }],
   },
   {
     name: "vex_armor_trim_smithing_template",
-    frames: [{ rectangle: [448, 352, 16, 16], crop: [1, 0, 15, 16] }],
+    frames: [{ rectangle: [0, 368, 16, 16], crop: [1, 0, 15, 16] }],
   },
   {
     name: "vex_spawn_egg",
-    frames: [{ rectangle: [464, 352, 16, 16], crop: [0, 0, 16, 14] }],
+    frames: [{ rectangle: [16, 368, 16, 16], crop: [0, 0, 16, 14] }],
   },
   {
     name: "villager_spawn_egg",
-    frames: [{ rectangle: [480, 352, 16, 16], crop: [2, 1, 12, 14] }],
+    frames: [{ rectangle: [32, 368, 16, 16], crop: [2, 1, 12, 14] }],
   },
   {
     name: "vindicator_spawn_egg",
-    frames: [{ rectangle: [496, 352, 16, 16], crop: [2, 1, 12, 14] }],
+    frames: [{ rectangle: [48, 368, 16, 16], crop: [2, 1, 12, 14] }],
   },
   {
     name: "wandering_trader_spawn_egg",
-    frames: [{ rectangle: [0, 368, 16, 16], crop: [2, 1, 12, 14] }],
+    frames: [{ rectangle: [64, 368, 16, 16], crop: [2, 1, 12, 14] }],
   },
   {
     name: "ward_armor_trim_smithing_template",
-    frames: [{ rectangle: [16, 368, 16, 16], crop: [1, 0, 15, 16] }],
+    frames: [{ rectangle: [80, 368, 16, 16], crop: [1, 0, 15, 16] }],
   },
   {
     name: "warden_spawn_egg",
-    frames: [{ rectangle: [32, 368, 16, 16], crop: [0, 0, 16, 16] }],
+    frames: [{ rectangle: [96, 368, 16, 16], crop: [0, 0, 16, 16] }],
   },
   {
     name: "warped_door",
-    frames: [{ rectangle: [48, 368, 16, 16], crop: [3, 2, 10, 14] }],
+    frames: [{ rectangle: [112, 368, 16, 16], crop: [3, 2, 10, 14] }],
   },
   {
     name: "warped_fungus_on_a_stick",
-    frames: [{ rectangle: [64, 368, 16, 16], crop: [1, 1, 14, 14] }],
+    frames: [{ rectangle: [128, 368, 16, 16], crop: [1, 1, 14, 14] }],
   },
   {
     name: "warped_hanging_sign",
-    frames: [{ rectangle: [80, 368, 16, 16], crop: [1, 1, 14, 14] }],
+    frames: [{ rectangle: [144, 368, 16, 16], crop: [1, 1, 14, 14] }],
   },
   {
     name: "warped_sign",
-    frames: [{ rectangle: [96, 368, 16, 16], crop: [2, 2, 13, 14] }],
+    frames: [{ rectangle: [160, 368, 16, 16], crop: [2, 2, 13, 14] }],
   },
   {
     name: "water_bucket",
-    frames: [{ rectangle: [112, 368, 16, 16], crop: [2, 1, 12, 14] }],
+    frames: [{ rectangle: [176, 368, 16, 16], crop: [2, 1, 12, 14] }],
   },
   {
     name: "wayfinder_armor_trim_smithing_template",
-    frames: [{ rectangle: [128, 368, 16, 16], crop: [1, 0, 15, 16] }],
-  },
-  {
-    name: "weathered_copper_chain",
-    frames: [{ rectangle: [144, 368, 16, 16], crop: [6, 1, 3, 14] }],
-  },
-  {
-    name: "weathered_copper_door",
-    frames: [{ rectangle: [160, 368, 16, 16], crop: [3, 2, 10, 14] }],
-  },
-  {
-    name: "weathered_copper_lantern",
-    frames: [{ rectangle: [176, 368, 16, 16], crop: [5, 1, 6, 13] }],
-  },
-  {
-    name: "wheat",
     frames: [{ rectangle: [192, 368, 16, 16], crop: [1, 0, 15, 16] }],
   },
   {
+    name: "weathered_copper_chain",
+    frames: [{ rectangle: [208, 368, 16, 16], crop: [6, 1, 3, 14] }],
+  },
+  {
+    name: "weathered_copper_door",
+    frames: [{ rectangle: [224, 368, 16, 16], crop: [3, 2, 10, 14] }],
+  },
+  {
+    name: "weathered_copper_lantern",
+    frames: [{ rectangle: [240, 368, 16, 16], crop: [5, 1, 6, 13] }],
+  },
+  {
+    name: "wheat",
+    frames: [{ rectangle: [256, 368, 16, 16], crop: [1, 0, 15, 16] }],
+  },
+  {
     name: "wheat_seeds",
-    frames: [{ rectangle: [208, 368, 16, 16], crop: [3, 4, 11, 9] }],
+    frames: [{ rectangle: [272, 368, 16, 16], crop: [3, 4, 11, 9] }],
   },
   {
     name: "white_bundle",
-    frames: [{ rectangle: [224, 368, 16, 16], crop: [2, 1, 12, 14] }],
+    frames: [{ rectangle: [288, 368, 16, 16], crop: [2, 1, 12, 14] }],
   },
   {
     name: "white_bundle_open_back",
-    frames: [{ rectangle: [240, 368, 16, 16], crop: [0, 4, 16, 6] }],
+    frames: [{ rectangle: [304, 368, 16, 16], crop: [0, 4, 16, 6] }],
   },
   {
     name: "white_bundle_open_front",
-    frames: [{ rectangle: [256, 368, 16, 16], crop: [0, 7, 16, 9] }],
+    frames: [{ rectangle: [320, 368, 16, 16], crop: [0, 7, 16, 9] }],
   },
   {
     name: "white_candle",
-    frames: [{ rectangle: [272, 368, 16, 16], crop: [5, 1, 7, 15] }],
+    frames: [{ rectangle: [336, 368, 16, 16], crop: [5, 1, 7, 15] }],
   },
   {
     name: "white_dye",
-    frames: [{ rectangle: [288, 368, 16, 16], crop: [0, 2, 16, 14] }],
+    frames: [{ rectangle: [352, 368, 16, 16], crop: [0, 2, 16, 14] }],
   },
   {
     name: "white_harness",
-    frames: [{ rectangle: [304, 368, 16, 16], crop: [0, 1, 16, 14] }],
+    frames: [{ rectangle: [368, 368, 16, 16], crop: [0, 1, 16, 14] }],
   },
   {
     name: "wild_armor_trim_smithing_template",
-    frames: [{ rectangle: [320, 368, 16, 16], crop: [1, 0, 15, 16] }],
+    frames: [{ rectangle: [384, 368, 16, 16], crop: [1, 0, 15, 16] }],
   },
   {
     name: "wildflowers",
-    frames: [{ rectangle: [336, 368, 16, 16], crop: [1, 0, 15, 16] }],
+    frames: [{ rectangle: [400, 368, 16, 16], crop: [1, 0, 15, 16] }],
   },
   {
     name: "wind_charge",
-    frames: [{ rectangle: [352, 368, 16, 16], crop: [2, 3, 12, 10] }],
+    frames: [{ rectangle: [416, 368, 16, 16], crop: [2, 3, 12, 10] }],
   },
   {
     name: "witch_spawn_egg",
-    frames: [{ rectangle: [368, 368, 16, 16], crop: [2, 0, 12, 15] }],
+    frames: [{ rectangle: [432, 368, 16, 16], crop: [2, 0, 12, 15] }],
   },
   {
     name: "wither_skeleton_spawn_egg",
-    frames: [{ rectangle: [384, 368, 16, 16], crop: [2, 0, 12, 15] }],
+    frames: [{ rectangle: [448, 368, 16, 16], crop: [2, 0, 12, 15] }],
   },
   {
     name: "wither_spawn_egg",
-    frames: [{ rectangle: [400, 368, 16, 16], crop: [1, 0, 14, 16] }],
+    frames: [{ rectangle: [464, 368, 16, 16], crop: [1, 0, 14, 16] }],
   },
   {
     name: "wolf_armor",
-    frames: [{ rectangle: [416, 368, 16, 16], crop: [1, 2, 14, 10] }],
+    frames: [{ rectangle: [480, 368, 16, 16], crop: [1, 2, 14, 10] }],
   },
   {
     name: "wolf_armor_overlay",
-    frames: [{ rectangle: [432, 368, 16, 16], crop: [4, 2, 10, 10] }],
+    frames: [{ rectangle: [496, 368, 16, 16], crop: [4, 2, 10, 10] }],
   },
   {
     name: "wolf_spawn_egg",
-    frames: [{ rectangle: [448, 368, 16, 16], crop: [2, 1, 12, 14] }],
+    frames: [{ rectangle: [0, 384, 16, 16], crop: [2, 1, 12, 14] }],
   },
   {
     name: "wooden_axe",
-    frames: [{ rectangle: [464, 368, 16, 16], crop: [2, 1, 12, 14] }],
+    frames: [{ rectangle: [16, 384, 16, 16], crop: [2, 1, 12, 14] }],
   },
   {
     name: "wooden_hoe",
-    frames: [{ rectangle: [480, 368, 16, 16], crop: [2, 1, 12, 14] }],
+    frames: [{ rectangle: [32, 384, 16, 16], crop: [2, 1, 12, 14] }],
   },
   {
     name: "wooden_pickaxe",
-    frames: [{ rectangle: [496, 368, 16, 16], crop: [2, 2, 13, 13] }],
+    frames: [{ rectangle: [48, 384, 16, 16], crop: [2, 2, 13, 13] }],
   },
   {
     name: "wooden_shovel",
-    frames: [{ rectangle: [0, 384, 16, 16], crop: [2, 2, 13, 13] }],
+    frames: [{ rectangle: [64, 384, 16, 16], crop: [2, 2, 13, 13] }],
   },
   {
     name: "wooden_spear",
-    frames: [{ rectangle: [16, 384, 16, 16], crop: [0, 0, 16, 16] }],
+    frames: [{ rectangle: [80, 384, 16, 16], crop: [0, 0, 16, 16] }],
   },
   {
     name: "wooden_sword",
-    frames: [{ rectangle: [32, 384, 16, 16], crop: [0, 0, 16, 16] }],
+    frames: [{ rectangle: [96, 384, 16, 16], crop: [0, 0, 16, 16] }],
   },
   {
     name: "writable_book",
-    frames: [{ rectangle: [48, 384, 16, 16], crop: [0, 1, 16, 14] }],
+    frames: [{ rectangle: [112, 384, 16, 16], crop: [0, 1, 16, 14] }],
   },
   {
     name: "written_book",
-    frames: [{ rectangle: [64, 384, 16, 16], crop: [0, 1, 16, 14] }],
+    frames: [{ rectangle: [128, 384, 16, 16], crop: [0, 1, 16, 14] }],
   },
   {
     name: "yellow_bundle",
-    frames: [{ rectangle: [80, 384, 16, 16], crop: [2, 1, 12, 14] }],
+    frames: [{ rectangle: [144, 384, 16, 16], crop: [2, 1, 12, 14] }],
   },
   {
     name: "yellow_bundle_open_back",
-    frames: [{ rectangle: [96, 384, 16, 16], crop: [0, 4, 16, 6] }],
+    frames: [{ rectangle: [160, 384, 16, 16], crop: [0, 4, 16, 6] }],
   },
   {
     name: "yellow_bundle_open_front",
-    frames: [{ rectangle: [112, 384, 16, 16], crop: [0, 7, 16, 9] }],
+    frames: [{ rectangle: [176, 384, 16, 16], crop: [0, 7, 16, 9] }],
   },
   {
     name: "yellow_candle",
-    frames: [{ rectangle: [128, 384, 16, 16], crop: [5, 1, 7, 15] }],
+    frames: [{ rectangle: [192, 384, 16, 16], crop: [5, 1, 7, 15] }],
   },
   {
     name: "yellow_dye",
-    frames: [{ rectangle: [144, 384, 16, 16], crop: [0, 1, 16, 15] }],
+    frames: [{ rectangle: [208, 384, 16, 16], crop: [0, 1, 16, 15] }],
   },
   {
     name: "yellow_harness",
-    frames: [{ rectangle: [160, 384, 16, 16], crop: [0, 1, 16, 14] }],
+    frames: [{ rectangle: [224, 384, 16, 16], crop: [0, 1, 16, 14] }],
   },
   {
     name: "zoglin_spawn_egg",
-    frames: [{ rectangle: [176, 384, 16, 16], crop: [0, 0, 16, 16] }],
+    frames: [{ rectangle: [240, 384, 16, 16], crop: [0, 0, 16, 16] }],
   },
   {
     name: "zombie_horse_spawn_egg",
-    frames: [{ rectangle: [192, 384, 16, 16], crop: [1, 0, 14, 16] }],
+    frames: [{ rectangle: [256, 384, 16, 16], crop: [1, 0, 14, 16] }],
   },
   {
     name: "zombie_nautilus_spawn_egg",
-    frames: [{ rectangle: [208, 384, 16, 16], crop: [0, 0, 16, 16] }],
+    frames: [{ rectangle: [272, 384, 16, 16], crop: [0, 0, 16, 16] }],
   },
   {
     name: "zombie_spawn_egg",
-    frames: [{ rectangle: [224, 384, 16, 16], crop: [2, 1, 12, 14] }],
+    frames: [{ rectangle: [288, 384, 16, 16], crop: [2, 1, 12, 14] }],
   },
   {
     name: "zombie_villager_spawn_egg",
-    frames: [{ rectangle: [240, 384, 16, 16], crop: [2, 1, 12, 14] }],
+    frames: [{ rectangle: [304, 384, 16, 16], crop: [2, 1, 12, 14] }],
   },
   {
     name: "zombified_piglin_spawn_egg",
-    frames: [{ rectangle: [256, 384, 16, 16], crop: [1, 1, 14, 14] }],
+    frames: [{ rectangle: [320, 384, 16, 16], crop: [1, 1, 14, 14] }],
   },
   {
     name: "copper_spear_in_hand",
-    frames: [{ rectangle: [272, 384, 32, 32], crop: [0, 0, 32, 32] }],
-  },
-  {
-    name: "diamond_spear_in_hand",
-    frames: [{ rectangle: [304, 384, 32, 32], crop: [0, 0, 32, 32] }],
-  },
-  {
-    name: "golden_spear_in_hand",
     frames: [{ rectangle: [336, 384, 32, 32], crop: [0, 0, 32, 32] }],
   },
   {
-    name: "iron_spear_in_hand",
+    name: "diamond_spear_in_hand",
     frames: [{ rectangle: [368, 384, 32, 32], crop: [0, 0, 32, 32] }],
   },
   {
-    name: "netherite_spear_in_hand",
+    name: "golden_spear_in_hand",
     frames: [{ rectangle: [400, 384, 32, 32], crop: [0, 0, 32, 32] }],
   },
   {
-    name: "stone_spear_in_hand",
+    name: "iron_spear_in_hand",
     frames: [{ rectangle: [432, 384, 32, 32], crop: [0, 0, 32, 32] }],
   },
   {
-    name: "wooden_spear_in_hand",
+    name: "netherite_spear_in_hand",
     frames: [{ rectangle: [464, 384, 32, 32], crop: [0, 0, 32, 32] }],
+  },
+  {
+    name: "stone_spear_in_hand",
+    frames: [{ rectangle: [0, 416, 32, 32], crop: [0, 0, 32, 32] }],
+  },
+  {
+    name: "wooden_spear_in_hand",
+    frames: [{ rectangle: [32, 416, 32, 32], crop: [0, 0, 32, 32] }],
   },
 ] satisfies TextureData["tiles"];
 
