@@ -119,7 +119,7 @@ export function drawSelectedTexture(
   const [fx, fy, fw, fh] = frame.rectangle;
 
   const flipOption = options?.flip ?? "None";
-  const [nextFlip, nextRotation] = makeNextFlip(flipOption, flip, rotation);
+  const [nextFlip, nextRotation] = makeNextFlip(flip, flipOption, rotation);
 
   const [ssx, ssy, ssw, ssh] = scaleTextureSource(source, frame, 16);
 
