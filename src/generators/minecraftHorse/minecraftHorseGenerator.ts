@@ -234,7 +234,6 @@ const textures: TextureDef[] = [
 
 const script: ScriptDef = (generator: Generator) => {
   const minecraftGenerator = new Minecraft(generator);
-  const glint = defineGlintControls(generator);
   function getTint(colorId: string): Blend {
     const hex =
       defineTintInput(generator, colorId, {
@@ -293,6 +292,8 @@ const script: ScriptDef = (generator: Generator) => {
   const armorTint: Blend = tintArmor
     ? getTint("Armor Color")
     : { kind: "None" };
+
+  const glint = defineGlintControls(generator);
 
   generator.defineBooleanInput("Show Folds", true);
   generator.defineBooleanInput("Show Labels", true);
