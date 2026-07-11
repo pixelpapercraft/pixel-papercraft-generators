@@ -5,7 +5,7 @@ import { Markdown } from "./markdown";
 export function Instructions({ markdown }: { markdown: string }) {
   return (
     <details className="group rounded-md border border-gray-200 bg-white px-4 shadow-sm">
-      <summary className="flex min-h-12 cursor-pointer select-none items-center justify-between gap-4 font-bold marker:hidden [&::-webkit-details-marker]:hidden">
+      <summary className="flex min-h-[46px] cursor-pointer select-none items-center justify-between gap-4 font-bold marker:hidden [&::-webkit-details-marker]:hidden">
         <span>Instructions</span>
         <ChevronDownIcon
           aria-hidden="true"

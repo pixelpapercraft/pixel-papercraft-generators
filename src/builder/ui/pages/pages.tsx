@@ -3,13 +3,12 @@
 import React from "react";
 import { type GeneratorDef } from "@genroot/builder/modules/generatorDef";
 import { type Model } from "@genroot/builder/modules/model";
-import { A4 } from "@genroot/builder/modules/modelPage";
 
 import { RegionControls } from "./regionControls";
 import { SaveAsPDFButton } from "./saveAsPDFButton";
 import { SaveAsImageButton } from "./saveAsImageButton";
 import { PrintImageButton } from "./printImageButton";
-import { useElementWidthListener } from "./useElementWidthListener";
+import { useElementSizeListener } from "./useElementSizeListener";
 import { px, pageBorderWidth } from "./utils";
 
 export function Pages({
@@ -22,7 +21,7 @@ export function Pages({
   onChange: () => void;
 }) {
   const containerElRef = React.useRef<HTMLImageElement | null>(null);
-  const containerWidth = useElementWidthListener(containerElRef);
+  const pageElementSize = useElementSizeListener(containerElRef);
 
   const showPageIds = model.pages.length > 1;
 
@@ -35,19 +34,26 @@ export function Pages({
           model.pages.length > 1
             ? `${generatorDef.name} - ${page.id}`
             : generatorDef.name;
+        const isFirstPage = pageIndex === 0;
+        const displaySize = getDisplayPageSize(page);
 
         return (
           <div key={page.id}>
-            {showPageIds ? (
+            {showPageIds && !isFirstPage ? (
               <h1 className="font-bold text-2xl mb-4">{page.id}</h1>
             ) : null}
 
             <div
-              className="mb-6 flex items-center justify-between gap-3"
-              style={{ maxWidth: px(A4.px.width) }}
+              className="relative mb-6 flex flex-wrap items-center justify-between gap-2"
+              style={{ maxWidth: px(displaySize.width) }}
             >
-              <div className="flex items-center gap-3">
-                <PrintImageButton dataUrl={dataUrl} />
+              {showPageIds && isFirstPage ? (
+                <h1 className="absolute -top-10 left-0 font-bold text-2xl">
+                  {page.id}
+                </h1>
+              ) : null}
+              <div className="flex flex-wrap items-center gap-3">
+                <PrintImageButton dataUrl={dataUrl} page={page} />
                 {pageIndex === 0 ? (
                   <SaveAsPDFButton generatorDef={generatorDef} model={model} />
                 ) : null}
@@ -57,22 +63,32 @@ export function Pages({
               </div>
             </div>
 
-            {/* Important: The following div uses absolute positioning for the regions. */}
             <div
               className="relative"
-              style={{ maxWidth: px(A4.px.width + pageBorderWidth * 2) }}
+              style={{
+                maxWidth: px(displaySize.width + pageBorderWidth * 2),
+              }}
             >
               <img
                 ref={containerElRef}
-                className="border shadow-xl mb-8"
-                style={{ imageRendering: "pixelated" }}
+                className="mb-8 border shadow-xl"
+                style={
+                  page.size === "A4_Large"
+                    ? {
+                        imageRendering: "pixelated",
+                        width: px(displaySize.width),
+                        height: "auto",
+                      }
+                    : { imageRendering: "pixelated" }
+                }
                 data-testid="generator-page-image"
                 src={dataUrl}
                 alt=""
               />
-              {containerWidth !== null ? (
+              {pageElementSize !== null ? (
                 <RegionControls
-                  containerWidth={containerWidth}
+                  pageElementSize={pageElementSize}
+                  pageSize={page.sizes.px}
                   model={model}
                   currentPageId={page.id}
                   onClick={(callback) => {
@@ -87,4 +103,15 @@ export function Pages({
       })}
     </div>
   );
+}
+
+function getDisplayPageSize(page: Model["pages"][number]) {
+  if (page.size === "A4_Large") {
+    return {
+      width: page.sizes.px.width / 3,
+      height: page.sizes.px.height / 3,
+    };
+  }
+
+  return page.sizes.px;
 }

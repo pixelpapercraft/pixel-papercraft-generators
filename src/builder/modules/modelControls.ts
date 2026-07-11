@@ -106,6 +106,16 @@ export type ButtonControl = {
   onClick: () => void;
 };
 
+export type InputRowStartControl = {
+  kind: "InputRowStart";
+  id: string;
+};
+
+export type InputRowEndControl = {
+  kind: "InputRowEnd";
+  id: string;
+};
+
 export type Control =
   | TextControl
   | CustomInputControl
@@ -116,7 +126,9 @@ export type Control =
   | BooleanInputControl
   | SelectInputControl
   | RangeControl
-  | ButtonControl;
+  | ButtonControl
+  | InputRowStartControl
+  | InputRowEndControl;
 
 export type {
   MinecraftModelType,

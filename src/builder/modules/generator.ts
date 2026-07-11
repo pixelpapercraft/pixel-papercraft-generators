@@ -25,7 +25,7 @@ import { type LineProps, drawLine } from "./renderers/drawLine";
 import { type TabOrientation, drawTab } from "./renderers/drawTab";
 import { drawText } from "./renderers/drawText";
 import { fillBackgroundColor } from "./renderers/fillBackgroundColor";
-import { type Page } from "./modelPage";
+import { type Page, type PageOptions } from "./modelPage";
 import { fillRect } from "./renderers/fillRect";
 import { Color, getCanvasWithContextPixelColor } from "./canvasWithContext";
 
@@ -160,6 +160,14 @@ export class Generator {
     this.model.addButtonControl(id, onClick, color);
   }
 
+  defineInputRowStart(): void {
+    this.model.addInputRowStartControl();
+  }
+
+  defineInputRowEnd(): void {
+    this.model.addInputRowEndControl();
+  }
+
   hasTexture(id: string): boolean {
     return this.model.hasTexture(id);
   }
@@ -212,8 +220,8 @@ export class Generator {
     return this.model.getNumberVariable(id);
   }
 
-  usePage(id: string): void {
-    this.model.usePage(id);
+  usePage(id: string, options: PageOptions = {}): void {
+    this.model.usePage(id, options);
   }
 
   fillBackgroundColorWithWhite() {

@@ -37,7 +37,7 @@ export function Select({
   return (
     <select
       id={id}
-      className="p-2 outline outline-1 outline-gray-300 border-r-8 border-transparent"
+      className="py-2 pl-2 outline outline-1 outline-gray-300 border-r-8 border-transparent"
       aria-labelledby={ariaLabelledBy}
       value={value ? value.id : undefined}
       onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {

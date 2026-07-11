@@ -4,19 +4,22 @@ export function BooleanControl({
   id,
   checked,
   onChange,
+  inRow = false,
 }: {
   id: string;
   checked: boolean;
   onChange: (checked: boolean) => void;
+  inRow?: boolean;
 }) {
   const inputId = React.useId();
   const onInputChange = () => onChange(!checked);
+  const marginTopClass = inRow ? "mt-6" : "mt-3";
 
   return (
     <div className="mb-4">
       <div className="flex flex-col">
         <label
-          className="mt-3 inline-flex items-center cursor-pointer"
+          className={`${marginTopClass} inline-flex items-center cursor-pointer`}
           htmlFor={inputId}
         >
           <span className="relative">

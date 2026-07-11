@@ -1,7 +1,6 @@
 import { jsPDF } from "jspdf";
 import { type Model } from "@genroot/builder/modules/model";
 import { type GeneratorDef } from "@genroot/builder/modules/generatorDef";
-import { A4 } from "@genroot/builder/modules/modelPage";
 import { Button } from "../button/button";
 
 export function SaveAsPDFButton({
@@ -12,17 +11,33 @@ export function SaveAsPDFButton({
   generatorDef: GeneratorDef;
 }) {
   const onSavePDF = () => {
+    const [firstPage] = model.pages;
+    if (!firstPage) {
+      return;
+    }
+
     const doc = new jsPDF({
-      orientation: "portrait",
+      orientation: firstPage.orientation,
       unit: "mm",
-      format: "a4",
+      format: [firstPage.sizes.mm.width, firstPage.sizes.mm.height],
     });
+
     model.pages.forEach((page, index) => {
       const dataUrl = page.canvasWithContext.canvas.toDataURL("image/png");
       if (index > 0) {
-        doc.addPage("a4", "portrait");
+        doc.addPage(
+          [page.sizes.mm.width, page.sizes.mm.height],
+          page.orientation
+        );
       }
-      doc.addImage(dataUrl, "PNG", 0, 0, A4.mm.width, A4.mm.height);
+      doc.addImage(
+        dataUrl,
+        "PNG",
+        0,
+        0,
+        page.sizes.mm.width,
+        page.sizes.mm.height
+      );
     });
     doc.save(generatorDef.name);
   };

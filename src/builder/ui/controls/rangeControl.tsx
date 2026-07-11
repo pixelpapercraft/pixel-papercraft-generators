@@ -25,7 +25,7 @@ export function RangeControl({
   }, [value]);
 
   const onRangeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const nextValue = parseInt(e.target.value);
+    const nextValue = parseFloat(e.target.value);
     setCurrentValue(nextValue);
     onChange(nextValue);
   };
