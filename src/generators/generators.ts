@@ -6,6 +6,7 @@ import { generator as minecraftActionFigureGenerator } from "@genroot/generators
 import { generator as minecraftAllayCharacterGenerator } from "@genroot/generators/minecraftAllayCharacter/minecraftAllayCharacterGenerator";
 import { generator as minecraftAxolotlCharacterGenerator } from "@genroot/generators/minecraftAxolotlCharacter/minecraftAxolotlCharacterGenerator";
 import { generator as minecraftBeeCharacterGenerator } from "@genroot/generators/minecraftBeeCharacter/minecraftBeeCharacterGenerator";
+import { generator as minecraftBannerAndShieldGenerator } from "@genroot/generators/minecraftBannerAndShield/minecraftBannerAndShieldGenerator";
 import { generator as minecraftBlockGenerator } from "@genroot/generators/minecraftBlock/minecraftBlockGenerator";
 import { generator as minecraftCapeAndElytraGenerator } from "@genroot/generators/minecraftCapeAndElytra/minecraftCapeAndElytraGenerator";
 import { generator as minecraftCatGenerator } from "@genroot/generators/minecraftCat/minecraftCatGenerator";
@@ -49,6 +50,7 @@ export const character: GeneratorDef[] = [
 export const utility: GeneratorDef[] = [
   minecraftBlockGenerator,
   minecraftItemGenerator,
+  minecraftBannerAndShieldGenerator,
   minecraftArmorGenerator,
   minecraftCapeAndElytraGenerator,
   minecraftCharacterHeadsGenerator,
