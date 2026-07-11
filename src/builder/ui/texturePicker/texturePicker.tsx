@@ -9,24 +9,28 @@ import {
 } from "@genroot/builder/ui/icon";
 import { type TextureDef } from "@genroot/builder/modules/generatorDef";
 import { type TextureFrame } from "@genroot/builder/modules/textureData";
-import { makeCanvasWithContext } from "@genroot/builder/modules/canvasWithContext";
-import { drawTexture } from "@genroot/builder/modules/renderers/drawTexture";
-import { makeTextureFromImage } from "@genroot/builder/modules/texture";
-import {
-  type Flip,
-  makeNextFlip,
-} from "./flip";
-import {
-  type Rotation,
-  makeNextRotation,
-  rotationToDegrees,
-} from "./rotation";
+import { type Rotation, makeNextRotation, rotationToDegrees } from "./rotation";
+import { type Flip, makeNextFlip, flipToTransform } from "./flip";
 import { type SelectedTexture } from "./selectedTexture";
-import { shouldClearSelectedFrame } from "./selectionState";
-import { makeTileStyle } from "./texturePickerStyle";
 
 function px(n: number): string {
   return n + "px";
+}
+
+function deg(n: number): string {
+  return n + "deg";
+}
+
+function makeBackgroundImage(url: string): string {
+  return "url(" + url + ")";
+}
+
+function makeBackgroundPosition(x: number, y: number): string {
+  return px(x) + " " + px(y);
+}
+
+function makeBackgroundSize(x: number, y: number): string {
+  return px(x) + " " + px(y);
 }
 
 function makeBorder(size: number, style: string, color: string): string {
@@ -43,124 +47,268 @@ function normalizeSearchText(value: string): string {
 
 const bgGray200 = "rgb(229 231 235)";
 const bgGray400 = "rgb(156 163 175)";
-const borderSize = 4;
+export const texturePickerBorderSize = 4;
 
-function makeTileBaseStyle(isSelected: boolean, tileSize: number) {
-  const borderColor = isSelected ? bgGray400 : bgGray200;
+export type TexturePreviewSourceFrame = {
+  rectangle: readonly [number, number, number, number];
+  logicalFrameSize: number;
+};
+
+function scalePreviewSource(
+  sourceFrame: TexturePreviewSourceFrame,
+  frame: TextureFrame
+): [number, number, number, number] {
+  const [sourceX, sourceY, sourceWidth, sourceHeight] = sourceFrame.rectangle;
+  const [, , frameWidth, frameHeight] = frame.rectangle;
+  const scale =
+    frameWidth === frameHeight &&
+    frameWidth > 0 &&
+    frameWidth % sourceFrame.logicalFrameSize === 0 &&
+    frameHeight % sourceFrame.logicalFrameSize === 0
+      ? frameWidth / sourceFrame.logicalFrameSize
+      : 1;
+
+  return [
+    sourceX * scale,
+    sourceY * scale,
+    sourceWidth * scale,
+    sourceHeight * scale,
+  ];
+}
+
+function makePreviewSourceRegion(
+  frame: TextureFrame,
+  sourceFrame?: TexturePreviewSourceFrame
+): [number, number, number, number] {
+  const [frameX, frameY, frameWidth, frameHeight] = frame.rectangle;
+  if (!sourceFrame) {
+    return [frameX, frameY, frameWidth, frameHeight];
+  }
+
+  const [sourceX, sourceY, sourceWidth, sourceHeight] = scalePreviewSource(
+    sourceFrame,
+    frame
+  );
+  return [frameX + sourceX, frameY + sourceY, sourceWidth, sourceHeight];
+}
+
+function makePreviewSize(
+  frame: TextureFrame,
+  height: number,
+  sourceFrame?: TexturePreviewSourceFrame
+): { width: number; height: number } {
+  if (!sourceFrame) {
+    return { width: height, height };
+  }
+
+  const [, , sourceWidth, sourceHeight] = makePreviewSourceRegion(
+    frame,
+    sourceFrame
+  );
   return {
-    border: makeBorder(borderSize, "solid", borderColor),
-    width: px(tileSize + borderSize * 2),
-    height: px(tileSize + borderSize * 2),
+    width: (sourceWidth / sourceHeight) * height,
+    height,
   };
 }
 
-function PreviewCanvas({
+export function makeTileBaseStyle(
+  isSelected: boolean,
+  width: number,
+  height = width
+) {
+  const borderColor = isSelected ? bgGray400 : bgGray200;
+  return {
+    border: makeBorder(texturePickerBorderSize, "solid", borderColor),
+    width: px(width + texturePickerBorderSize * 2),
+    height: px(height + texturePickerBorderSize * 2),
+  };
+}
+
+function makeTileStyle(
+  textureDef: TextureDef,
+  frame: TextureFrame,
+  isSelected: boolean,
+  isHover: boolean,
+  tileSize: number,
+  sourceFrame?: TexturePreviewSourceFrame
+) {
+  const [x, y, width, height] = makePreviewSourceRegion(frame, sourceFrame);
+  const previewSize = makePreviewSize(frame, tileSize, sourceFrame);
+  const sourceScaleX = previewSize.width / width;
+  const sourceScaleY = previewSize.height / height;
+
+  const baseStyle = makeTileBaseStyle(
+    isSelected || isHover,
+    previewSize.width,
+    previewSize.height
+  );
+  const backgroundStyle = {
+    backgroundImage: makeBackgroundImage(textureDef.url),
+    backgroundPosition: makeBackgroundPosition(
+      -x * sourceScaleX,
+      -y * sourceScaleY
+    ),
+    backgroundRepeat: "no-repeat",
+    backgroundSize: makeBackgroundSize(
+      textureDef.standardWidth * sourceScaleX,
+      textureDef.standardHeight * sourceScaleY
+    ),
+    backgroundColor: "white",
+    imageRendering: "pixelated" as const,
+  };
+
+  return { ...baseStyle, ...backgroundStyle };
+}
+
+export function makeTextureTintMaskStyle(
+  textureDef: TextureDef,
+  frame: TextureFrame,
+  tileSize: number,
+  blend: string | null,
+  sourceFrame?: TexturePreviewSourceFrame
+): React.CSSProperties | undefined {
+  if (!blend) {
+    return undefined;
+  }
+
+  const [x, y, width, height] = makePreviewSourceRegion(frame, sourceFrame);
+  const previewSize = makePreviewSize(frame, tileSize, sourceFrame);
+  const sourceScaleX = previewSize.width / width;
+  const sourceScaleY = previewSize.height / height;
+  const maskImage = makeBackgroundImage(textureDef.url);
+  const maskPosition = makeBackgroundPosition(
+    -x * sourceScaleX,
+    -y * sourceScaleY
+  );
+  const maskSize = makeBackgroundSize(
+    textureDef.standardWidth * sourceScaleX,
+    textureDef.standardHeight * sourceScaleY
+  );
+
+  return {
+    position: "absolute",
+    inset: 0,
+    pointerEvents: "none",
+    backgroundColor: blend,
+    mixBlendMode: "multiply",
+    WebkitMaskImage: maskImage,
+    maskImage,
+    WebkitMaskPosition: maskPosition,
+    maskPosition,
+    WebkitMaskRepeat: "no-repeat",
+    maskRepeat: "no-repeat",
+    WebkitMaskSize: maskSize,
+    maskSize,
+  };
+}
+
+export function TextureFramePreview({
   textureDef,
   frame,
-  rotation,
-  flip,
+  size,
   blend,
+  sourceFrame,
 }: {
   textureDef: TextureDef;
   frame: TextureFrame;
-  rotation: Rotation;
-  flip: Flip;
+  size: number;
   blend: string | null;
+  sourceFrame?: TexturePreviewSourceFrame;
 }) {
-  const canvasRef = React.useRef<HTMLCanvasElement>(null);
-
-  React.useEffect(() => {
-    let cancelled = false;
-    const canvas = canvasRef.current;
-    if (!canvas) {
-      return;
-    }
-
-    const context = canvas.getContext("2d");
-    if (!context) {
-      return;
-    }
-
-    const image = new Image();
-    image.src = textureDef.url;
-    image.onload = () => {
-      if (cancelled) {
-        return;
-      }
-
-      const texture = makeTextureFromImage(
-        image,
-        textureDef.standardWidth,
-        textureDef.standardHeight
-      );
-      const page = makeCanvasWithContext(128, 128);
-      drawTexture(
-        page,
-        texture,
-        frame.rectangle,
-        [0, 0, 128, 128],
-        {
-          pixelate: true,
-          rotate: rotationToDegrees(rotation),
-          flip,
-          blend: blend ? { kind: "MultiplyHex", hex: blend } : undefined,
-        }
-      );
-
-      context.clearRect(0, 0, 128, 128);
-      context.imageSmoothingEnabled = false;
-      context.drawImage(page.canvas, 0, 0);
-    };
-    image.onerror = () => {
-      if (!cancelled) {
-        context.clearRect(0, 0, 128, 128);
-      }
-    };
-
-    return () => {
-      cancelled = true;
-    };
-  }, [blend, flip, frame, rotation, textureDef.standardHeight, textureDef.standardWidth, textureDef.url]);
+  const [x, y, , height] = makePreviewSourceRegion(frame, sourceFrame);
+  const sourceScale = size / height;
+  const previewSize = makePreviewSize(frame, size, sourceFrame);
+  const tintMaskStyle = makeTextureTintMaskStyle(
+    textureDef,
+    frame,
+    size,
+    blend,
+    sourceFrame
+  );
+  const style: React.CSSProperties = {
+    position: "relative",
+    width: previewSize.width,
+    height: previewSize.height,
+    overflow: "hidden",
+    imageRendering: "pixelated",
+    backgroundImage: makeBackgroundImage(textureDef.url),
+    backgroundPosition: makeBackgroundPosition(
+      -x * sourceScale,
+      -y * sourceScale
+    ),
+    backgroundRepeat: "no-repeat",
+    backgroundSize: makeBackgroundSize(
+      textureDef.standardWidth * sourceScale,
+      textureDef.standardHeight * sourceScale
+    ),
+  };
 
   return (
-    <canvas
-      ref={canvasRef}
-      width={128}
-      height={128}
-      style={{ display: "block" }}
-    />
+    <div
+      className="flex items-center justify-center overflow-hidden"
+      style={previewSize}
+    >
+      <div style={style}>
+        {tintMaskStyle ? <div style={tintMaskStyle} /> : null}
+      </div>
+    </div>
   );
 }
 
-function TileButton({
+export function TileButton({
+  title,
   textureDef,
   frame,
   isSelected,
   onClick,
+  previewSize = 32,
+  blend = null,
+  sourceFrame,
 }: {
+  title?: string;
   textureDef: TextureDef;
   frame: TextureFrame;
   isSelected: boolean;
   onClick: () => void;
+  previewSize?: number;
+  blend?: string | null;
+  sourceFrame?: TexturePreviewSourceFrame;
 }) {
   const [isHover, setIsHover] = React.useState(false);
-  const tileStyle = makeTileStyle(textureDef, frame, 32);
+  const tileStyle = makeTileStyle(
+    textureDef,
+    frame,
+    isSelected,
+    isHover,
+    previewSize,
+    sourceFrame
+  );
+  const tintMaskStyle = makeTextureTintMaskStyle(
+    textureDef,
+    frame,
+    previewSize,
+    blend,
+    sourceFrame
+  );
   const buttonStyle = {
-    margin: makeMargin(0, borderSize, borderSize, 0),
+    margin: makeMargin(0, texturePickerBorderSize, texturePickerBorderSize, 0),
   };
-  const style = {
-    ...makeTileBaseStyle(isSelected || isHover, 32),
+  const style: React.CSSProperties = {
     ...tileStyle,
     ...buttonStyle,
+    position: "relative",
+    overflow: "hidden",
   };
   return (
     <button
-      title={frame.label}
+      title={title ?? frame.label}
       style={style}
       onClick={onClick}
       onMouseEnter={() => setIsHover(true)}
       onMouseLeave={() => setIsHover(false)}
-    />
+    >
+      {tintMaskStyle ? <div style={tintMaskStyle} /> : null}
+    </button>
   );
 }
 
@@ -213,37 +361,26 @@ export function Preview({
     );
   }
 
+  const rotationDegrees = rotationToDegrees(rotation);
+  const flipTransform = flipToTransform(flip);
+  const tileStyle = makeTileStyle(textureDef, frame, false, false, 128);
+  const transform = `rotate(${deg(rotationDegrees)}) ${flipTransform}`.trim();
+  const tintMaskStyle = makeTextureTintMaskStyle(textureDef, frame, 128, blend);
+  const style: React.CSSProperties = {
+    ...tileStyle,
+    position: "relative",
+    overflow: "hidden",
+    transform,
+  };
+
   return (
     <div
       className="flex flex-col items-center"
       data-testid="texture-picker-preview"
       style={{ width: "148px" }}
     >
-      <div
-        style={{
-          ...makeTileBaseStyle(false, 128),
-          position: "relative",
-        }}
-      >
-        <div
-          data-testid="texture-picker-preview-image"
-          style={{
-            position: "absolute",
-            top: px(0),
-            left: px(0),
-            width: px(128),
-            height: px(128),
-            imageRendering: "pixelated",
-          }}
-        >
-          <PreviewCanvas
-            textureDef={textureDef}
-            frame={frame}
-            rotation={rotation}
-            flip={flip}
-            blend={blend}
-          />
-        </div>
+      <div data-testid="texture-picker-preview-image" style={style}>
+        {tintMaskStyle ? <div style={tintMaskStyle} /> : null}
       </div>
       <div className="text-center text-gray-500 p-2 pt-0">{frame.label}</div>
     </div>
@@ -303,7 +440,7 @@ export function TexturePicker({
   frames: TextureFrame[];
   onSelect: (selectedTexture: SelectedTexture) => void;
   enableErase?: boolean;
-  blend?: string | null;
+  blend: string | null;
 }) {
   const [search, setSearch] = React.useState("");
   const [selectedFrame, setSelectedFrame] = React.useState<TextureFrame | null>(
@@ -311,16 +448,6 @@ export function TexturePicker({
   );
   const [rotation, setRotation] = React.useState<Rotation>("Rot0");
   const [flip, setFlip] = React.useState<Flip>("None");
-
-  React.useEffect(() => {
-    if (!shouldClearSelectedFrame(selectedFrame, frames)) {
-      return;
-    }
-
-    setSelectedFrame(null);
-    setRotation("Rot0");
-    setFlip("None");
-  }, [frames, selectedFrame]);
 
   const searchLower = normalizeSearchText(search);
   const framesFiltered = searchLower
@@ -356,7 +483,7 @@ export function TexturePicker({
         frame: selectedFrame,
         rotation: nextRotation,
         flip,
-        blend: blend ?? null,
+        blend,
       });
     }
   };
@@ -371,7 +498,7 @@ export function TexturePicker({
         frame: selectedFrame,
         rotation: nextRotation,
         flip: nextFlip,
-        blend: blend ?? null,
+        blend,
       });
     }
   };
@@ -386,7 +513,7 @@ export function TexturePicker({
         frame: selectedFrame,
         rotation: nextRotation,
         flip: nextFlip,
-        blend: blend ?? null,
+        blend,
       });
     }
   };
@@ -400,7 +527,7 @@ export function TexturePicker({
       frame,
       rotation: "Rot0",
       flip: "None",
-      blend: blend ?? null,
+      blend,
     });
   };
 
@@ -427,6 +554,7 @@ export function TexturePicker({
                 textureDef={textureDef}
                 frame={frame}
                 isSelected={isSelected}
+                blend={blend}
                 onClick={() => {
                   onSelectClick(frame);
                 }}
@@ -440,11 +568,13 @@ export function TexturePicker({
             frame={selectedFrame}
             rotation={rotation}
             flip={flip}
-            blend={blend ?? null}
+            blend={blend}
           />
           <div>
             <div className="flex justify-around mt-3">
-              {enableErase ? <EraseButton onClick={() => onEraseClick()} /> : null}
+              {enableErase ? (
+                <EraseButton onClick={() => onEraseClick()} />
+              ) : null}
               <RotationButton onClick={() => onRotateClick()} />
             </div>
             <div className="flex justify-around mt-3">
