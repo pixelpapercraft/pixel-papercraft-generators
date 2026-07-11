@@ -69,3 +69,25 @@ export const horse: Horse = {
   leg: translate(cuboid([4, 11, 4]), [48, 21]),
   chest: translate(cuboid([8, 8, 3]), [26, 21]),
 };
+
+export type Banner = {
+  flag: Cuboid;
+  pole: Cuboid;
+  bar: Cuboid;
+};
+
+export const banner: Banner = {
+  flag: translate(cuboid([20, 40, 1]), [0, 0]),
+  pole: translate(cuboid([2, 42, 2]), [44, 0]),
+  bar: translate(cuboid([20, 2, 2]), [0, 42]),
+};
+
+export type Shield = {
+  shield: Cuboid;
+  handle: Cuboid;
+};
+
+export const shield: Shield = {
+  shield: translate(cuboid([12, 22, 1]), [0, 0]),
+  handle: translate(cuboid([2, 6, 6]), [26, 0]),
+};
