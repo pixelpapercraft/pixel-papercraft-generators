@@ -126,11 +126,11 @@ describe("item texture layout", () => {
 
   it("centers eccentric overlay crops against the widest item layout", () => {
     const layers = [
-      makeTextureLayer("minecraft-26.1.2-items", "spyglass_model"),
-      makeTextureLayer("minecraft-26.1.2-blocks", "bamboo_singleleaf"),
-      makeTextureLayer("minecraft-26.1.2-items", "candle"),
-      makeTextureLayer("minecraft-26.1.2-items", "iron_chain"),
-      makeTextureLayer("minecraft-26.1.2-items", "bundle_open_back"),
+      makeTextureLayer("minecraft-26.2-items", "spyglass_model"),
+      makeTextureLayer("minecraft-26.2-blocks", "bamboo_singleleaf"),
+      makeTextureLayer("minecraft-26.2-items", "candle"),
+      makeTextureLayer("minecraft-26.2-items", "iron_chain"),
+      makeTextureLayer("minecraft-26.2-items", "bundle_open_back"),
     ];
     const layout = getItemLayout(layers);
     const [spyglassModel, bambooSingleleaf, candle, ironChain] = layers;
@@ -148,7 +148,7 @@ describe("item texture layout", () => {
         "None"
       )
     ).toEqual({
-      source: [400, 336, 2, 15],
+      source: [416, 336, 2, 15],
       x: 20,
       y: 40,
       width: 8,

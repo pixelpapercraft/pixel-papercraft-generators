@@ -5,21 +5,12 @@ import {
 } from "@genroot/builder/ui/texturePicker/flip";
 import { type Rotation } from "@genroot/builder/ui/texturePicker/rotation";
 import { type SelectedTexture } from "@genroot/builder/ui/texturePicker/selectedTexture";
+import { getTextureFrameScale } from "@genroot/generators/_common/plugins/texturePicker/sourceRegion";
 
 /** [x, y, width, height] */
 export type Rectangle = [number, number, number, number];
 
 const defaultFrameSize = 16;
-
-export function getFrameSourceScale(frame: TextureFrame): number {
-  const [, , width, height] = frame.rectangle;
-  return width === height &&
-    width > 0 &&
-    width % defaultFrameSize === 0 &&
-    height % defaultFrameSize === 0
-    ? width / defaultFrameSize
-    : 1;
-}
 
 export function getFrameSourceCrop(frame: TextureFrame): Rectangle {
   const [frameX, frameY] = frame.rectangle;
@@ -28,13 +19,13 @@ export function getFrameSourceCrop(frame: TextureFrame): Rectangle {
 }
 
 export function getFrameLogicalCrop(frame: TextureFrame): Rectangle {
-  const scale = getFrameSourceScale(frame);
+  const scale = getTextureFrameScale(frame, defaultFrameSize);
   const [x, y, width, height] = frame.crop;
   return [x / scale, y / scale, width / scale, height / scale];
 }
 
 export function getFrameLogicalBounds(frame: TextureFrame): Rectangle {
-  const scale = getFrameSourceScale(frame);
+  const scale = getTextureFrameScale(frame, defaultFrameSize);
   const [, , width, height] = frame.rectangle;
   return [0, 0, width / scale, height / scale];
 }

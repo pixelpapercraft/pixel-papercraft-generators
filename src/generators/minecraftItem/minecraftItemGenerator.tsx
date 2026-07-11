@@ -28,10 +28,10 @@ import {
 } from "@genroot/builder/ui/texturePicker/selectedTexture";
 import {
   allTextureDefs,
-  versionIdsItemsFirst as versionIds,
-  findVersion,
+  versionIdsItemsFirst,
 } from "@genroot/generators/_common/textures/textureVersions";
-import { TexturePicker } from "@genroot/generators/minecraftItem/ui/texturePicker";
+import { TexturePicker } from "@genroot/generators/_common/plugins/texturePicker/texturePicker";
+import { itemTintChoiceGroups } from "@genroot/generators/_common/tintSelector/tints";
 import {
   defineGlintControls,
   itemGlintTextureDefs,
@@ -49,7 +49,7 @@ import {
   getLayerHalfDestination,
 } from "@genroot/generators/minecraftItem/itemLayout";
 
-import thumnbailImage from "./thumbnail/v2-thumbnail-256.jpeg";
+import thumbnailImage from "./thumbnail/v2-thumbnail-256.jpeg";
 import backgroundImage from "./images/Background.png";
 import titleImage from "./images/Title.png";
 import centerFoldTexture from "./textures/CenterFold.png";
@@ -61,14 +61,25 @@ const name = "Minecraft Item";
 const history: HistoryDef = [
   "26 Jan 2022 lostminer - First release.",
   "05 Feb 2022 NinjolasNJM - Added fold lines and gap removal feature.",
+  "May 2026 NinjolasNJM - Changed to use new glint and tint input.",
 ];
 
 const thumbnail: ThumbnailDef = {
-  url: thumnbailImage.src,
+  url: thumbnailImage.src,
 };
 
 const instructions: InstructionsDef = `
-## Item Sizes
+## How to use the Minecraft Item Generator?
+
+### Selecting and Adding Item Textures
+* Click in the texture picker to select an item texture.
+* Item textures can be rotated, flipped, and tinted different colors.
+* Click the "Add Item" button to add the selected texture as a new item on the page.
+* Click the "Overlay Item button to add the selected texture on top of the last placed item. This can be used to create items that use multiple textures, such as potions or dyed leather armor.
+* Click the "Remove Item" button to remove the last placed texture from the page.
+* Textures from different versions can be selected from the "Versions" dropdown menu. Custom textures can also be added from files.
+
+### Item Sizes
 
 The generator supports four standard sizes:
 
@@ -78,6 +89,12 @@ The generator supports four standard sizes:
 * **Small** - Good for blocks as items (200% scale)
 
 You can also choose a custom scale from 100% to 1600%.
+Multiple items of different sizes can be added to the same page.
+
+#### Enchant Items
+  - Select either from the drop down menu or from "Choose file" to choose the enchanted glint texture.
+  - Adjust the sliders to choose the opacity, x and y offsets of the enchanted glint texture.
+  - Click on each item on the page to enable the enchanted glint effect per item.
 `;
 
 const images: ImageDef[] = [
@@ -92,7 +109,7 @@ const textures: TextureDef[] = [
     id: "CenterFold",
     url: centerFoldTexture.src,
     standardWidth: 2,
-    standardHeight: 512,
+    standardHeight: 128,
   },
 ];
 
@@ -435,7 +452,7 @@ const script: ScriptDef = (generator: Generator) => {
 
   // Show a drop down of different texture versions
 
-  generator.defineSelectInput("Version", versionIds);
+  generator.defineSelectInput("Version", versionIdsItemsFirst);
 
   const versionId = generator.getSelectInputValue("Version") ?? "";
 
@@ -460,10 +477,6 @@ const script: ScriptDef = (generator: Generator) => {
       }
     }
   }
-
-  // Get the current selected version
-
-  const textureVersion = findVersion(versionId);
 
   // Show a drop down of sizes
 
@@ -513,30 +526,17 @@ const script: ScriptDef = (generator: Generator) => {
   // When a texture is selected, we need to encode it into a string variable
 
   generator.defineCustomStringInput("SelectedTextureFrame", (onChange) => {
-    if (!textureVersion) {
+    if (!versionId) {
       return null;
     }
     return (
       <TexturePicker
-        textureVersion={textureVersion}
-        blend={resolvedCurrentTexture ? resolvedCurrentTexture.blend : null}
-        onSelect={(selectedTexture) => {
-          const newTexture: SelectedTexture = {
-            ...selectedTexture,
-            blend: resolvedCurrentTexture ? resolvedCurrentTexture.blend : null,
-          };
-          onChange(encodeSelectedTexture(newTexture));
-        }}
-        onBlendSelected={(blend) => {
-          if (!resolvedCurrentTexture) {
-            return;
-          }
-          onChange(
-            encodeSelectedTexture({
-              ...resolvedCurrentTexture,
-              blend,
-            })
-          );
+        versionId={versionId}
+        selectedTexture={resolvedCurrentTexture}
+        tintChoiceGroups={itemTintChoiceGroups}
+        enableErase={false}
+        onChange={(selectedTexture) => {
+          onChange(encodeSelectedTexture(selectedTexture));
         }}
       />
     );
@@ -567,23 +567,60 @@ const script: ScriptDef = (generator: Generator) => {
   const getItemLayersForItem = (item: SelectedTexture) =>
     item.itemLayers ?? [item];
 
+  const setSelectedTextureFrames = (textures: SelectedTexture[]) => {
+    generator.setStringInputValue(
+      "SelectedTextureFrames",
+      encodeSelectedTextures(textures)
+    );
+  };
+
   const addSelectedTextureFrame = (textureFrame: SelectedTexture) => [
     ...selectedTextureFrames,
     textureFrame,
   ];
 
+  const tintTopItemLayer = (blend: string) => {
+    const previousItem = selectedTextureFrames.at(-1);
+    if (!previousItem) {
+      return;
+    }
+
+    const previousLayers = getItemLayersForItem(previousItem);
+    const updatedLayers = previousLayers.map((layer, index) =>
+      index === previousLayers.length - 1 ? { ...layer, blend } : layer
+    );
+    const updatedItem =
+      previousLayers.length > 1
+        ? {
+            ...previousItem,
+            blend,
+            itemLayers: updatedLayers,
+          }
+        : {
+            ...previousItem,
+            blend,
+          };
+
+    setSelectedTextureFrames([
+      ...selectedTextureFrames.slice(0, -1),
+      updatedItem,
+    ]);
+  };
+
+  const isTintOnlySelection = (
+    texture: SelectedTexture | null
+  ): texture is SelectedTexture & { blend: string } =>
+    texture?.textureDefId === "" && /^#[\da-f]{6}$/i.test(texture.blend ?? "");
+
   const toggleItemEnchantment = (itemIndex: number) => {
-    generator.setStringInputValue(
-      "SelectedTextureFrames",
-      encodeSelectedTextures(
-        selectedTextureFrames.map((textureFrame, index) =>
-          index === itemIndex
-            ? {
-                ...textureFrame,
-                enchanted: !(textureFrame.enchanted ?? false),
-              }
-            : textureFrame
-        )
+    setSelectedTextureFrames(
+      selectedTextureFrames.map((textureFrame, index) =>
+        index === itemIndex
+          ? {
+              ...textureFrame,
+              enchanted: !(textureFrame.enchanted ?? false),
+            }
+          : textureFrame
       )
     );
   };
@@ -593,18 +630,20 @@ const script: ScriptDef = (generator: Generator) => {
   generator.defineButtonInput(
     "Add Item",
     () => {
-      if (selectedTextureFrame) {
+      if (isTintOnlySelection(selectedTextureFrame)) {
+        tintTopItemLayer(selectedTextureFrame.blend);
+        return;
+      }
+
+      if (selectedTextureFrame && selectedTextureFrame.textureDefId !== "") {
         const newSelectedTextureFrame: SelectedTexture = {
           ...selectedTextureFrame,
           itemScale: selectedItemScale,
           itemLayers: undefined,
           enchanted: false,
         };
-        generator.setStringInputValue(
-          "SelectedTextureFrames",
-          encodeSelectedTextures(
-            addSelectedTextureFrame(newSelectedTextureFrame)
-          )
+        setSelectedTextureFrames(
+          addSelectedTextureFrame(newSelectedTextureFrame)
         );
       }
     },
@@ -616,7 +655,12 @@ const script: ScriptDef = (generator: Generator) => {
   generator.defineButtonInput(
     "Overlay Item",
     () => {
-      if (selectedTextureFrame) {
+      if (isTintOnlySelection(selectedTextureFrame)) {
+        tintTopItemLayer(selectedTextureFrame.blend);
+        return;
+      }
+
+      if (selectedTextureFrame && selectedTextureFrame.textureDefId !== "") {
         const previousItem = selectedTextureFrames.at(-1);
         const overlayItemScale = previousItem?.itemScale ?? selectedItemScale;
         const newLayer: SelectedTexture = {
@@ -636,10 +680,7 @@ const script: ScriptDef = (generator: Generator) => {
               },
             ]
           : addSelectedTextureFrame({ ...newLayer, enchanted: false });
-        generator.setStringInputValue(
-          "SelectedTextureFrames",
-          encodeSelectedTextures(newSelectedTextureFrames)
-        );
+        setSelectedTextureFrames(newSelectedTextureFrames);
       }
     },
     "Green"
@@ -667,10 +708,7 @@ const script: ScriptDef = (generator: Generator) => {
             ]
           : selectedTextureFrames.slice(0, -1);
 
-      generator.setStringInputValue(
-        "SelectedTextureFrames",
-        encodeSelectedTextures(newSelectedTextureFrames)
-      );
+      setSelectedTextureFrames(newSelectedTextureFrames);
     },
     "Red"
   );
@@ -682,10 +720,7 @@ const script: ScriptDef = (generator: Generator) => {
   generator.defineButtonInput(
     "Clear",
     () => {
-      generator.setStringInputValue(
-        "SelectedTextureFrames",
-        encodeSelectedTextures([])
-      );
+      setSelectedTextureFrames([]);
       if (selectedTextureFrame) {
         generator.setStringInputValue(
           "SelectedTextureFrame",

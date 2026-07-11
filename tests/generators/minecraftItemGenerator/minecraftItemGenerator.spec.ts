@@ -120,7 +120,7 @@ test("minecraft item generator supports rotated and flipped textures", async ({
   await expect(page.getByLabel("Remove Item")).toBeVisible();
   await expect(page.getByLabel("Clear")).toBeVisible();
 
-  await page.getByLabel("Version").selectOption("minecraft-26.1.2-items");
+  await page.getByLabel("Version").selectOption("minecraft-26.2-items");
   await page.getByPlaceholder("Search...").fill("sword");
   await page.locator('button[title*="diamond sword"]').first().click();
   await page.getByLabel("Rotate texture").click();
@@ -145,7 +145,7 @@ test("minecraft item generator resets rotation when a new texture is selected", 
 }) => {
   await page.goto("/generator/minecraft-item");
 
-  await page.getByLabel("Version").selectOption("minecraft-26.1.2-items");
+  await page.getByLabel("Version").selectOption("minecraft-26.2-items");
   await selectItemByTitle(page, "sword", "diamond sword");
   await page.getByLabel("Rotate texture").click();
 
@@ -166,7 +166,7 @@ test("minecraft item generator resets flip when a new texture is selected", asyn
 }) => {
   await page.goto("/generator/minecraft-item");
 
-  await page.getByLabel("Version").selectOption("minecraft-26.1.2-items");
+  await page.getByLabel("Version").selectOption("minecraft-26.2-items");
   await selectItemByTitle(page, "sword", "diamond sword");
   await page.getByLabel("Flip texture horizontal").click();
 
@@ -231,7 +231,7 @@ test("minecraft item generator overlays onto the last item without reflowing it"
 }) => {
   await page.goto("/generator/minecraft-item");
 
-  await page.getByLabel("Version").selectOption("minecraft-26.1.2-items");
+  await page.getByLabel("Version").selectOption("minecraft-26.2-items");
   await selectItemByTitle(page, "sword", "diamond sword");
   await setItemSize(page, "Small (200%)");
   await page.getByLabel("Add Item").click();
@@ -286,7 +286,7 @@ test("minecraft item generator overlays across size and texture transform combin
 
   for (const overlayCase of overlayCases) {
     await page.goto("/generator/minecraft-item");
-    await page.getByLabel("Version").selectOption("minecraft-26.1.2-items");
+    await page.getByLabel("Version").selectOption("minecraft-26.2-items");
 
     await selectItemByTitle(page, "sword", "diamond sword");
     await setItemSize(page, overlayCase.baseSize);
@@ -325,7 +325,7 @@ test("minecraft item generator toggles enchantment from the item region", async 
 }) => {
   await page.goto("/generator/minecraft-item");
 
-  await page.getByLabel("Version").selectOption("minecraft-26.1.2-items");
+  await page.getByLabel("Version").selectOption("minecraft-26.2-items");
   await selectItemByTitle(page, "sword", "diamond sword");
   await page.getByLabel("Add Item").click();
 
