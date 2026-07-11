@@ -10,7 +10,6 @@ import type {
 } from "@genroot/builder/modules/generatorDef";
 import { type Generator } from "@genroot/builder/modules/generator";
 import {
-  type SelectedTexture,
   encodeSelectedTexture,
   decodeSelectedTexture,
 } from "@genroot/builder/ui/texturePicker/selectedTexture";
@@ -18,7 +17,9 @@ import {
   allTextureDefs,
   versionIdsBlocksFirst,
 } from "@genroot/generators/_common/textures/textureVersions";
-import { TexturePicker } from "@genroot/generators/minecraftBlock/texturePicker";
+import { TexturePicker } from "@genroot/generators/_common/plugins/texturePicker/texturePicker";
+import { blockTintChoiceGroups } from "@genroot/generators/_common/tintSelector/tints";
+import { clearVariablesMatching } from "@genroot/generators/_common/clearVariablesMatching";
 import { currentBlockTextureId } from "@genroot/generators/minecraftBlock/constants";
 import {
   parseAtlas,
@@ -35,7 +36,7 @@ import { drawSnow } from "@genroot/generators/minecraftBlock/shapes/snow";
 import { drawCake } from "@genroot/generators/minecraftBlock/shapes/cake";
 import { drawShelf } from "@genroot/generators/minecraftBlock/shapes/shelf";
 
-import thumnbailImage from "./thumbnail/v2-thumbnail-256.jpeg";
+import thumbnailImage from "./thumbnail/v2-thumbnail-256.jpeg";
 import backgroundImage from "./images/Background.png";
 import titleImage from "./images/Title.png";
 import foldsBlockImage from "./images/Folds-Block.png";
@@ -77,8 +78,27 @@ const history: HistoryDef = [
   "May 2026 NinjolasNJM - Changed to use new glint and tint input.",
 ];
 
+const instructions = `
+## How to use the Minecraft Block Generator?
+
+### Selecting and Adding Block Textures
+* Click in the texture picker to select a block texture.
+* Block textures can be rotated, flipped, and tinted different colors.
+* Click in the papercraft template to add the selected texture to the block.
+* Multiple textures can be added to the same block face.
+* Click the erase button in the texture picker to clear the selected texture. Clicking a face without a specified texture will remove the last texture placed on it.
+* Textures from different versions can be selected from the "Versions" dropdown menu. Custom textures can also be added from files.
+
+### Block Types
+* Up to two blocks can be placed on a page, using the drop down "Number of Blocks" menu.
+* For each block, the shape can be selected from the "Block # Type" dropdown menu.
+* Some block types have different options to choose within them, and some block types can be used to create blocks other than the one the type is named after.
+* For example, the Snow Layers type allows choosing how many layers it has, which lets blocks like carpets, path blocks, and enchanting tables also be created.
+
+`;
+
 const thumbnail: ThumbnailDef = {
-  url: thumnbailImage.src,
+  url: thumbnailImage.src,
 };
 
 const images: ImageDef[] = [
@@ -113,6 +133,13 @@ const images: ImageDef[] = [
 ];
 
 const textures: TextureDef[] = allTextureDefs;
+
+function clearBlockFaces(generator: Generator): void {
+  clearVariablesMatching(
+    generator,
+    /^(?:Block|Slab|Stair|Fence|Door|Trapdoor|Snow|Cake|Shelf)Face/
+  );
+}
 
 const script: ScriptDef = (generator: Generator) => {
   generator.defineSelectInput("Version", versionIdsBlocksFirst);
@@ -169,29 +196,10 @@ const script: ScriptDef = (generator: Generator) => {
     return (
       <TexturePicker
         versionId={versionId}
-        blend={resolvedCurrentTexture ? resolvedCurrentTexture.blend : null}
-        onTextureSelected={(selectedTexture) => {
-          const newTexture: SelectedTexture = {
-            ...selectedTexture,
-            blend:
-              selectedTexture.textureDefId === ""
-                ? null
-                : resolvedCurrentTexture
-                  ? resolvedCurrentTexture.blend
-                  : null,
-          };
-          onChange(encodeSelectedTexture(newTexture));
-        }}
-        onBlendSelected={(blend) => {
-          if (!resolvedCurrentTexture) {
-            return;
-          }
-          onChange(
-            encodeSelectedTexture({
-              ...resolvedCurrentTexture,
-              blend,
-            })
-          );
+        selectedTexture={resolvedCurrentTexture}
+        tintChoiceGroups={blockTintChoiceGroups}
+        onChange={(selectedTexture) => {
+          onChange(encodeSelectedTexture(selectedTexture));
         }}
       />
     );
@@ -216,7 +224,7 @@ const script: ScriptDef = (generator: Generator) => {
 
     const typeName = `Block ${blockId} Type`;
 
-    generator.defineSelectInput(typeName, [
+    const blockType = generator.defineAndGetSelectInput(typeName, [
       "Block",
       "Slab",
       "Stair",
@@ -227,8 +235,6 @@ const script: ScriptDef = (generator: Generator) => {
       "Cake",
       "Shelf",
     ]);
-
-    const blockType = generator.getSelectInputValue(typeName);
 
     const ox = 57;
     const oy = 16 + 400 * (i - 1);
@@ -273,20 +279,32 @@ const script: ScriptDef = (generator: Generator) => {
     }
   }
 
-  generator.defineButtonInput("Clear", () => {
-    const currentTextureChoice = generator.getStringInputValue(
-      currentBlockTextureId
-    );
+  generator.defineButtonInput(
+    "Clear Faces",
+    () => {
+      clearBlockFaces(generator);
+    },
+    "Red"
+  );
 
-    generator.clearAllVariables();
-
-    if (currentTextureChoice) {
-      generator.setStringInputValue(
-        currentBlockTextureId,
-        currentTextureChoice
+  generator.defineButtonInput(
+    "Clear",
+    () => {
+      const currentTextureChoice = generator.getStringInputValue(
+        currentBlockTextureId
       );
-    }
-  });
+
+      generator.clearAllVariables();
+
+      if (currentTextureChoice) {
+        generator.setStringInputValue(
+          currentBlockTextureId,
+          currentTextureChoice
+        );
+      }
+    },
+    "Red"
+  );
 
   generator.drawImage("Title", [0, 0]);
 };
@@ -297,7 +315,7 @@ export const generator: GeneratorDef = {
   history,
   thumbnail,
   video: null,
-  instructions: null,
+  instructions,
   images,
   textures,
   script,

@@ -1,14 +1,18 @@
 import { describe, expect, it, vi } from "vitest";
 import { type Generator } from "@genroot/builder/modules/generator";
 import { type DrawTextureOptions } from "@genroot/builder/modules/renderers/drawTexture";
-import {
-  encodeSelectedTexture,
-  encodeSelectedTextures,
-  decodeSelectedTextures,
-} from "@genroot/builder/ui/texturePicker/selectedTexture";
 import { makeNextFlip } from "@genroot/builder/ui/texturePicker/flip";
 import { currentBlockTextureId } from "./constants";
-import { defineInputRegion, drawFace } from "./face";
+import {
+  decodeSelectedTextures,
+  encodeSelectedTexture,
+  encodeSelectedTextures,
+} from "@genroot/builder/ui/texturePicker/selectedTexture";
+import {
+  defineInputRegion,
+  drawFace,
+  drawFaceWithTextureTransform,
+} from "./face";
 
 function makeGenerator(faceId: string, faceJson: string): Generator {
   return {
@@ -54,19 +58,6 @@ function makeExpectedDestination(
     case "Rot90":
     case "Rot270":
       return [dx + (dw - dh) / 2, dy - (dw - dh) / 2, dh, dw];
-  }
-}
-
-function rotationToDegrees(rotation: "Rot0" | "Rot90" | "Rot180" | "Rot270") {
-  switch (rotation) {
-    case "Rot0":
-      return 0;
-    case "Rot90":
-      return 90;
-    case "Rot180":
-      return 180;
-    case "Rot270":
-      return 270;
   }
 }
 
@@ -171,31 +162,6 @@ describe("drawFace", () => {
     });
   });
 
-  it("composes a generator flip with the stored selected texture orientation", () => {
-    const rotation: "Rot0" | "Rot90" | "Rot180" | "Rot270" = "Rot90";
-    const flip: "None" | "Horizontal" | "Vertical" = "Horizontal";
-    const generator = makeGenerator(faceId, makeFaceJson({ rotation, flip }));
-    const [expectedFlip, expectedRotation] = makeNextFlip(
-      flip,
-      "Horizontal",
-      rotation
-    );
-
-    drawFace(generator, faceId, source, destination, { flip: "Horizontal" });
-
-    expect(generator.drawTexture).toHaveBeenCalledTimes(1);
-    expect(generator.drawTexture).toHaveBeenCalledWith(
-      "test-texture",
-      [16, 32, 16, 16],
-      makeExpectedDestination(expectedRotation, destination),
-      expect.objectContaining<DrawTextureOptions>({
-        rotate: rotationToDegrees(expectedRotation),
-        flip: expectedFlip,
-        blend: undefined,
-      })
-    );
-  });
-
   it("scales partial source regions to match larger atlas frames", () => {
     const generator = makeGenerator(
       faceId,
@@ -220,13 +186,40 @@ describe("drawFace", () => {
       })
     );
   });
+
+  it("applies face transforms through the texture rotation path", () => {
+    const generator = makeGenerator(
+      faceId,
+      makeFaceJson({ rotation: "Rot0", flip: "None" })
+    );
+
+    drawFaceWithTextureTransform(generator, faceId, source, destination, {
+      rotate: 90,
+      flip: "None",
+    });
+
+    expect(generator.drawTexture).toHaveBeenCalledTimes(1);
+    expect(generator.drawTexture).toHaveBeenCalledWith(
+      "test-texture",
+      [16, 32, 16, 16],
+      makeExpectedDestination("Rot90", destination),
+      expect.objectContaining<DrawTextureOptions>({
+        rotate: 90,
+        flip: "None",
+        blend: undefined,
+      })
+    );
+  });
 });
 
 describe("defineInputRegion", () => {
   const faceId = "BlockFaceTop1";
   const region: [number, number, number, number] = [0, 0, 16, 16];
 
-  function makeSelectedTextureJson(textureDefId: string): string {
+  function makeSelectedTextureJson(
+    textureDefId: string,
+    blend: string | null = null
+  ): string {
     return encodeSelectedTexture({
       textureDefId,
       frame: {
@@ -237,23 +230,34 @@ describe("defineInputRegion", () => {
       },
       rotation: "Rot0",
       flip: "None",
-      blend: null,
+      blend,
     });
   }
 
   function makeRegionGenerator({
     currentTextureJson,
     faceJson,
+    enableErase = true,
   }: {
     currentTextureJson: string;
     faceJson: string;
+    enableErase?: boolean;
   }) {
     let onRegionClick: (() => void) | undefined;
+    let onRegionRightClick: (() => void) | undefined;
     let nextFaceJson: string | null = null;
     const generator = {
-      defineRegionInput: vi.fn((_region: unknown, callback: () => void) => {
-        onRegionClick = callback;
-      }),
+      defineRegionInput: vi.fn(
+        (
+          _region: unknown,
+          callback: () => void,
+          _id: string | undefined,
+          rightClick?: () => void
+        ) => {
+          onRegionClick = callback;
+          onRegionRightClick = rightClick;
+        }
+      ),
       getStringInputValue: vi.fn((id: string) => {
         if (id === currentBlockTextureId) {
           return currentTextureJson;
@@ -270,7 +274,7 @@ describe("defineInputRegion", () => {
       }),
     } as unknown as Generator;
 
-    defineInputRegion(generator, faceId, region);
+    defineInputRegion(generator, faceId, region, { enableErase });
 
     const click = onRegionClick;
     if (!click) {
@@ -279,6 +283,7 @@ describe("defineInputRegion", () => {
 
     return {
       click,
+      rightClick: onRegionRightClick,
       getNextFaceTextures: () =>
         nextFaceJson ? decodeSelectedTextures(nextFaceJson) : [],
     };
@@ -312,5 +317,52 @@ describe("defineInputRegion", () => {
 
     expect(getNextFaceTextures()).toHaveLength(1);
     expect(getNextFaceTextures()[0]?.textureDefId).toBe("stone");
+  });
+
+  it("applies a tint-only picker selection to the last face texture", () => {
+    const currentTextureJson = makeSelectedTextureJson("", "#3C44AA");
+    const faceJson = encodeSelectedTextures([
+      JSON.parse(makeSelectedTextureJson("stone")),
+      JSON.parse(makeSelectedTextureJson("dirt")),
+    ]);
+    const { click, getNextFaceTextures } = makeRegionGenerator({
+      currentTextureJson,
+      faceJson,
+    });
+
+    click();
+
+    expect(getNextFaceTextures()).toHaveLength(2);
+    expect(getNextFaceTextures()[0]?.blend).toBe(null);
+    expect(getNextFaceTextures()[1]?.textureDefId).toBe("dirt");
+    expect(getNextFaceTextures()[1]?.blend).toBe("#3C44AA");
+  });
+
+  it("erases the last face texture on right click without changing the selected texture", () => {
+    const currentTextureJson = makeSelectedTextureJson("grass_block_top");
+    const faceJson = encodeSelectedTextures([
+      JSON.parse(makeSelectedTextureJson("stone")),
+      JSON.parse(makeSelectedTextureJson("dirt")),
+    ]);
+    const { rightClick, getNextFaceTextures } = makeRegionGenerator({
+      currentTextureJson,
+      faceJson,
+    });
+
+    expect(rightClick).toBeDefined();
+    rightClick?.();
+
+    expect(getNextFaceTextures()).toHaveLength(1);
+    expect(getNextFaceTextures()[0]?.textureDefId).toBe("stone");
+  });
+
+  it("does not register right click erase when erase is disabled", () => {
+    const { rightClick } = makeRegionGenerator({
+      currentTextureJson: makeSelectedTextureJson("stone"),
+      faceJson: "",
+      enableErase: false,
+    });
+
+    expect(rightClick).toBeUndefined();
   });
 });

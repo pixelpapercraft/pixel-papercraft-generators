@@ -74,7 +74,8 @@ describe("drawShelf", () => {
     expect(generator.defineRegionInput).toHaveBeenCalledWith(
       [185, 192, 128, 64],
       expect.any(Function),
-      "ShelfFace1"
+      "ShelfFace1",
+      expect.any(Function)
     );
     expect(generator.drawImage).toHaveBeenCalledWith("Tabs-Shelf", [25, 15]);
     expect(generator.drawImage).toHaveBeenCalledWith("Folds-Shelf", [25, 15]);
