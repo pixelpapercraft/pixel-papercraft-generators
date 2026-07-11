@@ -53,13 +53,15 @@ export class Model {
     pageId: string,
     region: Region,
     onClick: () => void,
-    id?: string
+    id?: string,
+    onRightClick?: () => void
   ) {
     this.addControl({
       kind: "Region",
       pageId,
       region,
       onClick,
+      onRightClick,
       id,
     });
   }

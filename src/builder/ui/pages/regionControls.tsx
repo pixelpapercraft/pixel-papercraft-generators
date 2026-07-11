@@ -66,6 +66,14 @@ export function RegionControls({
             style={style}
             data-testid={regionControl.id ? `region-${regionControl.id}` : undefined}
             onClick={() => onClick(regionControl.onClick)}
+            onContextMenu={(event) => {
+              if (!regionControl.onRightClick) {
+                return;
+              }
+
+              event.preventDefault();
+              onClick(regionControl.onRightClick);
+            }}
           />
         );
       })}
