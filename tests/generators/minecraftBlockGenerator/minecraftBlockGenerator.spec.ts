@@ -176,8 +176,8 @@ test("minecraft block generator shows the selected tint in the preview", async (
   await page.getByPlaceholder("Search...").fill("lever");
   await page.getByTitle("lever").click();
   await page
-    .getByLabel("Tint")
-    .selectOption({ label: "Plains / Beach / Dripstone / Deep Dark" });
+    .getByTitle("Plains / Beach / Dripstone / Deep Dark (#91BD59)")
+    .click();
 
   const preview = page.getByTestId("texture-picker-preview");
   await expect(preview).toBeVisible();
@@ -229,8 +229,8 @@ test("minecraft block generator shows the before and after tinting on the page",
   await page.getByTestId("region-BlockFaceTop1").click();
 
   await page
-    .getByLabel("Tint")
-    .selectOption({ label: "Plains / Beach / Dripstone / Deep Dark" });
+    .getByTitle("Plains / Beach / Dripstone / Deep Dark (#91BD59)")
+    .click();
   await page.getByTestId("region-BlockFaceFront1").click();
 
   const outputPages = page.getByTestId("generator-page-image");

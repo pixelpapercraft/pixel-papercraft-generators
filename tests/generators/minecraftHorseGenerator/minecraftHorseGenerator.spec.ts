@@ -17,9 +17,9 @@ test("minecraft horse generator exposes a typeable armor tint input", async ({
   await page
     .getByLabel("Tint Armor")
     .evaluate((element) => (element as HTMLInputElement).click());
-  await page.getByLabel("Armor Color").selectOption({ label: "Custom tint" });
+  await page.getByLabel("Armor Color").selectOption({ label: "Custom Tint" });
 
-  const tintInput = page.getByPlaceholder("Enter hex color");
+  const tintInput = page.getByPlaceholder("RRGGBB");
   await expect(tintInput).toBeVisible();
   await tintInput.fill("123abc");
   await expect(tintInput).toHaveValue("123abc");
@@ -33,7 +33,8 @@ test("minecraft horse generator renders tinted enchanted armor", async ({
   await page
     .getByLabel("Tint Armor")
     .evaluate((element) => (element as HTMLInputElement).click());
-  await page.getByLabel("Armor Color").selectOption({ label: "Blue" });
+  await page.getByLabel("Armor Color").selectOption({ label: "Dyes" });
+  await page.getByTitle("Blue (#3C44AA)").click();
 
   const outputPages = page.getByTestId("generator-page-image");
   await expect(outputPages).toHaveCount(1);

@@ -1,4 +1,3 @@
-import { type SelectOption, type SelectOptionGroup, type SelectOptionOrGroup } from "@genroot/builder/ui/form/select";
 import {
   defaultTintChoiceGroups,
   type TintChoice,
@@ -28,61 +27,15 @@ export function normalizeTint(tint: string): string | null {
   return null;
 }
 
-export const noneChoice: SelectOption = { id: "None", label: "No tint" };
-
-export const customChoice: SelectOption = {
+export const customChoice = {
   id: "Custom",
-  label: "Custom tint",
+  label: "Custom Tint",
 };
 
 export function flattenTintChoiceGroups(
   choiceGroups: TintChoiceGroup[]
 ): TintChoice[] {
   return choiceGroups.flatMap((group) => group.options);
-}
-
-export function makeTintChoiceGroups(
-  choiceGroups: TintChoiceGroup[]
-): SelectOptionGroup[] {
-  return choiceGroups.map((group) => ({
-    id: group.id,
-    label: group.label,
-    options: group.options.map((tint) => ({
-      id: tint.id,
-      label: tint.label,
-    })),
-  }));
-}
-
-export function makeTintChoices(
-  choiceGroups: TintChoiceGroup[] = defaultTintChoiceGroups,
-  includeNoTint = true
-): SelectOptionOrGroup[] {
-  return [
-    ...(includeNoTint ? [noneChoice] : []),
-    customChoice,
-    ...makeTintChoiceGroups(choiceGroups),
-  ];
-}
-
-export function getTintFromOption(
-  option: SelectOption,
-  tintChoices: TintChoice[]
-): SelectedTint {
-  switch (option.id) {
-    case "None":
-      return { kind: "NoTint" };
-    case "Custom":
-      return { kind: "CustomTint", hex: null };
-    default: {
-      const tint = tintChoices.find((tint) => tint.id === option.id);
-      if (!tint) {
-        return { kind: "NoTint" };
-      }
-
-      return { kind: "SelectedTint", hex: tint.color };
-    }
-  }
 }
 
 export function getColorFromSelectedTint(
@@ -140,7 +93,6 @@ export function getTintInputValue(
 }
 
 type TintSelectorState = {
-  selectedOption: SelectOption;
   selectedTint: SelectedTint;
   customTintInput: string;
   color: string | null;
@@ -152,7 +104,6 @@ export function getTintSelectorStateFromValue(
 ): TintSelectorState {
   if (value === null) {
     return {
-      selectedOption: noneChoice,
       selectedTint: { kind: "NoTint" },
       customTintInput: "",
       color: null,
@@ -165,17 +116,16 @@ export function getTintSelectorStateFromValue(
   );
   if (tint) {
     return {
-      selectedOption: { id: tint.id, label: tint.label },
       selectedTint: { kind: "SelectedTint", hex: tint.color },
       customTintInput: "",
       color: tint.color,
     };
   }
 
+  const normalizedCustomTint = normalizeTint(value);
   return {
-    selectedOption: customChoice,
-    selectedTint: { kind: "CustomTint", hex: value },
+    selectedTint: { kind: "CustomTint", hex: normalizedCustomTint },
     customTintInput: getCustomTintInput(value),
-    color: value,
+    color: normalizedCustomTint,
   };
 }

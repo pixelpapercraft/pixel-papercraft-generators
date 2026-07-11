@@ -26,7 +26,7 @@ test("minecraft cat generator renders a tinted collar", async ({ page }) => {
   await page.getByLabel("Collar", { exact: true }).selectOption({
     label: "Cat Collar",
   });
-  await page.getByLabel("Collar Color").selectOption({ label: "Blue" });
+  await page.getByTitle("Blue (#3C44AA)").click();
 
   const outputPages = page.getByTestId("generator-page-image");
   await expect(outputPages).toHaveCount(1);

@@ -217,13 +217,3 @@ export const armorTintChoiceGroups: TintChoiceGroup[] = [
 export const catTintChoiceGroups: TintChoiceGroup[] = [dyeTintGroup];
 
 export const defaultTintChoiceGroups: TintChoiceGroup[] = blockTintChoiceGroups;
-
-export const tintGroups = {
-  grass: grassTintGroup.options,
-  foliage: foliageTintGroup.options,
-  water: waterTintGroup.options,
-};
-
-export const tints: TintChoice[] = blockTintChoiceGroups.flatMap(
-  (group) => group.options
-);
