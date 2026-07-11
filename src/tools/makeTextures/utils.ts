@@ -1,7 +1,7 @@
 import Path from "path";
 import Fs from "fs";
 import ChildProcess from "child_process";
-import { Jimp, intToRGBA, type JimpInstance } from "jimp";
+import sharp from "sharp";
 import { type ImageInfo, readImageInfo } from "../common/imageInfo";
 import {
   type Rectangle,
@@ -22,7 +22,11 @@ type ImageWithCoordinates = {
   coordinates: [number, number];
 };
 
-type JimpReadImage = Awaited<ReturnType<typeof Jimp.read>>;
+type RawImage = {
+  data: Buffer;
+  width: number;
+  height: number;
+};
 
 type TileFrameWithCrop = {
   rectangle: Rectangle;
@@ -100,36 +104,77 @@ function calculateImagesWithCoordinates(
   };
 }
 
-async function makeCanvas(
-  width: number,
-  height: number
-): Promise<JimpInstance> {
-  return new Jimp({ width, height });
+async function readRawImage(path: string): Promise<RawImage> {
+  const { data, info } = await sharp(path)
+    .ensureAlpha()
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+
+  return {
+    data,
+    width: info.width,
+    height: info.height,
+  };
+}
+
+function makeCanvas(width: number, height: number): RawImage {
+  return {
+    data: Buffer.alloc(width * height * 4),
+    width,
+    height,
+  };
+}
+
+function copyRawImage(
+  destination: RawImage,
+  source: RawImage,
+  x: number,
+  y: number
+): void {
+  for (let row = 0; row < source.height; row += 1) {
+    const sourceStart = row * source.width * 4;
+    const sourceEnd = sourceStart + source.width * 4;
+    const destinationStart = ((y + row) * destination.width + x) * 4;
+    source.data.copy(
+      destination.data,
+      destinationStart,
+      sourceStart,
+      sourceEnd
+    );
+  }
 }
 
 async function makeTiledImagesCanvas(
   images: ImageWithInfo[],
   canvasWidth: number
-): Promise<[ImageWithCoordinates[], JimpInstance, number, number]> {
+): Promise<[ImageWithCoordinates[], RawImage, number, number]> {
   const { imagesWithCoordinates, canvasHeight } =
     calculateImagesWithCoordinates(images, canvasWidth);
-  const canvas = await makeCanvas(canvasWidth, canvasHeight);
+  const canvas = makeCanvas(canvasWidth, canvasHeight);
 
   for (const imageWithCoordinates of imagesWithCoordinates) {
     const { image, coordinates } = imageWithCoordinates;
     const [x, y] = coordinates;
-    const sourceImage = await Jimp.read(image.path);
-    canvas.blit({ src: sourceImage, x, y });
+    const sourceImage = await readRawImage(image.path);
+    copyRawImage(canvas, sourceImage, x, y);
   }
 
   return [imagesWithCoordinates, canvas, canvasWidth, canvasHeight];
 }
 
 async function writeTileImage(
-  canvas: JimpInstance,
+  canvas: RawImage,
   tileImagePath: `${string}.png`
 ): Promise<void> {
-  await canvas.write(tileImagePath);
+  await sharp(canvas.data, {
+    raw: {
+      width: canvas.width,
+      height: canvas.height,
+      channels: 4,
+    },
+  })
+    .png()
+    .toFile(tileImagePath);
 }
 
 function printStdOutput(stdout: string | null, stderr: string | null): void {
@@ -187,7 +232,7 @@ async function writeTileTypeScript(
 }
 
 function getFrameCrop(
-  image: JimpReadImage,
+  image: RawImage,
   [frameX, frameY, frameWidth, frameHeight]: Rectangle
 ): Rectangle {
   let minX = frameWidth;
@@ -197,7 +242,8 @@ function getFrameCrop(
 
   for (let y = 0; y < frameHeight; y += 1) {
     for (let x = 0; x < frameWidth; x += 1) {
-      const { a } = intToRGBA(image.getPixelColor(frameX + x, frameY + y));
+      const index = ((frameY + y) * image.width + frameX + x) * 4;
+      const a = image.data[index + 3] ?? 0;
       if (a === 0) {
         continue;
       }
@@ -220,7 +266,7 @@ async function makeTileInfos(
   const tiles: Array<{ name: string; frames: TileFrameWithCrop[] }> =
     await Promise.all(
       imagesWithCoordinates.map(async ({ image, coordinates }) => {
-        const sourceImage = await Jimp.read(image.path);
+        const sourceImage = await readRawImage(image.path);
         const { name, info } = image;
         const { width, height } = info;
         const [imageX, imageY] = coordinates;

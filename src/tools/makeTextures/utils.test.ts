@@ -1,7 +1,7 @@
 import Fs from "fs";
 import Os from "os";
 import Path from "path";
-import { Jimp, rgbaToInt } from "jimp";
+import sharp from "sharp";
 import { afterEach, describe, expect, it } from "vitest";
 
 import { makeTiledImages } from "./utils";
@@ -27,17 +27,18 @@ describe("makeTiledImages", () => {
     Fs.mkdirSync(sourceDirectory, { recursive: true });
     Fs.mkdirSync(outputDirectory, { recursive: true });
 
-    const sourceImagePath: `${string}.png` = Path.join(
-      sourceDirectory,
-      "sprite.png"
-    ) as `${string}.png`;
-    const sourceImage = await new Jimp({
-      width: 4,
-      height: 4,
-      color: rgbaToInt(0, 0, 0, 0),
-    });
-    sourceImage.setPixelColor(rgbaToInt(255, 0, 0, 255), 1, 2);
-    await sourceImage.write(sourceImagePath);
+    const sourceImagePath = Path.join(sourceDirectory, "sprite.png");
+    const sourcePixels = Buffer.alloc(4 * 4 * 4);
+    const pixelIndex = (2 * 4 + 1) * 4;
+    sourcePixels[pixelIndex] = 255;
+    sourcePixels[pixelIndex + 1] = 0;
+    sourcePixels[pixelIndex + 2] = 0;
+    sourcePixels[pixelIndex + 3] = 255;
+    await sharp(sourcePixels, {
+      raw: { width: 4, height: 4, channels: 4 },
+    })
+      .png()
+      .toFile(sourceImagePath);
 
     await makeTiledImages("test-item", sourceDirectory, outputDirectory, "texture");
 
@@ -49,9 +50,9 @@ describe("makeTiledImages", () => {
     expect(Fs.existsSync(typePath)).toBe(true);
     expect(Fs.existsSync(`${basePath}.json`)).toBe(false);
 
-    const atlas = await Jimp.read(atlasPath);
-    expect(atlas.bitmap.width).toBe(512);
-    expect(atlas.bitmap.height).toBe(4);
+    const atlasMetadata = await sharp(atlasPath).metadata();
+    expect(atlasMetadata.width).toBe(512);
+    expect(atlasMetadata.height).toBe(4);
 
     const typeFile = Fs.readFileSync(typePath, "utf8");
     expect(typeFile).toContain('id: "test-item"');
