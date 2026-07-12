@@ -11,6 +11,19 @@ It includes many generators that turn characters, creatures, items, and other ga
 - Always use the `gh` command for GitHub operations.
 - After creating a new git worktree for this repo, run `npm install` and then `npm run setup` in the new worktree before running checks or making changes.
 
+## Skills
+
+- Skills live at `.agents/skills/<skill-name>/SKILL.md` — that's the real, git-tracked location. Claude Code doesn't look there by default, so `.claude/skills` is a symlink to `../.agents/skills` to make them discoverable.
+- Editing a skill via a `.claude/skills/...` path works (it resolves through the symlink), but `git add` on that path fails with `fatal: ... is beyond a symbolic link`. When staging or committing a skill change, use the real path, e.g. `git add .agents/skills/agent-rules/SKILL.md`.
+
+## Rules
+
+Read and follow rules from any category whose "Read when" keywords match your current task. To add, update, or delete rules, use the `agent-rules` skill.
+
+| Category   | Read when                                                                     | File                                                |
+| ---------- | ------------------------------------------------------------------------------ | ---------------------------------------------------- |
+| TypeScript | `.ts`, `.tsx`, type, interface, switch, `any`, `as`, `satisfies`, zod, vitest `expect`, test mock | [typescript.md](agent-docs/rules/typescript.md) |
+
 ## Change Scope
 
 - Keep changes incremental and narrow in scope.
