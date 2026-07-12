@@ -27,6 +27,10 @@ import { getSkinUrl } from "../_common/skins";
 import {
   makeDefaultMinecraftSkinPresetOptions,
 } from "../_common/skins/options";
+import {
+  getMinecraftSkinInputValueKey,
+  serializeMinecraftSkinInputValue,
+} from "@genroot/builder/modules/minecraftSkinInputValue";
 
 const id = "minecraft-character-mini";
 
@@ -301,13 +305,29 @@ const script: ScriptDef = (generator: Generator) => {
     });
   }
 
-  const drawMini = (textureId: string, x: number, y: number) => {
+  const drawMini = (
+    textureId: string,
+    x: number,
+    y: number,
+    defaultToNone = false
+  ) => {
     generator.defineMinecraftSkinInput(textureId, {
       standardWidth: 64,
       standardHeight: 64,
       options: makeDefaultMinecraftSkinPresetOptions(),
       showModelType: true,
     });
+
+    const skinInputValueKey = getMinecraftSkinInputValueKey(textureId);
+    if (defaultToNone && !generator.getStringInputValue(skinInputValueKey)) {
+      generator.setStringInputValue(
+        skinInputValueKey,
+        serializeMinecraftSkinInputValue({
+          modelType: "Wide",
+          selection: { kind: "none" },
+        })
+      );
+    }
 
     if (generator.hasTexture(textureId)) {
       const modelType = generator.getMinecraftSkinInputModelType(textureId);
@@ -488,7 +508,7 @@ const script: ScriptDef = (generator: Generator) => {
   };
 
   drawMini("Mini 1", 121, 108);
-  drawMini("Mini 2", 121, 453);
+  drawMini("Mini 2", 121, 453, true);
 
   generator.drawImage("Title", [0, 0]);
   generator.fillBackgroundColorWithWhite();
