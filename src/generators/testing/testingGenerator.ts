@@ -22,6 +22,7 @@ const name = "Testing";
 const history: HistoryDef = [
   "16 May 2026 Codex - Added a visual regression board for shared rendering cases.",
   "17 May 2026 Codex - Added an atlas input case for multi-texture uploads.",
+  "11 Jul 2026 Codex - Added region overlay and range control test cases.",
 ];
 
 const thumbnail: ThumbnailDef = {
@@ -73,6 +74,36 @@ const script: ScriptDef = (generator: Generator) => {
         flip,
       });
     });
+  });
+
+  generator.usePage("Region Overlay");
+  // Place a region over a known position so the overlay position can be tested.
+  // Uses a different source crop than the reference sheet page so this page's
+  // screenshot pins its own pixels instead of duplicating page 1's.
+  generator.drawTexture("TestSheet", [0, 0, 32, 32], [16, 16, 256, 256]);
+  generator.defineRegionInput([16, 16, 256, 256], () => {
+    // no-op: just testing the overlay renders at the correct position
+  }, "TestRegion");
+
+  generator.usePage("Range Control");
+  // A range input that controls the size of a drawn texture.
+  const scale = generator.defineAndGetRangeInput("Scale", {
+    min: 1,
+    max: 4,
+    value: 2,
+    step: 1,
+  });
+  const size = 64 * scale;
+  generator.drawTexture("TestSheet", [0, 0, 16, 16], [16, 16, size, size]);
+
+  // A fractional-step range input, to guard against the control truncating
+  // decimal input to whole numbers.
+  generator.defineRangeInput("Opacity", {
+    min: 0,
+    max: 1,
+    value: 0.5,
+    step: 0.1,
+    showValue: true,
   });
 
   generator.usePage("Density Comparison");
