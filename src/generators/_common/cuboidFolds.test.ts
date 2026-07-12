@@ -1,11 +1,12 @@
 import { describe, expect, it, vi } from "vitest";
 import { type Generator } from "@genroot/builder/modules/generator";
+import { makeFakeGenerator } from "@genroot/builder/modules/generator.fake";
 import { drawCuboidFolds, drawRectangleFolds } from "./cuboidFolds";
 
 function makeGenerator(): Generator {
-  return {
-    drawFoldLine: vi.fn(),
-  } as unknown as Generator;
+  const generator = makeFakeGenerator();
+  vi.spyOn(generator, "drawFoldLine").mockImplementation(() => {});
+  return generator;
 }
 
 describe("cuboidFolds", () => {

@@ -1,11 +1,12 @@
 import { describe, expect, it, vi } from "vitest";
 import { type Generator } from "@genroot/builder/modules/generator";
+import { makeFakeGenerator } from "@genroot/builder/modules/generator.fake";
 import { drawCuboidTabs, getDioramaEdgeTabThickness } from "./cuboidTabs";
 
 function makeGenerator(): Generator {
-  return {
-    drawTab: vi.fn(),
-  } as unknown as Generator;
+  const generator = makeFakeGenerator();
+  vi.spyOn(generator, "drawTab").mockImplementation(() => {});
+  return generator;
 }
 
 describe("cuboidTabs", () => {
