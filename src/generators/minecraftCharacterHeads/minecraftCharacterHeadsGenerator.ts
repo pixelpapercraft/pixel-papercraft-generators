@@ -22,6 +22,10 @@ import {
   makeDefaultMinecraftSkinPresetOptions,
   makeMinecraftSkinTextureOption,
 } from "../_common/skins/options";
+import {
+  getMinecraftSkinInputValueKey,
+  serializeMinecraftSkinInputValue,
+} from "@genroot/builder/modules/minecraftSkinInputValue";
 import zombieImage from "./textures/Zombie.png";
 import endermanImage from "./textures/Enderman.png";
 import skeletonImage from "./textures/Skeleton.png";
@@ -39,6 +43,7 @@ const history: HistoryDef = [
   "13 Feb 2015 lostminer - Update to use new version of generator.",
   "17 Jul 2021 M16 - Updated generator photo.",
   "12 Jun 2022 NinjolasNJM - Updated to use Minecraft module, and added Action Figure option",
+  "Jun 2026 NinjolasNJM - Set extra head slots to None by default.",
 ];
 
 const thumbnail: ThumbnailDef = {
@@ -119,6 +124,17 @@ const script: ScriptDef = (generator: Generator) => {
       ],
       showModelType: false,
     });
+
+    const skinInputValueKey = getMinecraftSkinInputValueKey(textureId);
+    if (i > 1 && !generator.getStringInputValue(skinInputValueKey)) {
+      generator.setStringInputValue(
+        skinInputValueKey,
+        serializeMinecraftSkinInputValue({
+          modelType: "Wide",
+          selection: { kind: "none" },
+        })
+      );
+    }
   }
 
   // Define and get user variables

@@ -141,6 +141,9 @@ export function MinecraftSkinControl({
   // Shared error message shown below the control.
   const [loadError, setLoadError] = React.useState<string | null>(null);
 
+  const baseId = React.useId();
+  const fileInputId = `${baseId}-file`;
+
   React.useEffect(() => {
     onChangeRef.current = onChange;
   }, [onChange]);
@@ -381,7 +384,11 @@ export function MinecraftSkinControl({
 
         <div className="flex flex-wrap items-center gap-4">
           <div>or</div>
+          <label className="sr-only" htmlFor={fileInputId}>
+            Upload {id} skin file
+          </label>
           <input
+            id={fileInputId}
             className="border border-gray-300 p-1 bg-white text-gray-400"
             type="file"
             onChange={onInputChange}
