@@ -58,15 +58,15 @@ const exampleV2Registration: GeneratorV2Registration = {
   Component: ExampleGeneratorV2UI,
 };
 
-// Dev-only, same visibility rule as the v1 `dev` array below.
-export const devV2: GeneratorV2Registration[] = isDevelopmentEnvironment
-  ? [exampleV2Registration]
-  : [];
+// Same visibility rule as the v1 `test` array below.
+export const testV2: GeneratorV2Registration[] = isProductionEnvironment
+  ? []
+  : [exampleV2Registration];
 
 export function findGeneratorV2ById(
   generatorId: string
 ): GeneratorV2Registration | null {
-  return devV2.find((registration) => registration.id === generatorId) ?? null;
+  return testV2.find((registration) => registration.id === generatorId) ?? null;
 }
 
 export const character: GeneratorDef[] = [
@@ -166,6 +166,11 @@ export const generatorGroups: GeneratorGroup[] = [
   { label: "Blocks, Items and Accessories", generators: utility },
   { label: "Mods", generators: mod },
   { label: "Other", generators: other },
-  { label: "Development", generators: [...dev, ...devV2] },
-  { label: "Testing", generators: test },
+  { label: "Development", generators: dev },
+  {
+    label: "Testing",
+    generators: isProductionEnvironment
+      ? []
+      : [exampleGenerator, exampleV2Registration, testingGenerator],
+  },
 ];
