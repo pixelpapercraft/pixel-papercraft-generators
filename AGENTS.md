@@ -47,6 +47,11 @@ Read and follow rules from any category whose "Read when" keywords match your cu
 - Verify the smallest relevant surface first, then widen coverage only as far as the behavior actually propagates.
 - After each completed change slice, run `npm run types:check` and `npm run lint` once the focused tests pass.
 
+## Pull Requests
+
+- When opening a pull request, write a concise description covering scope, key implementation details, and verification.
+- Leave the body blank only when Kevan explicitly asks, or when project notes identify that specific PR as an exception.
+
 ## Visual Regressions
 
 - When behavior can regress visually, add or extend a focused visual regression test before changing the implementation.
