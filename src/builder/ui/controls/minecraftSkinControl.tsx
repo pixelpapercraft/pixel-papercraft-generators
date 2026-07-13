@@ -137,6 +137,10 @@ export function MinecraftSkinControl({
   // Keep the latest onChange callback in a ref so async work can safely use it
   // without needing to rebuild every callback/effect when parent props change.
   const onChangeRef = React.useRef(onChange);
+  // A selection can change before React cleans up an in-flight preset effect.
+  // This monotonically increasing version prevents that stale effect from
+  // restoring the old texture after the user has selected None or another skin.
+  const selectionVersionRef = React.useRef(0);
 
   // Shared error message shown below the control.
   const [loadError, setLoadError] = React.useState<string | null>(null);
@@ -180,9 +184,14 @@ export function MinecraftSkinControl({
 
   const onCustomImage = React.useCallback(
     async (image: HTMLImageElement) => {
+      selectionVersionRef.current += 1;
+      const selectionVersion = selectionVersionRef.current;
       // Normalize uploaded/fetched skins into the standard sheet format expected
       // by the renderer before creating a texture.
       const converted = await convertToStandardSkin(image);
+      if (selectionVersionRef.current !== selectionVersion) {
+        return;
+      }
       const texture = makeTextureFromImage(
         converted,
         standardWidth,
@@ -229,6 +238,7 @@ export function MinecraftSkinControl({
   };
 
   const onChoiceChange = (choice: SelectOption) => {
+    selectionVersionRef.current += 1;
     // "None" clears both selected skin metadata and active texture.
     if (choice.id === "") {
       onValueChange({
@@ -273,6 +283,7 @@ export function MinecraftSkinControl({
     modelTypeChoices[0];
 
   const onModelTypeChange = (choice: SelectOption) => {
+    selectionVersionRef.current += 1;
     const modelType: MinecraftModelType =
       choice.id === "Slim" ? "Slim" : "Wide";
     onValueChange({
@@ -314,6 +325,7 @@ export function MinecraftSkinControl({
       return;
     }
 
+    const selectionVersion = selectionVersionRef.current;
     let canceled = false;
 
     const loadPreset = async () => {
@@ -329,7 +341,7 @@ export function MinecraftSkinControl({
           standardHeight
         );
 
-        if (!canceled) {
+        if (!canceled && selectionVersionRef.current === selectionVersion) {
           onChangeRef.current(texture);
         }
       } catch (error) {
