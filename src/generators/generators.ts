@@ -36,6 +36,7 @@ import { generator as testingGenerator } from "@genroot/generators/testing/testi
 import { generator as testApiPageManagementGenerator } from "@genroot/generators/testApiPageManagement/testApiPageManagementGenerator";
 import { generator as testApiDrawingPrimitivesGenerator } from "@genroot/generators/testApiDrawingPrimitives/testApiDrawingPrimitivesGenerator";
 import { generator as testApiDrawingTexturesGenerator } from "@genroot/generators/testApiDrawingTextures/testApiDrawingTexturesGenerator";
+import { generator as testApiControlsGenerator } from "@genroot/generators/testApiControls/testApiControlsGenerator";
 
 const isProductionEnvironment: boolean = process.env.NODE_ENV === "production";
 const isDevelopmentEnvironment: boolean = process.env.NODE_ENV === "development";
@@ -100,6 +101,7 @@ export const testApiCoverage: GeneratorDef[] = [
   testApiPageManagementGenerator,
   testApiDrawingPrimitivesGenerator,
   testApiDrawingTexturesGenerator,
+  testApiControlsGenerator,
 ];
 
 export const test: GeneratorDef[] = isProductionEnvironment
