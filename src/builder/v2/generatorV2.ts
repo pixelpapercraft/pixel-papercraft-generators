@@ -67,3 +67,5 @@ export type GeneratorV2<Props> = {
   textures: TextureDef[];
   render: (ctx: RenderContext, props: Props) => void;
 };
+
+export type RegionClickHandler = (arg: { regionId: string }) => void;
