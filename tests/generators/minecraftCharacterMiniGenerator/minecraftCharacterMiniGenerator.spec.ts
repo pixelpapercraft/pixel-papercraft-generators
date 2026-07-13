@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { renderImageAtNaturalSize } from "../_shared/screenshot";
 
-const skinTexturePath = "src/generators/testing/images/testSheet.png";
+const skinTexturePath = "src/generators/_common/fixtures/testSheet.png";
 
 test("minecraft character mini generator renders a custom uploaded skin in the second slot", async ({
   page,

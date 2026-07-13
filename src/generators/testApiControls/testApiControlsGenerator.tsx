@@ -12,7 +12,7 @@ import type {
 } from "@genroot/builder/modules/generatorDef";
 import { type Generator } from "@genroot/builder/modules/generator";
 import quadrants from "@genroot/generators/testApiDrawingTextures/fixtures/quadrants.png";
-import skinFixture from "@genroot/generators/testing/images/testSheet.png";
+import skinFixture from "@genroot/generators/_common/fixtures/testSheet.png";
 
 const id = "test-api-controls";
 

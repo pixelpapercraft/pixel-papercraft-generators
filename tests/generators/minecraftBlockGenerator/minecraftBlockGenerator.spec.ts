@@ -254,7 +254,7 @@ test("minecraft block generator renders custom atlas textures", async ({
 
   const sheetPath = path.join(
     process.cwd(),
-    "src/generators/testing/images/testSheet.png"
+    "src/generators/_common/fixtures/testSheet.png"
   );
   const sheetBytes = fs.readFileSync(sheetPath);
 
@@ -326,7 +326,7 @@ test("minecraft block generator clears the custom selection when the version cha
 
   const sheetPath = path.join(
     process.cwd(),
-    "src/generators/testing/images/testSheet.png"
+    "src/generators/_common/fixtures/testSheet.png"
   );
   const sheetBytes = fs.readFileSync(sheetPath);
 
