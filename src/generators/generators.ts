@@ -59,7 +59,7 @@ export type GeneratorDefV2 = {
   Component: () => JSX.Element;
 };
 
-const exampleV2Registration: GeneratorDefV2 = {
+const exampleGeneratorDefV2: GeneratorDefV2 = {
   id: exampleGeneratorV2.id,
   name: exampleGeneratorV2.name,
   thumbnail: null,
@@ -69,12 +69,14 @@ const exampleV2Registration: GeneratorDefV2 = {
 // Same visibility rule as the v1 `test` array below.
 export const testV2: GeneratorDefV2[] = isProductionEnvironment
   ? []
-  : [exampleV2Registration];
+  : [exampleGeneratorDefV2];
 
 export function findGeneratorV2ById(
   generatorId: string
 ): GeneratorDefV2 | null {
-  return testV2.find((registration) => registration.id === generatorId) ?? null;
+  return (
+    testV2.find((generatorDefV2) => generatorDefV2.id === generatorId) ?? null
+  );
 }
 
 export const character: GeneratorDef[] = [
@@ -190,6 +192,6 @@ export const generatorGroups: GeneratorGroup[] = [
     label: "Testing",
     generators: isProductionEnvironment
       ? []
-      : [exampleGenerator, exampleV2Registration, ...testApiCoverage],
+      : [exampleGenerator, exampleGeneratorDefV2, ...testApiCoverage],
   },
 ];

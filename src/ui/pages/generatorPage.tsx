@@ -9,17 +9,17 @@ import { PageHeading } from "@genroot/ui/components/pageHeading";
 import { CommonLink } from "@genroot/ui/components/commonLink";
 
 export function GeneratorPage({ generatorId }: { generatorId: string }) {
-  const generatorV2Registration = findGeneratorV2ById(generatorId);
-  if (generatorV2Registration) {
+  const generatorDefV2 = findGeneratorV2ById(generatorId);
+  if (generatorDefV2) {
     return (
       <div className="p-8">
-        <PageHeading title={generatorV2Registration.name} />
+        <PageHeading title={generatorDefV2.name} />
 
         <p className="mb-8">
           <CommonLink href="/">← Back to generator list</CommonLink>
         </p>
 
-        <generatorV2Registration.Component />
+        <generatorDefV2.Component />
       </div>
     );
   }
