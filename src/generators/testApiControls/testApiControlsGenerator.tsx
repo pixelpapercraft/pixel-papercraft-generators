@@ -86,6 +86,19 @@ const script: ScriptDef = (generator: Generator) => {
       />
     </label>
   ));
+
+  // Region controls belong to their current page. The callback advances a
+  // marker, making its registration and click path observable alongside the
+  // overlay's independently tested geometry.
+  generator.usePage("Region");
+  const regionClicks = generator.getNumberVariable("Region Clicks") ?? 0;
+  generator.fillRectangle([16, 16, 256, 256], "#dddddd");
+  generator.defineRegionInput(
+    [16, 16, 256, 256],
+    () => generator.setNumberVariable("Region Clicks", regionClicks + 1),
+    "ControlRegion"
+  );
+  generator.fillRectangle([32 + regionClicks * 20, 32, 10, 10], "#ff00ff");
 };
 
 export const generator: GeneratorDef = {
