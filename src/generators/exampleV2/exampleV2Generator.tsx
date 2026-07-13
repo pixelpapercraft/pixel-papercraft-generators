@@ -7,6 +7,10 @@ import {
   type RenderContext,
 } from "@genroot/builder/v2/generatorV2";
 import { GeneratorRenderer } from "@genroot/builder/v2/generatorRenderer";
+import {
+  GeneratorUI,
+  type SelectOption,
+} from "@genroot/builder/v2/generatorUI";
 
 import skinImage from "./textures/Skin.png";
 import backgroundImage from "./images/Background.png";
@@ -36,7 +40,15 @@ const textures: TextureDef[] = [
 export type ExampleProps = {
   showFolds: boolean;
   highlightHead: boolean;
+  highlightColor: string;
+  highlightWidth: number;
 };
+
+const highlightColorOptions: SelectOption[] = [
+  { id: "#ff00ff", label: "Pink" },
+  { id: "#06b6d4", label: "Cyan" },
+  { id: "#f59e0b", label: "Gold" },
+];
 
 // Ported verbatim from `exampleGenerator.ts`'s `script` render body: same
 // `drawHead` helper, same `drawImage("Background")`/folds calls. Only
@@ -83,7 +95,10 @@ const render = (ctx: RenderContext, props: ExampleProps): void => {
   ctx.defineRegion([185, 117, 64, 64], "head");
 
   if (props.highlightHead) {
-    ctx.drawRectangle([185, 117, 64, 64], { color: "#ff00ff", width: 3 });
+    ctx.drawRectangle([185, 117, 64, 64], {
+      color: props.highlightColor,
+      width: props.highlightWidth,
+    });
   }
 };
 
@@ -95,32 +110,68 @@ export const exampleGeneratorV2: GeneratorV2<ExampleProps> = {
   render,
 };
 
-// Minimal, fully-custom author-written React UI: a `useState` boolean drives
-// `<GeneratorRenderer>`'s `props`, and toggling it is the whole reactive
-// seam this prototype proves — no `defineBooleanInput`/`onChange` wiring.
+// This control gallery demonstrates that authors can use V2's common controls
+// while keeping state and layout fully local to the generator UI.
 export function ExampleGeneratorV2UI(): JSX.Element {
   const [showFolds, setShowFolds] = React.useState(true);
   const [highlightHead, setHighlightHead] = React.useState(false);
+  const [highlightColor, setHighlightColor] = React.useState("#ff00ff");
+  const [highlightWidth, setHighlightWidth] = React.useState(3);
+
+  const rendererProps: ExampleProps = {
+    showFolds,
+    highlightHead,
+    highlightColor,
+    highlightWidth,
+  };
 
   return (
     <div className="lg:flex gap-8">
       <div className="flex-1 min-w-0" data-testid="generator-sidebar">
-        <div className="w-full bg-gray-100 p-8">
-          <label className="inline-flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={showFolds}
-              onChange={(event) => setShowFolds(event.target.checked)}
-            />
-            Show Folds
-          </label>
+        <div className="w-full bg-gray-100 p-8 space-y-4">
+          <GeneratorUI.Text>
+            These controls are V2 convenience components. They update local
+            React state, which redraws the preview.
+          </GeneratorUI.Text>
+
+          <GeneratorUI.BooleanInput
+            label="Show Folds"
+            checked={showFolds}
+            onCheckedChange={setShowFolds}
+          />
+
+          <GeneratorUI.SelectInput
+            label="Head Highlight Color"
+            options={highlightColorOptions}
+            value={highlightColor}
+            onValueChange={setHighlightColor}
+          />
+
+          <GeneratorUI.RangeInput
+            label="Head Highlight Width"
+            min={1}
+            max={8}
+            step={1}
+            value={highlightWidth}
+            valueLabel={`${highlightWidth}px`}
+            onValueChange={setHighlightWidth}
+          />
+
+          <GeneratorUI.Button
+            title="Toggle head highlight"
+            size="Small"
+            color="Blue"
+            onClick={() => setHighlightHead((value) => !value)}
+          >
+            Toggle Head Highlight
+          </GeneratorUI.Button>
         </div>
       </div>
 
       <div className="flex-1 min-w-0">
         <GeneratorRenderer
           generator={exampleGeneratorV2}
-          props={{ showFolds, highlightHead }}
+          props={rendererProps}
           onRegionClick={({ regionId }) => {
             if (regionId === "head") {
               setHighlightHead((v) => !v);
