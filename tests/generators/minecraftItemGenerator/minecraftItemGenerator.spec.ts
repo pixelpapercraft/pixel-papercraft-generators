@@ -81,7 +81,7 @@ test("minecraft item generator renders custom atlas textures", async ({
 
   const sheetPath = path.join(
     process.cwd(),
-    "src/generators/testing/images/testSheet.png"
+    "src/generators/_common/fixtures/testSheet.png"
   );
   const sheetBytes = fs.readFileSync(sheetPath);
 
@@ -396,7 +396,7 @@ test("minecraft item generator clears the custom selection when the version chan
 
   const sheetPath = path.join(
     process.cwd(),
-    "src/generators/testing/images/testSheet.png"
+    "src/generators/_common/fixtures/testSheet.png"
   );
   const sheetBytes = fs.readFileSync(sheetPath);
 

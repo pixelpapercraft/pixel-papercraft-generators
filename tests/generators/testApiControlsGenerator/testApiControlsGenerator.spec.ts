@@ -251,7 +251,7 @@ test("defineAtlasInput accepts multiple uploads and exposes its packed texture t
   expect(await readPixel(uploadsPage, 115, 25)).toEqual(fixtureGreen);
 });
 
-const skinFixturePath = "src/generators/testing/images/testSheet.png";
+const skinFixturePath = "src/generators/_common/fixtures/testSheet.png";
 
 const skinPage = (page: Page) => pageImage(page).nth(2);
 
