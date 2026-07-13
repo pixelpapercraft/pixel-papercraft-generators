@@ -9,6 +9,9 @@ import { readPixel, readPixelRow, type Rgba } from "../_shared/pixelColor";
 //   2 DrawRectangle  — drawRectangle (31)
 //   3 DrawLine       — drawLine (35)
 //   4 FoldLine       — drawFoldLine (36)
+//   5 DrawTab        — drawTab (37), all four orientations
+//   6 DrawTabNoFold  — drawTab (37) with showFoldLine = false
+//   7 DrawText       — drawText (38)
 // Each test reads back exact pixels to pin one primitive's contract.
 // See the generator-api test-coverage plan.
 
@@ -165,4 +168,87 @@ test("drawFoldLine draws a dashed grey line — grey dashes with transparent gap
 
   expect(hasGreyDash).toBe(true);
   expect(hasGap).toBe(true);
+});
+
+// --- drawTab (37) -----------------------------------------------------------
+
+test("drawTab draws a straight tab edge for each orientation (N/S/E/W)", async ({
+  page,
+}) => {
+  await page.goto("/generator/test-api-drawing-primitives");
+
+  const tab = pageImage(page).nth(5);
+
+  // Each orientation has one fully-opaque straight edge (the others antialias
+  // as diagonals). Exact row/col reflects drawLine's direction-dependent 0.5px
+  // offset — see the generator script for the geometry.
+  expect(await readPixel(tab, 70, 50)).toEqual(black); // North: top edge, row 50
+  expect(await readPixel(tab, 70, 109)).toEqual(black); // South: bottom edge, row 109
+  expect(await readPixel(tab, 159, 70)).toEqual(black); // East: right edge, col 159
+  expect(await readPixel(tab, 200, 70)).toEqual(black); // West: left edge, col 200
+});
+
+test("drawTab draws a grey fold line across the base by default", async ({
+  page,
+}) => {
+  await page.goto("/generator/test-api-drawing-primitives");
+
+  const tab = pageImage(page).nth(5);
+
+  // The North tab's base fold line runs along row 59 (drawn R->L, so offset up
+  // from the rectangle's bottom at 60). As a fold line it is dashed grey, so the
+  // run has both grey dashes and transparent gaps. Scan cols 55..85, where only
+  // the fold line (not the diagonal edges) is present.
+  const run = await readPixelRow(tab, 55, 59, 30);
+  const hasGreyDash = run.some(
+    (p) => p.r === foldGrey.r && p.g === foldGrey.g && p.b === foldGrey.b && p.a === 255
+  );
+  const hasGap = run.some((p) => p.a === 0);
+
+  expect(hasGreyDash).toBe(true);
+  expect(hasGap).toBe(true);
+});
+
+test("drawTab with showFoldLine false omits the base fold line but keeps the tab edges", async ({
+  page,
+}) => {
+  await page.goto("/generator/test-api-drawing-primitives");
+
+  const tab = pageImage(page).nth(6);
+
+  // The tab itself is still drawn: its top edge is on row 50.
+  expect(await readPixel(tab, 70, 50)).toEqual(black);
+
+  // But the base fold line (which would be on row 59) is gone — no grey
+  // anywhere along it.
+  const run = await readPixelRow(tab, 55, 59, 30);
+  const hasGrey = run.some(
+    (p) => p.r === foldGrey.r && p.g === foldGrey.g && p.b === foldGrey.b
+  );
+  expect(hasGrey).toBe(false);
+});
+
+// --- drawText (38) ----------------------------------------------------------
+
+// Counts "inked" pixels in a run: dark and substantially opaque. drawText is
+// antialiased and font-dependent, so we assert coverage (how much ink lands in
+// a band) rather than exact pixels.
+const inkedCount = (run: Rgba[]) =>
+  run.filter((p) => p.r < 128 && p.g < 128 && p.b < 128 && p.a > 128).length;
+
+test("drawText renders glyphs above the baseline and nothing below it", async ({
+  page,
+}) => {
+  await page.goto("/generator/test-api-drawing-primitives");
+
+  const text = pageImage(page).nth(7);
+
+  // "TEST" at size 80 with baseline y = 120 spans cols ~50..250. Glyphs extend
+  // upward from the baseline, so a band above it (row 95) is well inked.
+  const aboveBaseline = await readPixelRow(text, 50, 95, 200);
+  expect(inkedCount(aboveBaseline)).toBeGreaterThan(20);
+
+  // Below the baseline (row 145) nothing is drawn — the glyphs sit above it.
+  const belowBaseline = await readPixelRow(text, 50, 145, 200);
+  expect(inkedCount(belowBaseline)).toBe(0);
 });
