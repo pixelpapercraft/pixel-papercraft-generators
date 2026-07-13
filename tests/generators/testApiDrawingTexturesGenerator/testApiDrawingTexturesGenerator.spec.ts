@@ -17,6 +17,7 @@ import { readPixel, type Rgba } from "../_shared/pixelColor";
 //   9 TextureMultiplyColor — drawTexture (33) MultiplyColor blend
 //  10 TextureReplaceColor  — drawTexture (33) ReplaceColor blend
 //  11 TextureReplaceHex    — drawTexture (33) ReplaceHex blend
+//  12 TextureTransformMatrix — drawTexture (33) exhaustive rotate x flip matrix
 // See the generator-api test-coverage plan.
 
 const red: Rgba = { r: 255, g: 0, b: 0, a: 255 };
@@ -246,4 +247,113 @@ test("drawTexture ReplaceHex replaces exact hex-palette matches and preserves ot
   expect(q.tr).toEqual(replacementGreen);
   expect(q.bl).toEqual(blue);
   expect(q.br).toEqual(replacementYellow);
+});
+
+// --- rotate/flip combination matrix (page 12) -------------------------------
+// Exhaustive verification of every drawTexture rotate x flip combination. The
+// generator draws a 7x3 grid on page 12 (rows = rotate state, cols = flip); this
+// re-derives the same cell positions and asserts the expected quadrant colours.
+// The rotation/flip order and the layout constants must stay in lock-step with
+// testApiDrawingTexturesGenerator.ts. See the rotate/flip combination matrix spec.
+
+type Quad = { tl: Rgba; tr: Rgba; bl: Rgba; br: Rgba };
+
+const matrixBase: Quad = { tl: red, tr: green, bl: blue, br: yellow };
+
+function applyFlip(
+  q: Quad,
+  flip: "Horizontal" | "Vertical" | undefined
+): Quad {
+  if (flip === "Horizontal") return { tl: q.tr, tr: q.tl, bl: q.br, br: q.bl };
+  if (flip === "Vertical") return { tl: q.bl, tr: q.br, bl: q.tl, br: q.tr };
+  return q;
+}
+
+// Clockwise, matching the canvas rotate direction (verified against the
+// standalone rotate 90/180 tests above).
+function applyRotate(q: Quad, degrees: number): Quad {
+  switch (degrees) {
+    case 90:
+      return { tl: q.bl, tr: q.tl, br: q.tr, bl: q.br };
+    case 180:
+      return { tl: q.br, tr: q.bl, bl: q.tr, br: q.tl };
+    case 270:
+      return { tl: q.tr, tr: q.br, br: q.bl, bl: q.tl };
+    default:
+      return q;
+  }
+}
+
+// The renderer composes flip first, then rotate, so expected = rotate(flip(base)).
+function expectedQuadrants(
+  degrees: number,
+  flip: "Horizontal" | "Vertical" | undefined
+): Quad {
+  return applyRotate(applyFlip(matrixBase, flip), degrees);
+}
+
+// Rotation rows, in the exact order the generator draws them. Corner and Center
+// of the same angle share expected colours (they differ only in placement, which
+// the generator's dest-origin offset compensates), so both use `degrees`.
+const matrixRotationRows: { label: string; degrees: number }[] = [
+  { label: "None", degrees: 0 },
+  { label: "Center 90", degrees: 90 },
+  { label: "Center 180", degrees: 180 },
+  { label: "Center 270", degrees: 270 },
+  { label: "Corner 90", degrees: 90 },
+  { label: "Corner 180", degrees: 180 },
+  { label: "Corner 270", degrees: 270 },
+];
+
+const matrixFlipCols: {
+  label: string;
+  flip: "Horizontal" | "Vertical" | undefined;
+}[] = [
+  { label: "None", flip: undefined },
+  { label: "Horizontal", flip: "Horizontal" },
+  { label: "Vertical", flip: "Vertical" },
+];
+
+// Layout constants — must match the generator.
+const MATRIX_S = 40;
+const MATRIX_GAP = 20;
+const MATRIX_ORIGIN_X = 40;
+const MATRIX_ORIGIN_Y = 40;
+const MATRIX_PAGE = 12;
+
+async function readCellQuadrants(
+  image: ReturnType<typeof pageImage>,
+  cx: number,
+  cy: number
+): Promise<Quad> {
+  const q = MATRIX_S / 4;
+  return {
+    tl: await readPixel(image, cx + q, cy + q),
+    tr: await readPixel(image, cx + 3 * q, cy + q),
+    bl: await readPixel(image, cx + q, cy + 3 * q),
+    br: await readPixel(image, cx + 3 * q, cy + 3 * q),
+  };
+}
+
+matrixRotationRows.forEach((rotation, row) => {
+  matrixFlipCols.forEach((flipCol, col) => {
+    test(`drawTexture matrix: rotate ${rotation.label} + flip ${flipCol.label} lands the expected quadrants`, async ({
+      page,
+    }) => {
+      await page.goto("/generator/test-api-drawing-textures");
+
+      const cx = MATRIX_ORIGIN_X + col * (MATRIX_S + MATRIX_GAP);
+      const cy = MATRIX_ORIGIN_Y + row * (MATRIX_S + MATRIX_GAP);
+
+      const actual = await readCellQuadrants(
+        pageImage(page).nth(MATRIX_PAGE),
+        cx,
+        cy
+      );
+
+      expect(actual).toEqual(
+        expectedQuadrants(rotation.degrees, flipCol.flip)
+      );
+    });
+  });
 });
