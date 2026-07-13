@@ -1,4 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
+import fs from "node:fs";
+import path from "node:path";
 import { readPixel, type Rgba } from "../_shared/pixelColor";
 
 const green: Rgba = { r: 0, g: 170, b: 0, a: 255 };
@@ -7,6 +9,8 @@ const blue: Rgba = { r: 0, g: 0, b: 255, a: 255 };
 const purple: Rgba = { r: 128, g: 0, b: 128, a: 255 };
 const magenta: Rgba = { r: 255, g: 0, b: 255, a: 255 };
 const grey: Rgba = { r: 221, g: 221, b: 221, a: 255 };
+const red: Rgba = { r: 255, g: 0, b: 0, a: 255 };
+const fixtureGreen: Rgba = { r: 0, g: 255, b: 0, a: 255 };
 const transparent: Rgba = { r: 0, g: 0, b: 0, a: 0 };
 
 const pageImage = (page: Page) => page.getByTestId("generator-page-image");
@@ -114,7 +118,7 @@ test("defineRegionInput scales its overlay proportionally to the rendered page",
 }) => {
   await page.goto("/generator/test-api-controls");
 
-  const regionPage = pageImage(page).nth(1);
+  const regionPage = pageImage(page).nth(2);
   const imageBox = await regionPage.boundingBox();
   if (!imageBox) {
     throw new Error("Region page image was not measurable");
@@ -141,7 +145,7 @@ test("defineRegionInput keeps its position stable and runs its click callback", 
 }) => {
   await page.goto("/generator/test-api-controls");
 
-  const regionPage = pageImage(page).nth(1);
+  const regionPage = pageImage(page).nth(2);
   const region = page.getByTestId("region-ControlRegion");
   await expect(region).toBeVisible();
 
@@ -169,4 +173,60 @@ test("defineRegionInput keeps its position stable and runs its click callback", 
   expect(offsetAfter).toEqual(offsetBefore);
   expect(await readPixel(regionPage, 35, 35)).toEqual(grey);
   expect(await readPixel(regionPage, 55, 35)).toEqual(magenta);
+});
+
+const quadrantsFixture = () =>
+  fs.readFileSync(
+    path.join(
+      process.cwd(),
+      "src/generators/testApiDrawingTextures/fixtures/quadrants.png"
+    )
+  );
+
+test("defineTextureInput accepts an accessible local upload and exposes it to the script", async ({
+  page,
+}) => {
+  await page.goto("/generator/test-api-controls");
+
+  const upload = page.getByLabel("Upload Uploaded Texture texture file");
+  await expect(upload).toHaveAttribute(
+    "accept",
+    "image/png,image/jpeg,.png,.jpg,.jpeg"
+  );
+  await upload.setInputFiles({
+    name: "quadrants.png",
+    mimeType: "image/png",
+    buffer: quadrantsFixture(),
+  });
+
+  const uploadsPage = pageImage(page).nth(1);
+  expect(await readPixel(uploadsPage, 25, 25)).toEqual(red);
+  expect(await readPixel(uploadsPage, 55, 25)).toEqual(fixtureGreen);
+});
+
+test("defineAtlasInput accepts multiple uploads and exposes its packed texture to the script", async ({
+  page,
+}) => {
+  await page.goto("/generator/test-api-controls");
+
+  const upload = page.getByLabel(
+    "Select one or more Uploaded Atlas texture files"
+  );
+  await expect(upload).toHaveAttribute("multiple", "");
+  await upload.setInputFiles([
+    {
+      name: "quadrants-a.png",
+      mimeType: "image/png",
+      buffer: quadrantsFixture(),
+    },
+    {
+      name: "quadrants-b.png",
+      mimeType: "image/png",
+      buffer: quadrantsFixture(),
+    },
+  ]);
+
+  const uploadsPage = pageImage(page).nth(1);
+  expect(await readPixel(uploadsPage, 85, 25)).toEqual(red);
+  expect(await readPixel(uploadsPage, 115, 25)).toEqual(fixtureGreen);
 });

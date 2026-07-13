@@ -11,6 +11,7 @@ import type {
   TextureDef,
 } from "@genroot/builder/modules/generatorDef";
 import { type Generator } from "@genroot/builder/modules/generator";
+import quadrants from "@genroot/generators/testApiDrawingTextures/fixtures/quadrants.png";
 
 const id = "test-api-controls";
 
@@ -26,7 +27,7 @@ controls, including the defaults returned by the three \`defineAndGet*\` methods
 Later slices add region, texture/atlas, and Minecraft-skin controls.
 `;
 
-const images: ImageDef[] = [];
+const images: ImageDef[] = [{ id: "QuadrantsFixture", url: quadrants.src }];
 
 const textures: TextureDef[] = [];
 
@@ -86,6 +87,29 @@ const script: ScriptDef = (generator: Generator) => {
       />
     </label>
   ));
+
+  generator.defineTextureInput("Uploaded Texture", {
+    standardWidth: 4,
+    standardHeight: 4,
+    choices: [],
+    label: "Uploaded Texture",
+  });
+  generator.defineAtlasInput("Uploaded Atlas", {
+    standardWidth: 4,
+    standardHeight: 4,
+    choices: [],
+    label: "Uploaded Atlas",
+  });
+
+  // The same four-quadrant bitmap used by Drawing makes both upload paths
+  // observable without a separate test-only asset.
+  generator.usePage("Uploads");
+  if (generator.hasTexture("Uploaded Texture")) {
+    generator.drawTexture("Uploaded Texture", [0, 0, 4, 4], [20, 20, 40, 40]);
+  }
+  if (generator.hasTexture("Uploaded Atlas")) {
+    generator.drawTexture("Uploaded Atlas", [0, 0, 4, 4], [80, 20, 40, 40]);
+  }
 
   // Region controls belong to their current page. The callback advances a
   // marker, making its registration and click path observable alongside the
