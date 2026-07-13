@@ -33,6 +33,7 @@ import { generator as minecraftWitherGenerator } from "@genroot/generators/minec
 import { generator as minecraftWolfCharacterGenerator } from "@genroot/generators/minecraftWolfCharacter/minecraftWolfCharacterGenerator";
 import { generator as minecraftArmorGenerator } from "@genroot/generators/minecraftArmor/minecraftArmorGenerator";
 import { generator as testingGenerator } from "@genroot/generators/testing/testingGenerator";
+import { generator as testApiPageManagementGenerator } from "@genroot/generators/testApiPageManagement/testApiPageManagementGenerator";
 
 const isProductionEnvironment: boolean = process.env.NODE_ENV === "production";
 const isDevelopmentEnvironment: boolean = process.env.NODE_ENV === "development";
@@ -90,9 +91,14 @@ export const dev: GeneratorDef[] = isDevelopmentEnvironment
   ? [minecraftWitherGenerator]
   : [];
 
+// Generator API coverage boards (one per API method group) live alongside the
+// existing Testing entries. Named "Test API: <Group>" with id "test-api-*" to
+// keep them grouped and distinct from the ad-hoc `testing` board.
+export const testApiCoverage: GeneratorDef[] = [testApiPageManagementGenerator];
+
 export const test: GeneratorDef[] = isProductionEnvironment
   ? []
-  : [exampleGenerator, testingGenerator];
+  : [exampleGenerator, testingGenerator, ...testApiCoverage];
 
 function concatArrays<GeneratorDef>(arrays: Array<Array<GeneratorDef>>) {
   return arrays.reduce((acc, val) => acc.concat(val), []);
