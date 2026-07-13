@@ -284,7 +284,10 @@ test("defineMinecraftSkinInput converts a deterministic local 64x64 skin upload"
   await page.goto("/generator/test-api-controls");
 
   await skinPicker(page).selectOption("");
-  expect(await readPixel(skinPage(page), 24, 24)).toEqual(transparent);
+  // Clearing the picker re-renders asynchronously, so poll until the skin is gone.
+  await expect
+    .poll(async () => readPixel(skinPage(page), 24, 24))
+    .toEqual(transparent);
 
   await page
     .getByLabel("Upload Minecraft skin skin file")
@@ -310,7 +313,10 @@ test("defineMinecraftSkinInput fetches and converts a routed username skin", asy
   await page.goto("/generator/test-api-controls");
 
   await skinPicker(page).selectOption("");
-  expect(await readPixel(skinPage(page), 24, 24)).toEqual(transparent);
+  // Clearing the picker re-renders asynchronously, so poll until the skin is gone.
+  await expect
+    .poll(async () => readPixel(skinPage(page), 24, 24))
+    .toEqual(transparent);
 
   await page.getByPlaceholder("Enter username").fill("FixtureUser");
   await page.getByRole("button", { name: "Fetch skin" }).click();
