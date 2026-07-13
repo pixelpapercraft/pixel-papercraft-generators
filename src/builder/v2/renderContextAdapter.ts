@@ -115,12 +115,21 @@ export class RenderContextAdapter implements RenderContext {
   }
 
   defineRegion(region: Region, regionId: string): void {
+    const onRegionClick = this.onRegionClick;
+
+    // Only register an interactive region when there's a handler to call —
+    // otherwise `RegionControls` would render a hover-highlightable overlay
+    // that does nothing on click.
+    if (!onRegionClick) {
+      return;
+    }
+
     const currentPageId = this.gen.getCurrentPage().id;
 
     this.model.addRegionControl(
       currentPageId,
       region,
-      () => this.onRegionClick?.({ regionId }),
+      () => onRegionClick({ regionId }),
       regionId
     );
   }
