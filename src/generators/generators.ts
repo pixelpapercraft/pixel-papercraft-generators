@@ -186,6 +186,6 @@ export const generatorGroups: GeneratorGroup[] = [
     label: "Testing",
     generators: isProductionEnvironment
       ? []
-      : [exampleGenerator, exampleV2Registration, testingGenerator],
+      : [exampleGenerator, exampleV2Registration, ...testApiCoverage],
   },
 ];
