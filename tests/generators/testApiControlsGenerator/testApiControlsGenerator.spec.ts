@@ -97,6 +97,18 @@ test("defineText and defineCustomStringInput render their authored content", asy
   await expect(page.getByLabel("Custom note")).toHaveAttribute("type", "text");
 });
 
+test("defineCustomStringInput forwards its authored onChange callback into a redraw", async ({
+  page,
+}) => {
+  await page.goto("/generator/test-api-controls");
+
+  expect(await readPixel(controlsPage(page), 165, 75)).toEqual(transparent);
+
+  await page.getByLabel("Custom note").fill("redraw");
+
+  expect(await readPixel(controlsPage(page), 165, 75)).toEqual(purple);
+});
+
 test("defineButtonInput applies its requested colour and runs its callback", async ({
   page,
 }) => {
@@ -109,8 +121,12 @@ test("defineButtonInput applies its requested colour and runs its callback", asy
 
   await button.click();
 
-  expect(await readPixel(controlsPage(page), 25, 75)).toEqual(transparent);
-  expect(await readPixel(controlsPage(page), 45, 75)).toEqual(purple);
+  await expect
+    .poll(async () => readPixel(controlsPage(page), 25, 75))
+    .toEqual(transparent);
+  await expect
+    .poll(async () => readPixel(controlsPage(page), 45, 75))
+    .toEqual(purple);
 });
 
 test("defineRegionInput scales its overlay proportionally to the rendered page", async ({
@@ -118,7 +134,7 @@ test("defineRegionInput scales its overlay proportionally to the rendered page",
 }) => {
   await page.goto("/generator/test-api-controls");
 
-  const regionPage = pageImage(page).nth(2);
+  const regionPage = pageImage(page).nth(3);
   const imageBox = await regionPage.boundingBox();
   if (!imageBox) {
     throw new Error("Region page image was not measurable");
@@ -145,7 +161,7 @@ test("defineRegionInput keeps its position stable and runs its click callback", 
 }) => {
   await page.goto("/generator/test-api-controls");
 
-  const regionPage = pageImage(page).nth(2);
+  const regionPage = pageImage(page).nth(3);
   const region = page.getByTestId("region-ControlRegion");
   await expect(region).toBeVisible();
 
@@ -171,8 +187,12 @@ test("defineRegionInput keeps its position stable and runs its click callback", 
 
   const offsetAfter = await measureOffset();
   expect(offsetAfter).toEqual(offsetBefore);
-  expect(await readPixel(regionPage, 35, 35)).toEqual(grey);
-  expect(await readPixel(regionPage, 55, 35)).toEqual(magenta);
+  await expect
+    .poll(async () => readPixel(regionPage, 35, 35))
+    .toEqual(grey);
+  await expect
+    .poll(async () => readPixel(regionPage, 55, 35))
+    .toEqual(magenta);
 });
 
 const quadrantsFixture = () =>
@@ -229,4 +249,74 @@ test("defineAtlasInput accepts multiple uploads and exposes its packed texture t
   const uploadsPage = pageImage(page).nth(1);
   expect(await readPixel(uploadsPage, 85, 25)).toEqual(red);
   expect(await readPixel(uploadsPage, 115, 25)).toEqual(fixtureGreen);
+});
+
+const skinFixturePath = "src/generators/testing/images/testSheet.png";
+
+const skinPage = (page: Page) => pageImage(page).nth(2);
+
+const skinPicker = (page: Page) =>
+  page.locator("select").filter({ has: page.locator('option[value="Fixture"]') });
+
+test("defineMinecraftSkinInput exposes its picker, preset, and model-type selection", async ({
+  page,
+}) => {
+  await page.goto("/generator/test-api-controls");
+
+  const picker = skinPicker(page);
+  await expect(picker).toHaveValue("Fixture");
+  await expect(picker.locator("option")).toHaveText(["None", "Fixture skin"]);
+
+  const modelType = page.locator("select").filter({
+    has: page.locator('option[value="Slim"]'),
+  });
+  await expect(modelType).toHaveValue("Wide");
+  await modelType.selectOption("Slim");
+  await expect(modelType).toHaveValue("Slim");
+  await expect
+    .poll(async () => readPixel(skinPage(page), 24, 24))
+    .not.toEqual(transparent);
+});
+
+test("defineMinecraftSkinInput converts a deterministic local 64x64 skin upload", async ({
+  page,
+}) => {
+  await page.goto("/generator/test-api-controls");
+
+  await skinPicker(page).selectOption("");
+  expect(await readPixel(skinPage(page), 24, 24)).toEqual(transparent);
+
+  await page
+    .getByLabel("Upload Minecraft skin skin file")
+    .setInputFiles(skinFixturePath);
+
+  await expect
+    .poll(async () => readPixel(skinPage(page), 24, 24))
+    .not.toEqual(transparent);
+});
+
+test("defineMinecraftSkinInput fetches and converts a routed username skin", async ({
+  page,
+}) => {
+  const skinData = fs.readFileSync(skinFixturePath).toString("base64");
+  let usernameRequestWasMade = false;
+  await page.route("https://api.ashcon.app/mojang/v2/user/FixtureUser", (route) => {
+    usernameRequestWasMade = true;
+    return route.fulfill({
+      contentType: "application/json",
+      body: JSON.stringify({ textures: { skin: { data: skinData } } }),
+    });
+  });
+  await page.goto("/generator/test-api-controls");
+
+  await skinPicker(page).selectOption("");
+  expect(await readPixel(skinPage(page), 24, 24)).toEqual(transparent);
+
+  await page.getByPlaceholder("Enter username").fill("FixtureUser");
+  await page.getByRole("button", { name: "Fetch skin" }).click();
+
+  expect(usernameRequestWasMade).toBe(true);
+  await expect
+    .poll(async () => readPixel(skinPage(page), 24, 24))
+    .not.toEqual(transparent);
 });

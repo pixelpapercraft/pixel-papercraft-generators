@@ -12,6 +12,7 @@ import type {
 } from "@genroot/builder/modules/generatorDef";
 import { type Generator } from "@genroot/builder/modules/generator";
 import quadrants from "@genroot/generators/testApiDrawingTextures/fixtures/quadrants.png";
+import skinFixture from "@genroot/generators/testing/images/testSheet.png";
 
 const id = "test-api-controls";
 
@@ -27,7 +28,10 @@ controls, including the defaults returned by the three \`defineAndGet*\` methods
 Later slices add region, texture/atlas, and Minecraft-skin controls.
 `;
 
-const images: ImageDef[] = [{ id: "QuadrantsFixture", url: quadrants.src }];
+const images: ImageDef[] = [
+  { id: "QuadrantsFixture", url: quadrants.src },
+  { id: "SkinFixture", url: skinFixture.src },
+];
 
 const textures: TextureDef[] = [];
 
@@ -87,6 +91,11 @@ const script: ScriptDef = (generator: Generator) => {
       />
     </label>
   ));
+  // Updating a custom input reruns the script; this marker proves the authored
+  // onChange callback reaches the model rather than only updating the DOM.
+  if (generator.getStringInputValue("Custom note") === "redraw") {
+    generator.fillRectangle([160, 70, 10, 10], "#800080");
+  }
 
   generator.defineTextureInput("Uploaded Texture", {
     standardWidth: 4,
@@ -109,6 +118,30 @@ const script: ScriptDef = (generator: Generator) => {
   }
   if (generator.hasTexture("Uploaded Atlas")) {
     generator.drawTexture("Uploaded Atlas", [0, 0, 4, 4], [80, 20, 40, 40]);
+  }
+
+  // This checked-in 64x64 PNG provides a deterministic Minecraft-style skin
+  // for preset, local-file, and routed username-fetch paths.
+  generator.usePage("Skin");
+  generator.defineMinecraftSkinInput("Minecraft skin", {
+    standardWidth: 64,
+    standardHeight: 64,
+    options: [
+      {
+        kind: "preset",
+        id: "Fixture",
+        label: "Fixture skin",
+        urls: { wide: skinFixture.src, slim: skinFixture.src },
+      },
+    ],
+    showModelType: true,
+  });
+  if (generator.hasTexture("Minecraft skin")) {
+    generator.drawTexture(
+      "Minecraft skin",
+      [0, 0, 64, 64],
+      [20, 20, 64, 64]
+    );
   }
 
   // Region controls belong to their current page. The callback advances a
