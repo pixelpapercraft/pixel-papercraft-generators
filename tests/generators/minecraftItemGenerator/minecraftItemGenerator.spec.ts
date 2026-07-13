@@ -53,11 +53,25 @@ test("minecraft item generator keeps instructions collapsed in the left column",
 }) => {
   await page.goto("/generator/minecraft-item");
 
+  // The instructions live in the left column (the sidebar) as a collapsible
+  // <details> panel that should start collapsed. Asserted structurally rather
+  // than by screenshot: the panel is text-heavy, its exact rendered height
+  // differs across platforms, and that rendering is not what this test guards.
   const sidebar = page.getByTestId("generator-sidebar");
   await expect(sidebar).toBeVisible();
-  await expect(sidebar).toHaveScreenshot(
-    "minecraft-item-instructions-sidebar.png"
-  );
+
+  const instructions = sidebar.locator("details");
+  await expect(instructions).toBeVisible();
+  await expect(instructions.locator("summary")).toContainText("Instructions");
+
+  // Collapsed by default: the panel is closed and its body stays hidden.
+  await expect(instructions).toHaveJSProperty("open", false);
+  await expect(sidebar.getByText("Item Sizes")).toBeHidden();
+
+  // Expanding it reveals the body, confirming the collapse is real.
+  await instructions.locator("summary").click();
+  await expect(instructions).toHaveJSProperty("open", true);
+  await expect(sidebar.getByText("Item Sizes")).toBeVisible();
 });
 
 test("minecraft item generator renders custom atlas textures", async ({
@@ -67,7 +81,7 @@ test("minecraft item generator renders custom atlas textures", async ({
 
   const sheetPath = path.join(
     process.cwd(),
-    "src/generators/testing/images/testSheet.png"
+    "src/generators/_common/fixtures/testSheet.png"
   );
   const sheetBytes = fs.readFileSync(sheetPath);
 
@@ -382,7 +396,7 @@ test("minecraft item generator clears the custom selection when the version chan
 
   const sheetPath = path.join(
     process.cwd(),
-    "src/generators/testing/images/testSheet.png"
+    "src/generators/_common/fixtures/testSheet.png"
   );
   const sheetBytes = fs.readFileSync(sheetPath);
 
