@@ -1,7 +1,11 @@
 "use client";
 
 import React from "react";
-import { type ImageDef, type TextureDef } from "@genroot/builder/modules/generatorDef";
+import {
+  type ImageDef,
+  type InstructionsDef,
+  type TextureDef,
+} from "@genroot/builder/modules/generatorDef";
 import {
   type GeneratorV2,
   type RenderContext,
@@ -19,6 +23,12 @@ import foldsImage from "./images/Folds.png";
 const id = "example-v2";
 
 const name = "Example (v2)";
+
+// Same copy as the v1 example generator's `instructions` — this is a
+// UI-layout demo, not a content change.
+const instructions: InstructionsDef = `
+An example generator to demonstrate how to write a generator script.
+`;
 
 const images: ImageDef[] = [
   { id: "Background", url: backgroundImage.src },
@@ -129,6 +139,8 @@ export function ExampleGeneratorV2UI(): JSX.Element {
     <div className="lg:flex gap-8">
       <div className="flex-1 min-w-0" data-testid="generator-sidebar">
         <div className="w-full bg-gray-100 p-8 space-y-4">
+          <GeneratorUI.Instructions markdown={instructions} />
+
           <GeneratorUI.Text>
             These controls are V2 convenience components. They update local
             React state, which redraws the preview.

@@ -7,6 +7,7 @@ import {
   type ButtonSize,
   type ButtonState,
 } from "@genroot/builder/ui/button/button";
+import { Instructions } from "@genroot/builder/ui/instructions";
 
 export type BooleanInputProps = {
   label: string;
@@ -174,4 +175,8 @@ export const GeneratorUI = {
   RangeInput,
   Button: GeneratorButton,
   Text,
+  // Same collapsible markdown panel v1 renders from `GeneratorDef.instructions`.
+  // V2 has no `instructions` field on `GeneratorV2` — authors place it
+  // themselves, wherever it fits their custom UI layout.
+  Instructions,
 };
