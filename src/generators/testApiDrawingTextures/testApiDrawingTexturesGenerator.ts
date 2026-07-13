@@ -24,9 +24,9 @@ unknown-id no-op) and \`drawTextureLegacy\`.
 
 Everything is drawn from a single dedicated 4x4 fixture bitmap with four
 distinct 2x2 quadrant colours (red top-left, green top-right, blue
-bottom-left, yellow bottom-right), so rotate/flip are verifiable by which
-quadrant colour lands where. Blends are covered on their own slice. See the
-generator-api test-coverage plan.
+bottom-left, yellow bottom-right), so rotate/flip and every blend mode are
+verifiable by which exact colours land where. See the generator-api
+test-coverage plan.
 `;
 
 // The same 4x4 fixture is used both as a raw image (drawImage) and as a
@@ -92,6 +92,50 @@ const script: ScriptDef = (generator: Generator) => {
     { x: 0, y: 0, w: 4, h: 4 },
     { x: 50, y: 50, w: 64, h: 64 }
   );
+
+  // --- Page 8: drawTexture MultiplyHex ------------------------------------
+  // #808080 halves every non-zero channel (255 * 128 / 255 = 128).
+  generator.usePage("TextureMultiplyHex");
+  generator.drawTexture("Quadrants", src, dest, {
+    blend: { kind: "MultiplyHex", hex: "#808080" },
+  });
+
+  // --- Page 9: drawTexture MultiplyColor ----------------------------------
+  // An explicit Color has the same per-channel multiply semantics, including
+  // alpha. This deliberately differs from the hex fixture above.
+  generator.usePage("TextureMultiplyColor");
+  generator.drawTexture("Quadrants", src, dest, {
+    blend: { kind: "MultiplyColor", color: { r: 64, g: 128, b: 255, a: 255 } },
+  });
+
+  // --- Page 10: drawTexture ReplaceColor ----------------------------------
+  // Palette matching is exact rgba equality. Replace red and blue only; green
+  // and yellow prove non-palette colours are preserved.
+  generator.usePage("TextureReplaceColor");
+  generator.drawTexture("Quadrants", src, dest, {
+    blend: {
+      kind: "ReplaceColor",
+      color1: [
+        { r: 255, g: 0, b: 0, a: 255 },
+        { r: 0, g: 0, b: 255, a: 255 },
+      ],
+      color2: [
+        { r: 12, g: 34, b: 56, a: 255 },
+        { r: 78, g: 90, b: 123, a: 255 },
+      ],
+    },
+  });
+
+  // --- Page 11: drawTexture ReplaceHex ------------------------------------
+  // Hex palettes use the same exact matching/replacement rules as Colors.
+  generator.usePage("TextureReplaceHex");
+  generator.drawTexture("Quadrants", src, dest, {
+    blend: {
+      kind: "ReplaceHex",
+      hex1: ["#00ff00", "#ffff00"],
+      hex2: ["#abcdef", "#102030"],
+    },
+  });
 };
 
 export const generator: GeneratorDef = {

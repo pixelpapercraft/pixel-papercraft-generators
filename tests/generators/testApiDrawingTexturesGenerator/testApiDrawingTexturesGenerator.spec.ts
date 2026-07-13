@@ -13,6 +13,10 @@ import { readPixel, type Rgba } from "../_shared/pixelColor";
 //   5 TextureFlipH      — drawTexture (33) flip Horizontal
 //   6 TextureFlipV      — drawTexture (33) flip Vertical
 //   7 DrawTextureLegacy — drawTextureLegacy (34) equivalence
+//   8 TextureMultiplyHex   — drawTexture (33) MultiplyHex blend
+//   9 TextureMultiplyColor — drawTexture (33) MultiplyColor blend
+//  10 TextureReplaceColor  — drawTexture (33) ReplaceColor blend
+//  11 TextureReplaceHex    — drawTexture (33) ReplaceHex blend
 // See the generator-api test-coverage plan.
 
 const red: Rgba = { r: 255, g: 0, b: 0, a: 255 };
@@ -20,6 +24,18 @@ const green: Rgba = { r: 0, g: 255, b: 0, a: 255 };
 const blue: Rgba = { r: 0, g: 0, b: 255, a: 255 };
 const yellow: Rgba = { r: 255, g: 255, b: 0, a: 255 };
 const transparent: Rgba = { r: 0, g: 0, b: 0, a: 0 };
+const darkRed: Rgba = { r: 128, g: 0, b: 0, a: 255 };
+const darkGreen: Rgba = { r: 0, g: 128, b: 0, a: 255 };
+const darkBlue: Rgba = { r: 0, g: 0, b: 128, a: 255 };
+const darkYellow: Rgba = { r: 128, g: 128, b: 0, a: 255 };
+const mutedRed: Rgba = { r: 64, g: 0, b: 0, a: 255 };
+const mutedGreen: Rgba = { r: 0, g: 128, b: 0, a: 255 };
+const mutedBlue: Rgba = { r: 0, g: 0, b: 255, a: 255 };
+const mutedYellow: Rgba = { r: 64, g: 128, b: 0, a: 255 };
+const replacementRed: Rgba = { r: 12, g: 34, b: 56, a: 255 };
+const replacementBlue: Rgba = { r: 78, g: 90, b: 123, a: 255 };
+const replacementGreen: Rgba = { r: 171, g: 205, b: 239, a: 255 };
+const replacementYellow: Rgba = { r: 16, g: 32, b: 48, a: 255 };
 
 const pageImage = (page: Page) => page.getByTestId("generator-page-image");
 
@@ -176,4 +192,58 @@ test("drawTextureLegacy produces the same pixels as the tuple drawTexture", asyn
   expect(q.tr).toEqual(green);
   expect(q.bl).toEqual(blue);
   expect(q.br).toEqual(yellow);
+});
+
+// --- drawTexture blends (33) -----------------------------------------------
+
+test("drawTexture MultiplyHex multiplies every source colour by the hex colour", async ({
+  page,
+}) => {
+  await page.goto("/generator/test-api-drawing-textures");
+
+  const q = await readQuadrants(pageImage(page).nth(8));
+
+  expect(q.tl).toEqual(darkRed);
+  expect(q.tr).toEqual(darkGreen);
+  expect(q.bl).toEqual(darkBlue);
+  expect(q.br).toEqual(darkYellow);
+});
+
+test("drawTexture MultiplyColor multiplies every source colour by the Color", async ({
+  page,
+}) => {
+  await page.goto("/generator/test-api-drawing-textures");
+
+  const q = await readQuadrants(pageImage(page).nth(9));
+
+  expect(q.tl).toEqual(mutedRed);
+  expect(q.tr).toEqual(mutedGreen);
+  expect(q.bl).toEqual(mutedBlue);
+  expect(q.br).toEqual(mutedYellow);
+});
+
+test("drawTexture ReplaceColor replaces exact palette matches and preserves others", async ({
+  page,
+}) => {
+  await page.goto("/generator/test-api-drawing-textures");
+
+  const q = await readQuadrants(pageImage(page).nth(10));
+
+  expect(q.tl).toEqual(replacementRed);
+  expect(q.tr).toEqual(green);
+  expect(q.bl).toEqual(replacementBlue);
+  expect(q.br).toEqual(yellow);
+});
+
+test("drawTexture ReplaceHex replaces exact hex-palette matches and preserves others", async ({
+  page,
+}) => {
+  await page.goto("/generator/test-api-drawing-textures");
+
+  const q = await readQuadrants(pageImage(page).nth(11));
+
+  expect(q.tl).toEqual(red);
+  expect(q.tr).toEqual(replacementGreen);
+  expect(q.bl).toEqual(blue);
+  expect(q.br).toEqual(replacementYellow);
 });
