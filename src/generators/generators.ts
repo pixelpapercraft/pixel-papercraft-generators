@@ -1,5 +1,9 @@
-import { type GeneratorDef } from "@genroot/builder/modules/generatorDef";
+import { type GeneratorDef, type ThumbnailDef } from "@genroot/builder/modules/generatorDef";
 import { generator as exampleGenerator } from "@genroot/generators/example/exampleGenerator";
+import {
+  exampleGeneratorV2,
+  ExampleGeneratorV2UI,
+} from "@genroot/generators/exampleV2/exampleV2Generator";
 import { generator as amogusBendableGenerator } from "@genroot/generators/amogusBendable/amogusBendableGenerator";
 import { generator as dalekModDalekGenerator } from "@genroot/generators/dalekModDalek/dalekModDalekGenerator";
 import { generator as minecraftActionFigureGenerator } from "@genroot/generators/minecraftActionFigure/minecraftActionFigureGenerator";
@@ -36,6 +40,34 @@ import { generator as testingGenerator } from "@genroot/generators/testing/testi
 
 const isProductionEnvironment: boolean = process.env.NODE_ENV === "production";
 const isDevelopmentEnvironment: boolean = process.env.NODE_ENV === "development";
+
+// Display metadata + the UI component for a v2 generator, rather than the
+// full `GeneratorV2<Props>` (avoids a generics-variance snag here and
+// single-sources id/name from the generator definition itself).
+type GeneratorV2Registration = {
+  id: string;
+  name: string;
+  thumbnail: ThumbnailDef | null;
+  Component: () => JSX.Element;
+};
+
+const exampleV2Registration: GeneratorV2Registration = {
+  id: exampleGeneratorV2.id,
+  name: exampleGeneratorV2.name,
+  thumbnail: null,
+  Component: ExampleGeneratorV2UI,
+};
+
+// Dev-only, same visibility rule as the v1 `dev` array below.
+export const devV2: GeneratorV2Registration[] = isDevelopmentEnvironment
+  ? [exampleV2Registration]
+  : [];
+
+export function findGeneratorV2ById(
+  generatorId: string
+): GeneratorV2Registration | null {
+  return devV2.find((registration) => registration.id === generatorId) ?? null;
+}
 
 export const character: GeneratorDef[] = [
   minecraftCharacterGenerator,
@@ -113,9 +145,18 @@ export function findGeneratorById(generatorId: string): GeneratorDef | null {
   return generators.find((generator) => generator.id === generatorId) ?? null;
 }
 
+// Shared listing shape for anything the generator list can display and link
+// to — both `GeneratorDef` (v1) and `GeneratorV2Registration` (v2) satisfy
+// this structurally.
+export type GeneratorLink = {
+  id: string;
+  name: string;
+  thumbnail: ThumbnailDef | null;
+};
+
 export type GeneratorGroup = {
   label: string;
-  generators: GeneratorDef[];
+  generators: GeneratorLink[];
 };
 
 export const generatorGroups: GeneratorGroup[] = [
@@ -125,6 +166,6 @@ export const generatorGroups: GeneratorGroup[] = [
   { label: "Blocks, Items and Accessories", generators: utility },
   { label: "Mods", generators: mod },
   { label: "Other", generators: other },
-  { label: "Development", generators: dev },
+  { label: "Development", generators: [...dev, ...devV2] },
   { label: "Testing", generators: test },
 ];
