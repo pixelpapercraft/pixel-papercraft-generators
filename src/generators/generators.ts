@@ -35,6 +35,7 @@ import { generator as minecraftArmorGenerator } from "@genroot/generators/minecr
 import { generator as testingGenerator } from "@genroot/generators/testing/testingGenerator";
 import { generator as testApiPageManagementGenerator } from "@genroot/generators/testApiPageManagement/testApiPageManagementGenerator";
 import { generator as testApiDrawingPrimitivesGenerator } from "@genroot/generators/testApiDrawingPrimitives/testApiDrawingPrimitivesGenerator";
+import { generator as testApiDrawingTexturesGenerator } from "@genroot/generators/testApiDrawingTextures/testApiDrawingTexturesGenerator";
 
 const isProductionEnvironment: boolean = process.env.NODE_ENV === "production";
 const isDevelopmentEnvironment: boolean = process.env.NODE_ENV === "development";
@@ -98,6 +99,7 @@ export const dev: GeneratorDef[] = isDevelopmentEnvironment
 export const testApiCoverage: GeneratorDef[] = [
   testApiPageManagementGenerator,
   testApiDrawingPrimitivesGenerator,
+  testApiDrawingTexturesGenerator,
 ];
 
 export const test: GeneratorDef[] = isProductionEnvironment
