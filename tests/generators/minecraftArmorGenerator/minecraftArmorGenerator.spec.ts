@@ -132,6 +132,11 @@ test("minecraft armor generator matches the default screenshot", async ({ page }
 test("minecraft armor generator exposes its full control surface", async ({ page }) => {
   await page.goto("/generator/minecraft-armor");
 
+  // Gate on all five selects having mounted before snapshotting their option
+  // lists — optionListsOf is a no-wait read, and on a slow runner the controls
+  // render in stages.
+  await expect(page.getByRole("combobox")).toHaveCount(5);
+
   // Five comboboxes, in order, with their option lists and empty initial values.
   const optionLists = await optionListsOf(page);
   expect(optionLists).toEqual([
