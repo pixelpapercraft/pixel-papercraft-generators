@@ -32,7 +32,11 @@ import { generator as minecraftVillagerCharacterGenerator } from "@genroot/gener
 import { generator as minecraftWitherGenerator } from "@genroot/generators/minecraftWither/minecraftWitherGenerator";
 import { generator as minecraftWolfCharacterGenerator } from "@genroot/generators/minecraftWolfCharacter/minecraftWolfCharacterGenerator";
 import { generator as minecraftArmorGenerator } from "@genroot/generators/minecraftArmor/minecraftArmorGenerator";
-import { generator as testingGenerator } from "@genroot/generators/testing/testingGenerator";
+import { generator as testApiPageManagementGenerator } from "@genroot/generators/testApiPageManagement/testApiPageManagementGenerator";
+import { generator as testApiDrawingPrimitivesGenerator } from "@genroot/generators/testApiDrawingPrimitives/testApiDrawingPrimitivesGenerator";
+import { generator as testApiDrawingTexturesGenerator } from "@genroot/generators/testApiDrawingTextures/testApiDrawingTexturesGenerator";
+import { generator as testApiControlsGenerator } from "@genroot/generators/testApiControls/testApiControlsGenerator";
+import { generator as testApiPixelQueriesGenerator } from "@genroot/generators/testApiPixelQueries/testApiPixelQueriesGenerator";
 
 const isProductionEnvironment: boolean = process.env.NODE_ENV === "production";
 const isDevelopmentEnvironment: boolean = process.env.NODE_ENV === "development";
@@ -90,9 +94,20 @@ export const dev: GeneratorDef[] = isDevelopmentEnvironment
   ? [minecraftWitherGenerator]
   : [];
 
+// Generator API coverage boards (one per API method group) are the Testing
+// entries. They replace the former, broad visual-regression board with
+// purpose-scoped coverage named "Test API: <Group>" and id "test-api-*".
+export const testApiCoverage: GeneratorDef[] = [
+  testApiPageManagementGenerator,
+  testApiDrawingPrimitivesGenerator,
+  testApiDrawingTexturesGenerator,
+  testApiControlsGenerator,
+  testApiPixelQueriesGenerator,
+];
+
 export const test: GeneratorDef[] = isProductionEnvironment
   ? []
-  : [exampleGenerator, testingGenerator];
+  : [exampleGenerator, ...testApiCoverage];
 
 function concatArrays<GeneratorDef>(arrays: Array<Array<GeneratorDef>>) {
   return arrays.reduce((acc, val) => acc.concat(val), []);
