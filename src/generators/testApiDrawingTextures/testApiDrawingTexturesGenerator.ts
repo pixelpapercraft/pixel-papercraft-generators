@@ -27,6 +27,10 @@ distinct 2x2 quadrant colours (red top-left, green top-right, blue
 bottom-left, yellow bottom-right), so rotate/flip and every blend mode are
 verifiable by which exact colours land where. See the generator-api
 test-coverage plan.
+
+The final page is an exhaustive 7x3 rotate/flip combination matrix (every
+Center/Corner rotation x every flip); see the rotate/flip combination matrix
+spec.
 `;
 
 // The same 4x4 fixture is used both as a raw image (drawImage) and as a
@@ -135,6 +139,57 @@ const script: ScriptDef = (generator: Generator) => {
       hex1: ["#00ff00", "#ffff00"],
       hex2: ["#abcdef", "#102030"],
     },
+  });
+
+  // --- Page 12: rotate/flip combination matrix -----------------------------
+  // Exhaustive 7x3 grid of every drawTexture rotate x flip combination (see the
+  // rotate/flip combination matrix spec). Rows = rotate state (None, Center
+  // 90/180/270, Corner 90/180/270); cols = flip (None, Horizontal, Vertical).
+  // Square cells of side S. Corner rotations pivot about the dest origin, so
+  // their origin is shifted to the cell corner that brings the rotated square
+  // back into its cell. The spec re-derives these same cell positions and the
+  // expected quadrant colours (rotate-of-flip); keep the two in lock-step.
+  generator.usePage("TextureTransformMatrix");
+  const S = 40;
+  const GAP = 20;
+  const ORIGIN_X = 40;
+  const ORIGIN_Y = 40;
+  const matrixRotations: {
+    options: { rotate?: number; rotateLegacy?: number };
+    cornerDegrees: number;
+  }[] = [
+    { options: {}, cornerDegrees: 0 }, // None
+    { options: { rotate: 90 }, cornerDegrees: 0 }, // Center 90
+    { options: { rotate: 180 }, cornerDegrees: 0 }, // Center 180
+    { options: { rotate: 270 }, cornerDegrees: 0 }, // Center 270
+    { options: { rotateLegacy: 90 }, cornerDegrees: 90 }, // Corner 90
+    { options: { rotateLegacy: 180 }, cornerDegrees: 180 }, // Corner 180
+    { options: { rotateLegacy: 270 }, cornerDegrees: 270 }, // Corner 270
+  ];
+  const matrixFlips: ("Horizontal" | "Vertical" | undefined)[] = [
+    undefined,
+    "Horizontal",
+    "Vertical",
+  ];
+  matrixRotations.forEach((rotation, row) => {
+    matrixFlips.forEach((flip, col) => {
+      const cx = ORIGIN_X + col * (S + GAP);
+      const cy = ORIGIN_Y + row * (S + GAP);
+      let dx = cx;
+      let dy = cy;
+      if (rotation.cornerDegrees === 90) {
+        dx = cx + S;
+      } else if (rotation.cornerDegrees === 180) {
+        dx = cx + S;
+        dy = cy + S;
+      } else if (rotation.cornerDegrees === 270) {
+        dy = cy + S;
+      }
+      generator.drawTexture("Quadrants", [0, 0, 4, 4], [dx, dy, S, S], {
+        ...rotation.options,
+        ...(flip ? { flip } : {}),
+      });
+    });
   });
 };
 
