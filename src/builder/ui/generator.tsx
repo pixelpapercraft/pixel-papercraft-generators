@@ -10,22 +10,9 @@ import { loadResources } from "@genroot/builder/modules/resourceLoader";
 import { runScript } from "@genroot/builder/modules/scriptRunner";
 import { Controls } from "./controls/controls";
 import { Pages } from "./pages/pages";
-import { Video } from "./video";
-import { Thumbnail } from "./thumbnail";
+import { MediaHero } from "./mediaHero";
 import { Instructions } from "./instructions";
 import { History } from "./history";
-
-function VideoOrThumbnail({ generatorDef }: { generatorDef: GeneratorDef }) {
-  if (generatorDef.video) {
-    return <Video video={generatorDef.video} />;
-  }
-
-  if (generatorDef.thumbnail) {
-    return <Thumbnail thumbnail={generatorDef.thumbnail} />;
-  }
-
-  return null;
-}
 
 export function Generator({ generatorDef }: { generatorDef: GeneratorDef }) {
   const [model, setModel] = React.useState<Model | null>(null);
@@ -66,11 +53,10 @@ export function Generator({ generatorDef }: { generatorDef: GeneratorDef }) {
 
   return (
     <div>
-      {generatorDef.video || generatorDef.thumbnail ? (
-        <div className="mb-8">
-          <VideoOrThumbnail generatorDef={generatorDef} />
-        </div>
-      ) : null}
+      <MediaHero
+        video={generatorDef.video}
+        thumbnail={generatorDef.thumbnail}
+      />
 
       <div className="lg:flex gap-8">
         <div className="flex-1 min-w-0" data-testid="generator-sidebar">
@@ -92,7 +78,7 @@ export function Generator({ generatorDef }: { generatorDef: GeneratorDef }) {
         </div>
       </div>
 
-      <History generatorDef={generatorDef} />
+      <History history={generatorDef.history} />
     </div>
   );
 }

@@ -8,6 +8,8 @@ import {
   type ButtonState,
 } from "@genroot/builder/ui/button/button";
 import { Instructions } from "@genroot/builder/ui/instructions";
+import { History } from "@genroot/builder/ui/history";
+import { MediaHero } from "@genroot/builder/ui/mediaHero";
 
 export type BooleanInputProps = {
   label: string;
@@ -179,4 +181,9 @@ export const GeneratorUI = {
   // V2 has no `instructions` field on `GeneratorV2` — authors place it
   // themselves, wherever it fits their custom UI layout.
   Instructions,
+  // Preserve v1's video-first hero behavior, while authors choose where it
+  // belongs in their custom page layout.
+  MediaHero,
+  // Same Updates list v1 renders below the generator surface.
+  History,
 };

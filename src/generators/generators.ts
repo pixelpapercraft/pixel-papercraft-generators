@@ -1,4 +1,7 @@
-import { type GeneratorDef, type ThumbnailDef } from "@genroot/builder/modules/generatorDef";
+import {
+  type GeneratorDef,
+  type ThumbnailDef,
+} from "@genroot/builder/modules/generatorDef";
 import { generator as exampleGenerator } from "@genroot/generators/example/exampleGenerator";
 import {
   exampleGeneratorV2,
@@ -43,19 +46,20 @@ import { generator as testApiControlsGenerator } from "@genroot/generators/testA
 import { generator as testApiPixelQueriesGenerator } from "@genroot/generators/testApiPixelQueries/testApiPixelQueriesGenerator";
 
 const isProductionEnvironment: boolean = process.env.NODE_ENV === "production";
-const isDevelopmentEnvironment: boolean = process.env.NODE_ENV === "development";
+const isDevelopmentEnvironment: boolean =
+  process.env.NODE_ENV === "development";
 
 // Display metadata + the UI component for a v2 generator, rather than the
 // full `GeneratorV2<Props>` (avoids a generics-variance snag here and
 // single-sources id/name from the generator definition itself).
-type GeneratorV2Registration = {
+export type GeneratorDefV2 = {
   id: string;
   name: string;
   thumbnail: ThumbnailDef | null;
   Component: () => JSX.Element;
 };
 
-const exampleV2Registration: GeneratorV2Registration = {
+const exampleV2Registration: GeneratorDefV2 = {
   id: exampleGeneratorV2.id,
   name: exampleGeneratorV2.name,
   thumbnail: null,
@@ -63,13 +67,13 @@ const exampleV2Registration: GeneratorV2Registration = {
 };
 
 // Same visibility rule as the v1 `test` array below.
-export const testV2: GeneratorV2Registration[] = isProductionEnvironment
+export const testV2: GeneratorDefV2[] = isProductionEnvironment
   ? []
   : [exampleV2Registration];
 
 export function findGeneratorV2ById(
   generatorId: string
-): GeneratorV2Registration | null {
+): GeneratorDefV2 | null {
   return testV2.find((registration) => registration.id === generatorId) ?? null;
 }
 
@@ -161,7 +165,7 @@ export function findGeneratorById(generatorId: string): GeneratorDef | null {
 }
 
 // Shared listing shape for anything the generator list can display and link
-// to — both `GeneratorDef` (v1) and `GeneratorV2Registration` (v2) satisfy
+// to — both `GeneratorDef` (v1) and `GeneratorDefV2` (v2) satisfy
 // this structurally.
 export type GeneratorLink = {
   id: string;
