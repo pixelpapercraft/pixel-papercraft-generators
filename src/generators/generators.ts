@@ -166,6 +166,32 @@ export function findGeneratorById(generatorId: string): GeneratorDef | null {
   return generators.find((generator) => generator.id === generatorId) ?? null;
 }
 
+// A generator resolved by id, tagged with which model it belongs to so a
+// caller can pick the matching renderer (v1 `<Generator>` vs a v2 def's own
+// `Component`) with the compiler enforcing the pairing.
+export type FoundGenerator =
+  | { kind: "v1"; def: GeneratorDef }
+  | { kind: "v2"; def: GeneratorDefV2 };
+
+// Checks v2 first: during migration a generator may be reimplemented as v2
+// while its v1 entry still exists under the same id, and the v2 version
+// should win.
+export function findAnyGeneratorById(
+  generatorId: string
+): FoundGenerator | null {
+  const v2 = findGeneratorV2ById(generatorId);
+  if (v2) {
+    return { kind: "v2", def: v2 };
+  }
+
+  const v1 = findGeneratorById(generatorId);
+  if (v1) {
+    return { kind: "v1", def: v1 };
+  }
+
+  return null;
+}
+
 // Shared listing shape for anything the generator list can display and link
 // to — both `GeneratorDef` (v1) and `GeneratorDefV2` (v2) satisfy
 // this structurally.
