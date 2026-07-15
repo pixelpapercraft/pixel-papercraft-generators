@@ -4,6 +4,7 @@ import React from "react";
 import {
   type ImageDef,
   type InstructionsDef,
+  type ThumbnailDef,
   type TextureDef,
 } from "@genroot/builder/modules/generatorDef";
 import {
@@ -35,6 +36,8 @@ import thumbnailImage from "./thumbnail/v2-thumbnail-256.jpeg";
 const id = "minecraft-character-v2";
 
 const name = "Minecraft Character (v2)";
+
+const thumbnail: ThumbnailDef = { url: thumbnailImage.src };
 
 // Same copy as the v1 minecraft-character generator's `instructions`.
 const instructions: InstructionsDef = `
@@ -354,49 +357,53 @@ function Component(): JSX.Element {
   };
 
   return (
-    <div className="lg:flex gap-8">
-      <div className="flex-1 min-w-0" data-testid="generator-sidebar">
-        <div className="w-full bg-gray-100 p-8 space-y-4">
-          <GeneratorUI.Instructions markdown={instructions} />
+    <div>
+      <GeneratorUI.MediaHero video={null} thumbnail={thumbnail} />
 
-          <MinecraftSkinControl
-            id="Skin"
-            options={skinOptions}
-            standardWidth={64}
-            standardHeight={64}
-            showModelType={true}
-            value={skinValue}
-            textures={noTextures}
-            onValueChange={setSkinValue}
-            onChange={setSkinTexture}
-          />
+      <div className="lg:flex gap-8">
+        <div className="flex-1 min-w-0" data-testid="generator-sidebar">
+          <div className="w-full bg-gray-100 p-8 space-y-4">
+            <GeneratorUI.Instructions markdown={instructions} />
 
-          <GeneratorUI.BooleanInput
-            label="Show Folds"
-            checked={showFolds}
-            onCheckedChange={setShowFolds}
-          />
+            <MinecraftSkinControl
+              id="Skin"
+              options={skinOptions}
+              standardWidth={64}
+              standardHeight={64}
+              showModelType={true}
+              value={skinValue}
+              textures={noTextures}
+              onValueChange={setSkinValue}
+              onChange={setSkinTexture}
+            />
 
-          <GeneratorUI.BooleanInput
-            label="Show Labels"
-            checked={showLabels}
-            onCheckedChange={setShowLabels}
-          />
+            <GeneratorUI.BooleanInput
+              label="Show Folds"
+              checked={showFolds}
+              onCheckedChange={setShowFolds}
+            />
 
-          <GeneratorUI.Text>
-            Click in the papercraft template to turn on and off the overlay
-            for each part.
-          </GeneratorUI.Text>
+            <GeneratorUI.BooleanInput
+              label="Show Labels"
+              checked={showLabels}
+              onCheckedChange={setShowLabels}
+            />
+
+            <GeneratorUI.Text>
+              Click in the papercraft template to turn on and off the overlay
+              for each part.
+            </GeneratorUI.Text>
+          </div>
         </div>
-      </div>
 
-      <div className="flex-1 min-w-0">
-        <GeneratorRenderer
-          generator={minecraftCharacterGeneratorV2}
-          props={rendererProps}
-          dynamicTextures={dynamicTextures}
-          onRegionClick={onRegionClick}
-        />
+        <div className="flex-1 min-w-0">
+          <GeneratorRenderer
+            generator={minecraftCharacterGeneratorV2}
+            props={rendererProps}
+            dynamicTextures={dynamicTextures}
+            onRegionClick={onRegionClick}
+          />
+        </div>
       </div>
     </div>
   );
@@ -405,6 +412,6 @@ function Component(): JSX.Element {
 export const generator: GeneratorDefV2 = {
   id,
   name,
-  thumbnail: { url: thumbnailImage.src },
+  thumbnail,
   Component,
 };

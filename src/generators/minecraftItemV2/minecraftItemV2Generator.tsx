@@ -5,6 +5,7 @@ import { type TexturePlugin } from "@genroot/builder/modules/generator";
 import {
   type ImageDef,
   type InstructionsDef,
+  type ThumbnailDef,
   type TextureDef,
 } from "@genroot/builder/modules/generatorDef";
 import { A4 } from "@genroot/builder/modules/modelPage";
@@ -63,6 +64,8 @@ import thumbnailImage from "./thumbnail/v2-thumbnail-256.jpeg";
 const id = "minecraft-item-v2";
 
 const name = "Minecraft Item (v2)";
+
+const thumbnail: ThumbnailDef = { url: thumbnailImage.src };
 
 const instructions: InstructionsDef = `
 ## Item Sizes
@@ -657,133 +660,137 @@ function Component(): JSX.Element {
   };
 
   return (
-    <div className="lg:flex gap-8">
-      <div className="flex-1 min-w-0" data-testid="generator-sidebar">
-        <div className="w-full bg-gray-100 p-8 space-y-4">
-          <GeneratorUI.Instructions markdown={instructions} />
+    <div>
+      <GeneratorUI.MediaHero video={null} thumbnail={thumbnail} />
 
-          <GeneratorUI.SelectInput
-            label="Version"
-            options={versionIds.map((version) => ({
-              id: version,
-              label: version,
-            }))}
-            value={versionId}
-            onValueChange={onVersionChange}
-          />
+      <div className="lg:flex gap-8">
+        <div className="flex-1 min-w-0" data-testid="generator-sidebar">
+          <div className="w-full bg-gray-100 p-8 space-y-4">
+            <GeneratorUI.Instructions markdown={instructions} />
 
-          {versionId === "custom" ? (
-            <AtlasControl
-              id="custom"
-              label="Custom"
-              standardWidth={32}
-              standardHeight={32}
-              choices={[]}
-              textures={dynamicTextures}
-              onChange={onAtlasChange}
+            <GeneratorUI.SelectInput
+              label="Version"
+              options={versionIds.map((version) => ({
+                id: version,
+                label: version,
+              }))}
+              value={versionId}
+              onValueChange={onVersionChange}
             />
-          ) : null}
 
-          <GeneratorUI.SelectInput
-            label="Item Size"
-            options={sizeOptions}
-            value={selectedItemSize}
-            onValueChange={setSelectedItemSize}
-          />
+            {versionId === "custom" ? (
+              <AtlasControl
+                id="custom"
+                label="Custom"
+                standardWidth={32}
+                standardHeight={32}
+                choices={[]}
+                textures={dynamicTextures}
+                onChange={onAtlasChange}
+              />
+            ) : null}
 
-          {selectedItemSize === sizeCustom ? (
+            <GeneratorUI.SelectInput
+              label="Item Size"
+              options={sizeOptions}
+              value={selectedItemSize}
+              onValueChange={setSelectedItemSize}
+            />
+
+            {selectedItemSize === sizeCustom ? (
+              <RangeControl
+                id="Custom Scale (%)"
+                min={100}
+                max={1600}
+                value={customScalePercent}
+                step={100}
+                showValue={true}
+                onChange={setCustomScalePercent}
+              />
+            ) : null}
+
+            {textureVersion ? (
+              <TexturePicker
+                textureVersion={textureVersion}
+                blend={selectedTexture?.blend ?? null}
+                onSelect={(nextTexture) => {
+                  const textureWithBlend: SelectedTexture = {
+                    ...nextTexture,
+                    blend: selectedTexture?.blend ?? null,
+                  };
+                  setSelectedTexture(textureWithBlend);
+                }}
+                onBlendSelected={(blend) => {
+                  setSelectedTexture((currentTexture) =>
+                    currentTexture ? { ...currentTexture, blend } : null
+                  );
+                }}
+              />
+            ) : null}
+
+            <BooleanControl
+              id="Show Folds"
+              checked={showFolds}
+              onChange={setShowFolds}
+            />
+
+            <ButtonControl id="Add Item" onClick={addItem} color="Blue" />
+            <ButtonControl
+              id="Overlay Item"
+              onClick={overlayItem}
+              color="Green"
+            />
+            <ButtonControl id="Remove Item" onClick={removeItem} color="Red" />
+            <div />
+            <ButtonControl id="Clear" onClick={clearItems} color="Red" />
+
+            <TextureControl
+              id="Enchanted Glint"
+              standardWidth={128}
+              standardHeight={128}
+              choices={["1.20+", "Pre-1.20"]}
+              textures={glintChoiceTextures}
+              onChange={(texture) => {
+                setGlintTexture(texture);
+                setGlintEnabled(texture !== null);
+              }}
+            />
+
             <RangeControl
-              id="Custom Scale (%)"
-              min={100}
-              max={1600}
-              value={customScalePercent}
-              step={100}
-              showValue={true}
-              onChange={setCustomScalePercent}
+              id="Glint Opacity"
+              min={0}
+              max={255}
+              value={glintOpacity}
+              step={1}
+              onChange={setGlintOpacity}
             />
-          ) : null}
-
-          {textureVersion ? (
-            <TexturePicker
-              textureVersion={textureVersion}
-              blend={selectedTexture?.blend ?? null}
-              onSelect={(nextTexture) => {
-                const textureWithBlend: SelectedTexture = {
-                  ...nextTexture,
-                  blend: selectedTexture?.blend ?? null,
-                };
-                setSelectedTexture(textureWithBlend);
-              }}
-              onBlendSelected={(blend) => {
-                setSelectedTexture((currentTexture) =>
-                  currentTexture ? { ...currentTexture, blend } : null
-                );
-              }}
+            <RangeControl
+              id="Glint X Offset"
+              min={0}
+              max={128}
+              value={glintXOffset}
+              step={1}
+              onChange={setGlintXOffset}
             />
-          ) : null}
+            <RangeControl
+              id="Glint Y Offset"
+              min={0}
+              max={128}
+              value={glintYOffset}
+              step={1}
+              onChange={setGlintYOffset}
+            />
+          </div>
+        </div>
 
-          <BooleanControl
-            id="Show Folds"
-            checked={showFolds}
-            onChange={setShowFolds}
-          />
-
-          <ButtonControl id="Add Item" onClick={addItem} color="Blue" />
-          <ButtonControl
-            id="Overlay Item"
-            onClick={overlayItem}
-            color="Green"
-          />
-          <ButtonControl id="Remove Item" onClick={removeItem} color="Red" />
-          <div />
-          <ButtonControl id="Clear" onClick={clearItems} color="Red" />
-
-          <TextureControl
-            id="Enchanted Glint"
-            standardWidth={128}
-            standardHeight={128}
-            choices={["1.20+", "Pre-1.20"]}
-            textures={glintChoiceTextures}
-            onChange={(texture) => {
-              setGlintTexture(texture);
-              setGlintEnabled(texture !== null);
-            }}
-          />
-
-          <RangeControl
-            id="Glint Opacity"
-            min={0}
-            max={255}
-            value={glintOpacity}
-            step={1}
-            onChange={setGlintOpacity}
-          />
-          <RangeControl
-            id="Glint X Offset"
-            min={0}
-            max={128}
-            value={glintXOffset}
-            step={1}
-            onChange={setGlintXOffset}
-          />
-          <RangeControl
-            id="Glint Y Offset"
-            min={0}
-            max={128}
-            value={glintYOffset}
-            step={1}
-            onChange={setGlintYOffset}
+        <div className="flex-1 min-w-0">
+          <GeneratorRenderer
+            generator={minecraftItemGeneratorV2}
+            props={rendererProps}
+            dynamicTextures={dynamicTextures}
+            onRegionClick={onRegionClick}
           />
         </div>
-      </div>
-
-      <div className="flex-1 min-w-0">
-        <GeneratorRenderer
-          generator={minecraftItemGeneratorV2}
-          props={rendererProps}
-          dynamicTextures={dynamicTextures}
-          onRegionClick={onRegionClick}
-        />
       </div>
     </div>
   );
@@ -792,6 +799,6 @@ function Component(): JSX.Element {
 export const generator: GeneratorDefV2 = {
   id,
   name,
-  thumbnail: { url: thumbnailImage.src },
+  thumbnail,
   Component,
 };
