@@ -12,12 +12,15 @@ import {
   type RenderContext,
 } from "@genroot/builder/v2/generatorV2";
 import { GeneratorRenderer } from "@genroot/builder/v2/generatorRenderer";
+import { GeneratorUI } from "@genroot/builder/v2/generatorUI";
+import { MinecraftSkinControl } from "@genroot/builder/ui/controls/minecraftSkinControl";
+import { type Texture } from "@genroot/builder/modules/texture";
 import {
-  GeneratorUI,
-  type SelectOption,
-} from "@genroot/builder/v2/generatorUI";
+  getDefaultMinecraftSkinInputValue,
+  type MinecraftSkinInputValue,
+} from "@genroot/builder/modules/minecraftSkinInputValue";
+import { makeDefaultMinecraftSkinPresetOptions } from "../_common/skins/options";
 
-import skinImage from "./textures/Skin.png";
 import backgroundImage from "./images/Background.png";
 import foldsImage from "./images/Folds.png";
 
@@ -25,8 +28,7 @@ const id = "example-v2";
 
 const name = "Example (v2)";
 
-// Same copy as the v1 example generator's `instructions` — this is a
-// UI-layout demo, not a content change.
+// Same copy as the v1 example generator's `instructions`.
 const instructions: InstructionsDef = `
 An example generator to demonstrate how to write a generator script.
 `;
@@ -36,36 +38,29 @@ const images: ImageDef[] = [
   { id: "Folds", url: foldsImage.src },
 ];
 
-// The preset `Skin` texture, same asset the v1 example generator ships with.
-// This prototype draws it as-is (no Minecraft-skin picker) — see the plan's
-// "Prototype scope" section.
-const textures: TextureDef[] = [
-  {
-    id: "Skin",
-    url: skinImage.src,
-    standardWidth: 64,
-    standardHeight: 64,
-  },
-];
+// No static textures: the "Skin" texture is supplied at runtime by the skin
+// picker through `dynamicTextures` (the v2 counterpart to v1's
+// `defineMinecraftSkinInput`). Declaring "Skin" statically would make "None"
+// fall back to a default skin instead of drawing nothing — see the migration
+// plan's correctness note.
+const textures: TextureDef[] = [];
+
+// The same preset list v1's example feeds `defineMinecraftSkinInput`.
+const skinOptions = makeDefaultMinecraftSkinPresetOptions();
+
+// `MinecraftSkinControl` reads this only for `texture`-kind options; the
+// default preset options are all presets, so a shared empty map is safe and
+// keeps a stable identity across renders.
+const noTextures: Map<string, Texture> = new Map();
 
 type ExampleProps = {
   showFolds: boolean;
-  highlightHead: boolean;
-  highlightColor: string;
-  highlightWidth: number;
 };
 
-const highlightColorOptions: SelectOption[] = [
-  { id: "#ff00ff", label: "Pink" },
-  { id: "#06b6d4", label: "Cyan" },
-  { id: "#f59e0b", label: "Gold" },
-];
-
 // Ported verbatim from `exampleGenerator.ts`'s `script` render body: same
-// `drawHead` helper, same `drawImage("Background")`/folds calls. Only
-// difference is where `showFolds` comes from — an author-owned prop instead
-// of `generator.getBooleanInputValue("Show Folds")` — plus the region-click
-// demo below (`highlightHead`/`defineRegion`).
+// `drawHead` helper, same `drawImage("Background")`/folds calls. The only
+// difference is where `showFolds` comes from — an author-owned prop instead of
+// `generator.getBooleanInputValue("Show Folds")`.
 const render = (ctx: RenderContext, props: ExampleProps): void => {
   // Helper Function to draw heads
   const drawHead = (name: string, x: number, y: number) => {
@@ -97,20 +92,6 @@ const render = (ctx: RenderContext, props: ExampleProps): void => {
   if (props.showFolds) {
     ctx.drawImage("Folds", [0, 0]);
   }
-
-  // Region-click demo: the head's face is drawn at this same dest rectangle
-  // (see `drawHead`'s `[x, y, 64, 64]` face call above). Clicking it calls
-  // `onRegionClick` with `regionId: "head"`; the UI below toggles
-  // `highlightHead` in response, which this pure `render` reflects by
-  // drawing a bright outline — the click's effect made obvious.
-  ctx.defineRegion([185, 117, 64, 64], "head");
-
-  if (props.highlightHead) {
-    ctx.drawRectangle([185, 117, 64, 64], {
-      color: props.highlightColor,
-      width: props.highlightWidth,
-    });
-  }
 };
 
 const exampleGeneratorV2: GeneratorV2<ExampleProps> = {
@@ -121,20 +102,27 @@ const exampleGeneratorV2: GeneratorV2<ExampleProps> = {
   render,
 };
 
-// This control gallery demonstrates that authors can use V2's common controls
-// while keeping state and layout fully local to the generator UI.
+// Behaviourally identical to the v1 `example` generator: the same reused
+// `MinecraftSkinControl` skin picker (10 presets + None + upload, no model
+// type) and "Show Folds" toggle, driving the same head render. Here the author
+// owns the state and feeds the picker's outputs back — the loaded `Texture`
+// via `dynamicTextures`, the folds boolean via `props`.
 function Component(): JSX.Element {
+  const [skinValue, setSkinValue] = React.useState<MinecraftSkinInputValue>(
+    () => getDefaultMinecraftSkinInputValue(skinOptions)
+  );
+  const [skinTexture, setSkinTexture] = React.useState<Texture | null>(null);
   const [showFolds, setShowFolds] = React.useState(true);
-  const [highlightHead, setHighlightHead] = React.useState(false);
-  const [highlightColor, setHighlightColor] = React.useState("#ff00ff");
-  const [highlightWidth, setHighlightWidth] = React.useState(3);
 
-  const rendererProps: ExampleProps = {
-    showFolds,
-    highlightHead,
-    highlightColor,
-    highlightWidth,
-  };
+  const rendererProps: ExampleProps = { showFolds };
+
+  const dynamicTextures = React.useMemo(
+    () =>
+      skinTexture
+        ? new Map<string, Texture>([["Skin", skinTexture]])
+        : new Map<string, Texture>(),
+    [skinTexture]
+  );
 
   return (
     <div className="lg:flex gap-8">
@@ -142,42 +130,23 @@ function Component(): JSX.Element {
         <div className="w-full bg-gray-100 p-8 space-y-4">
           <GeneratorUI.Instructions markdown={instructions} />
 
-          <GeneratorUI.Text>
-            These controls are V2 convenience components. They update local
-            React state, which redraws the preview.
-          </GeneratorUI.Text>
+          <MinecraftSkinControl
+            id="Skin"
+            options={skinOptions}
+            standardWidth={64}
+            standardHeight={64}
+            showModelType={false}
+            value={skinValue}
+            textures={noTextures}
+            onValueChange={setSkinValue}
+            onChange={setSkinTexture}
+          />
 
           <GeneratorUI.BooleanInput
             label="Show Folds"
             checked={showFolds}
             onCheckedChange={setShowFolds}
           />
-
-          <GeneratorUI.SelectInput
-            label="Head Highlight Color"
-            options={highlightColorOptions}
-            value={highlightColor}
-            onValueChange={setHighlightColor}
-          />
-
-          <GeneratorUI.RangeInput
-            label="Head Highlight Width"
-            min={1}
-            max={8}
-            step={1}
-            value={highlightWidth}
-            valueLabel={`${highlightWidth}px`}
-            onValueChange={setHighlightWidth}
-          />
-
-          <GeneratorUI.Button
-            title="Toggle head highlight"
-            size="Small"
-            color="Blue"
-            onClick={() => setHighlightHead((value) => !value)}
-          >
-            Toggle Head Highlight
-          </GeneratorUI.Button>
         </div>
       </div>
 
@@ -185,11 +154,7 @@ function Component(): JSX.Element {
         <GeneratorRenderer
           generator={exampleGeneratorV2}
           props={rendererProps}
-          onRegionClick={({ regionId }) => {
-            if (regionId === "head") {
-              setHighlightHead((v) => !v);
-            }
-          }}
+          dynamicTextures={dynamicTextures}
         />
       </div>
     </div>
