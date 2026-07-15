@@ -16,6 +16,15 @@ describe("findAnyGeneratorById", () => {
     expect(found?.def.id).toBe("example-v2");
   });
 
+  it("exposes thumbnails for the migrated v2 generators", () => {
+    expect(
+      findAnyGeneratorById("minecraft-character-v2")?.def.thumbnail
+    ).toBeTruthy();
+    expect(
+      findAnyGeneratorById("minecraft-item-v2")?.def.thumbnail
+    ).toBeTruthy();
+  });
+
   it("returns null for an unknown id", () => {
     expect(findAnyGeneratorById("does-not-exist")).toBeNull();
   });

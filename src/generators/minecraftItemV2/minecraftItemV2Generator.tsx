@@ -58,6 +58,7 @@ import { TexturePicker } from "@genroot/generators/minecraftItem/ui/texturePicke
 import backgroundImage from "./images/Background.png";
 import titleImage from "./images/Title.png";
 import centerFoldTexture from "./textures/CenterFold.png";
+import thumbnailImage from "./thumbnail/v2-thumbnail-256.jpeg";
 
 const id = "minecraft-item-v2";
 
@@ -791,6 +792,6 @@ function Component(): JSX.Element {
 export const generator: GeneratorDefV2 = {
   id,
   name,
-  thumbnail: null,
+  thumbnail: { url: thumbnailImage.src },
   Component,
 };

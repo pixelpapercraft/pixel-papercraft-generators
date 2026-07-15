@@ -30,6 +30,7 @@ import steveFoldsImage from "./images/SteveFolds.png";
 import alexTabsImage from "./images/AlexTabs.png";
 import alexFoldsImage from "./images/AlexFolds.png";
 import labelsImage from "./images/Labels.png";
+import thumbnailImage from "./thumbnail/v2-thumbnail-256.jpeg";
 
 const id = "minecraft-character-v2";
 
@@ -404,6 +405,6 @@ function Component(): JSX.Element {
 export const generator: GeneratorDefV2 = {
   id,
   name,
-  thumbnail: null,
+  thumbnail: { url: thumbnailImage.src },
   Component,
 };
