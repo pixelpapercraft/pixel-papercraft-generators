@@ -44,74 +44,74 @@ import { generator as testApiControlsGenerator } from "@genroot/generators/testA
 import { generator as testApiPixelQueriesGenerator } from "@genroot/generators/testApiPixelQueries/testApiPixelQueriesGenerator";
 
 const isProductionEnvironment: boolean = process.env.NODE_ENV === "production";
-const isDevelopmentEnvironment: boolean =
-  process.env.NODE_ENV === "development";
 
-// Same visibility rule as the v1 `test` array below.
-export const testV2: GeneratorDefV2[] = isProductionEnvironment
-  ? []
-  : [exampleGeneratorDefV2];
+// A registered generator tagged with which model it belongs to, so a caller
+// can pick the matching renderer (v1 `<Generator>` vs a v2 def's own
+// `Component`) with the compiler enforcing the pairing. During the v1→v2
+// migration a group can hold a mix of both; once every generator is v2 and the
+// v1 versions are deleted, this collapses back to a plain `GeneratorDefV2[]`.
+export type AnyGenerator =
+  | { kind: "v1"; def: GeneratorDef }
+  | { kind: "v2"; def: GeneratorDefV2 };
 
-export function findGeneratorV2ById(
-  generatorId: string
-): GeneratorDefV2 | null {
-  return (
-    testV2.find((generatorDefV2) => generatorDefV2.id === generatorId) ?? null
-  );
-}
+const v1 = (def: GeneratorDef): AnyGenerator => ({ kind: "v1", def });
+const v2 = (def: GeneratorDefV2): AnyGenerator => ({ kind: "v2", def });
 
-export const character: GeneratorDef[] = [
-  minecraftCharacterGenerator,
-  minecraftActionFigureGenerator,
-  minecraftUltimateBendableGenerator,
-  minecraftCharacterMiniGenerator,
+export const character: AnyGenerator[] = [
+  v1(minecraftCharacterGenerator),
+  v1(minecraftActionFigureGenerator),
+  v1(minecraftUltimateBendableGenerator),
+  v1(minecraftCharacterMiniGenerator),
 ];
 
-export const mobCharacter: GeneratorDef[] = [
-  minecraftCreeperCharacterGenerator,
-  minecraftCatCharacterGenerator,
-  minecraftCowCharacterGenerator,
-  minecraftEndermanCharacterGenerator,
-  minecraftGolemCharacterGenerator,
-  minecraftPigCharacterGenerator,
-  minecraftSquidCharacterGenerator,
-  minecraftVillagerCharacterGenerator,
-  minecraftWolfCharacterGenerator,
-  minecraftAxolotlCharacterGenerator,
-  minecraftAllayCharacterGenerator,
-  minecraftBeeCharacterGenerator,
+export const mobCharacter: AnyGenerator[] = [
+  v1(minecraftCreeperCharacterGenerator),
+  v1(minecraftCatCharacterGenerator),
+  v1(minecraftCowCharacterGenerator),
+  v1(minecraftEndermanCharacterGenerator),
+  v1(minecraftGolemCharacterGenerator),
+  v1(minecraftPigCharacterGenerator),
+  v1(minecraftSquidCharacterGenerator),
+  v1(minecraftVillagerCharacterGenerator),
+  v1(minecraftWolfCharacterGenerator),
+  v1(minecraftAxolotlCharacterGenerator),
+  v1(minecraftAllayCharacterGenerator),
+  v1(minecraftBeeCharacterGenerator),
 ];
 
-export const mob: GeneratorDef[] = [
-  minecraftCreeperGenerator,
-  minecraftEndermanGenerator,
-  minecraftGolemGenerator,
-  minecraftHorseGenerator,
-  minecraftPigGenerator,
-  minecraftCatGenerator,
-  minecraftVillagerGenerator,
+export const mob: AnyGenerator[] = [
+  v1(minecraftCreeperGenerator),
+  v1(minecraftEndermanGenerator),
+  v1(minecraftGolemGenerator),
+  v1(minecraftHorseGenerator),
+  v1(minecraftPigGenerator),
+  v1(minecraftCatGenerator),
+  v1(minecraftVillagerGenerator),
 ];
 
 // Blocks, Items and Accessories
-export const utility: GeneratorDef[] = [
-  minecraftBlockGenerator,
-  minecraftItemGenerator,
-  minecraftArmorGenerator,
-  minecraftCapeAndElytraGenerator,
-  minecraftCharacterHeadsGenerator,
+export const utility: AnyGenerator[] = [
+  v1(minecraftBlockGenerator),
+  v1(minecraftItemGenerator),
+  v1(minecraftArmorGenerator),
+  v1(minecraftCapeAndElytraGenerator),
+  v1(minecraftCharacterHeadsGenerator),
 ];
 
-export const mod: GeneratorDef[] = [
-  minecraftMutantCharacterGenerator,
-  dalekModDalekGenerator,
+export const mod: AnyGenerator[] = [
+  v1(minecraftMutantCharacterGenerator),
+  v1(dalekModDalekGenerator),
 ];
 
-export const other: GeneratorDef[] = [amogusBendableGenerator];
+export const other: AnyGenerator[] = [v1(amogusBendableGenerator)];
 
-// Incomplete and in development
-export const dev: GeneratorDef[] = isDevelopmentEnvironment
-  ? [minecraftWitherGenerator]
-  : [];
+// Incomplete / in-development generators, plus every generator's in-progress
+// v2 version during the migration. Hidden in production, visible everywhere
+// else (local dev server, Playwright's dev server, and unit tests) so the v2
+// versions can be reached by URL and exercised by the reused v1 test suites.
+export const dev: AnyGenerator[] = isProductionEnvironment
+  ? []
+  : [v1(minecraftWitherGenerator), v2(exampleGeneratorDefV2)];
 
 // Generator API coverage boards (one per API method group) are the Testing
 // entries. They replace the former, broad visual-regression board with
@@ -124,15 +124,15 @@ export const testApiCoverage: GeneratorDef[] = [
   testApiPixelQueriesGenerator,
 ];
 
-export const test: GeneratorDef[] = isProductionEnvironment
+export const test: AnyGenerator[] = isProductionEnvironment
   ? []
-  : [exampleGenerator, ...testApiCoverage];
+  : [v1(exampleGenerator), ...testApiCoverage.map(v1)];
 
-function concatArrays<GeneratorDef>(arrays: Array<Array<GeneratorDef>>) {
+function concatArrays<T>(arrays: Array<Array<T>>) {
   return arrays.reduce((acc, val) => acc.concat(val), []);
 }
 
-export const generators = concatArrays([
+export const generators: AnyGenerator[] = concatArrays([
   character,
   mobCharacter,
   mob,
@@ -143,39 +143,18 @@ export const generators = concatArrays([
   test,
 ]);
 
-export function findGeneratorById(generatorId: string): GeneratorDef | null {
-  return generators.find((generator) => generator.id === generatorId) ?? null;
-}
-
-// A generator resolved by id, tagged with which model it belongs to so a
-// caller can pick the matching renderer (v1 `<Generator>` vs a v2 def's own
-// `Component`) with the compiler enforcing the pairing.
-export type FoundGenerator =
-  | { kind: "v1"; def: GeneratorDef }
-  | { kind: "v2"; def: GeneratorDefV2 };
-
-// Checks v2 first: during migration a generator may be reimplemented as v2
-// while its v1 entry still exists under the same id, and the v2 version
-// should win.
+// One finder over the flat list, tagging each result by model. Ids never
+// collide across v1/v2 (v2 versions carry a `-v2` suffix until the v1 versions
+// are deleted), so a plain first-match lookup is unambiguous.
 export function findAnyGeneratorById(
   generatorId: string
-): FoundGenerator | null {
-  const v2 = findGeneratorV2ById(generatorId);
-  if (v2) {
-    return { kind: "v2", def: v2 };
-  }
-
-  const v1 = findGeneratorById(generatorId);
-  if (v1) {
-    return { kind: "v1", def: v1 };
-  }
-
-  return null;
+): AnyGenerator | null {
+  return generators.find((entry) => entry.def.id === generatorId) ?? null;
 }
 
 // Shared listing shape for anything the generator list can display and link
-// to — both `GeneratorDef` (v1) and `GeneratorDefV2` (v2) satisfy
-// this structurally.
+// to — both `GeneratorDef` (v1) and `GeneratorDefV2` (v2) satisfy this
+// structurally.
 export type GeneratorLink = {
   id: string;
   name: string;
@@ -187,18 +166,16 @@ export type GeneratorGroup = {
   generators: GeneratorLink[];
 };
 
+const links = (entries: AnyGenerator[]): GeneratorLink[] =>
+  entries.map((entry) => entry.def);
+
 export const generatorGroups: GeneratorGroup[] = [
-  { label: "Characters", generators: character },
-  { label: "Mob Characters", generators: mobCharacter },
-  { label: "Mobs", generators: mob },
-  { label: "Blocks, Items and Accessories", generators: utility },
-  { label: "Mods", generators: mod },
-  { label: "Other", generators: other },
-  { label: "Development", generators: dev },
-  {
-    label: "Testing",
-    generators: isProductionEnvironment
-      ? []
-      : [exampleGenerator, exampleGeneratorDefV2, ...testApiCoverage],
-  },
+  { label: "Characters", generators: links(character) },
+  { label: "Mob Characters", generators: links(mobCharacter) },
+  { label: "Mobs", generators: links(mob) },
+  { label: "Blocks, Items and Accessories", generators: links(utility) },
+  { label: "Mods", generators: links(mod) },
+  { label: "Other", generators: links(other) },
+  { label: "Development", generators: links(dev) },
+  { label: "Testing", generators: links(test) },
 ];
