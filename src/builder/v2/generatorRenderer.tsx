@@ -5,6 +5,7 @@ import { Model } from "@genroot/builder/modules/model";
 import { Values } from "@genroot/builder/modules/modelValues";
 import { Generator } from "@genroot/builder/modules/generator";
 import { type GeneratorDef } from "@genroot/builder/modules/generatorDef";
+import { type Texture } from "@genroot/builder/modules/texture";
 import { Pages } from "@genroot/builder/ui/pages/pages";
 import { type GeneratorV2, type RegionClickHandler } from "./generatorV2";
 import { loadResourcesV2 } from "./loadResourcesV2";
@@ -15,10 +16,20 @@ import { RenderContextAdapter } from "./renderContextAdapter";
 export function GeneratorRenderer<Props>({
   generator,
   props,
+  dynamicTextures,
   onRegionClick,
 }: {
   generator: GeneratorV2<Props>;
   props: Props;
+  // Runtime textures the author produced from user interaction (a skin
+  // picker's upload/preset/fetch), keyed by the id the `render` function draws
+  // them with. The author-owned counterpart to the static `generator.textures`
+  // array: those are declared up front and loaded once on mount; these are
+  // added to the model after them each render (so an id here overrides a
+  // static one), mirroring how v1's `Controls` calls `model.addTexture` when a
+  // picker's `onChange` fires. A missing id draws nothing — same as v1's
+  // `removeTexture` on "None".
+  dynamicTextures?: Map<string, Texture>;
   onRegionClick?: RegionClickHandler;
 }): JSX.Element {
   const [resources, setResources] = React.useState<Awaited<
@@ -65,13 +76,19 @@ export function GeneratorRenderer<Props>({
       newModel.addTexture(id, texture);
     });
 
+    // Author-supplied runtime textures override any static texture sharing an
+    // id. Added after the static ones so a picker's current selection wins.
+    dynamicTextures?.forEach((texture, id) => {
+      newModel.addTexture(id, texture);
+    });
+
     const gen = new Generator(newModel);
     const ctx = new RenderContextAdapter(gen, newModel, onRegionClick);
 
     generator.render(ctx, props);
 
     return newModel;
-  }, [resources, props, generator, onRegionClick]);
+  }, [resources, props, generator, dynamicTextures, onRegionClick]);
 
   if (!model) {
     return <div>Loading...</div>;
