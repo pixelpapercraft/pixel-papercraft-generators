@@ -114,6 +114,14 @@ export class RenderContextAdapter implements RenderContext {
     return this.gen.hasTexture(id);
   }
 
+  getNumberVariable(id: string): number | null {
+    return this.gen.getNumberVariable(id);
+  }
+
+  setNumberVariable(id: string, value: number): void {
+    this.gen.setNumberVariable(id, value);
+  }
+
   defineRegion(region: Region, regionId: string): void {
     const onRegionClick = this.onRegionClick;
 

@@ -1,10 +1,11 @@
-import { type Generator } from "@genroot/builder/modules/generator";
 import {
   type Flip,
   type Blend,
   type TexturePlugin,
+  type DrawTextureOptions,
 } from "@genroot/builder/modules/renderers/drawTexture";
 import { type TabOrientation } from "@genroot/builder/modules/renderers/drawTab";
+import { type Region } from "@genroot/builder/modules/renderers/types";
 import {
   type Cuboid,
   type Rectangle,
@@ -14,6 +15,28 @@ import {
 } from "./cuboid";
 
 export type { Cuboid, Rectangle, Position, Dimensions } from "./cuboid";
+
+// The drawing surface `Minecraft` needs. Spelled out rather than
+// `Pick<Generator, ...>` (matching `RenderContext`'s own convention, see
+// generatorV2.ts) so both a v1 `Generator` and a v2 `RenderContext`/
+// `RenderContextAdapter` can drive it structurally, with no cast and no
+// per-consumer narrowing.
+export type MinecraftDrawSurface = {
+  drawTexture(
+    id: string,
+    source: Region,
+    dest: Region,
+    options?: DrawTextureOptions
+  ): void;
+  drawTab(
+    rectangle: Rectangle,
+    orientation: TabOrientation,
+    showFoldLine?: boolean,
+    tabAngle?: number
+  ): void;
+  getNumberVariable(id: string): number | null;
+  setNumberVariable(id: string, value: number): void;
+};
 
 export type RotationDegrees = 0 | 90 | 180 | 270;
 
@@ -503,7 +526,7 @@ export type DrawCuboidOptions = {
 };
 
 export class Minecraft {
-  constructor(private generator: Generator) {}
+  constructor(private generator: MinecraftDrawSurface) {}
 
   drawFaceTexture(textureId: string, source: Rectangle, dest: Face) {
     this.generator.drawTexture(textureId, source, dest.rectangle, {

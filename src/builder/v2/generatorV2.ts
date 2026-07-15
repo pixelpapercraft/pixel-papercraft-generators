@@ -62,6 +62,11 @@ export type RenderContext = {
   // `<GeneratorRenderer>`'s `onRegionClick` carrying this `regionId`. See the
   // "Region events" section of the v2 plan.
   defineRegion(region: Region, regionId: string): void;
+  // Matches `Generator`'s own number-variable storage. Needed so shared
+  // rendering helpers like `Minecraft` (tab-size state) can drive through
+  // either a v1 `Generator` or this v2 `RenderContext`.
+  getNumberVariable(id: string): number | null;
+  setNumberVariable(id: string, value: number): void;
 };
 
 export type GeneratorV2<Props> = {
