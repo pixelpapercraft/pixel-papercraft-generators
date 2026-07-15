@@ -2,11 +2,9 @@ import {
   type GeneratorDef,
   type ThumbnailDef,
 } from "@genroot/builder/modules/generatorDef";
+import { type GeneratorDefV2 } from "@genroot/builder/v2/generatorV2";
 import { generator as exampleGenerator } from "@genroot/generators/example/exampleGenerator";
-import {
-  exampleGeneratorV2,
-  ExampleGeneratorV2UI,
-} from "@genroot/generators/exampleV2/exampleV2Generator";
+import { generator as exampleGeneratorDefV2 } from "@genroot/generators/exampleV2/exampleV2Generator";
 import { generator as amogusBendableGenerator } from "@genroot/generators/amogusBendable/amogusBendableGenerator";
 import { generator as dalekModDalekGenerator } from "@genroot/generators/dalekModDalek/dalekModDalekGenerator";
 import { generator as minecraftActionFigureGenerator } from "@genroot/generators/minecraftActionFigure/minecraftActionFigureGenerator";
@@ -48,23 +46,6 @@ import { generator as testApiPixelQueriesGenerator } from "@genroot/generators/t
 const isProductionEnvironment: boolean = process.env.NODE_ENV === "production";
 const isDevelopmentEnvironment: boolean =
   process.env.NODE_ENV === "development";
-
-// Display metadata + the UI component for a v2 generator, rather than the
-// full `GeneratorV2<Props>` (avoids a generics-variance snag here and
-// single-sources id/name from the generator definition itself).
-export type GeneratorDefV2 = {
-  id: string;
-  name: string;
-  thumbnail: ThumbnailDef | null;
-  Component: () => JSX.Element;
-};
-
-const exampleGeneratorDefV2: GeneratorDefV2 = {
-  id: exampleGeneratorV2.id,
-  name: exampleGeneratorV2.name,
-  thumbnail: null,
-  Component: ExampleGeneratorV2UI,
-};
 
 // Same visibility rule as the v1 `test` array below.
 export const testV2: GeneratorDefV2[] = isProductionEnvironment

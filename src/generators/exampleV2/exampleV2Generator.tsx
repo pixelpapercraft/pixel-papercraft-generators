@@ -7,6 +7,7 @@ import {
   type TextureDef,
 } from "@genroot/builder/modules/generatorDef";
 import {
+  type GeneratorDefV2,
   type GeneratorV2,
   type RenderContext,
 } from "@genroot/builder/v2/generatorV2";
@@ -47,7 +48,7 @@ const textures: TextureDef[] = [
   },
 ];
 
-export type ExampleProps = {
+type ExampleProps = {
   showFolds: boolean;
   highlightHead: boolean;
   highlightColor: string;
@@ -112,7 +113,7 @@ const render = (ctx: RenderContext, props: ExampleProps): void => {
   }
 };
 
-export const exampleGeneratorV2: GeneratorV2<ExampleProps> = {
+const exampleGeneratorV2: GeneratorV2<ExampleProps> = {
   id,
   name,
   images,
@@ -122,7 +123,7 @@ export const exampleGeneratorV2: GeneratorV2<ExampleProps> = {
 
 // This control gallery demonstrates that authors can use V2's common controls
 // while keeping state and layout fully local to the generator UI.
-export function ExampleGeneratorV2UI(): JSX.Element {
+function Component(): JSX.Element {
   const [showFolds, setShowFolds] = React.useState(true);
   const [highlightHead, setHighlightHead] = React.useState(false);
   const [highlightColor, setHighlightColor] = React.useState("#ff00ff");
@@ -194,3 +195,10 @@ export function ExampleGeneratorV2UI(): JSX.Element {
     </div>
   );
 }
+
+export const generator: GeneratorDefV2 = {
+  id,
+  name,
+  thumbnail: null,
+  Component,
+};

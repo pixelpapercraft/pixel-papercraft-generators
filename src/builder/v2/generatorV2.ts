@@ -1,5 +1,9 @@
 import { type Color } from "@genroot/builder/modules/canvasWithContext";
-import { type ImageDef, type TextureDef } from "@genroot/builder/modules/generatorDef";
+import {
+  type ImageDef,
+  type TextureDef,
+  type ThumbnailDef,
+} from "@genroot/builder/modules/generatorDef";
 import {
   type Position,
   type Rectangle,
@@ -69,3 +73,16 @@ export type GeneratorV2<Props> = {
 };
 
 export type RegionClickHandler = (arg: { regionId: string }) => void;
+
+// A v2 generator's site/registry-facing surface: display metadata plus the
+// author-written UI component, deliberately not `GeneratorV2<Props>` itself
+// (`Props` is generic per-generator, so a homogeneous `GeneratorDefV2[]`
+// registry can't carry it — the concrete `Props` type stays local to each
+// generator file, which builds its own `GeneratorV2<Props>` internally and
+// closes over it when constructing `Component`).
+export type GeneratorDefV2 = {
+  id: string;
+  name: string;
+  thumbnail: ThumbnailDef | null;
+  Component: () => JSX.Element;
+};
