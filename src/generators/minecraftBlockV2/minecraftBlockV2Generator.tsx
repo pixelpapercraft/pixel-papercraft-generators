@@ -2,26 +2,19 @@
 
 import React from "react";
 import {
-  type ImageDef,
-  type ThumbnailDef,
-  type TextureDef,
-} from "@genroot/builder/modules/generatorDef";
-import { type Texture } from "@genroot/builder/modules/texture";
-import {
+  GeneratorRenderer,
+  GeneratorUI,
+  encodeSelectedTextures,
   type GeneratorDefV2,
   type GeneratorV2,
+  type ImageDef,
   type RegionClickHandler,
   type RenderContext,
-} from "@genroot/builder/v2/generatorV2";
-import { GeneratorRenderer } from "@genroot/builder/v2/generatorRenderer";
-import { GeneratorUI } from "@genroot/builder/v2/generatorUI";
-import { AtlasControl } from "@genroot/builder/ui/controls/atlasControl";
-import { BooleanControl } from "@genroot/builder/ui/controls/booleanControl";
-import { ButtonControl } from "@genroot/builder/ui/controls/buttonControl";
-import {
   type SelectedTexture,
-  encodeSelectedTextures,
-} from "@genroot/builder/ui/texturePicker/selectedTexture";
+  type Texture,
+  type TextureDef,
+  type ThumbnailDef,
+} from "@genroot/builder/v2";
 import {
   parseAtlas,
   updateCustomTextureAtlas,
@@ -311,7 +304,7 @@ function Component(): JSX.Element {
       <div className="lg:flex gap-8">
         <div className="flex-1 min-w-0" data-testid="generator-sidebar">
           <div className="w-full bg-gray-100 p-8 space-y-4">
-            <GeneratorUI.SelectInput
+            <GeneratorUI.SelectControl
               label="Version"
               options={options(versionIdsBlocksFirst)}
               value={versionId}
@@ -323,7 +316,7 @@ function Component(): JSX.Element {
               }}
             />
             {versionId === "custom" ? (
-              <AtlasControl
+              <GeneratorUI.AtlasControl
                 id="custom"
                 label="Custom"
                 standardWidth={32}
@@ -353,20 +346,20 @@ function Component(): JSX.Element {
                 }
               />
             ) : null}
-            <GeneratorUI.SelectInput
+            <GeneratorUI.SelectControl
               label="Number of Blocks"
               options={options(["1", "2"])}
               value={String(numberOfBlocks)}
               onValueChange={(value) => setNumberOfBlocks(Number(value))}
             />
-            <BooleanControl
-              id="Show Folds"
+            <GeneratorUI.BooleanControl
+              label="Show Folds"
               checked={showFolds}
-              onChange={setShowFolds}
+              onCheckedChange={setShowFolds}
             />
             {Array.from({ length: numberOfBlocks }, (_, index) => (
               <React.Fragment key={index}>
-                <GeneratorUI.SelectInput
+                <GeneratorUI.SelectControl
                   label={`Block ${index + 1} Type`}
                   options={options(blockTypes)}
                   value={selectedBlockTypes[index] ?? "Block"}
@@ -375,7 +368,7 @@ function Component(): JSX.Element {
                   }
                 />
                 {selectedBlockTypes[index] === "Shelf" ? (
-                  <GeneratorUI.SelectInput
+                  <GeneratorUI.SelectControl
                     label={`Block ${index + 1} State`}
                     options={options([
                       "Unpowered",
@@ -392,7 +385,7 @@ function Component(): JSX.Element {
                 ) : null}
                 {selectedBlockTypes[index] === "Snow Layers" ? (
                   <>
-                    <GeneratorUI.SelectInput
+                    <GeneratorUI.SelectControl
                       label={`Block ${index + 1} Level`}
                       options={options([
                         "1",
@@ -409,17 +402,17 @@ function Component(): JSX.Element {
                         updateAt(setSnowLevels, index, value)
                       }
                     />
-                    <BooleanControl
-                      id={`Block ${index + 1} Offset for Intermediate Levels`}
+                    <GeneratorUI.BooleanControl
+                      label={`Block ${index + 1} Offset for Intermediate Levels`}
                       checked={snowOffsets[index] ?? false}
-                      onChange={(value) =>
+                      onCheckedChange={(value) =>
                         updateAt(setSnowOffsets, index, value)
                       }
                     />
                   </>
                 ) : null}
                 {selectedBlockTypes[index] === "Cake" ? (
-                  <GeneratorUI.SelectInput
+                  <GeneratorUI.SelectControl
                     label={`Block ${index + 1} Bites Taken`}
                     options={options(["0", "1", "2", "3", "4", "5", "6"])}
                     value={cakeBites[index] ?? "0"}
@@ -430,7 +423,7 @@ function Component(): JSX.Element {
                 ) : null}
               </React.Fragment>
             ))}
-            <ButtonControl id="Clear" onClick={clear} color="Red" />
+            <GeneratorUI.ButtonControl label="Clear" onClick={clear} color="Red" />
           </div>
         </div>
         <div className="flex-1 min-w-0">

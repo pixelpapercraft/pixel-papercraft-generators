@@ -1,34 +1,25 @@
 "use client";
 
 import React from "react";
-import { type TexturePlugin } from "@genroot/builder/modules/generator";
 import {
-  type ImageDef,
-  type InstructionsDef,
-  type ThumbnailDef,
-  type TextureDef,
-} from "@genroot/builder/modules/generatorDef";
-import { A4 } from "@genroot/builder/modules/modelPage";
-import { type Texture } from "@genroot/builder/modules/texture";
-import {
+  A4,
+  GeneratorRenderer,
+  GeneratorUI,
+  makeNextFlip,
+  rotationToDegrees,
+  type Flip,
   type GeneratorDefV2,
   type GeneratorV2,
+  type ImageDef,
+  type InstructionsDef,
   type RegionClickHandler,
   type RenderContext,
-} from "@genroot/builder/v2/generatorV2";
-import { GeneratorRenderer } from "@genroot/builder/v2/generatorRenderer";
-import { GeneratorUI } from "@genroot/builder/v2/generatorUI";
-import { LoadedTextureControl } from "@genroot/builder/v2/loadedTextureControl";
-import { AtlasControl } from "@genroot/builder/ui/controls/atlasControl";
-import { BooleanControl } from "@genroot/builder/ui/controls/booleanControl";
-import { ButtonControl } from "@genroot/builder/ui/controls/buttonControl";
-import { RangeControl } from "@genroot/builder/ui/controls/rangeControl";
-import {
-  type Flip,
-  makeNextFlip,
-} from "@genroot/builder/ui/texturePicker/flip";
-import { rotationToDegrees } from "@genroot/builder/ui/texturePicker/rotation";
-import { type SelectedTexture } from "@genroot/builder/ui/texturePicker/selectedTexture";
+  type SelectedTexture,
+  type Texture,
+  type TextureDef,
+  type TexturePlugin,
+  type ThumbnailDef,
+} from "@genroot/builder/v2";
 import {
   type GlintPluginOptions,
   itemGlintTextureDefs,
@@ -639,7 +630,7 @@ function Component(): JSX.Element {
           <div className="w-full bg-gray-100 p-8 space-y-4">
             <GeneratorUI.Instructions markdown={instructions} />
 
-            <GeneratorUI.SelectInput
+            <GeneratorUI.SelectControl
               label="Version"
               options={versionIds.map((version) => ({
                 id: version,
@@ -650,7 +641,7 @@ function Component(): JSX.Element {
             />
 
             {versionId === "custom" ? (
-              <AtlasControl
+              <GeneratorUI.AtlasControl
                 id="custom"
                 label="Custom"
                 standardWidth={32}
@@ -661,7 +652,7 @@ function Component(): JSX.Element {
               />
             ) : null}
 
-            <GeneratorUI.SelectInput
+            <GeneratorUI.SelectControl
               label="Item Size"
               options={sizeOptions}
               value={selectedItemSize}
@@ -669,14 +660,14 @@ function Component(): JSX.Element {
             />
 
             {selectedItemSize === sizeCustom ? (
-              <RangeControl
-                id="Custom Scale (%)"
+              <GeneratorUI.RangeControl
+                label="Custom Scale (%)"
                 min={100}
                 max={1600}
                 value={customScalePercent}
                 step={100}
                 showValue={true}
-                onChange={setCustomScalePercent}
+                onValueChange={setCustomScalePercent}
               />
             ) : null}
 
@@ -699,23 +690,23 @@ function Component(): JSX.Element {
               />
             ) : null}
 
-            <BooleanControl
-              id="Show Folds"
+            <GeneratorUI.BooleanControl
+              label="Show Folds"
               checked={showFolds}
-              onChange={setShowFolds}
+              onCheckedChange={setShowFolds}
             />
 
-            <ButtonControl id="Add Item" onClick={addItem} color="Blue" />
-            <ButtonControl
-              id="Overlay Item"
+            <GeneratorUI.ButtonControl label="Add Item" onClick={addItem} color="Blue" />
+            <GeneratorUI.ButtonControl
+              label="Overlay Item"
               onClick={overlayItem}
               color="Green"
             />
-            <ButtonControl id="Remove Item" onClick={removeItem} color="Red" />
+            <GeneratorUI.ButtonControl label="Remove Item" onClick={removeItem} color="Red" />
             <div />
-            <ButtonControl id="Clear" onClick={clearItems} color="Red" />
+            <GeneratorUI.ButtonControl label="Clear" onClick={clearItems} color="Red" />
 
-            <LoadedTextureControl
+            <GeneratorUI.LoadedTextureControl
               id="Enchanted Glint"
               definitions={itemGlintTextureDefs}
               standardWidth={128}
@@ -729,29 +720,29 @@ function Component(): JSX.Element {
               }}
             />
 
-            <RangeControl
-              id="Glint Opacity"
+            <GeneratorUI.RangeControl
+              label="Glint Opacity"
               min={0}
               max={255}
               value={glintOpacity}
               step={1}
-              onChange={setGlintOpacity}
+              onValueChange={setGlintOpacity}
             />
-            <RangeControl
-              id="Glint X Offset"
+            <GeneratorUI.RangeControl
+              label="Glint X Offset"
               min={0}
               max={128}
               value={glintXOffset}
               step={1}
-              onChange={setGlintXOffset}
+              onValueChange={setGlintXOffset}
             />
-            <RangeControl
-              id="Glint Y Offset"
+            <GeneratorUI.RangeControl
+              label="Glint Y Offset"
               min={0}
               max={128}
               value={glintYOffset}
               step={1}
-              onChange={setGlintYOffset}
+              onValueChange={setGlintYOffset}
             />
           </div>
         </div>
