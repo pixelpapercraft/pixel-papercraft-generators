@@ -2,25 +2,23 @@
 
 import React from "react";
 import {
-  type ImageDef,
-  type InstructionsDef,
-  type ThumbnailDef,
-  type TextureDef,
-} from "@genroot/builder/modules/generatorDef";
-import {
+  GeneratorRenderer,
+  GeneratorUI,
   type GeneratorDefV2,
   type GeneratorV2,
+  type ImageDef,
+  type InstructionsDef,
   type RegionClickHandler,
   type RenderContext,
-} from "@genroot/builder/v2/generatorV2";
-import { GeneratorRenderer } from "@genroot/builder/v2/generatorRenderer";
-import { GeneratorUI } from "@genroot/builder/v2/generatorUI";
-import { MinecraftSkinControl } from "@genroot/builder/ui/controls/minecraftSkinControl";
-import { type Texture } from "@genroot/builder/modules/texture";
+  type Texture,
+  type TextureDef,
+  type ThumbnailDef,
+} from "@genroot/builder/v2";
 import {
+  MinecraftSkinControl,
   getDefaultMinecraftSkinInputValue,
   type MinecraftSkinInputValue,
-} from "@genroot/builder/modules/minecraftSkinInputValue";
+} from "../_common/skins/skinControl";
 import { steve, alex } from "../_common/minecraftCharacter";
 import { type Dimensions, Minecraft } from "../_common/minecraft";
 import { makeDefaultMinecraftSkinPresetOptions } from "../_common/skins/options";

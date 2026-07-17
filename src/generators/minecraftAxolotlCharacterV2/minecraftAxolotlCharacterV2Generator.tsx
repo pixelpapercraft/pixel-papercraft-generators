@@ -1,29 +1,24 @@
 "use client";
 
 import React from "react";
-import type {
-  ImageDef,
-  HistoryDef,
-  ThumbnailDef,
-  TextureDef,
-  VideoDef,
-} from "@genroot/builder/modules/generatorDef";
 import {
+  GeneratorRenderer,
+  GeneratorUI,
   type GeneratorDefV2,
   type GeneratorV2,
+  type HistoryDef,
+  type ImageDef,
   type RenderContext,
-} from "@genroot/builder/v2/generatorV2";
-import { GeneratorRenderer } from "@genroot/builder/v2/generatorRenderer";
-import { GeneratorUI } from "@genroot/builder/v2/generatorUI";
-import { MinecraftSkinControl } from "@genroot/builder/ui/controls/minecraftSkinControl";
-import { LoadedTextureControl } from "@genroot/builder/v2/loadedTextureControl";
-import { BooleanControl } from "@genroot/builder/ui/controls/booleanControl";
-import { RangeControl } from "@genroot/builder/ui/controls/rangeControl";
-import { type Texture } from "@genroot/builder/modules/texture";
+  type Texture,
+  type TextureDef,
+  type ThumbnailDef,
+  type VideoDef,
+} from "@genroot/builder/v2";
 import {
+  MinecraftSkinControl,
   getDefaultMinecraftSkinInputValue,
   type MinecraftSkinInputValue,
-} from "@genroot/builder/modules/minecraftSkinInputValue";
+} from "../_common/skins/skinControl";
 import {
   type Cuboid,
   type Layer,
@@ -534,7 +529,7 @@ function Component(): JSX.Element {
               onChange={setSkinTexture}
             />
 
-            <LoadedTextureControl
+            <GeneratorUI.LoadedTextureControl
               id="Head Fins Texture"
               definitions={textures}
               standardWidth={64}
@@ -545,7 +540,7 @@ function Component(): JSX.Element {
               onChange={setHeadFinsTexture}
             />
 
-            <LoadedTextureControl
+            <GeneratorUI.LoadedTextureControl
               id="Tail Fins Texture"
               definitions={textures}
               standardWidth={64}
@@ -556,28 +551,28 @@ function Component(): JSX.Element {
               onChange={setTailFinsTexture}
             />
 
-            <BooleanControl
-              id="Show Folds"
+            <GeneratorUI.BooleanControl
+              label="Show Folds"
               checked={showFolds}
-              onChange={setShowFolds}
+              onCheckedChange={setShowFolds}
             />
-            <BooleanControl
-              id="Show Labels"
+            <GeneratorUI.BooleanControl
+              label="Show Labels"
               checked={showLabels}
-              onChange={setShowLabels}
+              onCheckedChange={setShowLabels}
             />
-            <BooleanControl
-              id="Show Overlay"
+            <GeneratorUI.BooleanControl
+              label="Show Overlay"
               checked={showOverlay}
-              onChange={setShowOverlay}
+              onCheckedChange={setShowOverlay}
             />
-            <RangeControl
-              id="Axolotl Face"
+            <GeneratorUI.RangeControl
+              label="Axolotl Face"
               min={0}
               max={5}
               step={1}
               value={faceStretch}
-              onChange={setFaceStretch}
+              onValueChange={setFaceStretch}
             />
           </div>
         </div>

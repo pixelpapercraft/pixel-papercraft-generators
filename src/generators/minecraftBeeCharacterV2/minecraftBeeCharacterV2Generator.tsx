@@ -1,27 +1,24 @@
 "use client";
 
 import React from "react";
-import type {
-  ImageDef,
-  HistoryDef,
-  ThumbnailDef,
-  TextureDef,
-  VideoDef,
-} from "@genroot/builder/modules/generatorDef";
 import {
+  GeneratorRenderer,
+  GeneratorUI,
   type GeneratorDefV2,
   type GeneratorV2,
+  type HistoryDef,
+  type ImageDef,
   type RenderContext,
-} from "@genroot/builder/v2/generatorV2";
-import { GeneratorRenderer } from "@genroot/builder/v2/generatorRenderer";
-import { GeneratorUI } from "@genroot/builder/v2/generatorUI";
-import { MinecraftSkinControl } from "@genroot/builder/ui/controls/minecraftSkinControl";
-import { RangeControl } from "@genroot/builder/ui/controls/rangeControl";
-import { type Texture } from "@genroot/builder/modules/texture";
+  type Texture,
+  type TextureDef,
+  type ThumbnailDef,
+  type VideoDef,
+} from "@genroot/builder/v2";
 import {
+  MinecraftSkinControl,
   getDefaultMinecraftSkinInputValue,
   type MinecraftSkinInputValue,
-} from "@genroot/builder/modules/minecraftSkinInputValue";
+} from "../_common/skins/skinControl";
 import { steve, alex } from "@genroot/generators/_common/minecraftCharacter";
 
 import thumbnailImage from "./thumbnail/thumbnail-256.jpeg";
@@ -596,13 +593,13 @@ function Component(): JSX.Element {
               onValueChange={setSkin1Value}
               onChange={setSkin1Texture}
             />
-            <RangeControl
-              id="Head Size 1"
+            <GeneratorUI.RangeControl
+              label="Head Size 1"
               min={0}
               max={10}
               step={1}
               value={headMultiplier1}
-              onChange={setHeadMultiplier1}
+              onValueChange={setHeadMultiplier1}
             />
 
             <MinecraftSkinControl
@@ -616,13 +613,13 @@ function Component(): JSX.Element {
               onValueChange={setSkin2Value}
               onChange={setSkin2Texture}
             />
-            <RangeControl
-              id="Head Size 2"
+            <GeneratorUI.RangeControl
+              label="Head Size 2"
               min={0}
               max={10}
               step={1}
               value={headMultiplier2}
-              onChange={setHeadMultiplier2}
+              onValueChange={setHeadMultiplier2}
             />
           </div>
         </div>
