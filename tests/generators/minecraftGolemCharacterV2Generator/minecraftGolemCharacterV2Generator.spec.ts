@@ -327,9 +327,11 @@ test("minecraft golem character generator renders every damage choice and explic
   await page.goto("/generator/minecraft-golem-character-v2");
 
   const pageImage = outputPage(page);
-  await expect(
-    readPixel(pageImage, damageCrackProbe.x, damageCrackProbe.y)
-  ).resolves.toEqual(damageBodyDefault);
+  // Poll rather than read once: the crack probe sits on the async-loading skin,
+  // so on a slow load the initial body colour settles in after mount.
+  await expect
+    .poll(() => readPixel(pageImage, damageCrackProbe.x, damageCrackProbe.y))
+    .toEqual(damageBodyDefault);
 
   for (const choice of damageChoices) {
     await damageSelect(page).selectOption({ label: choice });
@@ -357,7 +359,9 @@ test("minecraft golem character generator distinguishes light from heavy damage"
   await expect
     .poll(() => readPixel(pageImage, damageCrackProbe.x, damageCrackProbe.y))
     .toEqual(damageCrack);
-  await expect(probe()).resolves.toEqual(damageDistinctBody);
+  // Poll rather than read once: this probe is on the head, drawn from the
+  // async-loading skin, so a late skin repaint can trail the crack-probe poll.
+  await expect.poll(probe).toEqual(damageDistinctBody);
 
   await damageSelect(page).selectOption({ label: "High" });
   await expect.poll(probe).toEqual(damageDistinctHigh);
