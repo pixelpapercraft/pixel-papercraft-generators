@@ -2,25 +2,23 @@
 
 import React from "react";
 import {
+  GeneratorRenderer,
+  GeneratorUI,
+  type GeneratorDefV2,
+  type GeneratorV2,
   type ImageDef,
   type InstructionsDef,
+  type RenderContext,
+  type Texture,
   type TextureDef,
   type ThumbnailDef,
   type VideoDef,
-} from "@genroot/builder/modules/generatorDef";
+} from "@genroot/builder/v2";
 import {
-  type GeneratorDefV2,
-  type GeneratorV2,
-  type RenderContext,
-} from "@genroot/builder/v2/generatorV2";
-import { GeneratorRenderer } from "@genroot/builder/v2/generatorRenderer";
-import { GeneratorUI } from "@genroot/builder/v2/generatorUI";
-import { MinecraftSkinControl } from "@genroot/builder/ui/controls/minecraftSkinControl";
-import { type Texture } from "@genroot/builder/modules/texture";
-import {
+  MinecraftSkinControl,
   getDefaultMinecraftSkinInputValue,
   type MinecraftSkinInputValue,
-} from "@genroot/builder/modules/minecraftSkinInputValue";
+} from "../_common/skins/skinControl";
 import { makeDefaultMinecraftSkinPresetOptions } from "../_common/skins/options";
 
 import thumbnailImage from "./thumbnail/v2-thumbnail-256.jpeg";
