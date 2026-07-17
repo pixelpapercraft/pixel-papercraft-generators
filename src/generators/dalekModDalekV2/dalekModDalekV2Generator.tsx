@@ -2,21 +2,17 @@
 
 import React from "react";
 import {
-  type ImageDef,
-  type InstructionsDef,
-  type TextureDef,
-  type ThumbnailDef,
-} from "@genroot/builder/modules/generatorDef";
-import {
+  GeneratorRenderer,
+  GeneratorUI,
   type GeneratorDefV2,
   type GeneratorV2,
+  type ImageDef,
+  type InstructionsDef,
   type RenderContext,
-} from "@genroot/builder/v2/generatorV2";
-import { GeneratorRenderer } from "@genroot/builder/v2/generatorRenderer";
-import { GeneratorUI } from "@genroot/builder/v2/generatorUI";
-import { LoadedTextureControl } from "@genroot/builder/v2/loadedTextureControl";
-import { BooleanControl } from "@genroot/builder/ui/controls/booleanControl";
-import { type Texture } from "@genroot/builder/modules/texture";
+  type Texture,
+  type TextureDef,
+  type ThumbnailDef,
+} from "@genroot/builder/v2";
 
 import thumbnailImage from "./thumbnail/v2-thumbnail-256.jpeg";
 import dalekImage from "./instructions/dalek.jpeg";
@@ -564,7 +560,7 @@ function Component(): JSX.Element {
           <div className="w-full bg-gray-100 p-8 space-y-4">
             <GeneratorUI.Instructions markdown={instructions} />
 
-            <LoadedTextureControl
+            <GeneratorUI.LoadedTextureControl
               id="Skin"
               definitions={dalekTextures}
               standardWidth={128}
@@ -575,10 +571,10 @@ function Component(): JSX.Element {
               onChange={setSkinTexture}
             />
 
-            <BooleanControl
-              id="Show Colors"
+            <GeneratorUI.BooleanControl
+              label="Show Colors"
               checked={showColors}
-              onChange={setShowColors}
+              onCheckedChange={setShowColors}
             />
           </div>
         </div>

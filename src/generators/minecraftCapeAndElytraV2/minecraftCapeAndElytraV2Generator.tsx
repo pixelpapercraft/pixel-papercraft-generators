@@ -1,22 +1,18 @@
 "use client";
 
 import React from "react";
-import type {
-  ImageDef,
-  HistoryDef,
-  TextureDef,
-  ThumbnailDef,
-} from "@genroot/builder/modules/generatorDef";
-import { type Texture } from "@genroot/builder/modules/texture";
 import {
+  GeneratorRenderer,
+  GeneratorUI,
   type GeneratorDefV2,
   type GeneratorV2,
+  type HistoryDef,
+  type ImageDef,
   type RenderContext,
-} from "@genroot/builder/v2/generatorV2";
-import { GeneratorRenderer } from "@genroot/builder/v2/generatorRenderer";
-import { GeneratorUI } from "@genroot/builder/v2/generatorUI";
-import { LoadedTextureControl } from "@genroot/builder/v2/loadedTextureControl";
-import { BooleanControl } from "@genroot/builder/ui/controls/booleanControl";
+  type Texture,
+  type TextureDef,
+  type ThumbnailDef,
+} from "@genroot/builder/v2";
 
 import thumbnailImage from "./thumbnail/thumbnail-256.jpeg";
 import foregroundImage from "./images/Foreground.png";
@@ -375,7 +371,7 @@ function Component(): JSX.Element {
       <div className="lg:flex gap-8">
         <div className="flex-1 min-w-0" data-testid="generator-sidebar">
           <div className="w-full bg-gray-100 p-8 space-y-4">
-            <LoadedTextureControl
+            <GeneratorUI.LoadedTextureControl
               id="Cape"
               definitions={textures}
               choices={choices}
@@ -384,15 +380,15 @@ function Component(): JSX.Element {
               initialTextureId="Cape"
               onChange={setCapeTexture}
             />
-            <BooleanControl
-              id="Show Folds"
+            <GeneratorUI.BooleanControl
+              label="Show Folds"
               checked={showFolds}
-              onChange={setShowFolds}
+              onCheckedChange={setShowFolds}
             />
-            <BooleanControl
-              id="Show Labels"
+            <GeneratorUI.BooleanControl
+              label="Show Labels"
               checked={showLabels}
-              onChange={setShowLabels}
+              onCheckedChange={setShowLabels}
             />
           </div>
         </div>
