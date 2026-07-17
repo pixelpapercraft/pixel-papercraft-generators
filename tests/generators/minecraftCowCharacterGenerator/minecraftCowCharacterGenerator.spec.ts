@@ -16,16 +16,16 @@ type LayerExpectation = {
 
 // Every skin preset shows a distinct, opaque colour at the head-face probe.
 const presetExpectations: PresetExpectation[] = [
-  { name: "Alex", rgba: { r: 45, g: 29, b: 14, a: 255 } },
-  { name: "Ari", rgba: { r: 222, g: 129, b: 46, a: 255 } },
-  { name: "Efe", rgba: { r: 128, g: 48, b: 18, a: 255 } },
-  { name: "Kai", rgba: { r: 129, g: 88, b: 137, a: 255 } },
-  { name: "Makena", rgba: { r: 180, g: 114, b: 60, a: 255 } },
-  { name: "Noor", rgba: { r: 30, g: 14, b: 17, a: 255 } },
-  { name: "Steve", rgba: { r: 145, g: 71, b: 49, a: 255 } },
-  { name: "Sunny", rgba: { r: 36, g: 24, b: 8, a: 255 } },
-  { name: "Zuri", rgba: { r: 176, g: 101, b: 55, a: 255 } },
-  { name: "Default", rgba: { r: 95, g: 62, b: 41, a: 255 } },
+  { name: "Alex", rgba: { r: 222, g: 129, b: 46, a: 255 } },
+  { name: "Ari", rgba: { r: 128, g: 48, b: 18, a: 255 } },
+  { name: "Efe", rgba: { r: 129, g: 88, b: 137, a: 255 } },
+  { name: "Kai", rgba: { r: 180, g: 114, b: 60, a: 255 } },
+  { name: "Makena", rgba: { r: 30, g: 14, b: 17, a: 255 } },
+  { name: "Noor", rgba: { r: 145, g: 71, b: 49, a: 255 } },
+  { name: "Steve", rgba: { r: 36, g: 24, b: 8, a: 255 } },
+  { name: "Sunny", rgba: { r: 176, g: 101, b: 55, a: 255 } },
+  { name: "Zuri", rgba: { r: 95, g: 62, b: 41, a: 255 } },
+  { name: "Default", rgba: { r: 45, g: 29, b: 14, a: 255 } },
 ];
 
 // Each of the six overlay regions toggles one body part's outer layer. With the
@@ -130,6 +130,8 @@ test("minecraft cow character generator renders every skin preset and explicit N
   await renderImageAtNaturalSize(pageImage);
 
   for (const preset of presetExpectations) {
+    await skin.selectOption("");
+    await expect.poll(() => readPixel(pageImage, 170, 120)).toEqual(whiteRgba);
     await skin.selectOption(preset.name);
     await expect
       .poll(() => readPixel(pageImage, 170, 120))
