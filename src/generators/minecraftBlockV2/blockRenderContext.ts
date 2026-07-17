@@ -1,6 +1,8 @@
-import { type Region } from "@genroot/builder/modules/generator";
-export { type Region } from "@genroot/builder/modules/generator";
-import { type DrawTextureOptions } from "@genroot/builder/modules/renderers/drawTexture";
+import {
+  type DrawTextureOptions,
+  type Region,
+} from "@genroot/builder/v2";
+export { type Region } from "@genroot/builder/v2";
 
 export type BlockRenderContext = {
   defineSelectInput(id: string, options: string[]): void;

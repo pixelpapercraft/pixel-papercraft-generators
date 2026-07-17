@@ -1,15 +1,13 @@
 import {
-  type DrawTextureOptions,
-  type Blend,
-} from "@genroot/builder/modules/renderers/drawTexture";
-import { type BlockRenderContext, type Region } from "./blockRenderContext";
-import {
-  type SelectedTexture,
+  makeNextFlip,
   encodeSelectedTextures,
   decodeSelectedTextures,
   decodeSelectedTexture,
-} from "@genroot/builder/ui/texturePicker/selectedTexture";
-import { makeNextFlip } from "@genroot/builder/ui/texturePicker/flip";
+  type Blend,
+  type DrawTextureOptions,
+  type SelectedTexture,
+} from "@genroot/builder/v2";
+import { type BlockRenderContext, type Region } from "./blockRenderContext";
 import { currentBlockTextureId } from "@genroot/generators/minecraftBlock/constants";
 
 export function defineInputRegion(
