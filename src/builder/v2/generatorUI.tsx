@@ -162,16 +162,4 @@ export const GeneratorUI = {
   MediaHero,
   // Same Updates list v1 renders below the generator surface.
   History,
-
-  // Deprecated `*Input` names, kept so this slice changes no generator. Each
-  // is the same component under its new name; they are removed once every V2
-  // generator is repointed.
-  /** @deprecated Use `BooleanControl`. */
-  BooleanInput: BooleanControl,
-  /** @deprecated Use `SelectControl`. */
-  SelectInput: SelectControl,
-  /** @deprecated Use `RangeControl`. */
-  RangeInput: RangeControl,
-  /** @deprecated Use `TextControl`. */
-  Text: TextControl,
 };

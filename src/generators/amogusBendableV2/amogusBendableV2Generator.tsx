@@ -196,7 +196,7 @@ function Component(): JSX.Element {
           <div className="w-full bg-gray-100 p-8 space-y-4">
             <GeneratorUI.Instructions markdown={instructions} />
 
-            <GeneratorUI.SelectInput
+            <GeneratorUI.SelectControl
               label="Color"
               options={colorOptions}
               value={color}

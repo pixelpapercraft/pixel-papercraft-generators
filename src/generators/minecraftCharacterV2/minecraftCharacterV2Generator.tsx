@@ -375,22 +375,22 @@ function Component(): JSX.Element {
               onChange={setSkinTexture}
             />
 
-            <GeneratorUI.BooleanInput
+            <GeneratorUI.BooleanControl
               label="Show Folds"
               checked={showFolds}
               onCheckedChange={setShowFolds}
             />
 
-            <GeneratorUI.BooleanInput
+            <GeneratorUI.BooleanControl
               label="Show Labels"
               checked={showLabels}
               onCheckedChange={setShowLabels}
             />
 
-            <GeneratorUI.Text>
+            <GeneratorUI.TextControl>
               Click in the papercraft template to turn on and off the overlay
               for each part.
-            </GeneratorUI.Text>
+            </GeneratorUI.TextControl>
           </div>
         </div>
 
