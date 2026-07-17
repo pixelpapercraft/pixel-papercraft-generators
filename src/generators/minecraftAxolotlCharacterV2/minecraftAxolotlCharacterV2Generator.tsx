@@ -20,7 +20,7 @@ import { TextureControl } from "@genroot/builder/ui/controls/textureControl";
 import { BooleanControl } from "@genroot/builder/ui/controls/booleanControl";
 import { RangeControl } from "@genroot/builder/ui/controls/rangeControl";
 import { type Texture } from "@genroot/builder/modules/texture";
-import { makeTextureFromUrl } from "@genroot/builder/modules/texture";
+import { useLoadedTextures } from "@genroot/builder/v2/useLoadedTextures";
 import {
   getDefaultMinecraftSkinInputValue,
   type MinecraftSkinInputValue,
@@ -541,36 +541,14 @@ function Component(): JSX.Element {
     React.useState<Texture | null>(null);
   const [tailFinsTexture, setTailFinsTexture] =
     React.useState<Texture | null>(null);
-  const [finChoiceTextures, setFinChoiceTextures] = React.useState<
-    Map<string, Texture>
-  >(new Map());
+  const finChoiceState = useLoadedTextures(textures);
+  const finChoiceTextures = finChoiceState.status === "ready"
+    ? finChoiceState.textures
+    : noTextures;
   const [showFolds, setShowFolds] = React.useState(true);
   const [showLabels, setShowLabels] = React.useState(true);
   const [showOverlay, setShowOverlay] = React.useState(true);
   const [faceStretch, setFaceStretch] = React.useState(0);
-
-  React.useEffect(() => {
-    let cancelled = false;
-
-    Promise.all(
-      textures.map(async (textureDef) => {
-        const texture = await makeTextureFromUrl(
-          textureDef.url,
-          textureDef.standardWidth,
-          textureDef.standardHeight
-        );
-        return [textureDef.id, texture] satisfies [string, Texture];
-      })
-    ).then((textureTuples) => {
-      if (!cancelled) {
-        setFinChoiceTextures(new Map(textureTuples));
-      }
-    });
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
 
   const rendererProps: MinecraftAxolotlCharacterProps = {
     isSlim: skinValue.modelType === "Slim",
@@ -619,6 +597,14 @@ function Component(): JSX.Element {
               standardHeight={64}
               choices={finChoices}
               textures={finChoiceTextures}
+              disabled={finChoiceState.status !== "ready"}
+              statusMessage={
+                finChoiceState.status === "loading"
+                  ? "Loading fin choices…"
+                  : finChoiceState.status === "error"
+                    ? "Fin choices could not be loaded."
+                    : undefined
+              }
               onChange={setHeadFinsTexture}
             />
 
@@ -628,6 +614,14 @@ function Component(): JSX.Element {
               standardHeight={64}
               choices={finChoices}
               textures={finChoiceTextures}
+              disabled={finChoiceState.status !== "ready"}
+              statusMessage={
+                finChoiceState.status === "loading"
+                  ? "Loading fin choices…"
+                  : finChoiceState.status === "error"
+                    ? "Fin choices could not be loaded."
+                    : undefined
+              }
               onChange={setTailFinsTexture}
             />
 

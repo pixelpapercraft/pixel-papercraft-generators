@@ -14,11 +14,11 @@ import {
 } from "@genroot/builder/v2/generatorV2";
 import { GeneratorRenderer } from "@genroot/builder/v2/generatorRenderer";
 import { GeneratorUI } from "@genroot/builder/v2/generatorUI";
+import { useLoadedTextures } from "@genroot/builder/v2/useLoadedTextures";
 import { BooleanControl } from "@genroot/builder/ui/controls/booleanControl";
 import { TextureControl } from "@genroot/builder/ui/controls/textureControl";
 import {
   type Texture,
-  makeTextureFromUrl,
 } from "@genroot/builder/modules/texture";
 
 import thumbnailImage from "./thumbnail/v2-thumbnail-256.jpeg";
@@ -52,6 +52,7 @@ import textureStrategist from "./textures/daleks/Strategist.png";
 import textureSuicideDalek from "./textures/daleks/SuicideDalek.png";
 
 const id = "dalek-v2";
+const noTextures = new Map<string, Texture>();
 
 const name = "Doctor Who Dalek (v2)";
 
@@ -547,32 +548,11 @@ const dalekGeneratorV2: GeneratorV2<DalekProps> = {
 function Component(): JSX.Element {
   const [showColors, setShowColors] = React.useState(false);
   const [skinTexture, setSkinTexture] = React.useState<Texture | null>(null);
-  const [dalekChoiceTextures, setDalekChoiceTextures] = React.useState<
-    Map<string, Texture>
-  >(new Map());
-
-  React.useEffect(() => {
-    let cancelled = false;
-
-    Promise.all(
-      dalekTextures.map(async (textureDef) => {
-        const texture = await makeTextureFromUrl(
-          textureDef.url,
-          textureDef.standardWidth,
-          textureDef.standardHeight
-        );
-        return [textureDef.id, texture] satisfies [string, Texture];
-      })
-    ).then((textureTuples) => {
-      if (!cancelled) {
-        setDalekChoiceTextures(new Map(textureTuples));
-      }
-    });
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+  const dalekChoiceState = useLoadedTextures(dalekTextures);
+  const dalekChoiceTextures =
+    dalekChoiceState.status === "ready"
+      ? dalekChoiceState.textures
+      : noTextures;
 
   const rendererProps: DalekProps = { showColors };
 
@@ -599,6 +579,14 @@ function Component(): JSX.Element {
               standardHeight={128}
               choices={dalekChoiceIds}
               textures={dalekChoiceTextures}
+              disabled={dalekChoiceState.status !== "ready"}
+              statusMessage={
+                dalekChoiceState.status === "loading"
+                  ? "Loading skin choices…"
+                  : dalekChoiceState.status === "error"
+                    ? "Skin choices could not be loaded."
+                    : undefined
+              }
               onChange={setSkinTexture}
             />
 

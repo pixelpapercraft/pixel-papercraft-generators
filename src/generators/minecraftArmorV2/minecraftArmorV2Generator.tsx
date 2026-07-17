@@ -7,7 +7,7 @@ import {
   type TextureDef,
 } from "@genroot/builder/modules/generatorDef";
 import { type TexturePlugin } from "@genroot/builder/modules/generator";
-import { type Texture, makeTextureFromUrl } from "@genroot/builder/modules/texture";
+import { type Texture } from "@genroot/builder/modules/texture";
 import {
   type GeneratorDefV2,
   type GeneratorV2,
@@ -16,6 +16,7 @@ import {
 } from "@genroot/builder/v2/generatorV2";
 import { GeneratorRenderer } from "@genroot/builder/v2/generatorRenderer";
 import { GeneratorUI } from "@genroot/builder/v2/generatorUI";
+import { useLoadedTextures } from "@genroot/builder/v2/useLoadedTextures";
 import { TextureControl } from "@genroot/builder/ui/controls/textureControl";
 import { TintSelector } from "../_common/tintSelector/tintSelector";
 import { type Dimensions, steveLegacy } from "../_common/minecraftCharacter";
@@ -120,6 +121,7 @@ import trimPaletteTexture from "../minecraftArmor/textures/trims/color_palettes/
 
 const id = "minecraft-armor-v2";
 const name = "Minecraft Armor (v2)";
+const noTextures = new Map<string, Texture>();
 
 const instructions = `
 ## How to use the Minecraft Armor Generator?
@@ -1433,7 +1435,10 @@ const minecraftArmorGeneratorV2: GeneratorV2<MinecraftArmorProps> = {
 };
 
 function Component(): JSX.Element {
-  const [loadedTextures, setLoadedTextures] = React.useState<Map<string, Texture>>(new Map());
+  const loadedTextureState = useLoadedTextures(textures);
+  const loadedTextures = loadedTextureState.status === "ready"
+    ? loadedTextureState.textures
+    : noTextures;
   const [controlTextures, setControlTextures] = React.useState<Map<string, Texture | null>>(new Map());
   const [showFolds, setShowFolds] = React.useState(true);
   const [showLabels, setShowLabels] = React.useState(true);
@@ -1454,29 +1459,6 @@ function Component(): JSX.Element {
   const [glintXOffset, setGlintXOffset] = React.useState(0);
   const [glintYOffset, setGlintYOffset] = React.useState(0);
 
-  React.useEffect(() => {
-    let cancelled = false;
-    Promise.all(textures.map(async (textureDef) => {
-      const texture = await makeTextureFromUrl(
-        textureDef.url,
-        textureDef.standardWidth,
-        textureDef.standardHeight
-      );
-      return [textureDef.id, texture] satisfies [string, Texture];
-    })).then((entries) => {
-      if (cancelled) return;
-      const nextLoaded = new Map(entries);
-      setLoadedTextures(nextLoaded);
-      setControlTextures(new Map(
-        Array.from(controlDefaults, ([controlId, textureId]) => [
-          controlId,
-          nextLoaded.get(textureId) ?? null,
-        ])
-      ));
-    });
-    return () => { cancelled = true; };
-  }, []);
-
   const setControlTexture = (id: string, texture: Texture | null): void => {
     setControlTextures((current) => {
       const next = new Map(current);
@@ -1495,11 +1477,14 @@ function Component(): JSX.Element {
 
   const dynamicTextures = React.useMemo(() => {
     const next = new Map<string, Texture>();
-    controlTextures.forEach((texture, id) => {
-      if (texture) next.set(id, texture);
+    controlDefaults.forEach((textureId, controlId) => {
+      const texture = controlTextures.has(controlId)
+        ? controlTextures.get(controlId) ?? null
+        : loadedTextures.get(textureId) ?? null;
+      if (texture) next.set(controlId, texture);
     });
     return next;
-  }, [controlTextures]);
+  }, [controlTextures, loadedTextures]);
 
   const rendererProps: MinecraftArmorProps = {
     showFolds, showLabels, showHeadOverlay,
@@ -1546,6 +1531,14 @@ function Component(): JSX.Element {
       standardWidth={standardWidth}
       standardHeight={standardHeight}
       textures={loadedTextures}
+      disabled={loadedTextureState.status !== "ready"}
+      statusMessage={
+        loadedTextureState.status === "loading"
+          ? "Loading texture choices…"
+          : loadedTextureState.status === "error"
+            ? "Texture choices could not be loaded."
+            : undefined
+      }
       onChange={(texture) => setControlTexture(controlId, texture)}
     />
   );

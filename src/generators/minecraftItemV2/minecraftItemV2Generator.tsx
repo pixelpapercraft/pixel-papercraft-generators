@@ -11,7 +11,6 @@ import {
 import { A4 } from "@genroot/builder/modules/modelPage";
 import {
   type Texture,
-  makeTextureFromUrl,
 } from "@genroot/builder/modules/texture";
 import {
   type GeneratorDefV2,
@@ -21,6 +20,7 @@ import {
 } from "@genroot/builder/v2/generatorV2";
 import { GeneratorRenderer } from "@genroot/builder/v2/generatorRenderer";
 import { GeneratorUI } from "@genroot/builder/v2/generatorUI";
+import { useLoadedTextures } from "@genroot/builder/v2/useLoadedTextures";
 import { AtlasControl } from "@genroot/builder/ui/controls/atlasControl";
 import { BooleanControl } from "@genroot/builder/ui/controls/booleanControl";
 import { ButtonControl } from "@genroot/builder/ui/controls/buttonControl";
@@ -62,6 +62,7 @@ import centerFoldTexture from "./textures/CenterFold.png";
 import thumbnailImage from "./thumbnail/v2-thumbnail-256.jpeg";
 
 const id = "minecraft-item-v2";
+const noTextures = new Map<string, Texture>();
 
 const name = "Minecraft Item (v2)";
 
@@ -492,32 +493,10 @@ function Component(): JSX.Element {
   const [glintOpacity, setGlintOpacity] = React.useState(255);
   const [glintXOffset, setGlintXOffset] = React.useState(0);
   const [glintYOffset, setGlintYOffset] = React.useState(0);
-  const [glintChoiceTextures, setGlintChoiceTextures] = React.useState<
-    Map<string, Texture>
-  >(new Map());
-
-  React.useEffect(() => {
-    let cancelled = false;
-
-    Promise.all(
-      itemGlintTextureDefs.map(async (textureDef) => {
-        const texture = await makeTextureFromUrl(
-          textureDef.url,
-          textureDef.standardWidth,
-          textureDef.standardHeight
-        );
-        return [textureDef.id, texture] satisfies [string, Texture];
-      })
-    ).then((textureTuples) => {
-      if (!cancelled) {
-        setGlintChoiceTextures(new Map(textureTuples));
-      }
-    });
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+  const glintChoiceState = useLoadedTextures(itemGlintTextureDefs);
+  const glintChoiceTextures = glintChoiceState.status === "ready"
+    ? glintChoiceState.textures
+    : noTextures;
 
   const textureVersion = findVersion(versionId);
   const selectedItemScale =
@@ -750,6 +729,14 @@ function Component(): JSX.Element {
               standardHeight={128}
               choices={["1.20+", "Pre-1.20"]}
               textures={glintChoiceTextures}
+              disabled={glintChoiceState.status !== "ready"}
+              statusMessage={
+                glintChoiceState.status === "loading"
+                  ? "Loading glint choices…"
+                  : glintChoiceState.status === "error"
+                    ? "Glint choices could not be loaded."
+                    : undefined
+              }
               onChange={(texture) => {
                 setGlintTexture(texture);
                 setGlintEnabled(texture !== null);

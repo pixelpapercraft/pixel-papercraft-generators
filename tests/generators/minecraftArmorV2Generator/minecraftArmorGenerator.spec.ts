@@ -355,6 +355,9 @@ test("minecraft armor generator renders a custom 64x32 helmet texture", async ({
   await expect(pageImage).toBeVisible();
   await expect(pageImage).toHaveAttribute("src", /data:image\/png/);
   await renderImageAtNaturalSize(pageImage);
+  await expect
+    .poll(async () => readPixel(pageImage, 160, 70))
+    .toEqual(rgb(190, 190, 190));
 
   await expect(pageImage).toHaveScreenshot(
     "minecraft-armor-custom-64x32-helmet-page-1.png"
