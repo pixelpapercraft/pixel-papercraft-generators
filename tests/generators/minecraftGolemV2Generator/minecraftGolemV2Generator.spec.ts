@@ -66,7 +66,7 @@ const damageSelect = (page: Page) => page.getByLabel("Damage", { exact: true });
 test("minecraft golem generator exposes its complete control contract", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-golem");
+  await page.goto("/generator/minecraft-golem-v2");
 
   // Only Flower and Damage have enumerable presets; the "Golem" input has
   // choices:[] so it shows a custom upload rather than a select.
@@ -96,7 +96,7 @@ test("minecraft golem generator exposes its complete control contract", async ({
 test("minecraft golem generator matches the default screenshot", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-golem");
+  await page.goto("/generator/minecraft-golem-v2");
 
   const pageImage = output(page);
   await expect(pageImage).toBeVisible();
@@ -108,7 +108,7 @@ test("minecraft golem generator matches the default screenshot", async ({
 test("minecraft golem generator renders a custom golem body texture", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-golem");
+  await page.goto("/generator/minecraft-golem-v2");
 
   const pageImage = output(page);
   await expect(readPixel(pageImage, bodyProbe.x, bodyProbe.y)).resolves.toEqual(
@@ -129,7 +129,7 @@ test("minecraft golem generator renders a custom golem body texture", async ({
 test("minecraft golem generator renders every flower choice and explicit None", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-golem");
+  await page.goto("/generator/minecraft-golem-v2");
 
   const pageImage = output(page);
   // No flower is drawn until one is selected.
@@ -154,7 +154,7 @@ test("minecraft golem generator renders every flower choice and explicit None", 
 test("minecraft golem generator renders a golem with a chosen flower", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-golem");
+  await page.goto("/generator/minecraft-golem-v2");
 
   const pageImage = output(page);
   await flowerSelect(page).selectOption({ label: "Poppy Flower" });
@@ -171,7 +171,7 @@ test("minecraft golem generator renders a golem with a chosen flower", async ({
 test("minecraft golem generator renders every damage choice and explicit None", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-golem");
+  await page.goto("/generator/minecraft-golem-v2");
 
   const pageImage = output(page);
   // No cracks are drawn until a damage sheet is selected.
@@ -195,7 +195,7 @@ test("minecraft golem generator renders every damage choice and explicit None", 
 test("minecraft golem generator distinguishes light from heavy damage", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-golem");
+  await page.goto("/generator/minecraft-golem-v2");
 
   const pageImage = output(page);
   const probe = () =>
@@ -216,7 +216,7 @@ test("minecraft golem generator distinguishes light from heavy damage", async ({
 test("minecraft golem generator renders a golem with flower and damage", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-golem");
+  await page.goto("/generator/minecraft-golem-v2");
 
   const pageImage = output(page);
   await flowerSelect(page).selectOption({ label: "Cyan Flower" });
@@ -237,7 +237,7 @@ test("minecraft golem generator renders a golem with flower and damage", async (
 test("minecraft golem generator hides folds and labels independently", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-golem");
+  await page.goto("/generator/minecraft-golem-v2");
 
   const pageImage = output(page);
   const readFold = () => readPixel(pageImage, foldProbe.x, foldProbe.y);
