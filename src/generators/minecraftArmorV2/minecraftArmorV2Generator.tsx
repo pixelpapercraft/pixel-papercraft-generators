@@ -2,26 +2,23 @@
 
 import React from "react";
 import {
-  type ImageDef,
-  type ThumbnailDef,
-  type TextureDef,
-} from "@genroot/builder/modules/generatorDef";
-import { type TexturePlugin } from "@genroot/builder/modules/generator";
-import { type Texture } from "@genroot/builder/modules/texture";
-import {
+  GeneratorRenderer,
+  GeneratorUI,
+  type Blend,
+  type Color,
   type GeneratorDefV2,
   type GeneratorV2,
+  type ImageDef,
   type RegionClickHandler,
   type RenderContext,
-} from "@genroot/builder/v2/generatorV2";
-import { GeneratorRenderer } from "@genroot/builder/v2/generatorRenderer";
-import { GeneratorUI } from "@genroot/builder/v2/generatorUI";
-import { LoadedTextureControl } from "@genroot/builder/v2/loadedTextureControl";
+  type Texture,
+  type TextureDef,
+  type TexturePlugin,
+  type ThumbnailDef,
+} from "@genroot/builder/v2";
 import { TintSelector } from "../_common/tintSelector/tintSelector";
 import { type Dimensions, steveLegacy } from "../_common/minecraftCharacter";
 import { Minecraft } from "../_common/minecraft";
-import { type Blend } from "@genroot/builder/modules/renderers/drawTexture";
-import { type Color } from "@genroot/builder/modules/canvasWithContext";
 import {
   type GlintPluginOptions,
   entityGlintTextureDefs,
@@ -1487,7 +1484,7 @@ function Component(): JSX.Element {
     standardWidth: number,
     standardHeight: number
   ): JSX.Element => (
-    <LoadedTextureControl
+    <GeneratorUI.LoadedTextureControl
       key={controlId}
       id={controlId}
       definitions={textures}
@@ -1509,7 +1506,7 @@ function Component(): JSX.Element {
     return (
       <>
         {textureControl(part, choices, 64, 32)}
-        <GeneratorUI.BooleanInput
+        <GeneratorUI.BooleanControl
           label={`Tint ${part}`}
           checked={tinted}
           onCheckedChange={(value) => setFlag(setTints, part, value)}
@@ -1531,7 +1528,7 @@ function Component(): JSX.Element {
             )}
           </>
         ) : null}
-        <GeneratorUI.BooleanInput
+        <GeneratorUI.BooleanControl
           label={`Trim ${part}`}
           checked={trimmed}
           onCheckedChange={(value) => setFlag(setTrims, part, value)}
@@ -1553,12 +1550,12 @@ function Component(): JSX.Element {
         <div className="flex-1 min-w-0" data-testid="generator-sidebar">
           <div className="w-full bg-gray-100 p-8 space-y-4">
             <GeneratorUI.Instructions markdown={instructions} />
-            <GeneratorUI.BooleanInput
+            <GeneratorUI.BooleanControl
               label="Show Folds"
               checked={showFolds}
               onCheckedChange={setShowFolds}
             />
-            <GeneratorUI.BooleanInput
+            <GeneratorUI.BooleanControl
               label="Show Labels"
               checked={showLabels}
               onCheckedChange={setShowLabels}
@@ -1572,7 +1569,7 @@ function Component(): JSX.Element {
             {partControls("Leggings", materials2, trimTemplates2)}
             {partControls("Boots", materials, trimTemplates)}
             {textureControl("Enchanted Glint", ["1.20+", "Pre-1.20"], 128, 128)}
-            <GeneratorUI.RangeInput
+            <GeneratorUI.RangeControl
               label="Glint Opacity"
               min={0}
               max={255}
@@ -1580,7 +1577,7 @@ function Component(): JSX.Element {
               value={glintOpacity}
               onValueChange={setGlintOpacity}
             />
-            <GeneratorUI.RangeInput
+            <GeneratorUI.RangeControl
               label="Glint X Offset"
               min={0}
               max={128}
@@ -1588,7 +1585,7 @@ function Component(): JSX.Element {
               value={glintXOffset}
               onValueChange={setGlintXOffset}
             />
-            <GeneratorUI.RangeInput
+            <GeneratorUI.RangeControl
               label="Glint Y Offset"
               min={0}
               max={128}
