@@ -126,10 +126,11 @@ describe("GeneratorUI.ButtonControl", () => {
 
 describe("GeneratorUI.TextControl", () => {
   it("renders its children", () => {
+    // JSX rather than createElement: children are this control's only prop, and
+    // passing them through createElement's props argument trips
+    // react/no-children-prop.
     const markup = renderToStaticMarkup(
-      createElement(GeneratorUI.TextControl, {
-        children: "Pick a skin to begin.",
-      })
+      <GeneratorUI.TextControl>Pick a skin to begin.</GeneratorUI.TextControl>
     );
 
     expect(markup).toContain("<p>Pick a skin to begin.</p>");
