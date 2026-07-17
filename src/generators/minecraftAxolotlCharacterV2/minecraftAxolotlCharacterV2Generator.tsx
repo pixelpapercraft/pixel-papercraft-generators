@@ -16,11 +16,10 @@ import {
 import { GeneratorRenderer } from "@genroot/builder/v2/generatorRenderer";
 import { GeneratorUI } from "@genroot/builder/v2/generatorUI";
 import { MinecraftSkinControl } from "@genroot/builder/ui/controls/minecraftSkinControl";
-import { TextureControl } from "@genroot/builder/ui/controls/textureControl";
+import { LoadedTextureControl } from "@genroot/builder/v2/loadedTextureControl";
 import { BooleanControl } from "@genroot/builder/ui/controls/booleanControl";
 import { RangeControl } from "@genroot/builder/ui/controls/rangeControl";
 import { type Texture } from "@genroot/builder/modules/texture";
-import { useLoadedTextures } from "@genroot/builder/v2/useLoadedTextures";
 import {
   getDefaultMinecraftSkinInputValue,
   type MinecraftSkinInputValue,
@@ -37,9 +36,7 @@ import thumbnailImage from "./thumbnail/thumbnail-256.jpeg";
 import backgroundImage from "./images/Background.png";
 import foldsImage from "./images/Folds.png";
 import labelsImage from "./images/Labels.png";
-import {
-  makeDefaultMinecraftSkinPresetOptions,
-} from "../_common/skins/options";
+import { makeDefaultMinecraftSkinPresetOptions } from "../_common/skins/options";
 import axolotlBlueImage from "./textures/axolotl_blue.png";
 import axolotlCyanImage from "./textures/axolotl_cyan.png";
 import axolotlLucyImage from "./textures/axolotl_lucy.png";
@@ -167,12 +164,7 @@ const render = (
     ctx.drawTexture("Skin", head.right, [ox - 40, oy, 40 - offset, 40], {
       pixelate,
     });
-    ctx.drawTexture("Skin", head.front, [
-      ox - offset,
-      oy,
-      64 + offset * 2,
-      40,
-    ]);
+    ctx.drawTexture("Skin", head.front, [ox - offset, oy, 64 + offset * 2, 40]);
     ctx.drawTexture(
       "Skin",
       head.left,
@@ -207,25 +199,10 @@ const render = (
   };
 
   const drawLimb = (leg: Cuboid, ox: number, oy: number) => {
-    ctx.drawTexture("Skin", armOrLegPart(leg.left), [
-      ox + 8,
-      oy - 24,
-      8,
-      24,
-    ]);
+    ctx.drawTexture("Skin", armOrLegPart(leg.left), [ox + 8, oy - 24, 8, 24]);
     ctx.drawTexture("Skin", handOrFootPart(leg.left), [ox, oy, 24, 16]);
-    ctx.drawTexture("Skin", armOrLegPart(leg.right), [
-      ox - 16,
-      oy - 24,
-      8,
-      24,
-    ]);
-    ctx.drawTexture("Skin", handOrFootPart(leg.right), [
-      ox - 24,
-      oy,
-      24,
-      16,
-    ]);
+    ctx.drawTexture("Skin", armOrLegPart(leg.right), [ox - 16, oy - 24, 8, 24]);
+    ctx.drawTexture("Skin", handOrFootPart(leg.right), [ox - 24, oy, 24, 16]);
   };
 
   const drawArms = (layer: Layer) => {
@@ -267,20 +244,11 @@ const render = (
     const leftX = xOf(left);
     const leftY = yOf(left);
 
-    ctx.drawTexture(
-      "Skin",
-      [topX + 1, topY + 2, 2, 1],
-      headFins.topLeftBack
-    );
+    ctx.drawTexture("Skin", [topX + 1, topY + 2, 2, 1], headFins.topLeftBack);
 
-    ctx.drawTexture(
-      "Skin",
-      [topX + 1, topY + 1, 2, 1],
-      headFins.topLeftFront,
-      {
-        flip: "Horizontal",
-      }
-    );
+    ctx.drawTexture("Skin", [topX + 1, topY + 1, 2, 1], headFins.topLeftFront, {
+      flip: "Horizontal",
+    });
 
     ctx.drawTexture(
       "Skin",
@@ -291,11 +259,7 @@ const render = (
       }
     );
 
-    ctx.drawTexture(
-      "Skin",
-      [topX + 5, topY + 2, 2, 1],
-      headFins.topRightBack
-    );
+    ctx.drawTexture("Skin", [topX + 5, topY + 2, 2, 1], headFins.topRightBack);
 
     ctx.drawTexture(
       "Skin",
@@ -309,11 +273,7 @@ const render = (
       headFins.middleLeftFront
     );
 
-    ctx.drawTexture(
-      "Skin",
-      [leftX + 6, leftY, 1, 3],
-      headFins.middleRightBack
-    );
+    ctx.drawTexture("Skin", [leftX + 6, leftY, 1, 3], headFins.middleRightBack);
 
     ctx.drawTexture(
       "Skin",
@@ -347,26 +307,10 @@ const render = (
   };
 
   const drawHeadFinsTexture = () => {
-    ctx.drawTexture(
-      "Head Fins Texture",
-      [3, 37, 3, 3],
-      headFins.topLeftBack
-    );
-    ctx.drawTexture(
-      "Head Fins Texture",
-      [8, 37, 3, 3],
-      headFins.topLeftFront
-    );
-    ctx.drawTexture(
-      "Head Fins Texture",
-      [3, 37, 3, 3],
-      headFins.topRightFront
-    );
-    ctx.drawTexture(
-      "Head Fins Texture",
-      [8, 37, 3, 3],
-      headFins.topRightBack
-    );
+    ctx.drawTexture("Head Fins Texture", [3, 37, 3, 3], headFins.topLeftBack);
+    ctx.drawTexture("Head Fins Texture", [8, 37, 3, 3], headFins.topLeftFront);
+    ctx.drawTexture("Head Fins Texture", [3, 37, 3, 3], headFins.topRightFront);
+    ctx.drawTexture("Head Fins Texture", [8, 37, 3, 3], headFins.topRightBack);
     ctx.drawTexture(
       "Head Fins Texture",
       [0, 40, 3, 4],
@@ -520,13 +464,14 @@ const render = (
   }
 };
 
-const minecraftAxolotlCharacterGeneratorV2: GeneratorV2<MinecraftAxolotlCharacterProps> = {
-  id,
-  name,
-  images,
-  textures,
-  render,
-};
+const minecraftAxolotlCharacterGeneratorV2: GeneratorV2<MinecraftAxolotlCharacterProps> =
+  {
+    id,
+    name,
+    images,
+    textures,
+    render,
+  };
 
 const skinOptions = makeDefaultMinecraftSkinPresetOptions();
 const noTextures: Map<string, Texture> = new Map();
@@ -537,14 +482,12 @@ function Component(): JSX.Element {
     () => getDefaultMinecraftSkinInputValue(skinOptions)
   );
   const [skinTexture, setSkinTexture] = React.useState<Texture | null>(null);
-  const [headFinsTexture, setHeadFinsTexture] =
-    React.useState<Texture | null>(null);
-  const [tailFinsTexture, setTailFinsTexture] =
-    React.useState<Texture | null>(null);
-  const finChoiceState = useLoadedTextures(textures);
-  const finChoiceTextures = finChoiceState.status === "ready"
-    ? finChoiceState.textures
-    : noTextures;
+  const [headFinsTexture, setHeadFinsTexture] = React.useState<Texture | null>(
+    null
+  );
+  const [tailFinsTexture, setTailFinsTexture] = React.useState<Texture | null>(
+    null
+  );
   const [showFolds, setShowFolds] = React.useState(true);
   const [showLabels, setShowLabels] = React.useState(true);
   const [showOverlay, setShowOverlay] = React.useState(true);
@@ -591,37 +534,25 @@ function Component(): JSX.Element {
               onChange={setSkinTexture}
             />
 
-            <TextureControl
+            <LoadedTextureControl
               id="Head Fins Texture"
+              definitions={textures}
               standardWidth={64}
               standardHeight={64}
               choices={finChoices}
-              textures={finChoiceTextures}
-              disabled={finChoiceState.status !== "ready"}
-              statusMessage={
-                finChoiceState.status === "loading"
-                  ? "Loading fin choices…"
-                  : finChoiceState.status === "error"
-                    ? "Fin choices could not be loaded."
-                    : undefined
-              }
+              loadingMessage="Loading fin choices…"
+              errorMessage="Fin choices could not be loaded."
               onChange={setHeadFinsTexture}
             />
 
-            <TextureControl
+            <LoadedTextureControl
               id="Tail Fins Texture"
+              definitions={textures}
               standardWidth={64}
               standardHeight={64}
               choices={finChoices}
-              textures={finChoiceTextures}
-              disabled={finChoiceState.status !== "ready"}
-              statusMessage={
-                finChoiceState.status === "loading"
-                  ? "Loading fin choices…"
-                  : finChoiceState.status === "error"
-                    ? "Fin choices could not be loaded."
-                    : undefined
-              }
+              loadingMessage="Loading fin choices…"
+              errorMessage="Fin choices could not be loaded."
               onChange={setTailFinsTexture}
             />
 

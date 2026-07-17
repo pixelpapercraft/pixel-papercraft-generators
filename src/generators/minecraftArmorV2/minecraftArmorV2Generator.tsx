@@ -16,8 +16,7 @@ import {
 } from "@genroot/builder/v2/generatorV2";
 import { GeneratorRenderer } from "@genroot/builder/v2/generatorRenderer";
 import { GeneratorUI } from "@genroot/builder/v2/generatorUI";
-import { useLoadedTextures } from "@genroot/builder/v2/useLoadedTextures";
-import { TextureControl } from "@genroot/builder/ui/controls/textureControl";
+import { LoadedTextureControl } from "@genroot/builder/v2/loadedTextureControl";
 import { TintSelector } from "../_common/tintSelector/tintSelector";
 import { type Dimensions, steveLegacy } from "../_common/minecraftCharacter";
 import { Minecraft } from "../_common/minecraft";
@@ -121,7 +120,6 @@ import trimPaletteTexture from "../minecraftArmor/textures/trims/color_palettes/
 
 const id = "minecraft-armor-v2";
 const name = "Minecraft Armor (v2)";
-const noTextures = new Map<string, Texture>();
 
 const instructions = `
 ## How to use the Minecraft Armor Generator?
@@ -766,16 +764,11 @@ const render = (ctx: RenderContext, props: MinecraftArmorProps): void => {
       plugin,
     });
 
-    ctx.drawTexture(
-      textureId,
-      [16, 8, 8, 1],
-      [ox + 100, oy + 156, 64, 8],
-      {
-        blend: blend,
-        rotate: 90,
-        plugin,
-      }
-    );
+    ctx.drawTexture(textureId, [16, 8, 8, 1], [ox + 100, oy + 156, 64, 8], {
+      blend: blend,
+      rotate: 90,
+      plugin,
+    });
 
     if (showHeadOverlay) {
       minecraftGenerator.drawCuboid(
@@ -786,27 +779,17 @@ const render = (ctx: RenderContext, props: MinecraftArmorProps): void => {
         { blend, rotate: 90 }
       );
 
-      ctx.drawTexture(
-        textureId,
-        [32, 8, 8, 1],
-        [ox + 100, oy + 28, 64, 8],
-        {
-          blend,
-          rotate: 90,
-          plugin,
-        }
-      );
+      ctx.drawTexture(textureId, [32, 8, 8, 1], [ox + 100, oy + 28, 64, 8], {
+        blend,
+        rotate: 90,
+        plugin,
+      });
 
-      ctx.drawTexture(
-        textureId,
-        [48, 8, 8, 1],
-        [ox + 100, oy + 156, 64, 8],
-        {
-          blend: blend,
-          rotate: 90,
-          plugin,
-        }
-      );
+      ctx.drawTexture(textureId, [48, 8, 8, 1], [ox + 100, oy + 156, 64, 8], {
+        blend: blend,
+        rotate: 90,
+        plugin,
+      });
     }
   }
 
@@ -838,16 +821,11 @@ const render = (ctx: RenderContext, props: MinecraftArmorProps): void => {
         plugin,
       }
     ); // Back texture that goes around over the head
-    ctx.drawTexture(
-      textureId,
-      [33, 24, 6, 8],
-      [ox + 112, oy - 96, 48, 64],
-      {
-        rotate: 180,
-        blend: blend,
-        plugin,
-      }
-    ); // Tab that goes inside the back face
+    ctx.drawTexture(textureId, [33, 24, 6, 8], [ox + 112, oy - 96, 48, 64], {
+      rotate: 180,
+      blend: blend,
+      plugin,
+    }); // Tab that goes inside the back face
     ctx.drawTexture(textureId, [20, 22, 8, 1], [ox + 48, oy, 64, 48], {
       blend: blend,
       plugin,
@@ -1004,16 +982,11 @@ const render = (ctx: RenderContext, props: MinecraftArmorProps): void => {
       blend,
       plugin,
     });
-    ctx.drawTexture(
-      textureId,
-      [0, 20, 4, 12],
-      [ox + 104, oy + 135, 40, 104],
-      {
-        blend,
-        flip: "Horizontal",
-        plugin,
-      }
-    );
+    ctx.drawTexture(textureId, [0, 20, 4, 12], [ox + 104, oy + 135, 40, 104], {
+      blend,
+      flip: "Horizontal",
+      plugin,
+    });
     minecraftGenerator.drawCuboid(
       textureId,
       steveLegacy.base.body,
@@ -1045,18 +1018,14 @@ const render = (ctx: RenderContext, props: MinecraftArmorProps): void => {
       blend,
       plugin,
     });
-    ctx.drawTexture(
-      textureId,
-      [0, 20, 4, 4],
-      [ox + 72, oy + 20, 40, 34],
-      { blend, plugin }
-    );
-    ctx.drawTexture(
-      textureId,
-      [16, 20, 4, 12],
-      [ox + 72, oy - 75, 40, 104],
-      { blend, plugin }
-    );
+    ctx.drawTexture(textureId, [0, 20, 4, 4], [ox + 72, oy + 20, 40, 34], {
+      blend,
+      plugin,
+    });
+    ctx.drawTexture(textureId, [16, 20, 4, 12], [ox + 72, oy - 75, 40, 104], {
+      blend,
+      plugin,
+    });
   }
 
   function drawLeftLegging(
@@ -1081,32 +1050,20 @@ const render = (ctx: RenderContext, props: MinecraftArmorProps): void => {
         plugin,
       }
     );
-    ctx.drawTexture(
-      textureId,
-      [28, 20, 4, 12],
-      [ox + 104, oy - 55, 40, 104],
-      { blend, plugin }
-    );
-    ctx.drawTexture(
-      textureId,
-      [0, 20, 4, 4],
-      [ox + 32, oy + 20, 40, 34],
-      {
-        blend: blend,
-        flip: "Horizontal",
-        plugin,
-      }
-    );
-    ctx.drawTexture(
-      textureId,
-      [28, 20, 4, 12],
-      [ox + 32, oy - 75, 40, 104],
-      {
-        blend: blend,
-        flip: "Horizontal",
-        plugin,
-      }
-    );
+    ctx.drawTexture(textureId, [28, 20, 4, 12], [ox + 104, oy - 55, 40, 104], {
+      blend,
+      plugin,
+    });
+    ctx.drawTexture(textureId, [0, 20, 4, 4], [ox + 32, oy + 20, 40, 34], {
+      blend: blend,
+      flip: "Horizontal",
+      plugin,
+    });
+    ctx.drawTexture(textureId, [28, 20, 4, 12], [ox + 32, oy - 75, 40, 104], {
+      blend: blend,
+      flip: "Horizontal",
+      plugin,
+    });
   }
 
   function drawRightBoot(textureId: string, tint: Blend, enchanted: boolean) {
@@ -1205,7 +1162,6 @@ const render = (ctx: RenderContext, props: MinecraftArmorProps): void => {
   }
 
   function drawChestplate(enchantChestplate: boolean) {
-
     const tintChestplate = props.tintChestplate;
     const tint: Blend = tintChestplate
       ? getTint("Chestplate Color")
@@ -1240,7 +1196,6 @@ const render = (ctx: RenderContext, props: MinecraftArmorProps): void => {
   }
 
   function drawLeggings(enchantLeggings: boolean) {
-
     const tintLeggings = props.tintLeggings;
     const tint: Blend = tintLeggings
       ? getTint("Leggings Color")
@@ -1261,7 +1216,6 @@ const render = (ctx: RenderContext, props: MinecraftArmorProps): void => {
   }
 
   function drawBoots(enchantBoots: boolean) {
-
     const tintBoots = props.tintBoots;
     const tint: Blend = tintBoots ? getTint("Boots Color") : { kind: "None" };
 
@@ -1400,7 +1354,6 @@ const render = (ctx: RenderContext, props: MinecraftArmorProps): void => {
   ctx.fillBackgroundColorWithWhite();
 };
 
-
 const controlDefaults = new Map([
   ["Helmet", "Helmet"],
   ["Chestplate", "Chestplate"],
@@ -1435,11 +1388,9 @@ const minecraftArmorGeneratorV2: GeneratorV2<MinecraftArmorProps> = {
 };
 
 function Component(): JSX.Element {
-  const loadedTextureState = useLoadedTextures(textures);
-  const loadedTextures = loadedTextureState.status === "ready"
-    ? loadedTextureState.textures
-    : noTextures;
-  const [controlTextures, setControlTextures] = React.useState<Map<string, Texture | null>>(new Map());
+  const [controlTextures, setControlTextures] = React.useState<
+    Map<string, Texture | null>
+  >(new Map());
   const [showFolds, setShowFolds] = React.useState(true);
   const [showLabels, setShowLabels] = React.useState(true);
   const [showHeadOverlay, setShowHeadOverlay] = React.useState(true);
@@ -1477,18 +1428,20 @@ function Component(): JSX.Element {
 
   const dynamicTextures = React.useMemo(() => {
     const next = new Map<string, Texture>();
-    controlDefaults.forEach((textureId, controlId) => {
-      const texture = controlTextures.has(controlId)
-        ? controlTextures.get(controlId) ?? null
-        : loadedTextures.get(textureId) ?? null;
+    controlTextures.forEach((texture, controlId) => {
       if (texture) next.set(controlId, texture);
     });
     return next;
-  }, [controlTextures, loadedTextures]);
+  }, [controlTextures]);
 
   const rendererProps: MinecraftArmorProps = {
-    showFolds, showLabels, showHeadOverlay,
-    enchantHelmet, enchantChestplate, enchantLeggings, enchantBoots,
+    showFolds,
+    showLabels,
+    showHeadOverlay,
+    enchantHelmet,
+    enchantChestplate,
+    enchantLeggings,
+    enchantBoots,
     tintHelmet: tints.Helmet ?? false,
     tintChestplate: tints.Chestplate ?? false,
     tintLeggings: tints.Leggings ?? false,
@@ -1497,24 +1450,34 @@ function Component(): JSX.Element {
     trimChestplate: trims.Chestplate ?? false,
     trimLeggings: trims.Leggings ?? false,
     trimBoots: trims.Boots ?? false,
-    tintColors, glintOpacity, glintXOffset, glintYOffset,
+    tintColors,
+    glintOpacity,
+    glintXOffset,
+    glintYOffset,
   };
 
   const onRegionClick: RegionClickHandler = ({ regionId }) => {
     switch (regionId) {
-      case "helmetEnchant": setEnchantHelmet((value) => !value); break;
-      case "headOverlay": setShowHeadOverlay((value) => !value); break;
+      case "helmetEnchant":
+        setEnchantHelmet((value) => !value);
+        break;
+      case "headOverlay":
+        setShowHeadOverlay((value) => !value);
+        break;
       case "chestplateEnchant1":
       case "chestplateEnchant2":
       case "chestplateEnchant3":
-        setEnchantChestplate((value) => !value); break;
+        setEnchantChestplate((value) => !value);
+        break;
       case "leggingsEnchant1":
       case "leggingsEnchant2":
       case "leggingsEnchant3":
-        setEnchantLeggings((value) => !value); break;
+        setEnchantLeggings((value) => !value);
+        break;
       case "bootsEnchant1":
       case "bootsEnchant2":
-        setEnchantBoots((value) => !value); break;
+        setEnchantBoots((value) => !value);
+        break;
     }
   };
 
@@ -1524,21 +1487,14 @@ function Component(): JSX.Element {
     standardWidth: number,
     standardHeight: number
   ): JSX.Element => (
-    <TextureControl
+    <LoadedTextureControl
       key={controlId}
       id={controlId}
+      definitions={textures}
       choices={choices}
       standardWidth={standardWidth}
       standardHeight={standardHeight}
-      textures={loadedTextures}
-      disabled={loadedTextureState.status !== "ready"}
-      statusMessage={
-        loadedTextureState.status === "loading"
-          ? "Loading texture choices…"
-          : loadedTextureState.status === "error"
-            ? "Texture choices could not be loaded."
-            : undefined
-      }
+      initialTextureId={controlDefaults.get(controlId)}
       onChange={(texture) => setControlTexture(controlId, texture)}
     />
   );
@@ -1597,16 +1553,49 @@ function Component(): JSX.Element {
         <div className="flex-1 min-w-0" data-testid="generator-sidebar">
           <div className="w-full bg-gray-100 p-8 space-y-4">
             <GeneratorUI.Instructions markdown={instructions} />
-            <GeneratorUI.BooleanInput label="Show Folds" checked={showFolds} onCheckedChange={setShowFolds} />
-            <GeneratorUI.BooleanInput label="Show Labels" checked={showLabels} onCheckedChange={setShowLabels} />
-            {partControls("Helmet", [...materials, "Turtle Shell"], trimTemplates)}
+            <GeneratorUI.BooleanInput
+              label="Show Folds"
+              checked={showFolds}
+              onCheckedChange={setShowFolds}
+            />
+            <GeneratorUI.BooleanInput
+              label="Show Labels"
+              checked={showLabels}
+              onCheckedChange={setShowLabels}
+            />
+            {partControls(
+              "Helmet",
+              [...materials, "Turtle Shell"],
+              trimTemplates
+            )}
             {partControls("Chestplate", materials, trimTemplates)}
             {partControls("Leggings", materials2, trimTemplates2)}
             {partControls("Boots", materials, trimTemplates)}
             {textureControl("Enchanted Glint", ["1.20+", "Pre-1.20"], 128, 128)}
-            <GeneratorUI.RangeInput label="Glint Opacity" min={0} max={255} step={1} value={glintOpacity} onValueChange={setGlintOpacity} />
-            <GeneratorUI.RangeInput label="Glint X Offset" min={0} max={128} step={1} value={glintXOffset} onValueChange={setGlintXOffset} />
-            <GeneratorUI.RangeInput label="Glint Y Offset" min={0} max={128} step={1} value={glintYOffset} onValueChange={setGlintYOffset} />
+            <GeneratorUI.RangeInput
+              label="Glint Opacity"
+              min={0}
+              max={255}
+              step={1}
+              value={glintOpacity}
+              onValueChange={setGlintOpacity}
+            />
+            <GeneratorUI.RangeInput
+              label="Glint X Offset"
+              min={0}
+              max={128}
+              step={1}
+              value={glintXOffset}
+              onValueChange={setGlintXOffset}
+            />
+            <GeneratorUI.RangeInput
+              label="Glint Y Offset"
+              min={0}
+              max={128}
+              step={1}
+              value={glintYOffset}
+              onValueChange={setGlintYOffset}
+            />
           </div>
         </div>
         <div className="flex-1 min-w-0">

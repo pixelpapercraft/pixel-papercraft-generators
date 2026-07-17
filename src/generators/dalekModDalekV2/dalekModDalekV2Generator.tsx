@@ -14,12 +14,9 @@ import {
 } from "@genroot/builder/v2/generatorV2";
 import { GeneratorRenderer } from "@genroot/builder/v2/generatorRenderer";
 import { GeneratorUI } from "@genroot/builder/v2/generatorUI";
-import { useLoadedTextures } from "@genroot/builder/v2/useLoadedTextures";
+import { LoadedTextureControl } from "@genroot/builder/v2/loadedTextureControl";
 import { BooleanControl } from "@genroot/builder/ui/controls/booleanControl";
-import { TextureControl } from "@genroot/builder/ui/controls/textureControl";
-import {
-  type Texture,
-} from "@genroot/builder/modules/texture";
+import { type Texture } from "@genroot/builder/modules/texture";
 
 import thumbnailImage from "./thumbnail/v2-thumbnail-256.jpeg";
 import dalekImage from "./instructions/dalek.jpeg";
@@ -52,7 +49,6 @@ import textureStrategist from "./textures/daleks/Strategist.png";
 import textureSuicideDalek from "./textures/daleks/SuicideDalek.png";
 
 const id = "dalek-v2";
-const noTextures = new Map<string, Texture>();
 
 const name = "Doctor Who Dalek (v2)";
 
@@ -548,11 +544,6 @@ const dalekGeneratorV2: GeneratorV2<DalekProps> = {
 function Component(): JSX.Element {
   const [showColors, setShowColors] = React.useState(false);
   const [skinTexture, setSkinTexture] = React.useState<Texture | null>(null);
-  const dalekChoiceState = useLoadedTextures(dalekTextures);
-  const dalekChoiceTextures =
-    dalekChoiceState.status === "ready"
-      ? dalekChoiceState.textures
-      : noTextures;
 
   const rendererProps: DalekProps = { showColors };
 
@@ -573,20 +564,14 @@ function Component(): JSX.Element {
           <div className="w-full bg-gray-100 p-8 space-y-4">
             <GeneratorUI.Instructions markdown={instructions} />
 
-            <TextureControl
+            <LoadedTextureControl
               id="Skin"
+              definitions={dalekTextures}
               standardWidth={128}
               standardHeight={128}
               choices={dalekChoiceIds}
-              textures={dalekChoiceTextures}
-              disabled={dalekChoiceState.status !== "ready"}
-              statusMessage={
-                dalekChoiceState.status === "loading"
-                  ? "Loading skin choices…"
-                  : dalekChoiceState.status === "error"
-                    ? "Skin choices could not be loaded."
-                    : undefined
-              }
+              loadingMessage="Loading skin choices…"
+              errorMessage="Skin choices could not be loaded."
               onChange={setSkinTexture}
             />
 

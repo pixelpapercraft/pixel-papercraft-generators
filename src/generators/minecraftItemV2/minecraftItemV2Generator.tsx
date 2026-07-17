@@ -9,9 +9,7 @@ import {
   type TextureDef,
 } from "@genroot/builder/modules/generatorDef";
 import { A4 } from "@genroot/builder/modules/modelPage";
-import {
-  type Texture,
-} from "@genroot/builder/modules/texture";
+import { type Texture } from "@genroot/builder/modules/texture";
 import {
   type GeneratorDefV2,
   type GeneratorV2,
@@ -20,12 +18,11 @@ import {
 } from "@genroot/builder/v2/generatorV2";
 import { GeneratorRenderer } from "@genroot/builder/v2/generatorRenderer";
 import { GeneratorUI } from "@genroot/builder/v2/generatorUI";
-import { useLoadedTextures } from "@genroot/builder/v2/useLoadedTextures";
+import { LoadedTextureControl } from "@genroot/builder/v2/loadedTextureControl";
 import { AtlasControl } from "@genroot/builder/ui/controls/atlasControl";
 import { BooleanControl } from "@genroot/builder/ui/controls/booleanControl";
 import { ButtonControl } from "@genroot/builder/ui/controls/buttonControl";
 import { RangeControl } from "@genroot/builder/ui/controls/rangeControl";
-import { TextureControl } from "@genroot/builder/ui/controls/textureControl";
 import {
   type Flip,
   makeNextFlip,
@@ -62,7 +59,6 @@ import centerFoldTexture from "./textures/CenterFold.png";
 import thumbnailImage from "./thumbnail/v2-thumbnail-256.jpeg";
 
 const id = "minecraft-item-v2";
-const noTextures = new Map<string, Texture>();
 
 const name = "Minecraft Item (v2)";
 
@@ -493,10 +489,6 @@ function Component(): JSX.Element {
   const [glintOpacity, setGlintOpacity] = React.useState(255);
   const [glintXOffset, setGlintXOffset] = React.useState(0);
   const [glintYOffset, setGlintYOffset] = React.useState(0);
-  const glintChoiceState = useLoadedTextures(itemGlintTextureDefs);
-  const glintChoiceTextures = glintChoiceState.status === "ready"
-    ? glintChoiceState.textures
-    : noTextures;
 
   const textureVersion = findVersion(versionId);
   const selectedItemScale =
@@ -723,20 +715,14 @@ function Component(): JSX.Element {
             <div />
             <ButtonControl id="Clear" onClick={clearItems} color="Red" />
 
-            <TextureControl
+            <LoadedTextureControl
               id="Enchanted Glint"
+              definitions={itemGlintTextureDefs}
               standardWidth={128}
               standardHeight={128}
               choices={["1.20+", "Pre-1.20"]}
-              textures={glintChoiceTextures}
-              disabled={glintChoiceState.status !== "ready"}
-              statusMessage={
-                glintChoiceState.status === "loading"
-                  ? "Loading glint choices…"
-                  : glintChoiceState.status === "error"
-                    ? "Glint choices could not be loaded."
-                    : undefined
-              }
+              loadingMessage="Loading glint choices…"
+              errorMessage="Glint choices could not be loaded."
               onChange={(texture) => {
                 setGlintTexture(texture);
                 setGlintEnabled(texture !== null);
