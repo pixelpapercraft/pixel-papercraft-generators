@@ -13,7 +13,7 @@ const regions = (page: Page) =>
 test("minecraft creeper generator exposes its complete control contract", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-creeper");
+  await page.goto("/generator/minecraft-creeper-v2");
 
   // Skin has no enumerable presets, so the loaded-texture control presents only
   // its custom upload rather than an empty select.
@@ -29,7 +29,7 @@ test("minecraft creeper generator exposes its complete control contract", async 
 test("minecraft creeper generator matches the default screenshot", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-creeper");
+  await page.goto("/generator/minecraft-creeper-v2");
 
   const pageImage = outputPage(page);
   await expect(pageImage).toBeVisible();
@@ -43,7 +43,7 @@ test("minecraft creeper generator matches the default screenshot", async ({
 test("minecraft creeper generator renders a custom texture across the model", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-creeper");
+  await page.goto("/generator/minecraft-creeper-v2");
 
   const pageImage = outputPage(page);
   await page
@@ -68,7 +68,7 @@ test("minecraft creeper generator renders a custom texture across the model", as
 test("minecraft creeper generator hides folds and labels independently", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-creeper");
+  await page.goto("/generator/minecraft-creeper-v2");
 
   const pageImage = outputPage(page);
   const foldProbe = () => readPixel(pageImage, 229, 109);
@@ -95,7 +95,7 @@ test("minecraft creeper generator hides folds and labels independently", async (
 test("minecraft creeper generator composes action-figure foreground, folds, and labels", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-creeper");
+  await page.goto("/generator/minecraft-creeper-v2");
 
   const pageImage = outputPage(page);
   const actionNeckProbe = () => readPixel(pageImage, 60, 280);
