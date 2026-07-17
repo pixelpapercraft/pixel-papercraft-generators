@@ -25,6 +25,7 @@ import { generator as minecraftCreeperGeneratorDefV2 } from "@genroot/generators
 import { generator as minecraftCreeperCharacterGeneratorDefV2 } from "@genroot/generators/minecraftCreeperCharacterV2/minecraftCreeperCharacterV2Generator";
 import { generator as minecraftEndermanGeneratorDefV2 } from "@genroot/generators/minecraftEndermanV2/minecraftEndermanV2Generator";
 import { generator as minecraftEndermanCharacterGeneratorDefV2 } from "@genroot/generators/minecraftEndermanCharacterV2/minecraftEndermanCharacterV2Generator";
+import { generator as minecraftGolemGeneratorDefV2 } from "@genroot/generators/minecraftGolemV2/minecraftGolemV2Generator";
 import { generator as amogusBendableGenerator } from "@genroot/generators/amogusBendable/amogusBendableGenerator";
 import { generator as dalekModDalekGenerator } from "@genroot/generators/dalekModDalek/dalekModDalekGenerator";
 import { generator as minecraftActionFigureGenerator } from "@genroot/generators/minecraftActionFigure/minecraftActionFigureGenerator";
@@ -154,6 +155,7 @@ export const dev: AnyGenerator[] = isProductionEnvironment
       v2(minecraftCreeperCharacterGeneratorDefV2),
       v2(minecraftEndermanGeneratorDefV2),
       v2(minecraftEndermanCharacterGeneratorDefV2),
+      v2(minecraftGolemGeneratorDefV2),
     ];
 
 // Generator API coverage boards (one per API method group) are the Testing
