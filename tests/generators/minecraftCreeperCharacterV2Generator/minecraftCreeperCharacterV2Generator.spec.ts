@@ -55,7 +55,7 @@ const regions = (page: Page) =>
 test("minecraft creeper character generator exposes its controls", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-creeper-character");
+  await page.goto("/generator/minecraft-creeper-character-v2");
 
   const skin = skinSelect(page);
   await expect(skin).toHaveValue("Default");
@@ -76,7 +76,7 @@ test("minecraft creeper character generator exposes its controls", async ({
 test("minecraft creeper character generator matches the default screenshot", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-creeper-character");
+  await page.goto("/generator/minecraft-creeper-character-v2");
 
   const outputPages = page.getByTestId("generator-page-image");
   await expect(outputPages).toHaveCount(1);
@@ -93,7 +93,7 @@ test("minecraft creeper character generator matches the default screenshot", asy
 test("minecraft creeper character generator renders every skin preset and explicit None", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-creeper-character");
+  await page.goto("/generator/minecraft-creeper-character-v2");
 
   const skin = skinSelect(page);
   const pageImage = outputPage(page);
@@ -111,7 +111,7 @@ test("minecraft creeper character generator renders every skin preset and explic
 test("minecraft creeper character generator renders a custom uploaded skin", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-creeper-character");
+  await page.goto("/generator/minecraft-creeper-character-v2");
 
   const pageImage = outputPage(page);
   await page.getByLabel("Upload Skin skin file").setInputFiles(skinFixturePath);
@@ -128,7 +128,7 @@ test("minecraft creeper character generator renders a custom uploaded skin", asy
 test("minecraft creeper character generator hides every outer skin layer independently", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-creeper-character");
+  await page.goto("/generator/minecraft-creeper-character-v2");
 
   const pageImage = outputPage(page);
   await page.getByLabel("Upload Skin skin file").setInputFiles(skinFixturePath);
@@ -154,7 +154,7 @@ test("minecraft creeper character generator hides every outer skin layer indepen
 test("minecraft creeper character generator composes the Action Figure layout", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-creeper-character");
+  await page.goto("/generator/minecraft-creeper-character-v2");
 
   const pageImage = outputPage(page);
   const readNeck = () => readPixel(pageImage, 76, 254);
@@ -175,7 +175,7 @@ test("minecraft creeper character generator composes the Action Figure layout", 
 test("minecraft creeper character generator hides folds and labels independently", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-creeper-character");
+  await page.goto("/generator/minecraft-creeper-character-v2");
 
   const pageImage = outputPage(page);
   const readFold = () => readPixel(pageImage, 292, 150);
