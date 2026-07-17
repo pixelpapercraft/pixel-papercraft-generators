@@ -140,7 +140,7 @@ function Component(): JSX.Element {
             onChange={setSkinTexture}
           />
 
-          <GeneratorUI.BooleanInput
+          <GeneratorUI.BooleanControl
             label="Show Folds"
             checked={showFolds}
             onCheckedChange={setShowFolds}

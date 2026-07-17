@@ -137,13 +137,24 @@ describe("GeneratorUI.TextControl", () => {
   });
 });
 
-describe("GeneratorUI deprecated aliases", () => {
-  it("are the same components as their new names", () => {
-    // These keep the *Input spelling working until every V2 generator is
-    // repointed; they must never drift into separate implementations.
-    expect(GeneratorUI.BooleanInput).toBe(GeneratorUI.BooleanControl);
-    expect(GeneratorUI.SelectInput).toBe(GeneratorUI.SelectControl);
-    expect(GeneratorUI.RangeInput).toBe(GeneratorUI.RangeControl);
-    expect(GeneratorUI.Text).toBe(GeneratorUI.TextControl);
+describe("GeneratorUI surface", () => {
+  it("exposes exactly the members V2 authors may use", () => {
+    // GeneratorUI is one of only two runtime surfaces a V2 generator imports,
+    // so its member list is a public contract rather than an implementation
+    // detail. Pinning it means adding or removing a control is a deliberate
+    // edit here, and it catches the deprecated *Input aliases coming back.
+    expect(Object.keys(GeneratorUI).sort()).toEqual([
+      "AtlasControl",
+      "BooleanControl",
+      "ButtonControl",
+      "History",
+      "Instructions",
+      "LoadedTextureControl",
+      "MediaHero",
+      "RangeControl",
+      "SelectControl",
+      "TextControl",
+      "TextureControl",
+    ]);
   });
 });

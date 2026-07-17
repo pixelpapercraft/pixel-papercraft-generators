@@ -36,6 +36,14 @@ Read and follow rules from any category whose "Read when" keywords match your cu
   - Shared contracts and framework behavior can live in `src/builder`.
   - Generator-owned assets, version registries, and other content should stay under `src/generators`, typically in `_common` or the specific generator directory.
 
+## V2 generator surface
+
+- A V2 generator (`src/generators/*V2/`) imports from exactly one place inside `src/builder`: the `@genroot/builder/v2` barrel. It exports two runtime surfaces — `GeneratorRenderer` and `GeneratorUI` — plus the shared type vocabulary.
+- **Never import `@genroot/builder/ui/*` or `@genroot/builder/modules/*` from a V2 generator**, including type-only imports. Those are v1's and are being retired once every generator is migrated. An eslint rule enforces this; if you find yourself wanting to add an exception, add the export to the barrel instead.
+- Every pre-built generic control is reached through `GeneratorUI` (`GeneratorUI.BooleanControl`, `GeneratorUI.LoadedTextureControl`, …), not imported directly.
+- Controls that are **not** generic — anything that knows what a Minecraft skin, tint, or glint is — are generator content, not framework. They live under `src/generators/_common/` (e.g. `_common/skins/skinControl`, `_common/tintSelector`, `_common/plugins/glint`) and are deliberately absent from `GeneratorUI`.
+- When migrating a generator to V2, copying an existing V2 generator as a template is fine — but it is also how leaks come back, so run `npm run lint` before assuming the imports are right.
+
 ## Verification
 
 - Use a test-driven mindset for all work.
