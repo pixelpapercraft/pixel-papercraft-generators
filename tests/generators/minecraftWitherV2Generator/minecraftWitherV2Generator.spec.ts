@@ -54,14 +54,17 @@ test("minecraft wither generator renders its fallback, preset, and explicit None
   expect(fallback).toMatch(/^data:image\/png/);
 
   await witherSkin.selectOption("Minecraft Wither");
-  await expect.poll(() => pageImageUrl(page)).toBe(fallback);
+  const pageImage = outputPage(page);
+  await renderImageAtNaturalSize(pageImage);
+  await expect(pageImage).toHaveScreenshot(
+    "minecraft-wither-default-page-1.png"
+  );
 
   await witherSkin.selectOption("");
   await expect.poll(() => pageImageUrl(page)).not.toBe(fallback);
   const none = await pageImageUrl(page);
   expect(none).toMatch(/^data:image\/png/);
 
-  const pageImage = outputPage(page);
   await renderImageAtNaturalSize(pageImage);
   await expect(pageImage).toHaveScreenshot("minecraft-wither-none-page-1.png");
 });
