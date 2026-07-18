@@ -1,15 +1,19 @@
 "use client";
 
-import type {
-  GeneratorDef,
-  ImageDef,
-  HistoryDef,
-  TextureDef,
-  ScriptDef,
-  ThumbnailDef,
-  VideoDef,
-} from "@genroot/builder/modules/generatorDef";
-import { type Generator } from "@genroot/builder/modules/generator";
+import React from "react";
+import {
+  GeneratorRenderer,
+  GeneratorUI,
+  type GeneratorDefV2,
+  type GeneratorV2,
+  type HistoryDef,
+  type ImageDef,
+  type RenderContext,
+  type SelectOption,
+  type TextureDef,
+  type ThumbnailDef,
+  type VideoDef,
+} from "@genroot/builder/v2";
 
 import thumbnailImage from "./thumbnail/thumbnail-v2-256.jpeg";
 import villagerImage from "./images/Villager.png";
@@ -60,9 +64,9 @@ import zombieShepherdImage from "./textures/zombieshepherd.png";
 import zombieToolsmithImage from "./textures/zombietoolsmith.png";
 import zombieWeaponsmithImage from "./textures/zombieweaponsmith.png";
 
-const id = "minecraft-villager";
+const id = "minecraft-villager-v2";
 
-const name = "Minecraft Villager";
+const name = "Minecraft Villager (v2)";
 
 const history: HistoryDef = [
   "19 May 2022 PaperDoggy - Initial script developed.",
@@ -339,23 +343,57 @@ const textures: TextureDef[] = [
   },
 ];
 
-const script: ScriptDef = (generator: Generator) => {
+type VillagerType = "Normal" | "Zombie";
+
+type VillagerBiome =
+  | "Plains"
+  | "Desert"
+  | "Jungle"
+  | "Savanna"
+  | "Snow"
+  | "Swamp"
+  | "Taiga";
+
+type VillagerProfession =
+  | "None"
+  | "Armorer"
+  | "Butcher"
+  | "Cartographer"
+  | "Cleric"
+  | "Farmer"
+  | "Fisherman"
+  | "Fletcher"
+  | "Leatherworker"
+  | "Librarian"
+  | "Mason"
+  | "Nitwit"
+  | "Shepherd"
+  | "Toolsmith"
+  | "Weaponsmith";
+
+type MinecraftVillagerProps = {
+  type: VillagerType;
+  biome: VillagerBiome;
+  profession: VillagerProfession;
+};
+
+const render = (ctx: RenderContext, props: MinecraftVillagerProps): void => {
   const drawing = {
     drawHatOverlay: (ox: number, oy: number, texture: string) => {
-      generator.drawTexture(texture, [8, 0, 8, 8], [ox, oy - 65, 64, 64]);
-      generator.drawTexture(texture, [8, 8, 8, 10], [ox, oy, 64, 80]);
-      generator.drawTexture(texture, [0, 8, 8, 10], [ox - 65, oy, 64, 80]);
-      generator.drawTexture(texture, [16, 8, 8, 10], [ox + 65, oy, 64, 80]);
-      generator.drawTexture(texture, [24, 8, 8, 10], [ox + 130, oy, 64, 80]);
-      generator.drawTexture(texture, [8 + 32, 0, 8, 8], [ox, oy - 65, 64, 64]);
-      generator.drawTexture(texture, [8 + 32, 8, 8, 10], [ox, oy, 64, 80]);
-      generator.drawTexture(texture, [0 + 32, 8, 8, 10], [ox - 65, oy, 64, 80]);
-      generator.drawTexture(
+      ctx.drawTexture(texture, [8, 0, 8, 8], [ox, oy - 65, 64, 64]);
+      ctx.drawTexture(texture, [8, 8, 8, 10], [ox, oy, 64, 80]);
+      ctx.drawTexture(texture, [0, 8, 8, 10], [ox - 65, oy, 64, 80]);
+      ctx.drawTexture(texture, [16, 8, 8, 10], [ox + 65, oy, 64, 80]);
+      ctx.drawTexture(texture, [24, 8, 8, 10], [ox + 130, oy, 64, 80]);
+      ctx.drawTexture(texture, [8 + 32, 0, 8, 8], [ox, oy - 65, 64, 64]);
+      ctx.drawTexture(texture, [8 + 32, 8, 8, 10], [ox, oy, 64, 80]);
+      ctx.drawTexture(texture, [0 + 32, 8, 8, 10], [ox - 65, oy, 64, 80]);
+      ctx.drawTexture(
         texture,
         [16 + 32, 8, 8, 10],
         [ox + 65, oy, 64, 80]
       );
-      generator.drawTexture(
+      ctx.drawTexture(
         texture,
         [24 + 32, 8, 8, 10],
         [ox + 130, oy, 64, 80]
@@ -363,11 +401,11 @@ const script: ScriptDef = (generator: Generator) => {
     },
 
     drawClothes: (ox: number, oy: number, texture: string) => {
-      generator.drawTexture(texture, [6, 38, 8, 6], [ox, oy - 53, 68, 52]);
-      generator.drawTexture(texture, [6, 44, 8, 22], [ox, oy, 68, 176]);
-      generator.drawTexture(texture, [0, 44, 6, 22], [ox - 53, oy, 52, 176]);
-      generator.drawTexture(texture, [14, 44, 6, 22], [ox + 69, oy, 52, 176]);
-      generator.drawTexture(
+      ctx.drawTexture(texture, [6, 38, 8, 6], [ox, oy - 53, 68, 52]);
+      ctx.drawTexture(texture, [6, 44, 8, 22], [ox, oy, 68, 176]);
+      ctx.drawTexture(texture, [0, 44, 6, 22], [ox - 53, oy, 52, 176]);
+      ctx.drawTexture(texture, [14, 44, 6, 22], [ox + 69, oy, 52, 176]);
+      ctx.drawTexture(
         texture,
         [20, 44, 8, 22],
         [ox + 69 + 53, oy, 68, 176]
@@ -375,25 +413,25 @@ const script: ScriptDef = (generator: Generator) => {
     },
 
     drawBodyOverlay: (ox: number, oy: number, texture: string) => {
-      generator.drawTexture(texture, [22, 26 - 6, 8, 6], [ox, oy - 49, 64, 48]);
-      generator.drawTexture(
+      ctx.drawTexture(texture, [22, 26 - 6, 8, 6], [ox, oy - 49, 64, 48]);
+      ctx.drawTexture(
         texture,
         [22 + 8, 26 - 6, 8, 6],
         [ox, oy + 97, 64, 48],
         { flip: "Vertical" }
       );
-      generator.drawTexture(texture, [22, 26, 8, 12], [ox, oy, 64, 96]);
-      generator.drawTexture(
+      ctx.drawTexture(texture, [22, 26, 8, 12], [ox, oy, 64, 96]);
+      ctx.drawTexture(
         texture,
         [22 - 6, 26, 6, 12],
         [ox - 49, oy, 48, 96]
       );
-      generator.drawTexture(
+      ctx.drawTexture(
         texture,
         [22 + 8, 26, 6, 12],
         [ox + 65, oy, 48, 96]
       );
-      generator.drawTexture(
+      ctx.drawTexture(
         texture,
         [22 + 14, 26, 8, 12],
         [ox + 65 + 49, oy, 64, 96]
@@ -401,17 +439,17 @@ const script: ScriptDef = (generator: Generator) => {
     },
 
     drawLeftLegOverlay: (ox: number, oy: number, texture: string) => {
-      generator.drawTexture(texture, [4, 26 - 4, 4, 4], [ox, oy - 33, 32, 32]);
-      generator.drawTexture(
+      ctx.drawTexture(texture, [4, 26 - 4, 4, 4], [ox, oy - 33, 32, 32]);
+      ctx.drawTexture(
         texture,
         [4 + 4, 26 - 4, 4, 4],
         [ox, oy + 97, 32, 32],
         { flip: "Vertical" }
       );
-      generator.drawTexture(texture, [4, 26, 4, 12], [ox, oy, 32, 96]);
-      generator.drawTexture(texture, [4 - 4, 26, 4, 12], [ox - 33, oy, 32, 96]);
-      generator.drawTexture(texture, [4 + 4, 26, 4, 12], [ox + 33, oy, 32, 96]);
-      generator.drawTexture(
+      ctx.drawTexture(texture, [4, 26, 4, 12], [ox, oy, 32, 96]);
+      ctx.drawTexture(texture, [4 - 4, 26, 4, 12], [ox - 33, oy, 32, 96]);
+      ctx.drawTexture(texture, [4 + 4, 26, 4, 12], [ox + 33, oy, 32, 96]);
+      ctx.drawTexture(
         texture,
         [4 + 8, 26, 4, 12],
         [ox + 33 + 33, oy, 32, 96]
@@ -419,31 +457,31 @@ const script: ScriptDef = (generator: Generator) => {
     },
 
     drawRightLegOverlay: (ox: number, oy: number, texture: string) => {
-      generator.drawTexture(texture, [4, 26 - 4, 4, 4], [ox, oy - 33, 32, 32], {
+      ctx.drawTexture(texture, [4, 26 - 4, 4, 4], [ox, oy - 33, 32, 32], {
         flip: "Horizontal",
       });
-      generator.drawTexture(
+      ctx.drawTexture(
         texture,
         [4 + 4, 26 - 4, 4, 4],
         [ox, oy + 97, 32, 32],
         { rotate: 180.0 }
       );
-      generator.drawTexture(texture, [4, 26, 4, 12], [ox, oy, 32, 96], {
+      ctx.drawTexture(texture, [4, 26, 4, 12], [ox, oy, 32, 96], {
         flip: "Horizontal",
       });
-      generator.drawTexture(
+      ctx.drawTexture(
         texture,
         [4 + 4, 26, 4, 12],
         [ox - 33, oy, 32, 96],
         { flip: "Horizontal" }
       );
-      generator.drawTexture(
+      ctx.drawTexture(
         texture,
         [4 - 4, 26, 4, 12],
         [ox + 33, oy, 32, 96],
         { flip: "Horizontal" }
       );
-      generator.drawTexture(
+      ctx.drawTexture(
         texture,
         [4 + 8, 26, 4, 12],
         [ox - 33 - 33, oy, 32, 96],
@@ -452,17 +490,17 @@ const script: ScriptDef = (generator: Generator) => {
     },
 
     drawLeftArmOverlay: (ox: number, oy: number, texture: string) => {
-      generator.drawTexture(texture, [48, 26 - 4, 4, 4], [ox, oy - 33, 32, 32]);
-      generator.drawTexture(
+      ctx.drawTexture(texture, [48, 26 - 4, 4, 4], [ox, oy - 33, 32, 32]);
+      ctx.drawTexture(
         texture,
         [48 + 4, 26 - 4, 4, 4],
         [ox, oy + 65, 32, 32],
         { flip: "Vertical" }
       );
-      generator.drawTexture(texture, [48, 26, 4, 8], [ox, oy, 32, 64]);
-      generator.drawTexture(texture, [48 - 4, 26, 4, 8], [ox - 33, oy, 32, 64]);
-      generator.drawTexture(texture, [48 + 4, 26, 4, 8], [ox + 33, oy, 32, 64]);
-      generator.drawTexture(
+      ctx.drawTexture(texture, [48, 26, 4, 8], [ox, oy, 32, 64]);
+      ctx.drawTexture(texture, [48 - 4, 26, 4, 8], [ox - 33, oy, 32, 64]);
+      ctx.drawTexture(texture, [48 + 4, 26, 4, 8], [ox + 33, oy, 32, 64]);
+      ctx.drawTexture(
         texture,
         [48 + 8, 26, 4, 8],
         [ox + 33 + 33, oy, 32, 64]
@@ -470,34 +508,34 @@ const script: ScriptDef = (generator: Generator) => {
     },
 
     drawRightArmOverlay: (ox: number, oy: number, texture: string) => {
-      generator.drawTexture(
+      ctx.drawTexture(
         texture,
         [48, 26 - 4, 4, 4],
         [ox, oy - 33, 32, 32],
         { flip: "Horizontal" }
       );
-      generator.drawTexture(
+      ctx.drawTexture(
         texture,
         [48 + 4, 26 - 4, 4, 4],
         [ox, oy + 65, 32, 32],
         { rotate: 180.0 }
       );
-      generator.drawTexture(texture, [48, 26, 4, 8], [ox, oy, 32, 64], {
+      ctx.drawTexture(texture, [48, 26, 4, 8], [ox, oy, 32, 64], {
         flip: "Horizontal",
       });
-      generator.drawTexture(
+      ctx.drawTexture(
         texture,
         [48 + 4, 26, 4, 8],
         [ox - 33, oy, 32, 64],
         { flip: "Horizontal" }
       );
-      generator.drawTexture(
+      ctx.drawTexture(
         texture,
         [48 - 4, 26, 4, 8],
         [ox + 33, oy, 32, 64],
         { flip: "Horizontal" }
       );
-      generator.drawTexture(
+      ctx.drawTexture(
         texture,
         [48 + 8, 26, 4, 8],
         [ox - 33 - 33, oy, 32, 64],
@@ -506,17 +544,17 @@ const script: ScriptDef = (generator: Generator) => {
     },
 
     drawMiddleArmOverlay: (ox: number, oy: number, texture: string) => {
-      generator.drawTexture(texture, [44, 42 - 4, 8, 4], [ox, oy - 33, 64, 32]);
-      generator.drawTexture(
+      ctx.drawTexture(texture, [44, 42 - 4, 8, 4], [ox, oy - 33, 64, 32]);
+      ctx.drawTexture(
         texture,
         [44 + 8, 42 - 4, 8, 4],
         [ox, oy + 33, 64, 32],
         { flip: "Vertical" }
       );
-      generator.drawTexture(texture, [44, 42, 8, 4], [ox, oy, 64, 32]);
-      generator.drawTexture(texture, [44 - 4, 42, 4, 4], [ox - 33, oy, 32, 32]);
-      generator.drawTexture(texture, [44 + 8, 42, 4, 4], [ox + 65, oy, 32, 32]);
-      generator.drawTexture(
+      ctx.drawTexture(texture, [44, 42, 8, 4], [ox, oy, 64, 32]);
+      ctx.drawTexture(texture, [44 - 4, 42, 4, 4], [ox - 33, oy, 32, 32]);
+      ctx.drawTexture(texture, [44 + 8, 42, 4, 4], [ox + 65, oy, 32, 32]);
+      ctx.drawTexture(
         texture,
         [44 + 12, 42, 8, 4],
         [ox + 33 + 65, oy, 64, 32]
@@ -524,25 +562,25 @@ const script: ScriptDef = (generator: Generator) => {
     },
 
     drawZombieLeftArmOverlay: (ox: number, oy: number, texture: string) => {
-      generator.drawTexture(texture, [48, 26 - 4, 4, 4], [ox, oy - 33, 32, 32]);
-      generator.drawTexture(
+      ctx.drawTexture(texture, [48, 26 - 4, 4, 4], [ox, oy - 33, 32, 32]);
+      ctx.drawTexture(
         texture,
         [48 + 4, 26 - 4, 4, 4],
         [ox, oy + 97, 32, 32],
         { flip: "Vertical" }
       );
-      generator.drawTexture(texture, [48, 26, 4, 12], [ox, oy, 32, 96]);
-      generator.drawTexture(
+      ctx.drawTexture(texture, [48, 26, 4, 12], [ox, oy, 32, 96]);
+      ctx.drawTexture(
         texture,
         [48 - 4, 26, 4, 12],
         [ox - 33, oy, 32, 96]
       );
-      generator.drawTexture(
+      ctx.drawTexture(
         texture,
         [48 + 4, 26, 4, 12],
         [ox + 33, oy, 32, 96]
       );
-      generator.drawTexture(
+      ctx.drawTexture(
         texture,
         [48 + 8, 26, 4, 12],
         [ox + 33 + 33, oy, 32, 96]
@@ -550,34 +588,34 @@ const script: ScriptDef = (generator: Generator) => {
     },
 
     drawZombieRightArmOverlay: (ox: number, oy: number, texture: string) => {
-      generator.drawTexture(
+      ctx.drawTexture(
         texture,
         [48, 26 - 4, 4, 4],
         [ox, oy - 33, 32, 32],
         { flip: "Horizontal" }
       );
-      generator.drawTexture(
+      ctx.drawTexture(
         texture,
         [48 + 4, 26 - 4, 4, 4],
         [ox, oy + 97, 32, 32],
         { rotate: 180.0 }
       );
-      generator.drawTexture(texture, [48, 26, 4, 12], [ox, oy, 32, 96], {
+      ctx.drawTexture(texture, [48, 26, 4, 12], [ox, oy, 32, 96], {
         flip: "Horizontal",
       });
-      generator.drawTexture(
+      ctx.drawTexture(
         texture,
         [48 + 4, 26, 4, 12],
         [ox - 33, oy, 32, 96],
         { flip: "Horizontal" }
       );
-      generator.drawTexture(
+      ctx.drawTexture(
         texture,
         [48 - 4, 26, 4, 12],
         [ox + 33, oy, 32, 96],
         { flip: "Horizontal" }
       );
-      generator.drawTexture(
+      ctx.drawTexture(
         texture,
         [48 + 8, 26, 4, 12],
         [ox - 33 - 33, oy, 32, 96],
@@ -586,76 +624,32 @@ const script: ScriptDef = (generator: Generator) => {
     },
   };
 
-  generator.defineSelectInput("Type", ["Normal", "Zombie"]);
-
-  generator.defineSelectInput("Biome", [
-    "Plains",
-    "Desert",
-    "Jungle",
-    "Savanna",
-    "Snow",
-    "Swamp",
-    "Taiga",
-  ]);
-
-  generator.defineSelectInput("Profession", [
-    "None",
-    "Armorer",
-    "Butcher",
-    "Cartographer",
-    "Cleric",
-    "Farmer",
-    "Fisherman",
-    "Fletcher",
-    "Leatherworker",
-    "Librarian",
-    "Mason",
-    "Nitwit",
-    "Shepherd",
-    "Toolsmith",
-    "Weaponsmith",
-  ]);
-
-  const villagertype = generator.getSelectInputValue("Type") === "Normal";
-  const zombietype = generator.getSelectInputValue("Type") === "Zombie";
-  const professionArmorer =
-    generator.getSelectInputValue("Profession") === "Armorer";
-  const professionButcher =
-    generator.getSelectInputValue("Profession") === "Butcher";
-  const professionCartographer =
-    generator.getSelectInputValue("Profession") === "Cartographer";
-  const professionCleric =
-    generator.getSelectInputValue("Profession") === "Cleric";
-  const professionFarmer =
-    generator.getSelectInputValue("Profession") === "Farmer";
-  const professionFisherman =
-    generator.getSelectInputValue("Profession") === "Fisherman";
-  const professionFletcher =
-    generator.getSelectInputValue("Profession") === "Fletcher";
-  const professionLeatherworker =
-    generator.getSelectInputValue("Profession") === "Leatherworker";
-  const professionLibrarian =
-    generator.getSelectInputValue("Profession") === "Librarian";
-  const professionMason =
-    generator.getSelectInputValue("Profession") === "Mason";
-  const professionNitwit =
-    generator.getSelectInputValue("Profession") === "Nitwit";
-  const professionShepherd =
-    generator.getSelectInputValue("Profession") === "Shepherd";
-  const professionToolsmith =
-    generator.getSelectInputValue("Profession") === "Toolsmith";
-  const professionWeaponsmith =
-    generator.getSelectInputValue("Profession") === "Weaponsmith";
-  const plains = generator.getSelectInputValue("Biome") === "Plains";
-  const desert = generator.getSelectInputValue("Biome") === "Desert";
-  const jungle = generator.getSelectInputValue("Biome") === "Jungle";
-  const savanna = generator.getSelectInputValue("Biome") === "Savanna";
-  const snow = generator.getSelectInputValue("Biome") === "Snow";
-  const swamp = generator.getSelectInputValue("Biome") === "Swamp";
-  const taiga = generator.getSelectInputValue("Biome") === "Taiga";
+  const villagertype = props.type === "Normal";
+  const zombietype = props.type === "Zombie";
+  const professionArmorer = props.profession === "Armorer";
+  const professionButcher = props.profession === "Butcher";
+  const professionCartographer = props.profession === "Cartographer";
+  const professionCleric = props.profession === "Cleric";
+  const professionFarmer = props.profession === "Farmer";
+  const professionFisherman = props.profession === "Fisherman";
+  const professionFletcher = props.profession === "Fletcher";
+  const professionLeatherworker = props.profession === "Leatherworker";
+  const professionLibrarian = props.profession === "Librarian";
+  const professionMason = props.profession === "Mason";
+  const professionNitwit = props.profession === "Nitwit";
+  const professionShepherd = props.profession === "Shepherd";
+  const professionToolsmith = props.profession === "Toolsmith";
+  const professionWeaponsmith = props.profession === "Weaponsmith";
+  const plains = props.biome === "Plains";
+  const desert = props.biome === "Desert";
+  const jungle = props.biome === "Jungle";
+  const savanna = props.biome === "Savanna";
+  const snow = props.biome === "Snow";
+  const swamp = props.biome === "Swamp";
+  const taiga = props.biome === "Taiga";
 
   if (villagertype) {
-    generator.drawImage("Villager", [0, 0]);
+    ctx.drawImage("Villager", [0, 0]);
     //Biome Overlay
     if (
       !(
@@ -787,7 +781,7 @@ const script: ScriptDef = (generator: Generator) => {
       drawing.drawLeftArmOverlay(56, 476, "Farmer");
       drawing.drawRightArmOverlay(517, 379, "Farmer");
       drawing.drawMiddleArmOverlay(46, 643, "Farmer");
-      generator.drawImage("FarmerHat", [316, 12]);
+      ctx.drawImage("FarmerHat", [316, 12]);
     }
     if (professionFisherman) {
       drawing.drawHatOverlay(82, 83, "Fisherman");
@@ -797,7 +791,7 @@ const script: ScriptDef = (generator: Generator) => {
       drawing.drawLeftArmOverlay(56, 476, "Fisherman");
       drawing.drawRightArmOverlay(517, 379, "Fisherman");
       drawing.drawMiddleArmOverlay(46, 643, "Fisherman");
-      generator.drawImage("FishermanHat", [316, 12]);
+      ctx.drawImage("FishermanHat", [316, 12]);
     }
     if (professionFletcher) {
       drawing.drawHatOverlay(82, 83, "Fletcher");
@@ -840,7 +834,7 @@ const script: ScriptDef = (generator: Generator) => {
       drawing.drawLeftArmOverlay(56, 476, "Shepherd");
       drawing.drawRightArmOverlay(517, 379, "Shepherd");
       drawing.drawMiddleArmOverlay(46, 643, "Shepherd");
-      generator.drawImage("ShepherdHat", [316, 12]);
+      ctx.drawImage("ShepherdHat", [316, 12]);
     }
     if (professionToolsmith) {
       drawing.drawHatOverlay(82, 83, "Toolsmith");
@@ -858,7 +852,7 @@ const script: ScriptDef = (generator: Generator) => {
     }
   }
   if (zombietype) {
-    generator.drawImage("ZombieVillager", [0, 0]);
+    ctx.drawImage("ZombieVillager", [0, 0]);
     //Biome Overlay
     if (
       !(
@@ -978,7 +972,7 @@ const script: ScriptDef = (generator: Generator) => {
       drawing.drawClothes(330, 550, "ZombieFarmer");
       drawing.drawLeftArmOverlay(56, 476, "ZombieFarmer");
       drawing.drawRightArmOverlay(517, 379, "ZombieFarmer");
-      generator.drawImage("FarmerHat", [316, 12]);
+      ctx.drawImage("FarmerHat", [316, 12]);
     }
     if (professionFisherman) {
       drawing.drawHatOverlay(82, 83, "ZombieFisherman");
@@ -987,7 +981,7 @@ const script: ScriptDef = (generator: Generator) => {
       drawing.drawRightLegOverlay(267, 370, "ZombieFisherman");
       drawing.drawLeftArmOverlay(56, 476, "ZombieFisherman");
       drawing.drawRightArmOverlay(517, 379, "ZombieFisherman");
-      generator.drawImage("FishermanHat", [316, 12]);
+      ctx.drawImage("FishermanHat", [316, 12]);
     }
     if (professionFletcher) {
       drawing.drawHatOverlay(82, 83, "ZombieFletcher");
@@ -1024,7 +1018,7 @@ const script: ScriptDef = (generator: Generator) => {
       drawing.drawClothes(330, 550, "ZombieShepherd");
       drawing.drawLeftArmOverlay(56, 476, "ZombieShepherd");
       drawing.drawRightArmOverlay(517, 379, "ZombieShepherd");
-      generator.drawImage("ShepherdHat", [316, 12]);
+      ctx.drawImage("ShepherdHat", [316, 12]);
     }
     if (professionToolsmith) {
       drawing.drawHatOverlay(82, 83, "ZombieToolsmith");
@@ -1041,14 +1035,125 @@ const script: ScriptDef = (generator: Generator) => {
   }
 };
 
-export const generator: GeneratorDef = {
+const minecraftVillagerGeneratorV2: GeneratorV2<MinecraftVillagerProps> = {
+  id,
+  name,
+  images,
+  textures,
+  render,
+};
+
+const typeOptions: SelectOption[] = [
+  { id: "Normal", label: "Normal" },
+  { id: "Zombie", label: "Zombie" },
+];
+
+const biomeNames: VillagerBiome[] = [
+  "Plains",
+  "Desert",
+  "Jungle",
+  "Savanna",
+  "Snow",
+  "Swamp",
+  "Taiga",
+];
+
+const biomeOptions: SelectOption[] = biomeNames.map((biomeName) => ({
+  id: biomeName,
+  label: biomeName,
+}));
+
+const professionNames: VillagerProfession[] = [
+  "None",
+  "Armorer",
+  "Butcher",
+  "Cartographer",
+  "Cleric",
+  "Farmer",
+  "Fisherman",
+  "Fletcher",
+  "Leatherworker",
+  "Librarian",
+  "Mason",
+  "Nitwit",
+  "Shepherd",
+  "Toolsmith",
+  "Weaponsmith",
+];
+
+const professionOptions: SelectOption[] = professionNames.map(
+  (professionName) => ({
+    id: professionName,
+    label: professionName,
+  })
+);
+
+const toVillagerType = (value: string): VillagerType =>
+  value === "Zombie" ? "Zombie" : "Normal";
+
+const toVillagerBiome = (value: string): VillagerBiome =>
+  biomeNames.find((biomeName) => biomeName === value) ?? "Plains";
+
+const toVillagerProfession = (value: string): VillagerProfession =>
+  professionNames.find((professionName) => professionName === value) ??
+  "None";
+
+function Component(): JSX.Element {
+  const [type, setType] = React.useState<VillagerType>("Normal");
+  const [biome, setBiome] = React.useState<VillagerBiome>("Plains");
+  const [profession, setProfession] =
+    React.useState<VillagerProfession>("None");
+
+  const rendererProps: MinecraftVillagerProps = { type, biome, profession };
+
+  return (
+    <div>
+      <GeneratorUI.MediaHero video={video} thumbnail={thumbnail} />
+
+      <div className="lg:flex gap-8">
+        <div className="flex-1 min-w-0" data-testid="generator-sidebar">
+          <div className="w-full bg-gray-100 p-8 space-y-4">
+            <GeneratorUI.SelectControl
+              label="Type"
+              options={typeOptions}
+              value={type}
+              onValueChange={(value) => setType(toVillagerType(value))}
+            />
+
+            <GeneratorUI.SelectControl
+              label="Biome"
+              options={biomeOptions}
+              value={biome}
+              onValueChange={(value) => setBiome(toVillagerBiome(value))}
+            />
+
+            <GeneratorUI.SelectControl
+              label="Profession"
+              options={professionOptions}
+              value={profession}
+              onValueChange={(value) =>
+                setProfession(toVillagerProfession(value))
+              }
+            />
+          </div>
+        </div>
+
+        <div className="flex-1 min-w-0">
+          <GeneratorRenderer
+            generator={minecraftVillagerGeneratorV2}
+            props={rendererProps}
+          />
+        </div>
+      </div>
+
+      <GeneratorUI.History history={history} />
+    </div>
+  );
+}
+
+export const generator: GeneratorDefV2 = {
   id,
   name,
   thumbnail,
-  video,
-  instructions: null,
-  images,
-  textures,
-  script,
-  history,
+  Component,
 };
