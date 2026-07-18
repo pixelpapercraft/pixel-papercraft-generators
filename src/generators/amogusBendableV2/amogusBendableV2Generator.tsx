@@ -189,13 +189,18 @@ function Component(): JSX.Element {
 
   return (
     <div>
-      <GeneratorUI.MediaHero video={video} thumbnail={thumbnail} />
+      <div className="lg:flex gap-8 mb-8">
+        <div className="flex-1 min-w-0">
+          <GeneratorUI.MediaHero video={video} thumbnail={thumbnail} />
+        </div>
+        <div className="flex-1 min-w-0">
+          <GeneratorUI.Instructions markdown={instructions} collapsible={false} />
+        </div>
+      </div>
 
       <div className="lg:flex gap-8">
         <div className="flex-1 min-w-0" data-testid="generator-sidebar">
           <div className="w-full bg-gray-100 p-8 space-y-4">
-            <GeneratorUI.Instructions markdown={instructions} />
-
             <GeneratorUI.SelectControl
               label="Color"
               options={colorOptions}
