@@ -50,7 +50,7 @@ const presetExpectations: PresetExpectation[] = [
 
 // Head front-face probe: destination rect for the head's front face is
 // { x: 103, y: 83, w: 64, h: 80 } (ox=39,oy=19).
-const headProbe = { x: 135, y: 123 };
+const headProbe = { x: 136, y: 124 };
 
 // With no skin loaded and no static "Skin" texture, "None" renders nothing, so
 // the head probe reads the white page background.
@@ -123,7 +123,7 @@ const damageChoices = ["Low", "Medium", "High"];
 // A pixel cracked only by the heavier "High" sheet: "Low" leaves it as body
 // colour, "High" darkens it — proving the presets are distinct textures
 // rather than the same one wired three times.
-const damageDistinctProbe = { x: 135, y: 115 };
+const damageDistinctProbe = { x: 138, y: 118 };
 const damageDistinctBody: Rgba = { r: 155, g: 113, b: 91, a: 255 };
 const damageDistinctHigh: Rgba = { r: 14, g: 0, b: 0, a: 255 };
 
