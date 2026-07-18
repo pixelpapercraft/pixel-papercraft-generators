@@ -51,9 +51,9 @@ const currentSrc = async (pageImage: Locator): Promise<string> => {
   return src ?? "";
 };
 
-const ROUTE = "/generator/minecraft-villager";
+const ROUTE = "/generator/minecraft-villager-v2";
 
-test("minecraft villager generator exposes its complete control contract", async ({
+test("minecraft villager v2 generator exposes its complete control contract", async ({
   page,
 }) => {
   await page.goto(ROUTE);
@@ -72,7 +72,7 @@ test("minecraft villager generator exposes its complete control contract", async
   await expect(page.getByLabel(/Upload/)).toHaveCount(0);
 });
 
-test("minecraft villager generator matches the default composition", async ({
+test("minecraft villager v2 generator matches the default composition", async ({
   page,
 }) => {
   await page.goto(ROUTE);
@@ -86,7 +86,7 @@ test("minecraft villager generator matches the default composition", async ({
   );
 });
 
-test("minecraft villager generator renders every biome distinctly", async ({
+test("minecraft villager v2 generator renders every biome distinctly", async ({
   page,
 }) => {
   await page.goto(ROUTE);
@@ -107,7 +107,7 @@ test("minecraft villager generator renders every biome distinctly", async ({
   expect(rendered.size).toBe(biomes.length);
 });
 
-test("minecraft villager generator renders both villager types distinctly", async ({
+test("minecraft villager v2 generator renders both villager types distinctly", async ({
   page,
 }) => {
   await page.goto(ROUTE);
@@ -128,7 +128,7 @@ test("minecraft villager generator renders both villager types distinctly", asyn
   expect(rendered.size).toBe(types.length);
 });
 
-test("minecraft villager generator renders every profession distinctly", async ({
+test("minecraft villager v2 generator renders every profession distinctly", async ({
   page,
 }) => {
   await page.goto(ROUTE);
@@ -152,7 +152,7 @@ test("minecraft villager generator renders every profession distinctly", async (
   expect(rendered.size).toBe(professions.length);
 });
 
-test("minecraft villager generator matches the zombie composition", async ({
+test("minecraft villager v2 generator matches the zombie composition", async ({
   page,
 }) => {
   await page.goto(ROUTE);
@@ -168,7 +168,7 @@ test("minecraft villager generator matches the zombie composition", async ({
   );
 });
 
-test("minecraft villager generator matches a savanna biome composition", async ({
+test("minecraft villager v2 generator matches a savanna biome composition", async ({
   page,
 }) => {
   await page.goto(ROUTE);
@@ -184,7 +184,7 @@ test("minecraft villager generator matches a savanna biome composition", async (
   );
 });
 
-test("minecraft villager generator matches the farmer profession composition", async ({
+test("minecraft villager v2 generator matches the farmer profession composition", async ({
   page,
 }) => {
   await page.goto(ROUTE);
@@ -200,7 +200,7 @@ test("minecraft villager generator matches the farmer profession composition", a
   );
 });
 
-test("minecraft villager generator matches the butcher profession composition", async ({
+test("minecraft villager v2 generator matches the butcher profession composition", async ({
   page,
 }) => {
   await page.goto(ROUTE);
@@ -216,7 +216,7 @@ test("minecraft villager generator matches the butcher profession composition", 
   );
 });
 
-test("minecraft villager generator matches the librarian profession composition", async ({
+test("minecraft villager v2 generator matches the librarian profession composition", async ({
   page,
 }) => {
   await page.goto(ROUTE);
@@ -232,7 +232,7 @@ test("minecraft villager generator matches the librarian profession composition"
   );
 });
 
-test("minecraft villager generator matches a combined zombie desert butcher composition", async ({
+test("minecraft villager v2 generator matches a combined zombie desert butcher composition", async ({
   page,
 }) => {
   await page.goto(ROUTE);
