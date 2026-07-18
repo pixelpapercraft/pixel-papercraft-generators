@@ -156,7 +156,7 @@ const regions = (page: Page) =>
 test("minecraft golem character generator exposes its complete control contract", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-golem-character");
+  await page.goto("/generator/minecraft-golem-character-v2");
 
   const skin = skinSelect(page);
   await expect(skin).toHaveValue("Default");
@@ -195,7 +195,7 @@ test("minecraft golem character generator exposes its complete control contract"
 test("minecraft golem character generator matches the default screenshot", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-golem-character");
+  await page.goto("/generator/minecraft-golem-character-v2");
 
   const outputPages = page.getByTestId("generator-page-image");
   await expect(outputPages).toHaveCount(1);
@@ -216,7 +216,7 @@ test("minecraft golem character generator matches the default screenshot", async
 test("minecraft golem character generator renders every skin preset and explicit None", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-golem-character");
+  await page.goto("/generator/minecraft-golem-character-v2");
 
   const skin = skinSelect(page);
   const pageImage = outputPage(page);
@@ -238,7 +238,7 @@ test("minecraft golem character generator renders every skin preset and explicit
 test("minecraft golem character generator renders a custom Slim skin", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-golem-character");
+  await page.goto("/generator/minecraft-golem-character-v2");
 
   const pageImage = outputPage(page);
   await page.getByLabel("Upload Skin skin file").setInputFiles(skinFixturePath);
@@ -260,7 +260,7 @@ test("minecraft golem character generator renders a custom Slim skin", async ({
 test("minecraft golem character generator hides every outer skin layer independently", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-golem-character");
+  await page.goto("/generator/minecraft-golem-character-v2");
 
   const pageImage = outputPage(page);
   await page.getByLabel("Upload Skin skin file").setInputFiles(skinFixturePath);
@@ -286,7 +286,7 @@ test("minecraft golem character generator hides every outer skin layer independe
 test("minecraft golem character generator renders every flower choice and explicit None", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-golem-character");
+  await page.goto("/generator/minecraft-golem-character-v2");
 
   const pageImage = outputPage(page);
   await expect(
@@ -309,7 +309,7 @@ test("minecraft golem character generator renders every flower choice and explic
 test("minecraft golem character generator renders a golem character with a chosen flower", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-golem-character");
+  await page.goto("/generator/minecraft-golem-character-v2");
 
   const pageImage = outputPage(page);
   await flowerSelect(page).selectOption({ label: "Poppy" });
@@ -326,7 +326,7 @@ test("minecraft golem character generator renders a golem character with a chose
 test("minecraft golem character generator renders every damage choice and explicit None", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-golem-character");
+  await page.goto("/generator/minecraft-golem-character-v2");
 
   const pageImage = outputPage(page);
   // Poll rather than read once: the crack probe sits on the async-loading skin,
@@ -351,7 +351,7 @@ test("minecraft golem character generator renders every damage choice and explic
 test("minecraft golem character generator distinguishes light from heavy damage", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-golem-character");
+  await page.goto("/generator/minecraft-golem-character-v2");
 
   const pageImage = outputPage(page);
   const probe = () =>
@@ -372,7 +372,7 @@ test("minecraft golem character generator distinguishes light from heavy damage"
 test("minecraft golem character generator renders a golem character with flower and damage", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-golem-character");
+  await page.goto("/generator/minecraft-golem-character-v2");
 
   const pageImage = outputPage(page);
   await flowerSelect(page).selectOption({ label: "Cyan Flower" });
@@ -393,7 +393,7 @@ test("minecraft golem character generator renders a golem character with flower 
 test("minecraft golem character generator hides folds and labels independently", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-golem-character");
+  await page.goto("/generator/minecraft-golem-character-v2");
 
   const pageImage = outputPage(page);
   const readFold = () => readPixel(pageImage, foldProbe.x, foldProbe.y);
