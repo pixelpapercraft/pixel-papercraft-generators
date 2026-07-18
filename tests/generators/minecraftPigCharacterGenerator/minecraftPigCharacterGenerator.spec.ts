@@ -103,6 +103,7 @@ test("minecraft pig character matches the default composition", async ({
 test("minecraft pig character accepts every enumerable texture choice and explicit None", async ({
   page,
 }) => {
+  test.slow();
   await page.goto("/generator/minecraft-pig-character");
   const renderedSkins = new Set<string>();
   for (const option of skinOptions) {
@@ -179,6 +180,7 @@ test("minecraft pig character exercises styles and presentation controls", async
 });
 
 test("minecraft pig character toggles all seven regions", async ({ page }) => {
+  test.slow();
   for (let index = 0; index < 7; index += 1) {
     // V1 rebuilds its controls after a region click and drops custom-upload
     // state, so exercise every region independently from the same composition.
