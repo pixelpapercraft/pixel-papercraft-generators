@@ -120,11 +120,13 @@ const damageBodyDefault: Rgba = { r: 117, g: 71, b: 47, a: 255 };
 const damageCrack: Rgba = { r: 14, g: 0, b: 0, a: 255 };
 const damageChoices = ["Low", "Medium", "High"];
 
-// A pixel cracked only by the heavier "High" sheet: "Low" leaves it as body
-// colour, "High" darkens it — proving the presets are distinct textures
-// rather than the same one wired three times.
-const damageDistinctProbe = { x: 138, y: 118 };
-const damageDistinctBody: Rgba = { r: 155, g: 113, b: 91, a: 255 };
+// A pixel cracked only by the heavier "High" sheet, proving the presets are
+// distinct textures rather than the same one wired three times. Chosen where
+// "Low" is fully transparent so the probe reads the bare skin texel (an exact
+// integer colour, identical across renderers) rather than a skin+damage alpha
+// composite whose rounding differs between local and CI; "High" darkens it.
+const damageDistinctProbe = { x: 146, y: 125 };
+const damageDistinctBody: Rgba = { r: 82, g: 61, b: 137, a: 255 };
 const damageDistinctHigh: Rgba = { r: 14, g: 0, b: 0, a: 255 };
 
 // Fold/label overlays.
