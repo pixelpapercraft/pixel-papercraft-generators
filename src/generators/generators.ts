@@ -127,7 +127,7 @@ export const utility: AnyGenerator[] = [
   v1(minecraftItemGenerator),
   v2(minecraftArmorGeneratorDefV2),
   v2(minecraftCapeAndElytraGeneratorDefV2),
-  v1(minecraftCharacterHeadsGenerator),
+  v2(minecraftCharacterHeadsGeneratorDefV2),
 ];
 
 export const mod: AnyGenerator[] = [
@@ -158,6 +158,7 @@ export const legacy: AnyGenerator[] = isProductionEnvironment
       v1(minecraftCatGenerator),
       v1(minecraftCatCharacterGenerator),
       v1(minecraftCharacterGenerator),
+      v1(minecraftCharacterHeadsGenerator),
     ];
 
 // Incomplete / in-development generators, plus every generator's in-progress
@@ -169,7 +170,6 @@ export const dev: AnyGenerator[] = isProductionEnvironment
   : [
       v1(minecraftWitherGenerator),
       v2(minecraftItemGeneratorDefV2),
-      v2(minecraftCharacterHeadsGeneratorDefV2),
       v2(minecraftCharacterMiniGeneratorDefV2),
       v2(minecraftCowCharacterGeneratorDefV2),
       v2(minecraftCreeperGeneratorDefV2),
