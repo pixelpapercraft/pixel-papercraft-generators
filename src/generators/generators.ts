@@ -132,10 +132,18 @@ export const utility: AnyGenerator[] = [
 
 export const mod: AnyGenerator[] = [
   v1(minecraftMutantCharacterGenerator),
-  v1(dalekModDalekGenerator),
+  v2(dalekModDalekGeneratorDefV2),
 ];
 
-export const other: AnyGenerator[] = [v1(amogusBendableGenerator)];
+export const other: AnyGenerator[] = [v2(amogusBendableGeneratorDefV2)];
+
+// Retired v1 generators, superseded by their v2 versions (which now sit in the
+// themed groups above). Kept visible so the originals stay reachable. Each
+// generator is moved here one at a time as its v2 review is completed.
+export const legacy: AnyGenerator[] = [
+  v1(amogusBendableGenerator),
+  v1(dalekModDalekGenerator),
+];
 
 // Incomplete / in-development generators, plus every generator's in-progress
 // v2 version during the migration. Hidden in production, visible everywhere
@@ -148,8 +156,6 @@ export const dev: AnyGenerator[] = isProductionEnvironment
       v2(exampleGeneratorDefV2),
       v2(minecraftCharacterGeneratorDefV2),
       v2(minecraftItemGeneratorDefV2),
-      v2(amogusBendableGeneratorDefV2),
-      v2(dalekModDalekGeneratorDefV2),
       v2(minecraftActionFigureGeneratorDefV2),
       v2(minecraftAllayCharacterGeneratorDefV2),
       v2(minecraftArmorGeneratorDefV2),
@@ -208,6 +214,7 @@ export const generators: AnyGenerator[] = concatArrays([
   other,
   dev,
   test,
+  legacy,
 ]);
 
 // One finder over the flat list, tagging each result by model. Ids never
@@ -243,4 +250,5 @@ export const generatorGroups: GeneratorGroup[] = [
   { label: "Other", generators: links(other) },
   { label: "Development", generators: links(dev) },
   { label: "Testing", generators: links(test) },
+  { label: "Legacy", generators: links(legacy) },
 ];
