@@ -177,6 +177,7 @@ export const legacy: AnyGenerator[] = isProductionEnvironment
       v1(minecraftVillagerGenerator),
       v1(minecraftVillagerCharacterGenerator),
       v1(minecraftWolfCharacterGenerator),
+      v1(minecraftWitherGenerator),
     ];
 
 // Incomplete / in-development generators, plus every generator's in-progress
@@ -185,7 +186,7 @@ export const legacy: AnyGenerator[] = isProductionEnvironment
 // versions can be reached by URL and exercised by the reused v1 test suites.
 export const dev: AnyGenerator[] = isProductionEnvironment
   ? []
-  : [v1(minecraftWitherGenerator), v2(minecraftWitherGeneratorDefV2)];
+  : [v2(minecraftWitherGeneratorDefV2)];
 
 // Generator API coverage boards (one per API method group) are the Testing
 // entries. They replace the former, broad visual-regression board with
