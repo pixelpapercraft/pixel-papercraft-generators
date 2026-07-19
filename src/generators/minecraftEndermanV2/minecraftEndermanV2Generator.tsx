@@ -32,6 +32,7 @@ const history: HistoryDef = [
   "19 Sep 2020 NinjolasNJM - Fixed orientations of limbs.",
   "07 Jun 2021 NinjolasNJM - Converted to ReScript generator.",
   "17 Jul 2021 M16 - Updated generator photo.",
+  "Jul 2026 lostminer - Layout refresh.",
 ];
 
 const thumbnail: ThumbnailDef = { url: thumbnailImage.src };
