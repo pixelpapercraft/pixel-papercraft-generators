@@ -97,7 +97,6 @@ export const character: AnyGenerator[] = [
 ];
 
 export const mobCharacter: AnyGenerator[] = [
-  v1(minecraftVillagerCharacterGenerator),
   v1(minecraftWolfCharacterGenerator),
   v2(minecraftAxolotlCharacterGeneratorDefV2),
   v2(minecraftAllayCharacterGeneratorDefV2),
@@ -109,6 +108,7 @@ export const mobCharacter: AnyGenerator[] = [
   v2(minecraftGolemCharacterGeneratorDefV2),
   v2(minecraftPigCharacterGeneratorDefV2),
   v2(minecraftSquidCharacterGeneratorDefV2),
+  v2(minecraftVillagerCharacterGeneratorDefV2),
 ];
 
 export const mob: AnyGenerator[] = [
@@ -175,6 +175,7 @@ export const legacy: AnyGenerator[] = isProductionEnvironment
       v1(minecraftSquidCharacterGenerator),
       v1(minecraftUltimateBendableGenerator),
       v1(minecraftVillagerGenerator),
+      v1(minecraftVillagerCharacterGenerator),
     ];
 
 // Incomplete / in-development generators, plus every generator's in-progress
@@ -185,7 +186,6 @@ export const dev: AnyGenerator[] = isProductionEnvironment
   ? []
   : [
       v1(minecraftWitherGenerator),
-      v2(minecraftVillagerCharacterGeneratorDefV2),
       v2(minecraftWitherGeneratorDefV2),
       v2(minecraftWolfCharacterGeneratorDefV2),
     ];
