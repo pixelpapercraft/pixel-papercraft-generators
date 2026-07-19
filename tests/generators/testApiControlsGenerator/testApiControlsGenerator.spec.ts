@@ -150,10 +150,22 @@ test("defineRegionInput scales its overlay proportionally to the rendered page",
   const scale = imageBox.width / 595;
   const pageBorderWidth = 1;
   const tolerancePx = 1;
-  expect(Math.abs(regionBox.x - (imageBox.x + Math.round(16 * scale) + pageBorderWidth))).toBeLessThanOrEqual(tolerancePx);
-  expect(Math.abs(regionBox.y - (imageBox.y + Math.round(16 * scale) + pageBorderWidth))).toBeLessThanOrEqual(tolerancePx);
-  expect(Math.abs(regionBox.width - Math.round(256 * scale))).toBeLessThanOrEqual(tolerancePx);
-  expect(Math.abs(regionBox.height - Math.round(256 * scale))).toBeLessThanOrEqual(tolerancePx);
+  expect(
+    Math.abs(
+      regionBox.x - (imageBox.x + Math.round(16 * scale) + pageBorderWidth)
+    )
+  ).toBeLessThanOrEqual(tolerancePx);
+  expect(
+    Math.abs(
+      regionBox.y - (imageBox.y + Math.round(16 * scale) + pageBorderWidth)
+    )
+  ).toBeLessThanOrEqual(tolerancePx);
+  expect(
+    Math.abs(regionBox.width - Math.round(256 * scale))
+  ).toBeLessThanOrEqual(tolerancePx);
+  expect(
+    Math.abs(regionBox.height - Math.round(256 * scale))
+  ).toBeLessThanOrEqual(tolerancePx);
 });
 
 test("defineRegionInput keeps its position stable and runs its click callback", async ({
@@ -187,12 +199,8 @@ test("defineRegionInput keeps its position stable and runs its click callback", 
 
   const offsetAfter = await measureOffset();
   expect(offsetAfter).toEqual(offsetBefore);
-  await expect
-    .poll(async () => readPixel(regionPage, 35, 35))
-    .toEqual(grey);
-  await expect
-    .poll(async () => readPixel(regionPage, 55, 35))
-    .toEqual(magenta);
+  await expect.poll(async () => readPixel(regionPage, 35, 35)).toEqual(grey);
+  await expect.poll(async () => readPixel(regionPage, 55, 35)).toEqual(magenta);
 });
 
 const quadrantsFixture = () =>
@@ -256,7 +264,9 @@ const skinFixturePath = "src/generators/_common/fixtures/testSheet.png";
 const skinPage = (page: Page) => pageImage(page).nth(2);
 
 const skinPicker = (page: Page) =>
-  page.locator("select").filter({ has: page.locator('option[value="Fixture"]') });
+  page
+    .locator("select")
+    .filter({ has: page.locator('option[value="Fixture"]') });
 
 test("defineMinecraftSkinInput exposes its picker, preset, and model-type selection", async ({
   page,
@@ -303,13 +313,16 @@ test("defineMinecraftSkinInput fetches and converts a routed username skin", asy
 }) => {
   const skinData = fs.readFileSync(skinFixturePath).toString("base64");
   let usernameRequestWasMade = false;
-  await page.route("https://api.ashcon.app/mojang/v2/user/FixtureUser", (route) => {
-    usernameRequestWasMade = true;
-    return route.fulfill({
-      contentType: "application/json",
-      body: JSON.stringify({ textures: { skin: { data: skinData } } }),
-    });
-  });
+  await page.route(
+    "https://api.ashcon.app/mojang/v2/user/FixtureUser",
+    (route) => {
+      usernameRequestWasMade = true;
+      return route.fulfill({
+        contentType: "application/json",
+        body: JSON.stringify({ textures: { skin: { data: skinData } } }),
+      });
+    }
+  );
   await page.goto("/generator/test-api-controls");
 
   await skinPicker(page).selectOption("");

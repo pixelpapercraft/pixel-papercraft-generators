@@ -44,9 +44,9 @@ describe("textureUpload", () => {
         new File([""], "texture.gif", { type: "image/gif" })
       )
     ).toBe(false);
-    expect(
-      isSupportedTextureUploadFile(new File([""], "texture.txt"))
-    ).toBe(false);
+    expect(isSupportedTextureUploadFile(new File([""], "texture.txt"))).toBe(
+      false
+    );
   });
 
   it("preserves the uploaded file name on the loaded texture image", async () => {

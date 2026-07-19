@@ -426,7 +426,11 @@ function Component(): JSX.Element {
                 ) : null}
               </React.Fragment>
             ))}
-            <GeneratorUI.ButtonControl label="Clear" onClick={clear} color="Red" />
+            <GeneratorUI.ButtonControl
+              label="Clear"
+              onClick={clear}
+              color="Red"
+            />
           </div>
         </div>
         <div className="flex-1 min-w-0">

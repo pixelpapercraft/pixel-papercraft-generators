@@ -260,10 +260,7 @@ type Quad = { tl: Rgba; tr: Rgba; bl: Rgba; br: Rgba };
 
 const matrixBase: Quad = { tl: red, tr: green, bl: blue, br: yellow };
 
-function applyFlip(
-  q: Quad,
-  flip: "Horizontal" | "Vertical" | undefined
-): Quad {
+function applyFlip(q: Quad, flip: "Horizontal" | "Vertical" | undefined): Quad {
   if (flip === "Horizontal") return { tl: q.tr, tr: q.tl, bl: q.br, br: q.bl };
   if (flip === "Vertical") return { tl: q.bl, tr: q.br, bl: q.tl, br: q.tr };
   return q;
@@ -351,9 +348,7 @@ matrixRotationRows.forEach((rotation, row) => {
         cy
       );
 
-      expect(actual).toEqual(
-        expectedQuadrants(rotation.degrees, flipCol.flip)
-      );
+      expect(actual).toEqual(expectedQuadrants(rotation.degrees, flipCol.flip));
     });
   });
 });

@@ -1,7 +1,4 @@
-import {
-  type Texture,
-  makeTextureFromImage,
-} from "../../modules/texture";
+import { type Texture, makeTextureFromImage } from "../../modules/texture";
 
 export const textureUploadAccept = "image/png,image/jpeg,.png,.jpg,.jpeg";
 

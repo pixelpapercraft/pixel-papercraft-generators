@@ -11,7 +11,12 @@ async function selectItemByTitle(page: Page, search: string, title: string) {
 
 async function setItemSize(
   page: Page,
-  size: "Small (200%)" | "Medium (400%)" | "Large (700%)" | "Extra Large (1400%)" | "Custom"
+  size:
+    | "Small (200%)"
+    | "Medium (400%)"
+    | "Large (700%)"
+    | "Extra Large (1400%)"
+    | "Custom"
 ) {
   await page.getByLabel("Item Size").selectOption({ label: size });
 
@@ -29,7 +34,9 @@ function getPreviewImage(page: Page) {
   return page.getByTestId("texture-picker-preview-image");
 }
 
-test("minecraft item generator matches the default screenshots", async ({ page }) => {
+test("minecraft item generator matches the default screenshots", async ({
+  page,
+}) => {
   await page.goto("/generator/minecraft-item-v2");
 
   const outputPages = page.getByTestId("generator-page-image");
@@ -274,7 +281,8 @@ test("minecraft item generator overlays across size and texture transform combin
   const overlayCases = [
     {
       name: "extra-large-base-no-transform",
-      snapshot: "minecraft-item-overlay-extra-large-base-no-transform-page-1.png",
+      snapshot:
+        "minecraft-item-overlay-extra-large-base-no-transform-page-1.png",
       baseSize: "Extra Large (1400%)" as const,
       overlaySearch: "bow",
       overlayTitle: "bow",
@@ -282,7 +290,8 @@ test("minecraft item generator overlays across size and texture transform combin
     },
     {
       name: "medium-base-rotated-horizontal",
-      snapshot: "minecraft-item-overlay-medium-base-rotated-horizontal-page-1.png",
+      snapshot:
+        "minecraft-item-overlay-medium-base-rotated-horizontal-page-1.png",
       baseSize: "Medium (400%)" as const,
       overlaySearch: "bow",
       overlayTitle: "bow",
@@ -290,7 +299,8 @@ test("minecraft item generator overlays across size and texture transform combin
     },
     {
       name: "custom-base-rotated-vertical",
-      snapshot: "minecraft-item-overlay-custom-base-rotated-vertical-page-1.png",
+      snapshot:
+        "minecraft-item-overlay-custom-base-rotated-vertical-page-1.png",
       baseSize: "Custom" as const,
       overlaySearch: "bow",
       overlayTitle: "bow",
@@ -306,7 +316,11 @@ test("minecraft item generator overlays across size and texture transform combin
     await setItemSize(page, overlayCase.baseSize);
     await page.getByLabel("Add Item").click();
 
-    await selectItemByTitle(page, overlayCase.overlaySearch, overlayCase.overlayTitle);
+    await selectItemByTitle(
+      page,
+      overlayCase.overlaySearch,
+      overlayCase.overlayTitle
+    );
     for (const action of overlayCase.overlayActions) {
       if (action === "rotate") {
         await page.getByLabel("Rotate texture").click();

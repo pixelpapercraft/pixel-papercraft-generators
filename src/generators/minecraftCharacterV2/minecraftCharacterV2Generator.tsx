@@ -115,9 +115,7 @@ const render = (ctx: RenderContext, props: MinecraftCharacterProps): void => {
   }
 
   function drawRightArm([ox, oy]: [number, number]) {
-    const dimensions: Dimensions = props.isSlim
-      ? [24, 96, 32]
-      : [32, 96, 32];
+    const dimensions: Dimensions = props.isSlim ? [24, 96, 32] : [32, 96, 32];
     minecraftGenerator.drawCuboid(
       "Skin",
       char.base.rightArm,
@@ -135,9 +133,7 @@ const render = (ctx: RenderContext, props: MinecraftCharacterProps): void => {
   }
 
   function drawLeftArm([ox, oy]: [number, number]) {
-    const dimensions: Dimensions = props.isSlim
-      ? [24, 96, 32]
-      : [32, 96, 32];
+    const dimensions: Dimensions = props.isSlim ? [24, 96, 32] : [32, 96, 32];
     minecraftGenerator.drawCuboid(
       "Skin",
       char.base.leftArm,

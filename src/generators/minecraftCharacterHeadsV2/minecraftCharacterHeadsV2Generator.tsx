@@ -130,12 +130,7 @@ const render = (
 
     minecraft.drawCuboid(textureId, steve.base.head, [x, y], [64, 64, 64]);
     if (props.showOverlays[index]) {
-      minecraft.drawCuboid(
-        textureId,
-        steve.overlay.head,
-        [x, y],
-        [64, 64, 64]
-      );
+      minecraft.drawCuboid(textureId, steve.overlay.head, [x, y], [64, 64, 64]);
     }
 
     if (props.showFolds) {
@@ -163,14 +158,13 @@ const makeEmptySkinValue = (): MinecraftSkinInputValue => ({
 });
 
 function Component(): JSX.Element {
-  const [skinValues, setSkinValues] = React.useState<
-    MinecraftSkinInputValue[]
-  >(() =>
-    headPositions.map((_, index) =>
-      index === 0
-        ? getDefaultMinecraftSkinInputValue(skinOptions)
-        : makeEmptySkinValue()
-    )
+  const [skinValues, setSkinValues] = React.useState<MinecraftSkinInputValue[]>(
+    () =>
+      headPositions.map((_, index) =>
+        index === 0
+          ? getDefaultMinecraftSkinInputValue(skinOptions)
+          : makeEmptySkinValue()
+      )
   );
   const [skinTextures, setSkinTextures] = React.useState<(Texture | null)[]>(
     () => headPositions.map(() => null)
@@ -203,9 +197,7 @@ function Component(): JSX.Element {
       return;
     }
     setShowOverlays((values) =>
-      values.map((value, valueIndex) =>
-        valueIndex === index ? !value : value
-      )
+      values.map((value, valueIndex) => (valueIndex === index ? !value : value))
     );
   };
 

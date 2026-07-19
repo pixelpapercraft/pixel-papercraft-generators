@@ -8,14 +8,13 @@ import {
   XMarkIcon,
 } from "@genroot/builder/ui/icon";
 import { type TextureDef } from "@genroot/builder/modules/generatorDef";
-import { type TextureFrame, makeFrameLabel } from "@genroot/generators/_common/textureData";
+import {
+  type TextureFrame,
+  makeFrameLabel,
+} from "@genroot/generators/_common/textureData";
 import { type SelectedTexture } from "./selectedTexture";
 import { type Rotation, makeNextRotation } from "./rotation";
-import {
-  type Flip,
-  makeNextFlip,
-  flipForRotation,
-} from "./flip";
+import { type Flip, makeNextFlip, flipForRotation } from "./flip";
 import { matchesTextureSearch } from "./textureSearch";
 import { makePreviewStyle } from "./previewStyle";
 
@@ -184,12 +183,7 @@ export function Preview({
 
 export function EraseButton({ onClick }: { onClick: () => void }) {
   return (
-    <Button
-      title="Erase texture"
-      color="Red"
-      size="Icon"
-      onClick={onClick}
-    >
+    <Button title="Erase texture" color="Red" size="Icon" onClick={onClick}>
       <BackspaceIcon color="White" />
     </Button>
   );
@@ -197,12 +191,7 @@ export function EraseButton({ onClick }: { onClick: () => void }) {
 
 export function RotationButton({ onClick }: { onClick: () => void }) {
   return (
-    <Button
-      title="Rotate texture"
-      color="Blue"
-      size="Icon"
-      onClick={onClick}
-    >
+    <Button title="Rotate texture" color="Blue" size="Icon" onClick={onClick}>
       <ArrowPathIcon color="White" />
     </Button>
   );
@@ -258,7 +247,10 @@ export function TexturePicker({
   const [flip, setFlip] = React.useState<Flip>("None");
 
   React.useEffect(() => {
-    if (selectedFrame && !frames.some((frame) => frame.id === selectedFrame.id)) {
+    if (
+      selectedFrame &&
+      !frames.some((frame) => frame.id === selectedFrame.id)
+    ) {
       setSelectedFrame(null);
       setRotation("Rot0");
       setFlip("None");
@@ -305,7 +297,11 @@ export function TexturePicker({
 
   const onFlipHorizontalClick = () => {
     const requestedFlip = flipForRotation("Horizontal", rotation);
-    const [nextFlip, nextRotation] = makeNextFlip(flip, requestedFlip, rotation);
+    const [nextFlip, nextRotation] = makeNextFlip(
+      flip,
+      requestedFlip,
+      rotation
+    );
     setFlip(nextFlip);
     setRotation(nextRotation);
     if (selectedFrame) {
@@ -322,7 +318,11 @@ export function TexturePicker({
 
   const onFlipVerticalClick = () => {
     const requestedFlip = flipForRotation("Vertical", rotation);
-    const [nextFlip, nextRotation] = makeNextFlip(flip, requestedFlip, rotation);
+    const [nextFlip, nextRotation] = makeNextFlip(
+      flip,
+      requestedFlip,
+      rotation
+    );
     setFlip(nextFlip);
     setRotation(nextRotation);
     if (selectedFrame) {

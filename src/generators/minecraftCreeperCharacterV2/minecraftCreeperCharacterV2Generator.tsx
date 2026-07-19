@@ -163,8 +163,18 @@ const render = (
   oy = 471;
 
   ctx.drawTexture("Skin", steve.base.rightLeg.back, [0 + ox, 32 + oy, 32, 48]);
-  ctx.drawTexture("Skin", steve.base.rightLeg.right, [32 + ox, 32 + oy, 32, 48]);
-  ctx.drawTexture("Skin", steve.base.rightLeg.front, [64 + ox, 32 + oy, 32, 48]);
+  ctx.drawTexture("Skin", steve.base.rightLeg.right, [
+    32 + ox,
+    32 + oy,
+    32,
+    48,
+  ]);
+  ctx.drawTexture("Skin", steve.base.rightLeg.front, [
+    64 + ox,
+    32 + oy,
+    32,
+    48,
+  ]);
   ctx.drawTexture("Skin", steve.base.rightLeg.left, [96 + ox, 32 + oy, 32, 48]);
   ctx.drawTexture("Skin", steve.base.rightLeg.top, [64 + ox, 0 + oy, 32, 32]);
   ctx.drawTexture(
@@ -196,8 +206,18 @@ const render = (
   ox = 419;
   oy = 471;
 
-  ctx.drawTexture("Skin", steve.base.rightLeg.right, [64 + ox, 32 + oy, 32, 48]);
-  ctx.drawTexture("Skin", steve.base.rightLeg.front, [96 + ox, 32 + oy, 32, 48]);
+  ctx.drawTexture("Skin", steve.base.rightLeg.right, [
+    64 + ox,
+    32 + oy,
+    32,
+    48,
+  ]);
+  ctx.drawTexture("Skin", steve.base.rightLeg.front, [
+    96 + ox,
+    32 + oy,
+    32,
+    48,
+  ]);
   ctx.drawTexture("Skin", steve.base.rightLeg.left, [0 + ox, 32 + oy, 32, 48]);
   ctx.drawTexture("Skin", steve.base.rightLeg.back, [32 + ox, 32 + oy, 32, 48]);
   ctx.drawTexture("Skin", steve.base.rightLeg.top, [32 + ox, oy, 32, 32], {
@@ -237,7 +257,12 @@ const render = (
     ox = 164;
     oy = 110;
 
-    ctx.drawTexture("Skin", steve.overlay.head.right, [0 + ox, 64 + oy, 64, 64]);
+    ctx.drawTexture("Skin", steve.overlay.head.right, [
+      0 + ox,
+      64 + oy,
+      64,
+      64,
+    ]);
     ctx.drawTexture("Skin", steve.overlay.head.front, [
       64 + ox,
       64 + oy,
@@ -271,14 +296,24 @@ const render = (
     ox = 196;
     oy = 340;
 
-    ctx.drawTexture("Skin", steve.overlay.body.right, [0 + ox, 32 + oy, 32, 96]);
+    ctx.drawTexture("Skin", steve.overlay.body.right, [
+      0 + ox,
+      32 + oy,
+      32,
+      96,
+    ]);
     ctx.drawTexture("Skin", steve.overlay.body.front, [
       32 + ox,
       32 + oy,
       64,
       96,
     ]);
-    ctx.drawTexture("Skin", steve.overlay.body.left, [96 + ox, 32 + oy, 32, 96]);
+    ctx.drawTexture("Skin", steve.overlay.body.left, [
+      96 + ox,
+      32 + oy,
+      32,
+      96,
+    ]);
     ctx.drawTexture("Skin", steve.overlay.body.back, [
       128 + ox,
       32 + oy,
@@ -517,8 +552,8 @@ const minecraftCreeperCharacterGeneratorV2: GeneratorV2<MinecraftCreeperCharacte
 // state here and feeds the picker's outputs back — the loaded `Texture` via
 // `dynamicTextures`, everything else via `props`.
 function Component(): JSX.Element {
-  const [skinValue, setSkinValue] = React.useState<MinecraftSkinInputValue>(() =>
-    getDefaultMinecraftSkinInputValue(skinOptions)
+  const [skinValue, setSkinValue] = React.useState<MinecraftSkinInputValue>(
+    () => getDefaultMinecraftSkinInputValue(skinOptions)
   );
   const [skinTexture, setSkinTexture] = React.useState<Texture | null>(null);
   const [showFolds, setShowFolds] = React.useState(true);

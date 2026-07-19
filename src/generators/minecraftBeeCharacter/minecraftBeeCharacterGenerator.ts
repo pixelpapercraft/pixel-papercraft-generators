@@ -16,9 +16,7 @@ import thumbnailImage from "./thumbnail/thumbnail-256.jpeg";
 import overlayBeeImage from "./images/OverlayBee.png";
 
 import { getSkinUrl } from "../_common/skins";
-import {
-  makeDefaultMinecraftSkinPresetOptions,
-} from "../_common/skins/options";
+import { makeDefaultMinecraftSkinPresetOptions } from "../_common/skins/options";
 
 const id = "minecraft-bee-character";
 

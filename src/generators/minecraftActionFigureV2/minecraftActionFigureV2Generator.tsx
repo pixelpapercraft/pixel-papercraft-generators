@@ -78,7 +78,10 @@ type MinecraftActionFigureProps = {
 // `generator.get*InputValue` now comes from an author-owned `props`, and
 // region clicks are declared with `ctx.defineRegion(rect, regionId)` instead
 // of a `defineRegionInput` callback.
-const render = (ctx: RenderContext, props: MinecraftActionFigureProps): void => {
+const render = (
+  ctx: RenderContext,
+  props: MinecraftActionFigureProps
+): void => {
   const minecraftGenerator = new Minecraft(ctx);
 
   const char = props.isSlim ? alex : steve;
@@ -127,29 +130,14 @@ const render = (ctx: RenderContext, props: MinecraftActionFigureProps): void => 
 
   function drawPelvis([ox, oy]: [number, number]) {
     ctx.drawTexture("Skin", char.base.rightLeg.top, [ox, oy, 32, 128]); // Right Pelvis
-    ctx.drawTexture("Skin", char.base.leftLeg.top, [
-      ox + 32,
-      oy,
-      32,
-      128,
-    ]); // Left Pelvis
+    ctx.drawTexture("Skin", char.base.leftLeg.top, [ox + 32, oy, 32, 128]); // Left Pelvis
 
     if (props.showRightLegOverlay) {
-      ctx.drawTexture("Skin", char.overlay.rightLeg.top, [
-        ox,
-        oy,
-        32,
-        128,
-      ]); // Right Pelvis
+      ctx.drawTexture("Skin", char.overlay.rightLeg.top, [ox, oy, 32, 128]); // Right Pelvis
     }
 
     if (props.showLeftLegOverlay) {
-      ctx.drawTexture("Skin", char.overlay.leftLeg.top, [
-        ox + 32,
-        oy,
-        32,
-        128,
-      ]); // Left Pelvis
+      ctx.drawTexture("Skin", char.overlay.leftLeg.top, [ox + 32, oy, 32, 128]); // Left Pelvis
     }
   }
 
@@ -239,12 +227,7 @@ const render = (ctx: RenderContext, props: MinecraftActionFigureProps): void => 
     ctx.drawTexture("Skin", [12, 20, 4, 4], [ox + 32, oy - 50, 32, 32], {
       rotate: 180,
     });
-    ctx.drawTexture("Skin", char.base.rightLeg.top, [
-      ox + 32,
-      oy - 18,
-      32,
-      50,
-    ]);
+    ctx.drawTexture("Skin", char.base.rightLeg.top, [ox + 32, oy - 18, 32, 50]);
 
     // 50 pixels tall top, so that the back texture is in line with where it should be on the back side
 
@@ -255,12 +238,9 @@ const render = (ctx: RenderContext, props: MinecraftActionFigureProps): void => 
         [ox, oy],
         dimensions
       );
-      ctx.drawTexture(
-        "Skin",
-        [12, 36, 4, 4],
-        [ox + 32, oy - 50, 32, 32],
-        { rotate: 180 }
-      );
+      ctx.drawTexture("Skin", [12, 36, 4, 4], [ox + 32, oy - 50, 32, 32], {
+        rotate: 180,
+      });
       ctx.drawTexture("Skin", char.base.rightLeg.top, [
         ox + 32,
         oy - 18,
@@ -288,12 +268,7 @@ const render = (ctx: RenderContext, props: MinecraftActionFigureProps): void => 
     ctx.drawTexture("Skin", [28, 52, 4, 4], [ox + 64, oy - 50, 32, 32], {
       rotate: 180,
     });
-    ctx.drawTexture("Skin", char.base.leftLeg.top, [
-      ox + 64,
-      oy - 18,
-      32,
-      50,
-    ]);
+    ctx.drawTexture("Skin", char.base.leftLeg.top, [ox + 64, oy - 18, 32, 50]);
 
     // 50 pixels tall top, so that the back texture is in line with where it should be on the back side
     if (props.showLeftLegOverlay) {
@@ -304,12 +279,9 @@ const render = (ctx: RenderContext, props: MinecraftActionFigureProps): void => 
         dimensions,
         { orientation: "East" }
       );
-      ctx.drawTexture(
-        "Skin",
-        [12, 52, 4, 4],
-        [ox + 64, oy - 50, 32, 32],
-        { rotate: 180 }
-      );
+      ctx.drawTexture("Skin", [12, 52, 4, 4], [ox + 64, oy - 50, 32, 32], {
+        rotate: 180,
+      });
       ctx.drawTexture("Skin", char.base.leftLeg.top, [
         ox + 64,
         oy - 18,

@@ -2,8 +2,14 @@ import {
   type ImageWithCanvas,
   makeImageWithCanvasFromUrl,
 } from "@genroot/builder/modules/imageWithCanvas";
-import { type Texture, makeTextureFromUrl } from "@genroot/builder/modules/texture";
-import { type ImageDef, type TextureDef } from "@genroot/builder/modules/generatorDef";
+import {
+  type Texture,
+  makeTextureFromUrl,
+} from "@genroot/builder/modules/texture";
+import {
+  type ImageDef,
+  type TextureDef,
+} from "@genroot/builder/modules/generatorDef";
 import { type GeneratorV2 } from "./generatorV2";
 
 // A tiny local resource loader for `GeneratorV2`. This mirrors

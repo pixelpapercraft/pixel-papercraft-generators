@@ -1,8 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  getTintInputValue,
-  normalizeTint,
-} from "./tintSelectorLogic";
+import { getTintInputValue, normalizeTint } from "./tintSelectorLogic";
 import { catTintChoiceGroups, itemTintChoiceGroups } from "./tints";
 
 describe("normalizeTint", () => {
@@ -20,7 +17,11 @@ describe("normalizeTint", () => {
 describe("getTintInputValue", () => {
   it("uses the default value when nothing is stored", () => {
     expect(
-      getTintInputValue(null, "#B02E26", itemTintChoiceGroups.flatMap((group) => group.options))
+      getTintInputValue(
+        null,
+        "#B02E26",
+        itemTintChoiceGroups.flatMap((group) => group.options)
+      )
     ).toBe("#B02E26");
   });
 

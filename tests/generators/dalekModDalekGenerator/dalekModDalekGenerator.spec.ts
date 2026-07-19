@@ -121,7 +121,9 @@ const skinFixturePath = "src/generators/_common/fixtures/testSheet.png";
 const outputPage = (page: Page, index: number) =>
   page.getByTestId("generator-page-image").nth(index);
 
-test("dalek generator exposes its skin and color controls", async ({ page }) => {
+test("dalek generator exposes its skin and color controls", async ({
+  page,
+}) => {
   await page.goto("/generator/dalek");
 
   const skin = page.getByLabel("Skin", { exact: true });
@@ -192,7 +194,9 @@ test("dalek generator composes a Red Dalek texture across both pages", async ({
   }
 });
 
-test("dalek generator shows color-code overlays on both pages", async ({ page }) => {
+test("dalek generator shows color-code overlays on both pages", async ({
+  page,
+}) => {
   await page.goto("/generator/dalek");
 
   const showColors = page.getByLabel("Show Colors");

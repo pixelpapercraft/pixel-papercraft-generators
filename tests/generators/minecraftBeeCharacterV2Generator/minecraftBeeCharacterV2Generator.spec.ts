@@ -42,10 +42,7 @@ test("minecraft bee character generator exposes both character controls", async 
 
   const selects = comboboxes(page);
   await expect(selects).toHaveCount(4);
-  const skinOptions = [
-    "None",
-    ...presetExpectations.map(({ name }) => name),
-  ];
+  const skinOptions = ["None", ...presetExpectations.map(({ name }) => name)];
 
   for (const skinIndex of [0, 2]) {
     await expect(selects.nth(skinIndex)).toHaveValue("Default");
@@ -141,9 +138,7 @@ test("minecraft bee character generator renders both Slim arm branches", async (
 
   const pageImage = outputPage(page);
   await comboboxes(page).nth(1).selectOption("Slim");
-  await expect
-    .poll(() => readPixel(pageImage, 342, 50))
-    .toEqual(slimArmRgba);
+  await expect.poll(() => readPixel(pageImage, 342, 50)).toEqual(slimArmRgba);
   await expect(readPixel(pageImage, 342, 363)).resolves.toEqual({
     r: 0,
     g: 175,
@@ -152,9 +147,7 @@ test("minecraft bee character generator renders both Slim arm branches", async (
   });
 
   await comboboxes(page).nth(3).selectOption("Slim");
-  await expect
-    .poll(() => readPixel(pageImage, 342, 363))
-    .toEqual(slimArmRgba);
+  await expect.poll(() => readPixel(pageImage, 342, 363)).toEqual(slimArmRgba);
   await renderImageAtNaturalSize(pageImage);
   await expect(pageImage).toHaveScreenshot(
     "minecraft-bee-character-both-slim-page-1.png"

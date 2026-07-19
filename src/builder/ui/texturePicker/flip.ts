@@ -55,7 +55,8 @@ function rotateBy(
   flip: Flip
 ): Rotation {
   const current = rotationToQuarterTurns(rotation);
-  const next = flip === "None" ? current + quarterTurns : current - quarterTurns;
+  const next =
+    flip === "None" ? current + quarterTurns : current - quarterTurns;
   return quarterTurnsToRotation(next);
 }
 

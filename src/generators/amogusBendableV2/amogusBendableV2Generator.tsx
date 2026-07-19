@@ -177,8 +177,7 @@ const amogusBendableGeneratorV2: GeneratorV2<AmogusBendableProps> = {
 // render. The author owns the state here and feeds the picker's output back
 // via `dynamicTextures`.
 function Component(): JSX.Element {
-  const [color, setColor] =
-    React.useState<(typeof colorNames)[number]>("Red");
+  const [color, setColor] = React.useState<(typeof colorNames)[number]>("Red");
   const [skinValue, setSkinValue] = React.useState<MinecraftSkinInputValue>(
     () => getDefaultMinecraftSkinInputValue(skinOptions)
   );
@@ -201,7 +200,10 @@ function Component(): JSX.Element {
           <GeneratorUI.MediaHero video={video} thumbnail={thumbnail} />
         </div>
         <div className="flex-1 min-w-0">
-          <GeneratorUI.Instructions markdown={instructions} collapsible={false} />
+          <GeneratorUI.Instructions
+            markdown={instructions}
+            collapsible={false}
+          />
         </div>
       </div>
 

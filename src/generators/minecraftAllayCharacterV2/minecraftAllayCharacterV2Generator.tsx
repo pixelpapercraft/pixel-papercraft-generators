@@ -70,67 +70,31 @@ const render = (
     ctx.drawTexture(texture, steve.base.head.front, [ox, oy, 50, 50]);
     ctx.drawTexture(texture, steve.base.head.right, [ox - 51, oy, 50, 50]);
     ctx.drawTexture(texture, steve.base.head.left, [ox + 51, oy, 50, 50]);
-    ctx.drawTexture(texture, steve.base.head.back, [
-      ox + 51 * 2,
-      oy,
-      50,
-      50,
-    ]);
+    ctx.drawTexture(texture, steve.base.head.back, [ox + 51 * 2, oy, 50, 50]);
     ctx.drawTexture(texture, steve.base.head.top, [ox, oy - 51, 50, 50]);
-    ctx.drawTexture(
-      texture,
-      steve.base.head.bottom,
-      [ox, oy + 51, 50, 50],
-      { flip: "Vertical" }
-    );
+    ctx.drawTexture(texture, steve.base.head.bottom, [ox, oy + 51, 50, 50], {
+      flip: "Vertical",
+    });
     ctx.drawTexture(texture, steve.overlay.head.front, [ox, oy, 50, 50]);
-    ctx.drawTexture(texture, steve.overlay.head.right, [
-      ox - 51,
-      oy,
-      50,
-      50,
-    ]);
-    ctx.drawTexture(texture, steve.overlay.head.left, [
-      ox + 51,
-      oy,
-      50,
-      50,
-    ]);
+    ctx.drawTexture(texture, steve.overlay.head.right, [ox - 51, oy, 50, 50]);
+    ctx.drawTexture(texture, steve.overlay.head.left, [ox + 51, oy, 50, 50]);
     ctx.drawTexture(texture, steve.overlay.head.back, [
       ox + 51 * 2,
       oy,
       50,
       50,
     ]);
-    ctx.drawTexture(texture, steve.overlay.head.top, [
-      ox,
-      oy - 51,
-      50,
-      50,
-    ]);
-    ctx.drawTexture(
-      texture,
-      steve.overlay.head.bottom,
-      [ox, oy + 51, 50, 50],
-      { flip: "Vertical" }
-    );
+    ctx.drawTexture(texture, steve.overlay.head.top, [ox, oy - 51, 50, 50]);
+    ctx.drawTexture(texture, steve.overlay.head.bottom, [ox, oy + 51, 50, 50], {
+      flip: "Vertical",
+    });
   };
 
   const drawBody = (ox: number, oy: number, texture: string) => {
     ctx.drawTexture(texture, steve.base.body.front, [ox, oy, 30, 30]);
-    ctx.drawTexture(texture, steve.base.body.right, [
-      ox - 21,
-      oy,
-      20,
-      30,
-    ]);
+    ctx.drawTexture(texture, steve.base.body.right, [ox - 21, oy, 20, 30]);
     ctx.drawTexture(texture, steve.base.body.left, [ox + 31, oy, 20, 30]);
-    ctx.drawTexture(texture, steve.base.body.back, [
-      ox + 31 + 21,
-      oy,
-      30,
-      30,
-    ]);
+    ctx.drawTexture(texture, steve.base.body.back, [ox + 31 + 21, oy, 30, 30]);
     ctx.drawTexture(texture, steve.base.body.top, [ox, oy - 21, 30, 20]);
     ctx.drawTexture(
       texture,
@@ -163,30 +127,15 @@ const render = (
       { flip: "Horizontal" }
     );
     ctx.drawTexture(texture, steve.overlay.body.front, [ox, oy, 30, 30]);
-    ctx.drawTexture(texture, steve.overlay.body.right, [
-      ox - 21,
-      oy,
-      20,
-      30,
-    ]);
-    ctx.drawTexture(texture, steve.overlay.body.left, [
-      ox + 31,
-      oy,
-      20,
-      30,
-    ]);
+    ctx.drawTexture(texture, steve.overlay.body.right, [ox - 21, oy, 20, 30]);
+    ctx.drawTexture(texture, steve.overlay.body.left, [ox + 31, oy, 20, 30]);
     ctx.drawTexture(texture, steve.overlay.body.back, [
       ox + 31 + 21,
       oy,
       30,
       30,
     ]);
-    ctx.drawTexture(texture, steve.overlay.body.top, [
-      ox,
-      oy - 21,
-      30,
-      20,
-    ]);
+    ctx.drawTexture(texture, steve.overlay.body.top, [ox, oy - 21, 30, 20]);
     ctx.drawTexture(
       texture,
       steve.overlay.body.front,
@@ -221,42 +170,22 @@ const render = (
 
   const drawRightArm = (ox: number, oy: number, texture: string) => {
     ctx.drawTexture(texture, steve.base.rightArm.front, [ox, oy, 10, 40]);
-    ctx.drawTexture(texture, steve.base.rightArm.right, [
-      ox - 21,
-      oy,
-      20,
-      40,
-    ]);
-    ctx.drawTexture(texture, steve.base.rightArm.left, [
-      ox + 11,
-      oy,
-      20,
-      40,
-    ]);
+    ctx.drawTexture(texture, steve.base.rightArm.right, [ox - 21, oy, 20, 40]);
+    ctx.drawTexture(texture, steve.base.rightArm.left, [ox + 11, oy, 20, 40]);
     ctx.drawTexture(texture, steve.base.rightArm.back, [
       ox - 11 - 21,
       oy,
       10,
       40,
     ]);
-    ctx.drawTexture(texture, steve.base.rightArm.top, [
-      ox,
-      oy - 21,
-      10,
-      20,
-    ]);
+    ctx.drawTexture(texture, steve.base.rightArm.top, [ox, oy - 21, 10, 20]);
     ctx.drawTexture(
       texture,
       steve.base.rightArm.bottom,
       [ox, oy + 41, 10, 20],
       { flip: "Horizontal" }
     );
-    ctx.drawTexture(texture, steve.overlay.rightArm.front, [
-      ox,
-      oy,
-      10,
-      40,
-    ]);
+    ctx.drawTexture(texture, steve.overlay.rightArm.front, [ox, oy, 10, 40]);
     ctx.drawTexture(texture, steve.overlay.rightArm.right, [
       ox - 21,
       oy,
@@ -275,12 +204,7 @@ const render = (
       10,
       40,
     ]);
-    ctx.drawTexture(texture, steve.overlay.rightArm.top, [
-      ox,
-      oy - 21,
-      10,
-      20,
-    ]);
+    ctx.drawTexture(texture, steve.overlay.rightArm.top, [ox, oy - 21, 10, 20]);
     ctx.drawTexture(
       texture,
       steve.overlay.rightArm.bottom,
@@ -291,66 +215,33 @@ const render = (
 
   const drawLeftArm = (ox: number, oy: number, texture: string) => {
     ctx.drawTexture(texture, steve.base.leftArm.front, [ox, oy, 10, 40]);
-    ctx.drawTexture(texture, steve.base.leftArm.right, [
-      ox - 21,
-      oy,
-      20,
-      40,
-    ]);
-    ctx.drawTexture(texture, steve.base.leftArm.left, [
-      ox + 11,
-      oy,
-      20,
-      40,
-    ]);
+    ctx.drawTexture(texture, steve.base.leftArm.right, [ox - 21, oy, 20, 40]);
+    ctx.drawTexture(texture, steve.base.leftArm.left, [ox + 11, oy, 20, 40]);
     ctx.drawTexture(texture, steve.base.leftArm.back, [
       ox + 11 + 21,
       oy,
       10,
       40,
     ]);
-    ctx.drawTexture(texture, steve.base.leftArm.top, [
-      ox,
-      oy - 21,
-      10,
-      20,
-    ]);
-    ctx.drawTexture(
-      texture,
-      steve.base.leftArm.bottom,
-      [ox, oy + 41, 10, 20],
-      { flip: "Horizontal" }
-    );
-    ctx.drawTexture(texture, steve.overlay.leftArm.front, [
-      ox,
-      oy,
-      10,
-      40,
-    ]);
+    ctx.drawTexture(texture, steve.base.leftArm.top, [ox, oy - 21, 10, 20]);
+    ctx.drawTexture(texture, steve.base.leftArm.bottom, [ox, oy + 41, 10, 20], {
+      flip: "Horizontal",
+    });
+    ctx.drawTexture(texture, steve.overlay.leftArm.front, [ox, oy, 10, 40]);
     ctx.drawTexture(texture, steve.overlay.leftArm.right, [
       ox - 21,
       oy,
       20,
       40,
     ]);
-    ctx.drawTexture(texture, steve.overlay.leftArm.left, [
-      ox + 11,
-      oy,
-      20,
-      40,
-    ]);
+    ctx.drawTexture(texture, steve.overlay.leftArm.left, [ox + 11, oy, 20, 40]);
     ctx.drawTexture(texture, steve.overlay.leftArm.back, [
       ox + 11 + 21,
       oy,
       10,
       40,
     ]);
-    ctx.drawTexture(texture, steve.overlay.leftArm.top, [
-      ox,
-      oy - 21,
-      10,
-      20,
-    ]);
+    ctx.drawTexture(texture, steve.overlay.leftArm.top, [ox, oy - 21, 10, 20]);
     ctx.drawTexture(
       texture,
       steve.overlay.leftArm.bottom,
@@ -361,66 +252,33 @@ const render = (
 
   const drawRightArmAlex = (ox: number, oy: number, texture: string) => {
     ctx.drawTexture(texture, alex.base.rightArm.front, [ox, oy, 10, 40]);
-    ctx.drawTexture(texture, alex.base.rightArm.right, [
-      ox - 21,
-      oy,
-      20,
-      40,
-    ]);
-    ctx.drawTexture(texture, alex.base.rightArm.left, [
-      ox + 11,
-      oy,
-      20,
-      40,
-    ]);
+    ctx.drawTexture(texture, alex.base.rightArm.right, [ox - 21, oy, 20, 40]);
+    ctx.drawTexture(texture, alex.base.rightArm.left, [ox + 11, oy, 20, 40]);
     ctx.drawTexture(texture, alex.base.rightArm.back, [
       ox - 11 - 21,
       oy,
       10,
       40,
     ]);
-    ctx.drawTexture(texture, alex.base.rightArm.top, [
-      ox,
-      oy - 21,
-      10,
-      20,
-    ]);
-    ctx.drawTexture(
-      texture,
-      alex.base.rightArm.bottom,
-      [ox, oy + 41, 10, 20],
-      { flip: "Horizontal" }
-    );
-    ctx.drawTexture(texture, alex.overlay.rightArm.front, [
-      ox,
-      oy,
-      10,
-      40,
-    ]);
+    ctx.drawTexture(texture, alex.base.rightArm.top, [ox, oy - 21, 10, 20]);
+    ctx.drawTexture(texture, alex.base.rightArm.bottom, [ox, oy + 41, 10, 20], {
+      flip: "Horizontal",
+    });
+    ctx.drawTexture(texture, alex.overlay.rightArm.front, [ox, oy, 10, 40]);
     ctx.drawTexture(texture, alex.overlay.rightArm.right, [
       ox - 21,
       oy,
       20,
       40,
     ]);
-    ctx.drawTexture(texture, alex.overlay.rightArm.left, [
-      ox + 11,
-      oy,
-      20,
-      40,
-    ]);
+    ctx.drawTexture(texture, alex.overlay.rightArm.left, [ox + 11, oy, 20, 40]);
     ctx.drawTexture(texture, alex.overlay.rightArm.back, [
       ox - 11 - 21,
       oy,
       10,
       40,
     ]);
-    ctx.drawTexture(texture, alex.overlay.rightArm.top, [
-      ox,
-      oy - 21,
-      10,
-      20,
-    ]);
+    ctx.drawTexture(texture, alex.overlay.rightArm.top, [ox, oy - 21, 10, 20]);
     ctx.drawTexture(
       texture,
       alex.overlay.rightArm.bottom,
@@ -431,66 +289,28 @@ const render = (
 
   const drawLeftArmAlex = (ox: number, oy: number, texture: string) => {
     ctx.drawTexture(texture, alex.base.leftArm.front, [ox, oy, 10, 40]);
-    ctx.drawTexture(texture, alex.base.leftArm.right, [
-      ox - 21,
-      oy,
-      20,
-      40,
-    ]);
-    ctx.drawTexture(texture, alex.base.leftArm.left, [
-      ox + 11,
-      oy,
-      20,
-      40,
-    ]);
+    ctx.drawTexture(texture, alex.base.leftArm.right, [ox - 21, oy, 20, 40]);
+    ctx.drawTexture(texture, alex.base.leftArm.left, [ox + 11, oy, 20, 40]);
     ctx.drawTexture(texture, alex.base.leftArm.back, [
       ox + 11 + 21,
       oy,
       10,
       40,
     ]);
-    ctx.drawTexture(texture, alex.base.leftArm.top, [
-      ox,
-      oy - 21,
-      10,
-      20,
-    ]);
-    ctx.drawTexture(
-      texture,
-      alex.base.leftArm.bottom,
-      [ox, oy + 41, 10, 20],
-      { flip: "Horizontal" }
-    );
-    ctx.drawTexture(texture, alex.overlay.leftArm.front, [
-      ox,
-      oy,
-      10,
-      40,
-    ]);
-    ctx.drawTexture(texture, alex.overlay.leftArm.right, [
-      ox - 21,
-      oy,
-      20,
-      40,
-    ]);
-    ctx.drawTexture(texture, alex.overlay.leftArm.left, [
-      ox + 11,
-      oy,
-      20,
-      40,
-    ]);
+    ctx.drawTexture(texture, alex.base.leftArm.top, [ox, oy - 21, 10, 20]);
+    ctx.drawTexture(texture, alex.base.leftArm.bottom, [ox, oy + 41, 10, 20], {
+      flip: "Horizontal",
+    });
+    ctx.drawTexture(texture, alex.overlay.leftArm.front, [ox, oy, 10, 40]);
+    ctx.drawTexture(texture, alex.overlay.leftArm.right, [ox - 21, oy, 20, 40]);
+    ctx.drawTexture(texture, alex.overlay.leftArm.left, [ox + 11, oy, 20, 40]);
     ctx.drawTexture(texture, alex.overlay.leftArm.back, [
       ox + 11 + 21,
       oy,
       10,
       40,
     ]);
-    ctx.drawTexture(texture, alex.overlay.leftArm.top, [
-      ox,
-      oy - 21,
-      10,
-      20,
-    ]);
+    ctx.drawTexture(texture, alex.overlay.leftArm.top, [ox, oy - 21, 10, 20]);
     ctx.drawTexture(
       texture,
       alex.overlay.leftArm.bottom,
@@ -501,19 +321,9 @@ const render = (
 
   const drawLegs = (ox: number, oy: number, texture: string) => {
     ctx.drawTexture(texture, steve.base.body.front, [ox, oy, 30, 25]);
-    ctx.drawTexture(texture, steve.base.body.right, [
-      ox - 21,
-      oy,
-      20,
-      25,
-    ]);
+    ctx.drawTexture(texture, steve.base.body.right, [ox - 21, oy, 20, 25]);
     ctx.drawTexture(texture, steve.base.body.left, [ox + 31, oy, 20, 25]);
-    ctx.drawTexture(texture, steve.base.body.back, [
-      ox + 31 + 21,
-      oy,
-      30,
-      25,
-    ]);
+    ctx.drawTexture(texture, steve.base.body.back, [ox + 31 + 21, oy, 30, 25]);
     ctx.drawTexture(
       texture,
       steve.base.body.front,
@@ -538,12 +348,7 @@ const render = (
       [ox + 31 + 21 + 31, oy, 30, 25],
       { flip: "Horizontal" }
     );
-    ctx.drawTexture(texture, steve.base.rightLeg.front, [
-      ox,
-      oy + 25,
-      15,
-      25,
-    ]);
+    ctx.drawTexture(texture, steve.base.rightLeg.front, [ox, oy + 25, 15, 25]);
     ctx.drawTexture(texture, steve.base.rightLeg.right, [
       ox - 21,
       oy + 25,
@@ -611,18 +416,8 @@ const render = (
       { flip: "Horizontal" }
     );
     ctx.drawTexture(texture, steve.overlay.body.front, [ox, oy, 30, 25]);
-    ctx.drawTexture(texture, steve.overlay.body.right, [
-      ox - 21,
-      oy,
-      20,
-      25,
-    ]);
-    ctx.drawTexture(texture, steve.overlay.body.left, [
-      ox + 31,
-      oy,
-      20,
-      25,
-    ]);
+    ctx.drawTexture(texture, steve.overlay.body.right, [ox - 21, oy, 20, 25]);
+    ctx.drawTexture(texture, steve.overlay.body.left, [ox + 31, oy, 20, 25]);
     ctx.drawTexture(texture, steve.overlay.body.back, [
       ox + 31 + 21,
       oy,

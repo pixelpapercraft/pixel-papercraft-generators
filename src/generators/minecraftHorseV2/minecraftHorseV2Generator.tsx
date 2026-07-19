@@ -498,21 +498,16 @@ const minecraftHorseGeneratorV2: GeneratorV2<MinecraftHorseProps> = {
 };
 
 function Component(): JSX.Element {
-  const [glintTexture, setGlintTexture] = React.useState<Texture | null>(
-    null
-  );
+  const [glintTexture, setGlintTexture] = React.useState<Texture | null>(null);
   const [glintOpacity, setGlintOpacity] = React.useState(255);
   const [glintXOffset, setGlintXOffset] = React.useState(0);
   const [glintYOffset, setGlintYOffset] = React.useState(0);
 
-  const [horseTexture, setHorseTexture] = React.useState<Texture | null>(
+  const [horseTexture, setHorseTexture] = React.useState<Texture | null>(null);
+  const [markingsTexture, setMarkingsTexture] = React.useState<Texture | null>(
     null
   );
-  const [markingsTexture, setMarkingsTexture] =
-    React.useState<Texture | null>(null);
-  const [armorTexture, setArmorTexture] = React.useState<Texture | null>(
-    null
-  );
+  const [armorTexture, setArmorTexture] = React.useState<Texture | null>(null);
   const [armorOverlayTexture, setArmorOverlayTexture] =
     React.useState<Texture | null>(null);
 

@@ -162,7 +162,11 @@ test("drawFoldLine draws a dashed grey line — grey dashes with transparent gap
   const run = await readPixelRow(foldLine, 10, 30, 80);
 
   const hasGreyDash = run.some(
-    (p) => p.r === foldGrey.r && p.g === foldGrey.g && p.b === foldGrey.b && p.a === 255
+    (p) =>
+      p.r === foldGrey.r &&
+      p.g === foldGrey.g &&
+      p.b === foldGrey.b &&
+      p.a === 255
   );
   const hasGap = run.some((p) => p.a === 0);
 
@@ -201,7 +205,11 @@ test("drawTab draws a grey fold line across the base by default", async ({
   // the fold line (not the diagonal edges) is present.
   const run = await readPixelRow(tab, 55, 59, 30);
   const hasGreyDash = run.some(
-    (p) => p.r === foldGrey.r && p.g === foldGrey.g && p.b === foldGrey.b && p.a === 255
+    (p) =>
+      p.r === foldGrey.r &&
+      p.g === foldGrey.g &&
+      p.b === foldGrey.b &&
+      p.a === 255
   );
   const hasGap = run.some((p) => p.a === 0);
 

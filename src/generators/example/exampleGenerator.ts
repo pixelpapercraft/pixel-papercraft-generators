@@ -9,9 +9,7 @@ import type {
   ScriptDef,
 } from "@genroot/builder/modules/generatorDef";
 import { type Generator } from "@genroot/builder/modules/generator";
-import {
-  makeDefaultMinecraftSkinPresetOptions,
-} from "../_common/skins/options";
+import { makeDefaultMinecraftSkinPresetOptions } from "../_common/skins/options";
 
 import skinImage from "./textures/Skin.png";
 import backgroundImage from "./images/Background.png";

@@ -51,8 +51,7 @@ const transparent: Rgba = { r: 0, g: 0, b: 0, a: 0 };
 const white: Rgba = { r: 255, g: 255, b: 255, a: 255 };
 const skinFixturePath = "src/generators/_common/fixtures/testSheet.png";
 
-const output = (page: Page) =>
-  page.getByTestId("generator-page-image").first();
+const output = (page: Page) => page.getByTestId("generator-page-image").first();
 const catSelect = (page: Page) => page.getByLabel("Cat", { exact: true });
 const collarSelect = (page: Page) => page.getByLabel("Collar", { exact: true });
 const tintSelect = (page: Page) => page.getByLabel("Collar Color");
@@ -171,7 +170,9 @@ test("minecraft cat generator renders a tinted collar", async ({ page }) => {
     .poll(() => readPixel(pageImage, collarProbe.x, collarProbe.y))
     .toEqual({ r: 43, g: 49, b: 124, a: 255 });
   await renderImageAtNaturalSize(pageImage);
-  await expect(pageImage).toHaveScreenshot("minecraft-cat-blue-collar-page-1.png");
+  await expect(pageImage).toHaveScreenshot(
+    "minecraft-cat-blue-collar-page-1.png"
+  );
 });
 
 test("minecraft cat generator renders a custom cat texture", async ({
@@ -201,12 +202,22 @@ test("minecraft cat generator hides folds and labels independently", async ({
   const readFold = () => readPixel(pageImage, 82, 32);
   const readLabel = () => readPixel(pageImage, 142, 46);
   await expect(readFold()).resolves.toEqual({ r: 123, g: 123, b: 123, a: 255 });
-  await expect(readLabel()).resolves.toEqual({ r: 102, g: 102, b: 102, a: 255 });
+  await expect(readLabel()).resolves.toEqual({
+    r: 102,
+    g: 102,
+    b: 102,
+    a: 255,
+  });
 
   await page.getByText("Show Folds", { exact: true }).click();
   await expect(page.getByLabel("Show Folds")).not.toBeChecked();
   await expect.poll(readFold).toEqual(white);
-  await expect(readLabel()).resolves.toEqual({ r: 102, g: 102, b: 102, a: 255 });
+  await expect(readLabel()).resolves.toEqual({
+    r: 102,
+    g: 102,
+    b: 102,
+    a: 255,
+  });
 
   await page.getByText("Show Labels", { exact: true }).click();
   await expect(page.getByLabel("Show Labels")).not.toBeChecked();

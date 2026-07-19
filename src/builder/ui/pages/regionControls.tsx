@@ -64,7 +64,9 @@ export function RegionControls({
             key={i}
             className="absolute border-4 border-transparent hover:border-blue-500"
             style={style}
-            data-testid={regionControl.id ? `region-${regionControl.id}` : undefined}
+            data-testid={
+              regionControl.id ? `region-${regionControl.id}` : undefined
+            }
             onClick={() => onClick(regionControl.onClick)}
           />
         );

@@ -44,10 +44,7 @@ export function makeNextFlip(
         case "Vertical":
           return ["None", rotation];
         case "Horizontal":
-          return [
-            "None",
-            makeNextRotation(makeNextRotation(rotation)),
-          ];
+          return ["None", makeNextRotation(makeNextRotation(rotation))];
       }
       break;
     case "Horizontal":
@@ -55,10 +52,7 @@ export function makeNextFlip(
         case "None":
           return ["Horizontal", rotation];
         case "Vertical":
-          return [
-            "None",
-            makeNextRotation(makeNextRotation(rotation)),
-          ];
+          return ["None", makeNextRotation(makeNextRotation(rotation))];
         case "Horizontal":
           return ["None", rotation];
       }

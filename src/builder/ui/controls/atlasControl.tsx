@@ -1,9 +1,6 @@
 import React from "react";
 
-import {
-  type Texture,
-  makeTextureFromUrl,
-} from "../../modules/texture";
+import { type Texture, makeTextureFromUrl } from "../../modules/texture";
 import { type SelectOption, Select } from "../form/select";
 import {
   isSupportedTextureUploadFile,

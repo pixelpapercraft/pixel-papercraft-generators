@@ -73,7 +73,10 @@ export {
   decodeSelectedTextures,
   decodeSelectedTexture,
 } from "@genroot/builder/ui/texturePicker/selectedTexture";
-export { type Flip, makeNextFlip } from "@genroot/builder/ui/texturePicker/flip";
+export {
+  type Flip,
+  makeNextFlip,
+} from "@genroot/builder/ui/texturePicker/flip";
 export {
   type Rotation,
   rotationToDegrees,

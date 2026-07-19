@@ -27,14 +27,59 @@ const optionListsOf = (page: Page): Promise<string[][]> =>
 // Base-state combobox order (nothing tinted/trimmed). Enabling a Tint/Trim
 // inserts that part's extra selects mid-list and shifts these indices.
 const MATERIAL_OPTIONS = {
-  helmet: ["None", "Leather", "Chainmail", "Gold", "Copper", "Iron", "Diamond", "Netherite", "Turtle Shell"],
-  chestplate: ["None", "Leather", "Chainmail", "Gold", "Copper", "Iron", "Diamond", "Netherite"],
-  leggings: ["None", "Leather ", "Chainmail ", "Gold ", "Copper ", "Iron ", "Diamond ", "Netherite "],
-  boots: ["None", "Leather", "Chainmail", "Gold", "Copper", "Iron", "Diamond", "Netherite"],
+  helmet: [
+    "None",
+    "Leather",
+    "Chainmail",
+    "Gold",
+    "Copper",
+    "Iron",
+    "Diamond",
+    "Netherite",
+    "Turtle Shell",
+  ],
+  chestplate: [
+    "None",
+    "Leather",
+    "Chainmail",
+    "Gold",
+    "Copper",
+    "Iron",
+    "Diamond",
+    "Netherite",
+  ],
+  leggings: [
+    "None",
+    "Leather ",
+    "Chainmail ",
+    "Gold ",
+    "Copper ",
+    "Iron ",
+    "Diamond ",
+    "Netherite ",
+  ],
+  boots: [
+    "None",
+    "Leather",
+    "Chainmail",
+    "Gold",
+    "Copper",
+    "Iron",
+    "Diamond",
+    "Netherite",
+  ],
   glint: ["None", "1.20+", "Pre-1.20"],
 };
 
-const NAMED_MATERIALS = ["Leather", "Chainmail", "Gold", "Copper", "Iron", "Diamond", "Netherite"];
+const NAMED_MATERIALS = [
+  "Leather",
+  "Chainmail",
+  "Gold",
+  "Copper",
+  "Iron",
+  "Diamond",
+  "Netherite",
+];
 
 type PartEnumeration = {
   part: string;
@@ -118,7 +163,9 @@ const DIAMOND_DEFAULT: Record<string, Rgba | undefined> = Object.fromEntries(
   ENUMERATIONS.map((e) => [e.part, e.colors.Diamond])
 );
 
-test("minecraft armor generator matches the default screenshot", async ({ page }) => {
+test("minecraft armor generator matches the default screenshot", async ({
+  page,
+}) => {
   await page.goto("/generator/minecraft-armor");
 
   const pageImage = outputPage(page);
@@ -126,10 +173,14 @@ test("minecraft armor generator matches the default screenshot", async ({ page }
   await expect(pageImage).toHaveAttribute("src", /data:image\/png/);
   await renderImageAtNaturalSize(pageImage);
 
-  await expect(pageImage).toHaveScreenshot("minecraft-armor-default-page-1.png");
+  await expect(pageImage).toHaveScreenshot(
+    "minecraft-armor-default-page-1.png"
+  );
 });
 
-test("minecraft armor generator exposes its full control surface", async ({ page }) => {
+test("minecraft armor generator exposes its full control surface", async ({
+  page,
+}) => {
   await page.goto("/generator/minecraft-armor");
 
   // Gate on all five selects having mounted before snapshotting their option
@@ -164,12 +215,20 @@ test("minecraft armor generator exposes its full control surface", async ({ page
   await expect(page.getByLabel("Glint Y Offset")).toHaveValue("0");
 
   // Every part plus the glint texture exposes an upload.
-  for (const name of ["Helmet", "Chestplate", "Leggings", "Boots", "Enchanted Glint"]) {
+  for (const name of [
+    "Helmet",
+    "Chestplate",
+    "Leggings",
+    "Boots",
+    "Enchanted Glint",
+  ]) {
     await expect(page.getByLabel(`Upload ${name} texture file`)).toBeVisible();
   }
 });
 
-test("minecraft armor generator reveals tint and trim controls on demand", async ({ page }) => {
+test("minecraft armor generator reveals tint and trim controls on demand", async ({
+  page,
+}) => {
   await page.goto("/generator/minecraft-armor");
 
   await expect(page.getByRole("combobox")).toHaveCount(5);
@@ -190,15 +249,44 @@ test("minecraft armor generator reveals tint and trim controls on demand", async
   await expect(page.getByRole("combobox")).toHaveCount(7);
   const revealed = await optionListsOf(page);
   expect(revealed).toContainEqual([
-    "None", "Bolt", "Coast", "Dune", "Eye", "Flow", "Host", "Raiser", "Rib",
-    "Sentry", "Shaper", "Silence", "Snout", "Spire", "Tide", "Vex", "Ward",
-    "Wayfinder", "Wild",
+    "None",
+    "Bolt",
+    "Coast",
+    "Dune",
+    "Eye",
+    "Flow",
+    "Host",
+    "Raiser",
+    "Rib",
+    "Sentry",
+    "Shaper",
+    "Silence",
+    "Snout",
+    "Spire",
+    "Tide",
+    "Vex",
+    "Ward",
+    "Wayfinder",
+    "Wild",
   ]);
   expect(revealed).toContainEqual([
-    "None", "Amethyst  ", "Copper  ", "Copper Darker  ", "Diamond  ",
-    "Diamond Darker  ", "Emerald  ", "Gold  ", "Gold Darker  ", "Iron  ",
-    "Iron Darker  ", "Lapis  ", "Netherite  ", "Netherite Darker  ",
-    "Quartz  ", "Redstone  ", "Resin  ",
+    "None",
+    "Amethyst  ",
+    "Copper  ",
+    "Copper Darker  ",
+    "Diamond  ",
+    "Diamond Darker  ",
+    "Emerald  ",
+    "Gold  ",
+    "Gold Darker  ",
+    "Iron  ",
+    "Iron Darker  ",
+    "Lapis  ",
+    "Netherite  ",
+    "Netherite Darker  ",
+    "Quartz  ",
+    "Redstone  ",
+    "Resin  ",
   ]);
 });
 
@@ -227,7 +315,9 @@ for (const enumeration of ENUMERATIONS) {
   });
 }
 
-test("minecraft armor generator drives only the selected part's region", async ({ page }) => {
+test("minecraft armor generator drives only the selected part's region", async ({
+  page,
+}) => {
   await page.goto("/generator/minecraft-armor");
   const pageImage = outputPage(page);
   await renderImageAtNaturalSize(pageImage);
@@ -246,14 +336,18 @@ test("minecraft armor generator drives only the selected part's region", async (
     .toEqual(rgb(245, 184, 28));
 
   // The other three parts stay at their diamond defaults.
-  for (const { part, probe } of ENUMERATIONS.filter((e) => e.part !== "Helmet")) {
+  for (const { part, probe } of ENUMERATIONS.filter(
+    (e) => e.part !== "Helmet"
+  )) {
     expect(await readPixel(pageImage, probe[0], probe[1])).toEqual(
       DIAMOND_DEFAULT[part]
     );
   }
 });
 
-test("minecraft armor generator exposes a typeable helmet tint input", async ({ page }) => {
+test("minecraft armor generator exposes a typeable helmet tint input", async ({
+  page,
+}) => {
   await page.goto("/generator/minecraft-armor");
 
   await toggleCheckbox(page, "Tint Helmet");
@@ -271,33 +365,47 @@ test("minecraft armor generator tints a part's pixels", async ({ page }) => {
   await renderImageAtNaturalSize(pageImage);
 
   // Chest starts at the diamond fallback.
-  await expect.poll(() => readPixel(pageImage, 260, 410)).toEqual(rgb(74, 237, 217));
+  await expect
+    .poll(() => readPixel(pageImage, 260, 410))
+    .toEqual(rgb(74, 237, 217));
 
   await toggleCheckbox(page, "Tint Chestplate");
   await page.getByLabel("Chestplate Color").selectOption({ label: "Blue" });
 
-  await expect.poll(() => readPixel(pageImage, 260, 410)).toEqual(rgb(17, 63, 144));
+  await expect
+    .poll(() => readPixel(pageImage, 260, 410))
+    .toEqual(rgb(17, 63, 144));
 });
 
-test("minecraft armor generator toggles the folds and labels overlays", async ({ page }) => {
+test("minecraft armor generator toggles the folds and labels overlays", async ({
+  page,
+}) => {
   await page.goto("/generator/minecraft-armor");
   const pageImage = outputPage(page);
   await renderImageAtNaturalSize(pageImage);
 
   // A fold-line pixel and a label pixel are painted grey by default.
-  await expect.poll(() => readPixel(pageImage, 130, 100)).toEqual(rgb(123, 123, 123));
-  await expect.poll(() => readPixel(pageImage, 280, 60)).toEqual(rgb(123, 123, 123));
+  await expect
+    .poll(() => readPixel(pageImage, 130, 100))
+    .toEqual(rgb(123, 123, 123));
+  await expect
+    .poll(() => readPixel(pageImage, 280, 60))
+    .toEqual(rgb(123, 123, 123));
 
   // Turning folds off reveals the diamond armour beneath the fold line.
   await toggleCheckbox(page, "Show Folds");
-  await expect.poll(() => readPixel(pageImage, 130, 100)).toEqual(rgb(48, 208, 190));
+  await expect
+    .poll(() => readPixel(pageImage, 130, 100))
+    .toEqual(rgb(48, 208, 190));
 
   // Turning labels off clears the label pixel to the white page.
   await toggleCheckbox(page, "Show Labels");
   await expect.poll(() => readPixel(pageImage, 280, 60)).toEqual(WHITE);
 });
 
-test("minecraft armor generator renders tinted enchanted armor", async ({ page }) => {
+test("minecraft armor generator renders tinted enchanted armor", async ({
+  page,
+}) => {
   await page.goto("/generator/minecraft-armor");
 
   await toggleCheckbox(page, "Tint Helmet");
@@ -319,7 +427,9 @@ test("minecraft armor generator renders tinted enchanted armor", async ({ page }
   );
 });
 
-test("minecraft armor generator renders a trimmed chestplate", async ({ page }) => {
+test("minecraft armor generator renders a trimmed chestplate", async ({
+  page,
+}) => {
   await page.goto("/generator/minecraft-armor");
 
   await toggleCheckbox(page, "Trim Chestplate");
@@ -330,10 +440,14 @@ test("minecraft armor generator renders a trimmed chestplate", async ({ page }) 
 
   const pageImage = outputPage(page);
   await renderImageAtNaturalSize(pageImage);
-  await expect(pageImage).toHaveScreenshot("minecraft-armor-trim-chestplate-page-1.png");
+  await expect(pageImage).toHaveScreenshot(
+    "minecraft-armor-trim-chestplate-page-1.png"
+  );
 });
 
-test("minecraft armor generator composes four different materials", async ({ page }) => {
+test("minecraft armor generator composes four different materials", async ({
+  page,
+}) => {
   await page.goto("/generator/minecraft-armor");
 
   await combo(page, 0).selectOption("Gold"); // Helmet
@@ -343,13 +457,19 @@ test("minecraft armor generator composes four different materials", async ({ pag
 
   const pageImage = outputPage(page);
   await renderImageAtNaturalSize(pageImage);
-  await expect(pageImage).toHaveScreenshot("minecraft-armor-mixed-materials-page-1.png");
+  await expect(pageImage).toHaveScreenshot(
+    "minecraft-armor-mixed-materials-page-1.png"
+  );
 });
 
-test("minecraft armor generator renders a custom 64x32 helmet texture", async ({ page }) => {
+test("minecraft armor generator renders a custom 64x32 helmet texture", async ({
+  page,
+}) => {
   await page.goto("/generator/minecraft-armor");
 
-  await page.getByLabel("Upload Helmet texture file").setInputFiles(armorTexturePath);
+  await page
+    .getByLabel("Upload Helmet texture file")
+    .setInputFiles(armorTexturePath);
 
   const pageImage = outputPage(page);
   await expect(pageImage).toBeVisible();

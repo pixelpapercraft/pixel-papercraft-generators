@@ -20,7 +20,12 @@ type FakeContext = {
   width: number;
   height: number;
   fillStyle: string;
-  getImageData: (x: number, y: number, width: number, height: number) => {
+  getImageData: (
+    x: number,
+    y: number,
+    width: number,
+    height: number
+  ) => {
     data: Uint8ClampedArray;
   };
   fillRect: (x: number, y: number, width: number, height: number) => void;
@@ -38,8 +43,9 @@ function makePixelKey(r: number, g: number, b: number, a: number): PixelKey {
 }
 
 function parseRgba(value: string): PixelKey {
-  const match =
-    /^rgba\((\d+),\s*(\d+),\s*(\d+),\s*([0-9]*\.?[0-9]+)\)$/.exec(value);
+  const match = /^rgba\((\d+),\s*(\d+),\s*(\d+),\s*([0-9]*\.?[0-9]+)\)$/.exec(
+    value
+  );
   if (!match) {
     return null;
   }
@@ -136,7 +142,12 @@ function makeFakeContext(width: number, height: number): FakeContext {
     set fillStyle(value: string) {
       fillStyle = value;
     },
-    getImageData: (x: number, y: number, dataWidth: number, dataHeight: number) => {
+    getImageData: (
+      x: number,
+      y: number,
+      dataWidth: number,
+      dataHeight: number
+    ) => {
       const data = new Uint8ClampedArray(dataWidth * dataHeight * 4);
       let index = 0;
       for (let row = 0; row < dataHeight; row += 1) {
@@ -243,15 +254,22 @@ function rotatePixels(
     case "Rot0":
       return pixels.map((row) => row.slice());
     case "Rot90":
-      return pixels[0]?.map((_, x) =>
-        pixels.map((row) => row[x] ?? null).reverse()
-      ) ?? [];
+      return (
+        pixels[0]?.map((_, x) =>
+          pixels.map((row) => row[x] ?? null).reverse()
+        ) ?? []
+      );
     case "Rot180":
-      return pixels.slice().reverse().map((row) => row.slice().reverse());
+      return pixels
+        .slice()
+        .reverse()
+        .map((row) => row.slice().reverse());
     case "Rot270":
-      return pixels[0]?.map((_, x) =>
-        pixels.map((row) => row[row.length - 1 - x] ?? null)
-      ) ?? [];
+      return (
+        pixels[0]?.map((_, x) =>
+          pixels.map((row) => row[row.length - 1 - x] ?? null)
+        ) ?? []
+      );
   }
 }
 
@@ -265,7 +283,10 @@ function flipPixels(
     case "Horizontal":
       return pixels.map((row) => row.slice().reverse());
     case "Vertical":
-      return pixels.slice().reverse().map((row) => row.slice());
+      return pixels
+        .slice()
+        .reverse()
+        .map((row) => row.slice());
   }
 }
 
@@ -279,14 +300,8 @@ function expectedPixels(
 
 describe("drawTexture", () => {
   const sourcePixels: PixelKey[][] = [
-    [
-      makePixelKey(255, 0, 0, 255),
-      makePixelKey(0, 255, 0, 255),
-    ],
-    [
-      makePixelKey(0, 0, 255, 255),
-      makePixelKey(255, 255, 0, 255),
-    ],
+    [makePixelKey(255, 0, 0, 255), makePixelKey(0, 255, 0, 255)],
+    [makePixelKey(0, 0, 255, 255), makePixelKey(255, 255, 0, 255)],
   ];
 
   const texture = makeSourceTexture(sourcePixels);
@@ -335,7 +350,9 @@ describe("drawTexture", () => {
         options
       );
 
-      expect(page.getPixels()).toEqual(expectedPixels(sourcePixels, rotation, flip));
+      expect(page.getPixels()).toEqual(
+        expectedPixels(sourcePixels, rotation, flip)
+      );
     });
   });
 
@@ -343,15 +360,27 @@ describe("drawTexture", () => {
     const rotatedOnly = makeFakeContext(2, 2);
     const rotatedAndFlipped = makeFakeContext(2, 2);
 
-    drawTexture(rotatedOnly as unknown as CanvasWithContext, texture, sourceRegion, destinationRegion, {
-      rotate: 90,
-      flip: "None",
-    });
+    drawTexture(
+      rotatedOnly as unknown as CanvasWithContext,
+      texture,
+      sourceRegion,
+      destinationRegion,
+      {
+        rotate: 90,
+        flip: "None",
+      }
+    );
 
-    drawTexture(rotatedAndFlipped as unknown as CanvasWithContext, texture, sourceRegion, destinationRegion, {
-      rotate: 90,
-      flip: "Horizontal",
-    });
+    drawTexture(
+      rotatedAndFlipped as unknown as CanvasWithContext,
+      texture,
+      sourceRegion,
+      destinationRegion,
+      {
+        rotate: 90,
+        flip: "Horizontal",
+      }
+    );
 
     expect(rotatedAndFlipped.getPixels()).toEqual(
       expectedPixels(sourcePixels, "Rot90", "Horizontal")

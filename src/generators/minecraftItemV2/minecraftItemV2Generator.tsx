@@ -699,15 +699,27 @@ function Component(): JSX.Element {
               onCheckedChange={setShowFolds}
             />
 
-            <GeneratorUI.ButtonControl label="Add Item" onClick={addItem} color="Blue" />
+            <GeneratorUI.ButtonControl
+              label="Add Item"
+              onClick={addItem}
+              color="Blue"
+            />
             <GeneratorUI.ButtonControl
               label="Overlay Item"
               onClick={overlayItem}
               color="Green"
             />
-            <GeneratorUI.ButtonControl label="Remove Item" onClick={removeItem} color="Red" />
+            <GeneratorUI.ButtonControl
+              label="Remove Item"
+              onClick={removeItem}
+              color="Red"
+            />
             <div />
-            <GeneratorUI.ButtonControl label="Clear" onClick={clearItems} color="Red" />
+            <GeneratorUI.ButtonControl
+              label="Clear"
+              onClick={clearItems}
+              color="Red"
+            />
 
             <GeneratorUI.LoadedTextureControl
               id="Enchanted Glint"

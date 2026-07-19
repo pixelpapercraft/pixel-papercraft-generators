@@ -59,9 +59,11 @@ export function parseMinecraftSkinInputValue(
 
     const candidate = parsed as Record<string, unknown>;
     const modelType =
-      candidate.modelType === "Slim" ? "Slim" : candidate.modelType === "Wide"
-      ? "Wide"
-      : null;
+      candidate.modelType === "Slim"
+        ? "Slim"
+        : candidate.modelType === "Wide"
+          ? "Wide"
+          : null;
 
     if (!modelType) {
       return null;

@@ -223,12 +223,22 @@ test("minecraft character generator hides folds and labels independently", async
   const readFold = () => readPixel(pageImage, 137, 34);
   const readLabel = () => readPixel(pageImage, 119, 196);
   await expect(readFold()).resolves.toEqual({ r: 191, g: 191, b: 191, a: 255 });
-  await expect(readLabel()).resolves.toEqual({ r: 127, g: 127, b: 127, a: 255 });
+  await expect(readLabel()).resolves.toEqual({
+    r: 127,
+    g: 127,
+    b: 127,
+    a: 255,
+  });
 
   await page.getByText("Show Folds", { exact: true }).click();
   await expect(page.getByLabel("Show Folds")).not.toBeChecked();
   await expect.poll(readFold).toEqual(whiteRgba);
-  await expect(readLabel()).resolves.toEqual({ r: 127, g: 127, b: 127, a: 255 });
+  await expect(readLabel()).resolves.toEqual({
+    r: 127,
+    g: 127,
+    b: 127,
+    a: 255,
+  });
 
   await page.getByText("Show Labels", { exact: true }).click();
   await expect(page.getByLabel("Show Labels")).not.toBeChecked();

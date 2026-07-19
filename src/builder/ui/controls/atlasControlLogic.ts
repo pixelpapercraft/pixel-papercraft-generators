@@ -19,8 +19,12 @@ function getFrameCrop(
   }
 
   context.drawImage(image, 0, 0);
-  const pixels = context.getImageData(frameX, frameY, frameWidth, frameHeight)
-    .data;
+  const pixels = context.getImageData(
+    frameX,
+    frameY,
+    frameWidth,
+    frameHeight
+  ).data;
 
   let minX = frameWidth;
   let minY = frameHeight;

@@ -39,7 +39,12 @@ describe("makeTiledImages", () => {
     sourceImage.setPixelColor(rgbaToInt(255, 0, 0, 255), 1, 2);
     await sourceImage.write(sourceImagePath);
 
-    await makeTiledImages("test-item", sourceDirectory, outputDirectory, "texture");
+    await makeTiledImages(
+      "test-item",
+      sourceDirectory,
+      outputDirectory,
+      "texture"
+    );
 
     const basePath = Path.join(outputDirectory, "texture_test_item");
     const atlasPath = `${basePath}.png`;
@@ -57,7 +62,7 @@ describe("makeTiledImages", () => {
     expect(typeFile).toContain('id: "test-item"');
     expect(typeFile).toContain("standardWidth: 512");
     expect(typeFile).toContain("standardHeight: 4");
-    expect(typeFile).toContain('crop: [1, 2, 1, 1]');
+    expect(typeFile).toContain("crop: [1, 2, 1, 1]");
     expect(typeFile).toContain('satisfies TextureData["tiles"]');
     expect(typeFile).toContain("satisfies TextureData;");
   });

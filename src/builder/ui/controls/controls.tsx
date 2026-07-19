@@ -139,7 +139,8 @@ export function Controls({
               model.getStringVariable(getMinecraftSkinInputValueKey(control.id))
             );
             const value =
-              storedValue ?? getDefaultMinecraftSkinInputValue(control.props.options);
+              storedValue ??
+              getDefaultMinecraftSkinInputValue(control.props.options);
 
             return (
               <MinecraftSkinControl

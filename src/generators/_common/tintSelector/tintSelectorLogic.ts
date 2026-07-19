@@ -1,4 +1,8 @@
-import { type SelectOption, type SelectOptionGroup, type SelectOptionOrGroup } from "@genroot/builder/ui/form/select";
+import {
+  type SelectOption,
+  type SelectOptionGroup,
+  type SelectOptionOrGroup,
+} from "@genroot/builder/ui/form/select";
 import {
   defaultTintChoiceGroups,
   type TintChoice,

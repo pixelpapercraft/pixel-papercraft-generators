@@ -33,12 +33,42 @@ const presetExpectations: PresetExpectation[] = [
 type LayerExpectation = { x: number; y: number; visible: Rgba; hidden: Rgba };
 
 const layerExpectations: LayerExpectation[] = [
-  { x: 260, y: 206, visible: { r: 34, g: 197, b: 94, a: 255 }, hidden: { r: 234, g: 179, b: 8, a: 255 } },
-  { x: 260, y: 420, visible: { r: 6, g: 182, b: 212, a: 255 }, hidden: { r: 59, g: 130, b: 246, a: 255 } },
-  { x: 142, y: 527, visible: { r: 139, g: 92, b: 246, a: 255 }, hidden: { r: 243, g: 244, b: 246, a: 255 } },
-  { x: 201, y: 645, visible: { r: 217, g: 70, b: 239, a: 255 }, hidden: { r: 20, g: 184, b: 166, a: 255 } },
-  { x: 490, y: 527, visible: { r: 139, g: 92, b: 246, a: 255 }, hidden: { r: 243, g: 244, b: 246, a: 255 } },
-  { x: 479, y: 645, visible: { r: 217, g: 70, b: 239, a: 255 }, hidden: { r: 20, g: 184, b: 166, a: 255 } },
+  {
+    x: 260,
+    y: 206,
+    visible: { r: 34, g: 197, b: 94, a: 255 },
+    hidden: { r: 234, g: 179, b: 8, a: 255 },
+  },
+  {
+    x: 260,
+    y: 420,
+    visible: { r: 6, g: 182, b: 212, a: 255 },
+    hidden: { r: 59, g: 130, b: 246, a: 255 },
+  },
+  {
+    x: 142,
+    y: 527,
+    visible: { r: 139, g: 92, b: 246, a: 255 },
+    hidden: { r: 243, g: 244, b: 246, a: 255 },
+  },
+  {
+    x: 201,
+    y: 645,
+    visible: { r: 217, g: 70, b: 239, a: 255 },
+    hidden: { r: 20, g: 184, b: 166, a: 255 },
+  },
+  {
+    x: 490,
+    y: 527,
+    visible: { r: 139, g: 92, b: 246, a: 255 },
+    hidden: { r: 243, g: 244, b: 246, a: 255 },
+  },
+  {
+    x: 479,
+    y: 645,
+    visible: { r: 217, g: 70, b: 239, a: 255 },
+    hidden: { r: 20, g: 184, b: 166, a: 255 },
+  },
 ];
 
 const whiteRgba: Rgba = { r: 255, g: 255, b: 255, a: 255 };
@@ -101,7 +131,9 @@ test("minecraft creeper character generator renders every skin preset and explic
 
   for (const preset of presetExpectations) {
     await skin.selectOption(preset.name);
-    await expect.poll(() => readPixel(pageImage, 260, 206)).toEqual(preset.rgba);
+    await expect
+      .poll(() => readPixel(pageImage, 260, 206))
+      .toEqual(preset.rgba);
   }
 
   await skin.selectOption("");

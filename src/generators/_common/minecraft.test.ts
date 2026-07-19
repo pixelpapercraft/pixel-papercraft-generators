@@ -18,9 +18,12 @@ describe("Minecraft", () => {
         .mockImplementation(() => {});
       const minecraft = new Minecraft(generator);
 
-      minecraft.drawCuboid("Skin", makeCuboid([64, 64, 64]), [0, 0], [
-        64, 64, 64,
-      ]);
+      minecraft.drawCuboid(
+        "Skin",
+        makeCuboid([64, 64, 64]),
+        [0, 0],
+        [64, 64, 64]
+      );
 
       expect(drawTexture).toHaveBeenCalledTimes(6);
       drawTexture.mock.calls.forEach(([id]) => {
@@ -62,9 +65,12 @@ describe("Minecraft", () => {
       );
       const minecraft = new Minecraft(ctx);
 
-      minecraft.drawCuboid("Skin", makeCuboid([64, 64, 64]), [0, 0], [
-        64, 64, 64,
-      ]);
+      minecraft.drawCuboid(
+        "Skin",
+        makeCuboid([64, 64, 64]),
+        [0, 0],
+        [64, 64, 64]
+      );
 
       expect(drawTexture).toHaveBeenCalledTimes(6);
     });

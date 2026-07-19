@@ -102,9 +102,7 @@ test("minecraft creeper generator composes action-figure foreground, folds, and 
   const withoutActionFigure = await actionNeckProbe();
   await page.getByText("Action Figure", { exact: true }).click();
 
-  await expect
-    .poll(actionNeckProbe)
-    .not.toEqual(withoutActionFigure);
+  await expect.poll(actionNeckProbe).not.toEqual(withoutActionFigure);
   await expect
     .poll(() => readPixel(pageImage, 45, 253))
     .toEqual({ r: 123, g: 123, b: 123, a: 255 });

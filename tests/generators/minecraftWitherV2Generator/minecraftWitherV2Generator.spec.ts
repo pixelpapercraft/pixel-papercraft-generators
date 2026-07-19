@@ -23,7 +23,9 @@ test("minecraft wither generator exposes its complete control contract", async (
     "None",
     "Minecraft Wither",
   ]);
-  await expect(page.getByLabel("Upload Wither Skin texture file")).toBeVisible();
+  await expect(
+    page.getByLabel("Upload Wither Skin texture file")
+  ).toBeVisible();
   await expect(page.getByRole("checkbox")).toHaveCount(0);
   await expect(page.locator("input[type=range]")).toHaveCount(0);
   await expect(page.getByTestId("generator-region")).toHaveCount(0);
@@ -65,7 +67,9 @@ test("minecraft wither generator renders its fallback, preset, and explicit None
   await expect(pageImage).toHaveScreenshot("minecraft-wither-none-page-1.png");
 });
 
-test("minecraft wither generator renders a custom texture", async ({ page }) => {
+test("minecraft wither generator renders a custom texture", async ({
+  page,
+}) => {
   await page.goto("/generator/minecraft-wither-v2");
 
   const fallback = await pageImageUrl(page);

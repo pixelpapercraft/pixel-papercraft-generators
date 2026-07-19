@@ -144,9 +144,7 @@ test("minecraft enderman character generator renders every skin preset and expli
   }
 
   await skin.selectOption("");
-  await expect
-    .poll(() => readPixel(pageImage, 170, 121))
-    .toEqual(noneRgba);
+  await expect.poll(() => readPixel(pageImage, 170, 121)).toEqual(noneRgba);
 });
 
 test("minecraft enderman character generator renders a custom Slim skin", async ({
@@ -209,16 +207,12 @@ test("minecraft enderman character generator hides folds and labels independentl
 
   await page.getByText("Show Folds", { exact: true }).click();
   await expect(page.getByLabel("Show Folds")).not.toBeChecked();
-  await expect
-    .poll(readFold)
-    .toEqual({ r: 255, g: 255, b: 255, a: 255 });
+  await expect.poll(readFold).toEqual({ r: 255, g: 255, b: 255, a: 255 });
   await expect(readLabel()).resolves.toEqual({ r: 0, g: 0, b: 0, a: 255 });
 
   await page.getByText("Show Labels", { exact: true }).click();
   await expect(page.getByLabel("Show Labels")).not.toBeChecked();
-  await expect
-    .poll(readLabel)
-    .toEqual({ r: 255, g: 255, b: 255, a: 255 });
+  await expect.poll(readLabel).toEqual({ r: 255, g: 255, b: 255, a: 255 });
   await expect(readFold()).resolves.toEqual({ r: 255, g: 255, b: 255, a: 255 });
   await renderImageAtNaturalSize(pageImage);
   await expect(pageImage).toHaveScreenshot(

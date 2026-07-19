@@ -33,7 +33,9 @@ const skinFixturePath = "src/generators/_common/fixtures/testSheet.png";
 const outputPage = (page: Page) =>
   page.getByTestId("generator-page-image").first();
 
-test("amogus bendable generator exposes its color and skin controls", async ({ page }) => {
+test("amogus bendable generator exposes its color and skin controls", async ({
+  page,
+}) => {
   await page.goto("/generator/amogus-bendable");
 
   const color = page.getByLabel("Color");
@@ -45,7 +47,9 @@ test("amogus bendable generator exposes its color and skin controls", async ({ p
   await expect(page.getByLabel("Upload Skin skin file")).toBeVisible();
 });
 
-test("amogus bendable generator matches the default screenshot", async ({ page }) => {
+test("amogus bendable generator matches the default screenshot", async ({
+  page,
+}) => {
   await page.goto("/generator/amogus-bendable");
 
   const outputPages = page.getByTestId("generator-page-image");
@@ -105,9 +109,7 @@ test("amogus bendable generator renders a custom skin upload in its visor", asyn
 
   const pageImage = outputPage(page);
   const defaultVisorPixel = await readPixel(pageImage, 60, 240);
-  await page
-    .getByLabel("Upload Skin skin file")
-    .setInputFiles(skinFixturePath);
+  await page.getByLabel("Upload Skin skin file").setInputFiles(skinFixturePath);
 
   await expect
     .poll(async () => readPixel(pageImage, 60, 240))

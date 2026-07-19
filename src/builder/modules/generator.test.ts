@@ -35,7 +35,10 @@ describe("Generator input values", () => {
 
     expect(generator.getMinecraftSkinInputModelType("Skin")).toBe("Slim");
 
-    generator.setStringInputValue(getMinecraftSkinInputValueKey("Skin"), "invalid");
+    generator.setStringInputValue(
+      getMinecraftSkinInputValueKey("Skin"),
+      "invalid"
+    );
 
     expect(generator.getMinecraftSkinInputModelType("Skin")).toBe("Wide");
   });
@@ -44,12 +47,16 @@ describe("Generator input values", () => {
     const generator = makeFakeGenerator();
 
     expect(generator.getBooleanInputValue("Enabled")).toBeNull();
-    expect(generator.getBooleanInputValueWithDefault("Enabled", true)).toBe(true);
+    expect(generator.getBooleanInputValueWithDefault("Enabled", true)).toBe(
+      true
+    );
 
     generator.setBooleanInputValue("Enabled", false);
 
     expect(generator.getBooleanInputValue("Enabled")).toBe(false);
-    expect(generator.getBooleanInputValueWithDefault("Enabled", true)).toBe(false);
+    expect(generator.getBooleanInputValueWithDefault("Enabled", true)).toBe(
+      false
+    );
   });
 
   it("sets, gets, and supplies a default for string inputs", () => {

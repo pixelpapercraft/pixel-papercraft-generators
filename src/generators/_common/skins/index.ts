@@ -47,7 +47,10 @@ const SKIN_MAP: Record<string, { wide: string; slim: string }> = {
   Zuri: { wide: zuriWide.src, slim: zuriSlim.src },
 };
 
-export function getSkinUrl(name: string, modelType: MinecraftModelType): string {
+export function getSkinUrl(
+  name: string,
+  modelType: MinecraftModelType
+): string {
   const entry = SKIN_MAP[name];
   if (!entry) {
     // fallback to default wide

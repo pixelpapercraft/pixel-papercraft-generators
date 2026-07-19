@@ -388,16 +388,8 @@ const render = (ctx: RenderContext, props: MinecraftVillagerProps): void => {
       ctx.drawTexture(texture, [8 + 32, 0, 8, 8], [ox, oy - 65, 64, 64]);
       ctx.drawTexture(texture, [8 + 32, 8, 8, 10], [ox, oy, 64, 80]);
       ctx.drawTexture(texture, [0 + 32, 8, 8, 10], [ox - 65, oy, 64, 80]);
-      ctx.drawTexture(
-        texture,
-        [16 + 32, 8, 8, 10],
-        [ox + 65, oy, 64, 80]
-      );
-      ctx.drawTexture(
-        texture,
-        [24 + 32, 8, 8, 10],
-        [ox + 130, oy, 64, 80]
-      );
+      ctx.drawTexture(texture, [16 + 32, 8, 8, 10], [ox + 65, oy, 64, 80]);
+      ctx.drawTexture(texture, [24 + 32, 8, 8, 10], [ox + 130, oy, 64, 80]);
     },
 
     drawClothes: (ox: number, oy: number, texture: string) => {
@@ -405,32 +397,17 @@ const render = (ctx: RenderContext, props: MinecraftVillagerProps): void => {
       ctx.drawTexture(texture, [6, 44, 8, 22], [ox, oy, 68, 176]);
       ctx.drawTexture(texture, [0, 44, 6, 22], [ox - 53, oy, 52, 176]);
       ctx.drawTexture(texture, [14, 44, 6, 22], [ox + 69, oy, 52, 176]);
-      ctx.drawTexture(
-        texture,
-        [20, 44, 8, 22],
-        [ox + 69 + 53, oy, 68, 176]
-      );
+      ctx.drawTexture(texture, [20, 44, 8, 22], [ox + 69 + 53, oy, 68, 176]);
     },
 
     drawBodyOverlay: (ox: number, oy: number, texture: string) => {
       ctx.drawTexture(texture, [22, 26 - 6, 8, 6], [ox, oy - 49, 64, 48]);
-      ctx.drawTexture(
-        texture,
-        [22 + 8, 26 - 6, 8, 6],
-        [ox, oy + 97, 64, 48],
-        { flip: "Vertical" }
-      );
+      ctx.drawTexture(texture, [22 + 8, 26 - 6, 8, 6], [ox, oy + 97, 64, 48], {
+        flip: "Vertical",
+      });
       ctx.drawTexture(texture, [22, 26, 8, 12], [ox, oy, 64, 96]);
-      ctx.drawTexture(
-        texture,
-        [22 - 6, 26, 6, 12],
-        [ox - 49, oy, 48, 96]
-      );
-      ctx.drawTexture(
-        texture,
-        [22 + 8, 26, 6, 12],
-        [ox + 65, oy, 48, 96]
-      );
+      ctx.drawTexture(texture, [22 - 6, 26, 6, 12], [ox - 49, oy, 48, 96]);
+      ctx.drawTexture(texture, [22 + 8, 26, 6, 12], [ox + 65, oy, 48, 96]);
       ctx.drawTexture(
         texture,
         [22 + 14, 26, 8, 12],
@@ -440,181 +417,106 @@ const render = (ctx: RenderContext, props: MinecraftVillagerProps): void => {
 
     drawLeftLegOverlay: (ox: number, oy: number, texture: string) => {
       ctx.drawTexture(texture, [4, 26 - 4, 4, 4], [ox, oy - 33, 32, 32]);
-      ctx.drawTexture(
-        texture,
-        [4 + 4, 26 - 4, 4, 4],
-        [ox, oy + 97, 32, 32],
-        { flip: "Vertical" }
-      );
+      ctx.drawTexture(texture, [4 + 4, 26 - 4, 4, 4], [ox, oy + 97, 32, 32], {
+        flip: "Vertical",
+      });
       ctx.drawTexture(texture, [4, 26, 4, 12], [ox, oy, 32, 96]);
       ctx.drawTexture(texture, [4 - 4, 26, 4, 12], [ox - 33, oy, 32, 96]);
       ctx.drawTexture(texture, [4 + 4, 26, 4, 12], [ox + 33, oy, 32, 96]);
-      ctx.drawTexture(
-        texture,
-        [4 + 8, 26, 4, 12],
-        [ox + 33 + 33, oy, 32, 96]
-      );
+      ctx.drawTexture(texture, [4 + 8, 26, 4, 12], [ox + 33 + 33, oy, 32, 96]);
     },
 
     drawRightLegOverlay: (ox: number, oy: number, texture: string) => {
       ctx.drawTexture(texture, [4, 26 - 4, 4, 4], [ox, oy - 33, 32, 32], {
         flip: "Horizontal",
       });
-      ctx.drawTexture(
-        texture,
-        [4 + 4, 26 - 4, 4, 4],
-        [ox, oy + 97, 32, 32],
-        { rotate: 180.0 }
-      );
+      ctx.drawTexture(texture, [4 + 4, 26 - 4, 4, 4], [ox, oy + 97, 32, 32], {
+        rotate: 180.0,
+      });
       ctx.drawTexture(texture, [4, 26, 4, 12], [ox, oy, 32, 96], {
         flip: "Horizontal",
       });
-      ctx.drawTexture(
-        texture,
-        [4 + 4, 26, 4, 12],
-        [ox - 33, oy, 32, 96],
-        { flip: "Horizontal" }
-      );
-      ctx.drawTexture(
-        texture,
-        [4 - 4, 26, 4, 12],
-        [ox + 33, oy, 32, 96],
-        { flip: "Horizontal" }
-      );
-      ctx.drawTexture(
-        texture,
-        [4 + 8, 26, 4, 12],
-        [ox - 33 - 33, oy, 32, 96],
-        { flip: "Horizontal" }
-      );
+      ctx.drawTexture(texture, [4 + 4, 26, 4, 12], [ox - 33, oy, 32, 96], {
+        flip: "Horizontal",
+      });
+      ctx.drawTexture(texture, [4 - 4, 26, 4, 12], [ox + 33, oy, 32, 96], {
+        flip: "Horizontal",
+      });
+      ctx.drawTexture(texture, [4 + 8, 26, 4, 12], [ox - 33 - 33, oy, 32, 96], {
+        flip: "Horizontal",
+      });
     },
 
     drawLeftArmOverlay: (ox: number, oy: number, texture: string) => {
       ctx.drawTexture(texture, [48, 26 - 4, 4, 4], [ox, oy - 33, 32, 32]);
-      ctx.drawTexture(
-        texture,
-        [48 + 4, 26 - 4, 4, 4],
-        [ox, oy + 65, 32, 32],
-        { flip: "Vertical" }
-      );
+      ctx.drawTexture(texture, [48 + 4, 26 - 4, 4, 4], [ox, oy + 65, 32, 32], {
+        flip: "Vertical",
+      });
       ctx.drawTexture(texture, [48, 26, 4, 8], [ox, oy, 32, 64]);
       ctx.drawTexture(texture, [48 - 4, 26, 4, 8], [ox - 33, oy, 32, 64]);
       ctx.drawTexture(texture, [48 + 4, 26, 4, 8], [ox + 33, oy, 32, 64]);
-      ctx.drawTexture(
-        texture,
-        [48 + 8, 26, 4, 8],
-        [ox + 33 + 33, oy, 32, 64]
-      );
+      ctx.drawTexture(texture, [48 + 8, 26, 4, 8], [ox + 33 + 33, oy, 32, 64]);
     },
 
     drawRightArmOverlay: (ox: number, oy: number, texture: string) => {
-      ctx.drawTexture(
-        texture,
-        [48, 26 - 4, 4, 4],
-        [ox, oy - 33, 32, 32],
-        { flip: "Horizontal" }
-      );
-      ctx.drawTexture(
-        texture,
-        [48 + 4, 26 - 4, 4, 4],
-        [ox, oy + 65, 32, 32],
-        { rotate: 180.0 }
-      );
+      ctx.drawTexture(texture, [48, 26 - 4, 4, 4], [ox, oy - 33, 32, 32], {
+        flip: "Horizontal",
+      });
+      ctx.drawTexture(texture, [48 + 4, 26 - 4, 4, 4], [ox, oy + 65, 32, 32], {
+        rotate: 180.0,
+      });
       ctx.drawTexture(texture, [48, 26, 4, 8], [ox, oy, 32, 64], {
         flip: "Horizontal",
       });
-      ctx.drawTexture(
-        texture,
-        [48 + 4, 26, 4, 8],
-        [ox - 33, oy, 32, 64],
-        { flip: "Horizontal" }
-      );
-      ctx.drawTexture(
-        texture,
-        [48 - 4, 26, 4, 8],
-        [ox + 33, oy, 32, 64],
-        { flip: "Horizontal" }
-      );
-      ctx.drawTexture(
-        texture,
-        [48 + 8, 26, 4, 8],
-        [ox - 33 - 33, oy, 32, 64],
-        { flip: "Horizontal" }
-      );
+      ctx.drawTexture(texture, [48 + 4, 26, 4, 8], [ox - 33, oy, 32, 64], {
+        flip: "Horizontal",
+      });
+      ctx.drawTexture(texture, [48 - 4, 26, 4, 8], [ox + 33, oy, 32, 64], {
+        flip: "Horizontal",
+      });
+      ctx.drawTexture(texture, [48 + 8, 26, 4, 8], [ox - 33 - 33, oy, 32, 64], {
+        flip: "Horizontal",
+      });
     },
 
     drawMiddleArmOverlay: (ox: number, oy: number, texture: string) => {
       ctx.drawTexture(texture, [44, 42 - 4, 8, 4], [ox, oy - 33, 64, 32]);
-      ctx.drawTexture(
-        texture,
-        [44 + 8, 42 - 4, 8, 4],
-        [ox, oy + 33, 64, 32],
-        { flip: "Vertical" }
-      );
+      ctx.drawTexture(texture, [44 + 8, 42 - 4, 8, 4], [ox, oy + 33, 64, 32], {
+        flip: "Vertical",
+      });
       ctx.drawTexture(texture, [44, 42, 8, 4], [ox, oy, 64, 32]);
       ctx.drawTexture(texture, [44 - 4, 42, 4, 4], [ox - 33, oy, 32, 32]);
       ctx.drawTexture(texture, [44 + 8, 42, 4, 4], [ox + 65, oy, 32, 32]);
-      ctx.drawTexture(
-        texture,
-        [44 + 12, 42, 8, 4],
-        [ox + 33 + 65, oy, 64, 32]
-      );
+      ctx.drawTexture(texture, [44 + 12, 42, 8, 4], [ox + 33 + 65, oy, 64, 32]);
     },
 
     drawZombieLeftArmOverlay: (ox: number, oy: number, texture: string) => {
       ctx.drawTexture(texture, [48, 26 - 4, 4, 4], [ox, oy - 33, 32, 32]);
-      ctx.drawTexture(
-        texture,
-        [48 + 4, 26 - 4, 4, 4],
-        [ox, oy + 97, 32, 32],
-        { flip: "Vertical" }
-      );
+      ctx.drawTexture(texture, [48 + 4, 26 - 4, 4, 4], [ox, oy + 97, 32, 32], {
+        flip: "Vertical",
+      });
       ctx.drawTexture(texture, [48, 26, 4, 12], [ox, oy, 32, 96]);
-      ctx.drawTexture(
-        texture,
-        [48 - 4, 26, 4, 12],
-        [ox - 33, oy, 32, 96]
-      );
-      ctx.drawTexture(
-        texture,
-        [48 + 4, 26, 4, 12],
-        [ox + 33, oy, 32, 96]
-      );
-      ctx.drawTexture(
-        texture,
-        [48 + 8, 26, 4, 12],
-        [ox + 33 + 33, oy, 32, 96]
-      );
+      ctx.drawTexture(texture, [48 - 4, 26, 4, 12], [ox - 33, oy, 32, 96]);
+      ctx.drawTexture(texture, [48 + 4, 26, 4, 12], [ox + 33, oy, 32, 96]);
+      ctx.drawTexture(texture, [48 + 8, 26, 4, 12], [ox + 33 + 33, oy, 32, 96]);
     },
 
     drawZombieRightArmOverlay: (ox: number, oy: number, texture: string) => {
-      ctx.drawTexture(
-        texture,
-        [48, 26 - 4, 4, 4],
-        [ox, oy - 33, 32, 32],
-        { flip: "Horizontal" }
-      );
-      ctx.drawTexture(
-        texture,
-        [48 + 4, 26 - 4, 4, 4],
-        [ox, oy + 97, 32, 32],
-        { rotate: 180.0 }
-      );
+      ctx.drawTexture(texture, [48, 26 - 4, 4, 4], [ox, oy - 33, 32, 32], {
+        flip: "Horizontal",
+      });
+      ctx.drawTexture(texture, [48 + 4, 26 - 4, 4, 4], [ox, oy + 97, 32, 32], {
+        rotate: 180.0,
+      });
       ctx.drawTexture(texture, [48, 26, 4, 12], [ox, oy, 32, 96], {
         flip: "Horizontal",
       });
-      ctx.drawTexture(
-        texture,
-        [48 + 4, 26, 4, 12],
-        [ox - 33, oy, 32, 96],
-        { flip: "Horizontal" }
-      );
-      ctx.drawTexture(
-        texture,
-        [48 - 4, 26, 4, 12],
-        [ox + 33, oy, 32, 96],
-        { flip: "Horizontal" }
-      );
+      ctx.drawTexture(texture, [48 + 4, 26, 4, 12], [ox - 33, oy, 32, 96], {
+        flip: "Horizontal",
+      });
+      ctx.drawTexture(texture, [48 - 4, 26, 4, 12], [ox + 33, oy, 32, 96], {
+        flip: "Horizontal",
+      });
       ctx.drawTexture(
         texture,
         [48 + 8, 26, 4, 12],
@@ -1095,8 +997,7 @@ const toVillagerBiome = (value: string): VillagerBiome =>
   biomeNames.find((biomeName) => biomeName === value) ?? "Plains";
 
 const toVillagerProfession = (value: string): VillagerProfession =>
-  professionNames.find((professionName) => professionName === value) ??
-  "None";
+  professionNames.find((professionName) => professionName === value) ?? "None";
 
 function Component(): JSX.Element {
   const [type, setType] = React.useState<VillagerType>("Normal");

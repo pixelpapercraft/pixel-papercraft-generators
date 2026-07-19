@@ -96,7 +96,8 @@ export function makePreviewStyle(
         backgroundBlendMode: "multiply" as const,
       }
     : undefined;
-  const transform = `rotate(${deg(rotationToDegrees(rotation))}) ${flipToTransform(flip)}`.trim();
+  const transform =
+    `rotate(${deg(rotationToDegrees(rotation))}) ${flipToTransform(flip)}`.trim();
 
   return {
     ...tileStyle,

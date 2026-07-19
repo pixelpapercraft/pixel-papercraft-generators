@@ -27,13 +27,7 @@ export const minecraftTextureVersionDefinitions: TextureVersionDefinition[] = [
 ];
 
 export const minecraftTextureVersionDefinitionsBlocksFirst: TextureVersionDefinition[] =
-  [
-    ...itemDefinitions,
-    ...blockDefinitions,
-  ];
+  [...itemDefinitions, ...blockDefinitions];
 
 export const minecraftTextureVersionDefinitionsItemsFirst: TextureVersionDefinition[] =
-  [
-    ...blockDefinitions,
-    ...itemDefinitions,
-  ];
+  [...blockDefinitions, ...itemDefinitions];

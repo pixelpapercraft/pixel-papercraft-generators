@@ -137,11 +137,7 @@ const script: ScriptDef = (generator: Generator) => {
     showModelType: true,
   });
   if (generator.hasTexture("Minecraft skin")) {
-    generator.drawTexture(
-      "Minecraft skin",
-      [0, 0, 64, 64],
-      [20, 20, 64, 64]
-    );
+    generator.drawTexture("Minecraft skin", [0, 0, 64, 64], [20, 20, 64, 64]);
   }
 
   // Region controls belong to their current page. The callback advances a

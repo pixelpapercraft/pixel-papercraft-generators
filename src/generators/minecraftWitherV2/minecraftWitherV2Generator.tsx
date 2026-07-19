@@ -71,7 +71,6 @@ const textures: TextureDef[] = [
 const choices = ["Minecraft Wither"];
 
 const render = (ctx: RenderContext): void => {
-
   // Draw the Background image
 
   ctx.drawImage("Background", [0, 0]);

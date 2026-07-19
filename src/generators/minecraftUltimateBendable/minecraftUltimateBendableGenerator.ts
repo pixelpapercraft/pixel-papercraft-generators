@@ -20,9 +20,7 @@ import foldsSteveImage from "./images/Folds-Steve.png";
 import foldsAlexImage from "./images/Folds-Alex.png";
 import labelsImage from "./images/Labels.png";
 import { getSkinUrl } from "../_common/skins";
-import {
-  makeDefaultMinecraftSkinPresetOptions,
-} from "../_common/skins/options";
+import { makeDefaultMinecraftSkinPresetOptions } from "../_common/skins/options";
 
 const id = "minecraft-ultimate-bendable";
 

@@ -144,11 +144,9 @@ const skinSelect = (page: Page) => page.getByRole("combobox").first();
 
 const modelTypeSelect = (page: Page) => page.getByRole("combobox").nth(1);
 
-const flowerSelect = (page: Page) =>
-  page.getByLabel("Flower", { exact: true });
+const flowerSelect = (page: Page) => page.getByLabel("Flower", { exact: true });
 
-const damageSelect = (page: Page) =>
-  page.getByLabel("Damage", { exact: true });
+const damageSelect = (page: Page) => page.getByLabel("Damage", { exact: true });
 
 const regions = (page: Page) =>
   outputPage(page).locator("xpath=..").locator("div.absolute");

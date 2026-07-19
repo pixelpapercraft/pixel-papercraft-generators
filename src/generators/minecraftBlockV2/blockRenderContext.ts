@@ -1,7 +1,4 @@
-import {
-  type DrawTextureOptions,
-  type Region,
-} from "@genroot/builder/v2";
+import { type DrawTextureOptions, type Region } from "@genroot/builder/v2";
 export { type Region } from "@genroot/builder/v2";
 
 export type BlockRenderContext = {

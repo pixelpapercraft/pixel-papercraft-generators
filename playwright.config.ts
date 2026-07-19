@@ -1,4 +1,4 @@
-import { defineConfig } from '@playwright/test';
+import { defineConfig } from "@playwright/test";
 
 /**
  * Cross-platform screenshot tolerance.
@@ -42,31 +42,31 @@ const SCREENSHOT_THRESHOLD = 0.2; // per-pixel YIQ tolerance, 0..1; 0.2 (Playwri
 const SCREENSHOT_MAX_DIFF_PIXEL_RATIO = 0.03; // image fraction over threshold allowed, 0..1; 3% clears flavour 2's ~0.6% edge drift, well under a real regression (>=15%)
 
 export default defineConfig({
-  testDir: './tests/generators',
-  testMatch: '**/*.spec.ts',
-  updateSnapshots: 'none',
-  reporter: [['list'], ['html', { open: 'on-failure' }]],
+  testDir: "./tests/generators",
+  testMatch: "**/*.spec.ts",
+  updateSnapshots: "none",
+  reporter: [["list"], ["html", { open: "on-failure" }]],
   expect: {
     toHaveScreenshot: {
       threshold: SCREENSHOT_THRESHOLD,
       maxDiffPixelRatio: SCREENSHOT_MAX_DIFF_PIXEL_RATIO,
-      pathTemplate: '{testDir}/{testFileDir}/snapshots/{arg}{ext}',
+      pathTemplate: "{testDir}/{testFileDir}/snapshots/{arg}{ext}",
     },
   },
   projects: [
     {
-      name: 'chromium',
+      name: "chromium",
       use: {
-        browserName: 'chromium',
-        baseURL: 'http://127.0.0.1:3001',
+        browserName: "chromium",
+        baseURL: "http://127.0.0.1:3001",
         viewport: { width: 1600, height: 1400 },
       },
     },
   ],
   webServer: {
-    command: 'npm run dev -- --hostname 127.0.0.1',
+    command: "npm run dev -- --hostname 127.0.0.1",
     reuseExistingServer: true,
     timeout: 120000,
-    url: 'http://127.0.0.1:3001',
+    url: "http://127.0.0.1:3001",
   },
 });

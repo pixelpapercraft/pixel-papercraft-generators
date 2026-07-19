@@ -56,8 +56,7 @@ const labelOn: Rgba = { r: 255, g: 255, b: 255, a: 255 };
 const labelOff: Rgba = { r: 156, g: 156, b: 156, a: 255 };
 const white: Rgba = { r: 255, g: 255, b: 255, a: 255 };
 
-const output = (page: Page) =>
-  page.getByTestId("generator-page-image").first();
+const output = (page: Page) => page.getByTestId("generator-page-image").first();
 const regions = (page: Page) =>
   output(page).locator("xpath=..").locator("div.absolute");
 const flowerSelect = (page: Page) => page.getByLabel("Flower", { exact: true });
@@ -102,7 +101,9 @@ test("minecraft golem generator matches the default screenshot", async ({
   await expect(pageImage).toBeVisible();
   await expect(pageImage).toHaveAttribute("src", /data:image\/png/);
   await renderImageAtNaturalSize(pageImage);
-  await expect(pageImage).toHaveScreenshot("minecraft-golem-default-page-1.png");
+  await expect(pageImage).toHaveScreenshot(
+    "minecraft-golem-default-page-1.png"
+  );
 });
 
 test("minecraft golem generator renders a custom golem body texture", async ({

@@ -104,7 +104,9 @@ test("minecraft allay character renders every Skin 1 preset at the face probe", 
 
   for (const preset of presetExpectations) {
     await skin1.selectOption(preset.name);
-    await expect.poll(async () => readSkin1Face(pageImage)).toEqual(preset.rgba);
+    await expect
+      .poll(async () => readSkin1Face(pageImage))
+      .toEqual(preset.rgba);
   }
 
   await skin1.selectOption("");
@@ -122,7 +124,9 @@ test("minecraft allay character renders every Skin 2 preset independently of Ski
 
   for (const preset of presetExpectations) {
     await skin2.selectOption(preset.name);
-    await expect.poll(async () => readSkin2Face(pageImage)).toEqual(preset.rgba);
+    await expect
+      .poll(async () => readSkin2Face(pageImage))
+      .toEqual(preset.rgba);
   }
 
   await skin2.selectOption("");

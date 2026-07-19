@@ -27,7 +27,9 @@ const outputPage = (page: Page) =>
 
 const skinSelect = (page: Page) => page.getByRole("combobox");
 
-test("example generator exposes its skin and folds controls", async ({ page }) => {
+test("example generator exposes its skin and folds controls", async ({
+  page,
+}) => {
   await page.goto("/generator/example");
 
   const skin = skinSelect(page);
@@ -106,9 +108,7 @@ test("example generator renders a custom skin upload across the head net", async
   await page.goto("/generator/example");
 
   const pageImage = outputPage(page);
-  await page
-    .getByLabel("Upload Skin skin file")
-    .setInputFiles(skinFixturePath);
+  await page.getByLabel("Upload Skin skin file").setInputFiles(skinFixturePath);
 
   await expect
     .poll(async () => readPixel(pageImage, 189, 121))

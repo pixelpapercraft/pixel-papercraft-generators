@@ -141,8 +141,9 @@ const makeCanvasWithContext = vi.hoisted(() => {
       },
       getPixels: () =>
         Array.from({ length: height }, (_, row) =>
-          Array.from({ length: width }, (_, col) =>
-            canvas.pixels[row * width + col] ?? null
+          Array.from(
+            { length: width },
+            (_, col) => canvas.pixels[row * width + col] ?? null
           )
         ),
     };
@@ -170,7 +171,10 @@ function makePixelKey(r: number, g: number, b: number, a: number): PixelKey {
 function makeSourceTexture(pixels: PixelKey[][]): Texture {
   const height = pixels.length;
   const width = pixels[0]?.length ?? 0;
-  const context = makeCanvasWithContext(width, height) as unknown as FakeContext;
+  const context = makeCanvasWithContext(
+    width,
+    height
+  ) as unknown as FakeContext;
 
   pixels.forEach((row, y) => {
     row.forEach((key, x) => {
@@ -181,13 +185,13 @@ function makeSourceTexture(pixels: PixelKey[][]): Texture {
   return {
     standardWidth: width,
     standardHeight: height,
-      imageWithCanvas: {
-        image: {} as HTMLImageElement,
-        width,
-        height,
-        canvasWithContext: context as unknown as CanvasWithContext,
-      },
-    } as Texture;
+    imageWithCanvas: {
+      image: {} as HTMLImageElement,
+      width,
+      height,
+      canvasWithContext: context as unknown as CanvasWithContext,
+    },
+  } as Texture;
 }
 
 describe("defineGlintControlInputs", () => {
@@ -211,18 +215,26 @@ describe("defineGlintControlInputs", () => {
       value: 255,
       step: 1,
     });
-    expect(defineAndGetRangeInput).toHaveBeenNthCalledWith(2, "Glint X Offset", {
-      min: 0,
-      max: 128,
-      value: 0,
-      step: 1,
-    });
-    expect(defineAndGetRangeInput).toHaveBeenNthCalledWith(3, "Glint Y Offset", {
-      min: 0,
-      max: 128,
-      value: 0,
-      step: 1,
-    });
+    expect(defineAndGetRangeInput).toHaveBeenNthCalledWith(
+      2,
+      "Glint X Offset",
+      {
+        min: 0,
+        max: 128,
+        value: 0,
+        step: 1,
+      }
+    );
+    expect(defineAndGetRangeInput).toHaveBeenNthCalledWith(
+      3,
+      "Glint Y Offset",
+      {
+        min: 0,
+        max: 128,
+        value: 0,
+        step: 1,
+      }
+    );
   });
 });
 
