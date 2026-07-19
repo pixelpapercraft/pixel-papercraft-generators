@@ -32,7 +32,7 @@ import hole3Image from "./images/Hole3.png";
 
 const id = "minecraft-mutant-character-v2";
 
-const name = "Mutant Character (v2)";
+const name = "Mutant Character";
 
 const history: HistoryDef = ["Created by PaperDogChannel."];
 

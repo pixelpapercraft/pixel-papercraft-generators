@@ -67,7 +67,7 @@ import foldsShelfImage from "./images/Folds-Shelf.png";
 import tabsShelfImage from "./images/Tabs-Shelf.png";
 
 const id = "minecraft-block-v2";
-const name = "Minecraft Block (v2)";
+const name = "Minecraft Block";
 const thumbnail: ThumbnailDef = { url: thumbnailImage.src };
 const image = (imageId: string, importedImage: { src: string }): ImageDef => ({
   id: imageId,

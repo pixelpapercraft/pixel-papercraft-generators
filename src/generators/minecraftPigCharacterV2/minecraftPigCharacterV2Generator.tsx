@@ -43,7 +43,7 @@ import armorSpacePig from "../minecraftPigCharacter/textures/space-pig/armor.png
 
 const id = "minecraft-pig-character-v2";
 
-const name = "Minecraft Pig Character (v2)";
+const name = "Minecraft Pig Character";
 
 const history: HistoryDef = [
   "Originally developed by aaronhawksley.",

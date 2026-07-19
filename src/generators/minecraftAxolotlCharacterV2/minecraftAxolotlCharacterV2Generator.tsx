@@ -40,7 +40,7 @@ import axolotlWildImage from "./textures/axolotl_wild.png";
 
 const id = "minecraft-axolotl-character-v2";
 
-const name = "Minecraft Axolotl Character (v2)";
+const name = "Minecraft Axolotl Character";
 
 const history: HistoryDef = [
   "Feb 2022 M16 - Initial script developed.",

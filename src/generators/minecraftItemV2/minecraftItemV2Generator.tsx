@@ -51,7 +51,7 @@ import thumbnailImage from "./thumbnail/v2-thumbnail-256.jpeg";
 
 const id = "minecraft-item-v2";
 
-const name = "Minecraft Item (v2)";
+const name = "Minecraft Item";
 
 const thumbnail: ThumbnailDef = { url: thumbnailImage.src };
 

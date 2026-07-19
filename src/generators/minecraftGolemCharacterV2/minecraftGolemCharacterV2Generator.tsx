@@ -34,7 +34,7 @@ import lowTexture from "./textures/Damage-Low.png";
 
 const id = "minecraft-golem-character-v2";
 
-const name = "Minecraft Golem Character (v2)";
+const name = "Minecraft Golem Character";
 
 const history: HistoryDef = [
   "Originally developed by Wajy.",

@@ -28,7 +28,7 @@ import { makeDefaultMinecraftSkinPresetOptions } from "../_common/skins/options"
 
 const id = "minecraft-bee-character-v2";
 
-const name = "Minecraft Bee Character (v2)";
+const name = "Minecraft Bee Character";
 
 const video: VideoDef = {
   url: "https://www.youtube.com/embed/vG-mXWu0OlA?rel=0",

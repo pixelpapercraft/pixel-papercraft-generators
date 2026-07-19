@@ -23,7 +23,7 @@ import endermanEyesTexture from "./textures/enderman_eyes.png";
 
 const id = "minecraft-enderman-v2";
 
-const name = "Minecraft Enderman (v2)";
+const name = "Minecraft Enderman";
 
 const history: HistoryDef = [
   "Originally developed by ODF.",

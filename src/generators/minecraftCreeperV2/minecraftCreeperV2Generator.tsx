@@ -26,7 +26,7 @@ import actionFigureLabelsImage from "./images/Action-Figure-Labels.png";
 
 const id = "minecraft-creeper-v2";
 
-const name = "Minecraft Creeper (v2)";
+const name = "Minecraft Creeper";
 
 const history: HistoryDef = [
   "Originally developed by gootube2000.",

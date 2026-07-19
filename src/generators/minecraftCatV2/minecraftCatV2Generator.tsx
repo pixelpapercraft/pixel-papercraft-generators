@@ -36,7 +36,7 @@ import whiteImage from "./textures/white.png";
 
 const id = "minecraft-cat-v2";
 
-const name = "Minecraft Cat (v2)";
+const name = "Minecraft Cat";
 
 const history: HistoryDef = [
   "Originally created by Micaias32.",

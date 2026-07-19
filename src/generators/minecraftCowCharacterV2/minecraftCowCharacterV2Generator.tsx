@@ -28,7 +28,7 @@ import foldsImage from "./images/Folds.png";
 import labelsImage from "./images/Labels.png";
 
 const id = "minecraft-cow-character-v2";
-const name = "Minecraft Cow Character (v2)";
+const name = "Minecraft Cow Character";
 const thumbnail: ThumbnailDef = { url: thumbnailImage.src };
 const history: HistoryDef = [
   "Originally created by Poekoko.",

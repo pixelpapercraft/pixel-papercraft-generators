@@ -27,7 +27,7 @@ import squidTexture from "../minecraftSquidCharacter/textures/Squid.png";
 
 const id = "minecraft-squid-character-v2";
 
-const name = "Minecraft Squid Character (v2)";
+const name = "Minecraft Squid Character";
 
 const thumbnail: ThumbnailDef = {
   url: thumbnailImage.src,

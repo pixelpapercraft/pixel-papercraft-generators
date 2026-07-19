@@ -29,7 +29,7 @@ import wolfAngryTexture from "./textures/wolf_angry.png";
 
 const id = "minecraft-wolf-character-v2";
 
-const name = "Minecraft Wolf Character (v2)";
+const name = "Minecraft Wolf Character";
 
 const history: HistoryDef = [
   "Originally developed by dodecaphon.",

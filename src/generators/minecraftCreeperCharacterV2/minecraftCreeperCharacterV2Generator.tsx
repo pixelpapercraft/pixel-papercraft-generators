@@ -37,7 +37,7 @@ import actionFigureLabelsImage from "./images/Action-Figure-Labels.png";
 
 const id = "minecraft-creeper-character-v2";
 
-const name = "Minecraft Creeper Character (v2)";
+const name = "Minecraft Creeper Character";
 
 const history: HistoryDef = [
   "Created by CanadaCraft, template by BrickyBoy99.",

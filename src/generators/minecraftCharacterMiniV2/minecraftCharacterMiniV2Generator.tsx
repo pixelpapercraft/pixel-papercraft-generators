@@ -35,7 +35,7 @@ import { makeDefaultMinecraftSkinPresetOptions } from "../_common/skins/options"
 
 const id = "minecraft-character-mini-v2";
 
-const name = "Minecraft Character Mini (v2)";
+const name = "Minecraft Character Mini";
 
 const history: HistoryDef = [
   "13 Sep 2015 Sandvich - First release using the generator builder.",

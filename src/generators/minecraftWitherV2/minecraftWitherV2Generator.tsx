@@ -20,7 +20,7 @@ import foldsImage from "./images/Folds.png";
 
 const id = "minecraft-wither-v2";
 
-const name = "Minecraft Wither (v2)";
+const name = "Minecraft Wither";
 
 const history: HistoryDef = ["01 Aug 2021 Hannibanni - Created."];
 

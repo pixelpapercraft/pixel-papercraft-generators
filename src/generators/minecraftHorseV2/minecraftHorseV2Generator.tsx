@@ -57,7 +57,7 @@ import netheriteTexture from "./textures/netherite.png";
 
 const id = "minecraft-horse-v2";
 
-const name = "Minecraft Horse (v2)";
+const name = "Minecraft Horse";
 
 const history: HistoryDef = [
   "11 Jul 2021 NinjolasNJM - Initial script finished.",

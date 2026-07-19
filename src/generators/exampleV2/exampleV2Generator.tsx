@@ -24,7 +24,7 @@ import foldsImage from "./images/Folds.png";
 
 const id = "example-v2";
 
-const name = "Example (v2)";
+const name = "Example";
 
 // Same copy as the v1 example generator's `instructions`.
 const instructions: InstructionsDef = `

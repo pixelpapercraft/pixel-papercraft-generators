@@ -42,7 +42,7 @@ import skin from "../_common/skins/wide/steve.png";
 
 const id = "minecraft-pig-v2";
 
-const name = "Minecraft Pig (v2)";
+const name = "Minecraft Pig";
 
 const history: HistoryDef = [
   "Originally created by TepigMC.",

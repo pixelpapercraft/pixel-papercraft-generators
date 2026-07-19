@@ -116,7 +116,7 @@ import resinTexture from "../minecraftArmor/textures/trims/color_palettes/resin.
 import trimPaletteTexture from "../minecraftArmor/textures/trims/color_palettes/trim_palette.png";
 
 const id = "minecraft-armor-v2";
-const name = "Minecraft Armor (v2)";
+const name = "Minecraft Armor";
 
 const instructions = `
 ## How to use the Minecraft Armor Generator?

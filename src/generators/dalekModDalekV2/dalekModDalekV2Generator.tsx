@@ -46,7 +46,7 @@ import textureSuicideDalek from "./textures/daleks/SuicideDalek.png";
 
 const id = "dalek-v2";
 
-const name = "Doctor Who Dalek (v2)";
+const name = "Doctor Who Dalek";
 
 const thumbnail: ThumbnailDef = { url: thumbnailImage.src };
 

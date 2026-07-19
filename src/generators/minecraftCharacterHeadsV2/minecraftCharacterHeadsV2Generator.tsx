@@ -37,7 +37,7 @@ import blazeImage from "./textures/Blaze.png";
 
 const id = "minecraft-character-heads-v2";
 
-const name = "Minecraft Character Heads (v2)";
+const name = "Minecraft Character Heads";
 
 const history: HistoryDef = [
   "Originally developed by ODF.",

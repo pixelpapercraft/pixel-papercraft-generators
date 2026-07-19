@@ -33,7 +33,7 @@ import thumbnailImage from "./thumbnail/thumbnail-256.jpeg";
 
 const id = "minecraft-action-figure-v2";
 
-const name = "Minecraft Action Figure (v2)";
+const name = "Minecraft Action Figure";
 
 const thumbnail: ThumbnailDef = { url: thumbnailImage.src };
 

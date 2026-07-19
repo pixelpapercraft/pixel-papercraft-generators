@@ -29,7 +29,7 @@ import labelsImage from "./images/Labels.png";
 
 const id = "minecraft-enderman-character-v2";
 
-const name = "Minecraft Enderman Character (v2)";
+const name = "Minecraft Enderman Character";
 
 const history: HistoryDef = [
   "Originally developed by ODF.",

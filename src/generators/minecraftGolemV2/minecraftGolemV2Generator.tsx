@@ -29,7 +29,7 @@ import damageHighTexture from "./textures/damage_high.png";
 
 const id = "minecraft-golem-v2";
 
-const name = "Minecraft Golem (v2)";
+const name = "Minecraft Golem";
 
 const history: HistoryDef = [
   "Originally Developed by Wajy.",

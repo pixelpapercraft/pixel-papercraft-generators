@@ -66,7 +66,7 @@ import zombieWeaponsmithImage from "./textures/zombieweaponsmith.png";
 
 const id = "minecraft-villager-v2";
 
-const name = "Minecraft Villager (v2)";
+const name = "Minecraft Villager";
 
 const history: HistoryDef = [
   "19 May 2022 PaperDoggy - Initial script developed.",

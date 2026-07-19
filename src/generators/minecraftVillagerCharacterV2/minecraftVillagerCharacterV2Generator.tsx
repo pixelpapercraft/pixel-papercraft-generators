@@ -28,7 +28,7 @@ import labelsImage from "./images/Labels.png";
 
 const id = "minecraft-villager-character-v2";
 
-const name = "Minecraft Villager Character (v2)";
+const name = "Minecraft Villager Character";
 
 const history: HistoryDef = [
   "Originally developed by Boe6Eod7Nty.",

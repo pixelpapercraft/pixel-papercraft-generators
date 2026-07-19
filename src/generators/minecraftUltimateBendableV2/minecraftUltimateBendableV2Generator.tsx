@@ -33,7 +33,7 @@ import { makeDefaultMinecraftSkinPresetOptions } from "../_common/skins/options"
 
 const id = "minecraft-ultimate-bendable-v2";
 
-const name = "Minecraft Bendable Character (v2)";
+const name = "Minecraft Bendable Character";
 
 const history: HistoryDef = [
   "Originally Developed by rooterbuster.",

@@ -26,7 +26,7 @@ import overlayAllayImage from "./images/OverlayAllay.png";
 
 const id = "minecraft-allay-character-v2";
 
-const name = "Minecraft Allay Character (v2)";
+const name = "Minecraft Allay Character";
 
 const thumbnail: ThumbnailDef = { url: thumbnailImage.src };
 

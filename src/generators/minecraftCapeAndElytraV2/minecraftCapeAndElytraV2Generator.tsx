@@ -33,7 +33,7 @@ import elytraImage from "./textures/Elytra.png";
 
 const id = "minecraft-cape-and-elytra-v2";
 
-const name = "Minecraft Cape And Elytra (v2)";
+const name = "Minecraft Cape And Elytra";
 
 const history: HistoryDef = [
   "16 Mar 2021 NinjolasNJM - Initially completed both cape and elytra generation.",
