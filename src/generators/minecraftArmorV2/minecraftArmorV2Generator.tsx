@@ -8,6 +8,7 @@ import {
   type Color,
   type GeneratorDefV2,
   type GeneratorV2,
+  type HistoryDef,
   type ImageDef,
   type RegionClickHandler,
   type RenderContext,
@@ -144,6 +145,14 @@ const instructions = `
 const thumbnail: ThumbnailDef = {
   url: thumbnailImage.src,
 };
+
+// Same copy as the v1 minecraft-armor generator's `history`, plus a Layout
+// refresh entry for this V2 pass.
+const history: HistoryDef = [
+  "Jan 2026 NinjolasNJM - Initial script.",
+  "May 2026 NinjolasNJM - Changed to use new glint and tint input.",
+  "Jul 2026 lostminer - Layout refresh.",
+];
 
 const images: ImageDef[] = [
   { id: "Foreground", url: foregroundImage.src },
@@ -1546,13 +1555,17 @@ function Component(): JSX.Element {
   return (
     <div>
       <GeneratorUI.MediaHero video={null} thumbnail={thumbnail} />
+
+      <div className="mb-8">
+        <GeneratorUI.Instructions markdown={instructions} />
+      </div>
+
       <div className="lg:flex gap-8">
         <div
           className="flex-1 min-w-0 mb-8 lg:mb-0"
           data-testid="generator-sidebar"
         >
           <div className="w-full bg-gray-100 p-8 space-y-4">
-            <GeneratorUI.Instructions markdown={instructions} />
             <GeneratorUI.BooleanControl
               label="Show Folds"
               checked={showFolds}
@@ -1607,6 +1620,8 @@ function Component(): JSX.Element {
           />
         </div>
       </div>
+
+      <GeneratorUI.History history={history} />
     </div>
   );
 }
