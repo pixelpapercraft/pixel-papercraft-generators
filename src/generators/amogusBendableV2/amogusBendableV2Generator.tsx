@@ -29,7 +29,7 @@ import colorsImage from "./textures/Colors.png";
 
 const id = "amogus-bendable-v2";
 
-const name = "Amogus Bendable (v2)";
+const name = "Amogus Bendable";
 
 const thumbnail: ThumbnailDef = { url: thumbnailImage.src };
 
@@ -199,7 +199,10 @@ function Component(): JSX.Element {
       </div>
 
       <div className="lg:flex gap-8">
-        <div className="flex-1 min-w-0" data-testid="generator-sidebar">
+        <div
+          className="flex-1 min-w-0 mb-8 lg:mb-0"
+          data-testid="generator-sidebar"
+        >
           <div className="w-full bg-gray-100 p-8 space-y-4">
             <GeneratorUI.SelectControl
               label="Color"
