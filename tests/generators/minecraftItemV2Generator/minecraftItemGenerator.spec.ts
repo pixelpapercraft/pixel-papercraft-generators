@@ -55,30 +55,38 @@ test("minecraft item generator matches the default screenshots", async ({
   }
 });
 
-test("minecraft item generator keeps instructions collapsed in the left column", async ({
+test("minecraft item generator keeps instructions collapsed above the columns", async ({
   page,
 }) => {
   await page.goto("/generator/minecraft-item-v2");
 
-  // The instructions live in the left column (the sidebar) as a collapsible
-  // <details> panel that should start collapsed. Asserted structurally rather
-  // than by screenshot: the panel is text-heavy, its exact rendered height
-  // differs across platforms, and that rendering is not what this test guards.
-  const sidebar = page.getByTestId("generator-sidebar");
-  await expect(sidebar).toBeVisible();
-
-  const instructions = sidebar.locator("details");
+  // The instructions sit above the two-column layout (under the hero), not in
+  // the sidebar, as a collapsible <details> panel that should start collapsed.
+  // Asserted structurally rather than by screenshot: the panel is text-heavy,
+  // its exact rendered height differs across platforms, and that rendering is
+  // not what this test guards.
+  const instructions = page.locator("details");
   await expect(instructions).toBeVisible();
   await expect(instructions.locator("summary")).toContainText("Instructions");
 
+  // The instructions live outside the sidebar (left column), not within it.
+  const sidebar = page.getByTestId("generator-sidebar");
+  await expect(sidebar).toBeVisible();
+  await expect(sidebar.locator("details")).toHaveCount(0);
+
   // Collapsed by default: the panel is closed and its body stays hidden.
+  // Scoped to the panel: "Item Sizes" also appears in the Updates history text.
   await expect(instructions).toHaveJSProperty("open", false);
-  await expect(sidebar.getByText("Item Sizes")).toBeHidden();
+  await expect(
+    instructions.getByRole("heading", { name: "Item Sizes" })
+  ).toBeHidden();
 
   // Expanding it reveals the body, confirming the collapse is real.
   await instructions.locator("summary").click();
   await expect(instructions).toHaveJSProperty("open", true);
-  await expect(sidebar.getByText("Item Sizes")).toBeVisible();
+  await expect(
+    instructions.getByRole("heading", { name: "Item Sizes" })
+  ).toBeVisible();
 });
 
 test("minecraft item generator renders custom atlas textures", async ({

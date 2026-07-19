@@ -10,6 +10,7 @@ import {
   type Flip,
   type GeneratorDefV2,
   type GeneratorV2,
+  type HistoryDef,
   type ImageDef,
   type InstructionsDef,
   type RegionClickHandler,
@@ -52,6 +53,14 @@ import thumbnailImage from "./thumbnail/v2-thumbnail-256.jpeg";
 const id = "minecraft-item-v2";
 
 const name = "Minecraft Item";
+
+const history: HistoryDef = [
+  "26 Jan 2022 lostminer - First release.",
+  "05 Feb 2022 NinjolasNJM - Added fold lines and gap removal feature.",
+  "16 May 2026 NinjolasNJM - Added custom textures, extra item sizes, and enchantment glint.",
+  "17 May 2026 NinjolasNJM - Added gap-free item layout.",
+  "Jul 2026 lostminer - Layout refresh.",
+];
 
 const thumbnail: ThumbnailDef = { url: thumbnailImage.src };
 
@@ -625,14 +634,16 @@ function Component(): JSX.Element {
     <div>
       <GeneratorUI.MediaHero video={null} thumbnail={thumbnail} />
 
+      <div className="mb-8">
+        <GeneratorUI.Instructions markdown={instructions} />
+      </div>
+
       <div className="lg:flex gap-8">
         <div
           className="flex-1 min-w-0 mb-8 lg:mb-0"
           data-testid="generator-sidebar"
         >
           <div className="w-full bg-gray-100 p-8 space-y-4">
-            <GeneratorUI.Instructions markdown={instructions} />
-
             <GeneratorUI.SelectControl
               label="Version"
               options={versionIds.map((version) => ({
@@ -771,6 +782,8 @@ function Component(): JSX.Element {
           />
         </div>
       </div>
+
+      <GeneratorUI.History history={history} />
     </div>
   );
 }
