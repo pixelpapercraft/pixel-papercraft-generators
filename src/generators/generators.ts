@@ -131,7 +131,7 @@ export const utility: AnyGenerator[] = [
 ];
 
 export const mod: AnyGenerator[] = [
-  v1(minecraftMutantCharacterGenerator),
+  v2(minecraftMutantCharacterGeneratorDefV2),
   v2(dalekModDalekGeneratorDefV2),
 ];
 
@@ -169,6 +169,7 @@ export const legacy: AnyGenerator[] = isProductionEnvironment
       v1(minecraftGolemCharacterGenerator),
       v1(minecraftHorseGenerator),
       v1(minecraftItemGenerator),
+      v1(minecraftMutantCharacterGenerator),
     ];
 
 // Incomplete / in-development generators, plus every generator's in-progress
@@ -179,7 +180,6 @@ export const dev: AnyGenerator[] = isProductionEnvironment
   ? []
   : [
       v1(minecraftWitherGenerator),
-      v2(minecraftMutantCharacterGeneratorDefV2),
       v2(minecraftPigGeneratorDefV2),
       v2(minecraftPigCharacterGeneratorDefV2),
       v2(minecraftSquidCharacterGeneratorDefV2),
