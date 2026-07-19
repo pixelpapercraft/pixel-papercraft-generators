@@ -45,6 +45,7 @@ const name = "Minecraft Axolotl Character";
 const history: HistoryDef = [
   "Feb 2022 M16 - Initial script developed.",
   "6 Feb 2022 lostminer - Refactoring.",
+  "Jul 2026 lostminer - Layout refresh.",
 ];
 
 const thumbnail: ThumbnailDef = {
