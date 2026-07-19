@@ -6,6 +6,7 @@ import {
   GeneratorUI,
   type GeneratorDefV2,
   type GeneratorV2,
+  type HistoryDef,
   type ImageDef,
   type InstructionsDef,
   type RegionClickHandler,
@@ -34,6 +35,21 @@ import thumbnailImage from "./thumbnail/v2-thumbnail-256.jpeg";
 const id = "minecraft-character-v2";
 
 const name = "Minecraft Character";
+
+// Same entries as the v1 minecraft-character generator's `history`, plus the
+// Layout refresh entry for this V2 pass (the V2 port had dropped the list).
+const history: HistoryDef = [
+  "01 Feb 2015 gootube2000 - First release.",
+  "05 Feb 2015 gootube2000 - Fixed orientation of the hands, feet and under the head.",
+  "13 Feb 2015 lostminer - Update to use new version of generator.",
+  "20 Feb 2015 lostminer - Make background non-transparent.",
+  "02 Oct 2020 NinjolasNJM - Combined Steve and Alex Generators into one.",
+  "27 May 2021 lostminer - Convert to ReScript generator.",
+  "17 Jul 2021 M16 - Updated generator photo.",
+  "27 May 2022 NinjolasNJM - Made folds drawn using drawFolds, and parts drawn using drawCuboid, and added title",
+  "12 Jun 2022 NinjolasNJM - Updated to use new Minecraft module",
+  "Jul 2026 lostminer - Layout refresh.",
+];
 
 const thumbnail: ThumbnailDef = { url: thumbnailImage.src };
 
@@ -354,14 +370,16 @@ function Component(): JSX.Element {
     <div>
       <GeneratorUI.MediaHero video={null} thumbnail={thumbnail} />
 
+      <div className="mb-8">
+        <GeneratorUI.Instructions markdown={instructions} collapsible={false} />
+      </div>
+
       <div className="lg:flex gap-8">
         <div
           className="flex-1 min-w-0 mb-8 lg:mb-0"
           data-testid="generator-sidebar"
         >
           <div className="w-full bg-gray-100 p-8 space-y-4">
-            <GeneratorUI.Instructions markdown={instructions} />
-
             <MinecraftSkinControl
               id="Skin"
               options={skinOptions}
@@ -402,6 +420,8 @@ function Component(): JSX.Element {
           />
         </div>
       </div>
+
+      <GeneratorUI.History history={history} />
     </div>
   );
 }
