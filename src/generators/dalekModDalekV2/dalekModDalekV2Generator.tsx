@@ -6,6 +6,7 @@ import {
   GeneratorUI,
   type GeneratorDefV2,
   type GeneratorV2,
+  type HistoryDef,
   type ImageDef,
   type InstructionsDef,
   type RenderContext,
@@ -15,7 +16,6 @@ import {
 } from "@genroot/builder/v2";
 
 import thumbnailImage from "./thumbnail/v2-thumbnail-256.jpeg";
-import dalekImage from "./instructions/dalek.jpeg";
 import dalekSkinImage from "./instructions/60sDalek.png";
 import background1Image from "./images/Background1.png";
 import colors1Image from "./images/Colors1.png";
@@ -50,25 +50,16 @@ const name = "Doctor Who Dalek";
 
 const thumbnail: ThumbnailDef = { url: thumbnailImage.src };
 
+// Same copy as the v1 dalek generator's `history`, plus a V2 layout entry.
+const history: HistoryDef = [
+  "gootube2000 - First release.",
+  "13 Feb 2015 lostminer - Update to use new version of generator.",
+  "Jul 2026 lostminer - Layout refresh.",
+];
+
 // Same copy as the v1 dalek generator's `instructions`.
 const instructions: InstructionsDef = `
 Create your own Dalek papercraft, thanks to the team who make the [Dalek Mod](https://swdteam.com/p/dalek-mod).
-
-## What is a Dalek?
-
-<div class="not-prose" style="float:right;max-width:150px;">
-  <img src="${dalekImage.src}" />
-</div>
-
-Daleks are a main enemy of a character called The Doctor in the TV show Doctor Who.
-
-Daleks are armoured, mutant creatures who are intensely xenophobic and bent on universal domination.
-
-Daleks are hated and feared throughout time and space. They are the oldest and most frequent foes of The Doctor.
-
-[More about Daleks](http://tardis.wikia.com/wiki/Dalek)
-
-[More about Doctor Who](http://www.thedoctorwhosite.co.uk/doctorwho/information-about-doctor-who)
 
 ## How to use the Dalek generator
 
@@ -555,11 +546,16 @@ function Component(): JSX.Element {
     <div>
       <GeneratorUI.MediaHero video={null} thumbnail={thumbnail} />
 
-      <div className="lg:flex gap-8">
-        <div className="flex-1 min-w-0" data-testid="generator-sidebar">
-          <div className="w-full bg-gray-100 p-8 space-y-4">
-            <GeneratorUI.Instructions markdown={instructions} />
+      <div className="mb-8">
+        <GeneratorUI.Instructions markdown={instructions} collapsible={false} />
+      </div>
 
+      <div className="lg:flex gap-8">
+        <div
+          className="flex-1 min-w-0 mb-8 lg:mb-0"
+          data-testid="generator-sidebar"
+        >
+          <div className="w-full bg-gray-100 p-8 space-y-4">
             <GeneratorUI.LoadedTextureControl
               id="Skin"
               definitions={dalekTextures}
@@ -587,6 +583,8 @@ function Component(): JSX.Element {
           />
         </div>
       </div>
+
+      <GeneratorUI.History history={history} />
     </div>
   );
 }
