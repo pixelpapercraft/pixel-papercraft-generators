@@ -118,7 +118,7 @@ export const mob: AnyGenerator[] = [
   v2(minecraftHorseGeneratorDefV2),
   v2(minecraftPigGeneratorDefV2),
   v2(minecraftCatGeneratorDefV2),
-  v1(minecraftVillagerGenerator),
+  v2(minecraftVillagerGeneratorDefV2),
 ];
 
 // Blocks, Items and Accessories
@@ -174,6 +174,7 @@ export const legacy: AnyGenerator[] = isProductionEnvironment
       v1(minecraftPigCharacterGenerator),
       v1(minecraftSquidCharacterGenerator),
       v1(minecraftUltimateBendableGenerator),
+      v1(minecraftVillagerGenerator),
     ];
 
 // Incomplete / in-development generators, plus every generator's in-progress
@@ -184,7 +185,6 @@ export const dev: AnyGenerator[] = isProductionEnvironment
   ? []
   : [
       v1(minecraftWitherGenerator),
-      v2(minecraftVillagerGeneratorDefV2),
       v2(minecraftVillagerCharacterGeneratorDefV2),
       v2(minecraftWitherGeneratorDefV2),
       v2(minecraftWolfCharacterGeneratorDefV2),
