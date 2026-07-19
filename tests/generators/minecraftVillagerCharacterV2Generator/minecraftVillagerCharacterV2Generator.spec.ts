@@ -27,7 +27,7 @@ const skinOptions = [
 // helmet, jacket, leftSleeve, rightSleeve, leftPant, rightPant.
 const regionCount = 6;
 
-const route = "/generator/minecraft-villager-character-v2";
+const route = "/generator/minecraft-villager-character";
 
 async function screenshot(page: Page, name: string): Promise<void> {
   const image = outputPages(page).first();

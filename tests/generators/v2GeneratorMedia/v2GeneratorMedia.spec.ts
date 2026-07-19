@@ -1,8 +1,8 @@
 import { expect, test } from "@playwright/test";
 
 const migratedGenerators = [
-  { route: "minecraft-character-v2", name: "Minecraft Character" },
-  { route: "minecraft-item-v2", name: "Minecraft Item" },
+  { route: "minecraft-character", name: "Minecraft Character" },
+  { route: "minecraft-item", name: "Minecraft Item" },
 ];
 
 for (const generator of migratedGenerators) {

@@ -12,20 +12,19 @@ describe("findAnyGeneratorById", () => {
   });
 
   it("resolves the example v2 generator tagged as v2", () => {
-    // example-v2 is registered outside production; the test environment is
-    // not production, so it resolves here.
-    const found = findAnyGeneratorById("example-v2");
+    // The example v2 generator is registered outside production; the test
+    // environment is not production, so it resolves here. It now claims the
+    // base `example` id (the retired v1 moved to `example-v1`).
+    const found = findAnyGeneratorById("example");
     expect(found?.kind).toBe("v2");
-    expect(found?.def.id).toBe("example-v2");
+    expect(found?.def.id).toBe("example");
   });
 
   it("exposes thumbnails for the migrated v2 generators", () => {
     expect(
-      findAnyGeneratorById("minecraft-character-v2")?.def.thumbnail
+      findAnyGeneratorById("minecraft-character")?.def.thumbnail
     ).toBeTruthy();
-    expect(
-      findAnyGeneratorById("minecraft-item-v2")?.def.thumbnail
-    ).toBeTruthy();
+    expect(findAnyGeneratorById("minecraft-item")?.def.thumbnail).toBeTruthy();
   });
 
   it("returns null for an unknown id", () => {

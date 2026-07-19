@@ -35,7 +35,7 @@ import witherSkeletonImage from "./textures/Wither_Skeleton.png";
 import creeperImage from "./textures/Creeper.png";
 import blazeImage from "./textures/Blaze.png";
 
-const id = "minecraft-character-heads-v2";
+const id = "minecraft-character-heads";
 
 const name = "Minecraft Character Heads";
 

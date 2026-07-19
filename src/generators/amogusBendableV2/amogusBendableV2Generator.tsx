@@ -28,7 +28,7 @@ import backgroundImage from "./images/Background.png";
 import foldsImage from "./images/Folds.png";
 import colorsImage from "./textures/Colors.png";
 
-const id = "amogus-bendable-v2";
+const id = "amogus-bendable";
 
 const name = "Amogus Bendable";
 

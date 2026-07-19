@@ -55,7 +55,7 @@ const readSkin2Face = (image: Locator) =>
 test("minecraft allay character exposes both skin inputs and their model-type controls", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-allay-character-v2");
+  await page.goto("/generator/minecraft-allay-character");
 
   const combobox = combos(page);
   await expect(combobox).toHaveCount(4);
@@ -81,7 +81,7 @@ test("minecraft allay character exposes both skin inputs and their model-type co
 test("minecraft allay character matches the default screenshot", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-allay-character-v2");
+  await page.goto("/generator/minecraft-allay-character");
 
   const pageImage = outputPage(page);
   await expect(pageImage).toBeVisible();
@@ -96,7 +96,7 @@ test("minecraft allay character matches the default screenshot", async ({
 test("minecraft allay character renders every Skin 1 preset at the face probe", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-allay-character-v2");
+  await page.goto("/generator/minecraft-allay-character");
 
   const skin1 = combos(page).nth(0);
   const pageImage = outputPage(page);
@@ -116,7 +116,7 @@ test("minecraft allay character renders every Skin 1 preset at the face probe", 
 test("minecraft allay character renders every Skin 2 preset independently of Skin 1", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-allay-character-v2");
+  await page.goto("/generator/minecraft-allay-character");
 
   const skin2 = combos(page).nth(2);
   const pageImage = outputPage(page);
@@ -146,7 +146,7 @@ test("minecraft allay character renders every Skin 2 preset independently of Ski
 test("minecraft allay character composes an Alex skin across both halves", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-allay-character-v2");
+  await page.goto("/generator/minecraft-allay-character");
 
   const pageImage = outputPage(page);
   await combos(page).nth(0).selectOption("Alex");
@@ -165,7 +165,7 @@ test("minecraft allay character composes an Alex skin across both halves", async
 test("minecraft allay character composes Skin 1 with the Slim model type", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-allay-character-v2");
+  await page.goto("/generator/minecraft-allay-character");
 
   const pageImage = outputPage(page);
   const skin1ModelType = combos(page).nth(1);
@@ -200,7 +200,7 @@ test("minecraft allay character composes Skin 1 with the Slim model type", async
 test("minecraft allay character renders a custom Skin 1 upload", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-allay-character-v2");
+  await page.goto("/generator/minecraft-allay-character");
 
   const pageImage = outputPage(page);
   await page

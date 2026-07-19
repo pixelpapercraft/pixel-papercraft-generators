@@ -67,7 +67,7 @@ import tabsCakeRightImage from "./images/Tabs-Cake-Right.png";
 import foldsShelfImage from "./images/Folds-Shelf.png";
 import tabsShelfImage from "./images/Tabs-Shelf.png";
 
-const id = "minecraft-block-v2";
+const id = "minecraft-block";
 const name = "Minecraft Block";
 const history: HistoryDef = [
   "Dec 2021 lostminer - Block generator rewrite.",

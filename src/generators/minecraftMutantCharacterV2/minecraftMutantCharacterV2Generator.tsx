@@ -30,7 +30,7 @@ import hole1Image from "./images/Hole1.png";
 import hole2Image from "./images/Hole2.png";
 import hole3Image from "./images/Hole3.png";
 
-const id = "minecraft-mutant-character-v2";
+const id = "minecraft-mutant-character";
 
 const name = "Mutant Character";
 

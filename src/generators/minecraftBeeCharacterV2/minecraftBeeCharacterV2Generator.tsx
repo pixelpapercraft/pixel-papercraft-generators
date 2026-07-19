@@ -26,7 +26,7 @@ import overlayBeeImage from "./images/OverlayBee.png";
 
 import { makeDefaultMinecraftSkinPresetOptions } from "../_common/skins/options";
 
-const id = "minecraft-bee-character-v2";
+const id = "minecraft-bee-character";
 
 const name = "Minecraft Bee Character";
 

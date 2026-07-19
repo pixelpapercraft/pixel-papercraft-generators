@@ -33,7 +33,7 @@ import {
 } from "../_common/skins/skinControl";
 import { makeDefaultMinecraftSkinPresetOptions } from "../_common/skins/options";
 
-const id = "minecraft-character-mini-v2";
+const id = "minecraft-character-mini";
 
 const name = "Minecraft Character Mini";
 

@@ -41,7 +41,7 @@ import chainmailArmorFaithful from "../minecraftPigCharacter/textures/faithful/c
 import ironArmorFaithful from "../minecraftPigCharacter/textures/faithful/iron-armor.png";
 import armorSpacePig from "../minecraftPigCharacter/textures/space-pig/armor.png";
 
-const id = "minecraft-pig-character-v2";
+const id = "minecraft-pig-character";
 
 const name = "Minecraft Pig Character";
 

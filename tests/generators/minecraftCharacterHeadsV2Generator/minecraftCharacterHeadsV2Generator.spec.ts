@@ -53,7 +53,7 @@ const regions = (page: Page) =>
 test("minecraft character heads generator exposes its controls", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-character-heads-v2");
+  await page.goto("/generator/minecraft-character-heads");
 
   const skin1 = skinSelect(page, 0);
   await expect(skin1).toHaveValue("Default");
@@ -81,7 +81,7 @@ test("minecraft character heads generator exposes its controls", async ({
 test("minecraft character heads generator matches the default screenshot", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-character-heads-v2");
+  await page.goto("/generator/minecraft-character-heads");
 
   const pageImage = outputPage(page);
   await expect(pageImage).toBeVisible();
@@ -95,7 +95,7 @@ test("minecraft character heads generator matches the default screenshot", async
 test("minecraft character heads generator renders every preset and mob texture on Skin 1", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-character-heads-v2");
+  await page.goto("/generator/minecraft-character-heads");
 
   const skin1 = skinSelect(page, 0);
   const pageImage = outputPage(page);
@@ -118,7 +118,7 @@ test("minecraft character heads generator renders every preset and mob texture o
 test("minecraft character heads generator draws extra head slots independently", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-character-heads-v2");
+  await page.goto("/generator/minecraft-character-heads");
 
   const pageImage = outputPage(page);
   await renderImageAtNaturalSize(pageImage);
@@ -143,7 +143,7 @@ test("minecraft character heads generator draws extra head slots independently",
 test("minecraft character heads generator renders a custom upload and toggles its overlay", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-character-heads-v2");
+  await page.goto("/generator/minecraft-character-heads");
 
   const pageImage = outputPage(page);
   await renderImageAtNaturalSize(pageImage);
@@ -170,7 +170,7 @@ test("minecraft character heads generator renders a custom upload and toggles it
 test("minecraft character heads generator hides fold lines", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-character-heads-v2");
+  await page.goto("/generator/minecraft-character-heads");
 
   const pageImage = outputPage(page);
   await renderImageAtNaturalSize(pageImage);
@@ -190,7 +190,7 @@ test("minecraft character heads generator hides fold lines", async ({
 test("minecraft character heads generator draws action figure cut lines", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-character-heads-v2");
+  await page.goto("/generator/minecraft-character-heads");
 
   const pageImage = outputPage(page);
   await renderImageAtNaturalSize(pageImage);

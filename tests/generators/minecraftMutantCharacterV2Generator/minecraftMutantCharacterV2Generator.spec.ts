@@ -57,7 +57,7 @@ const regions = (page: Page) =>
 test("minecraft mutant character v2 generator exposes its controls", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-mutant-character-v2");
+  await page.goto("/generator/minecraft-mutant-character");
 
   const skin = skinSelect(page);
   await expect(skin).toHaveValue("Default");
@@ -79,7 +79,7 @@ test("minecraft mutant character v2 generator exposes its controls", async ({
 test("minecraft mutant character v2 generator matches the default screenshots", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-mutant-character-v2");
+  await page.goto("/generator/minecraft-mutant-character");
 
   const pages = outputPages(page);
   await expect(pages).toHaveCount(4);
@@ -100,7 +100,7 @@ test("minecraft mutant character v2 generator matches the default screenshots", 
 test("minecraft mutant character v2 generator renders every skin preset and explicit None", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-mutant-character-v2");
+  await page.goto("/generator/minecraft-mutant-character");
 
   const skin = skinSelect(page);
   const pageImage = outputPage(page);
@@ -122,7 +122,7 @@ test("minecraft mutant character v2 generator renders every skin preset and expl
 test("minecraft mutant character v2 generator renders a custom skin upload", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-mutant-character-v2");
+  await page.goto("/generator/minecraft-mutant-character");
 
   const pages = outputPages(page);
   const pageImage = pages.first();
@@ -143,7 +143,7 @@ test("minecraft mutant character v2 generator renders a custom skin upload", asy
 test("minecraft mutant character v2 generator renders the Slim model geometry", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-mutant-character-v2");
+  await page.goto("/generator/minecraft-mutant-character");
 
   const pages = outputPages(page);
   const pageImage = pages.first();

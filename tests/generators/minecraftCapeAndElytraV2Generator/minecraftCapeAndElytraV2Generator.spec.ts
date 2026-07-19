@@ -81,7 +81,7 @@ const readWing = (page: Page) => readPixel(outputPage(page), 85, 340);
 test("minecraft cape and elytra generator exposes its texture and overlay controls", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-cape-and-elytra-v2");
+  await page.goto("/generator/minecraft-cape-and-elytra");
 
   const cape = capeSelect(page);
   await expect(cape).toBeVisible();
@@ -98,7 +98,7 @@ test("minecraft cape and elytra generator exposes its texture and overlay contro
 test("minecraft cape and elytra generator matches the default screenshot", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-cape-and-elytra-v2");
+  await page.goto("/generator/minecraft-cape-and-elytra");
 
   const pageImage = outputPage(page);
   await expect(pageImage).toBeVisible();
@@ -112,7 +112,7 @@ test("minecraft cape and elytra generator matches the default screenshot", async
 test("minecraft cape and elytra generator renders its fallback, every preset, and explicit None", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-cape-and-elytra-v2");
+  await page.goto("/generator/minecraft-cape-and-elytra");
 
   const cape = capeSelect(page);
   const migrator = presetExpectations[0];
@@ -136,7 +136,7 @@ test("minecraft cape and elytra generator renders its fallback, every preset, an
 test("minecraft cape and elytra generator composes the Elytra texture", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-cape-and-elytra-v2");
+  await page.goto("/generator/minecraft-cape-and-elytra");
 
   await capeSelect(page).selectOption("Elytra");
   await expect
@@ -157,7 +157,7 @@ test("minecraft cape and elytra generator composes the Elytra texture", async ({
 test("minecraft cape and elytra generator hides folds and labels independently", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-cape-and-elytra-v2");
+  await page.goto("/generator/minecraft-cape-and-elytra");
 
   const pageImage = outputPage(page);
   const foldProbe = () => readPixel(pageImage, 83, 115);
@@ -186,7 +186,7 @@ test("minecraft cape and elytra generator hides folds and labels independently",
 test("minecraft cape and elytra generator renders a custom texture across the cape and wings", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-cape-and-elytra-v2");
+  await page.goto("/generator/minecraft-cape-and-elytra");
 
   await page
     .getByLabel("Upload Cape texture file")

@@ -116,7 +116,7 @@ import redstoneTexture from "../minecraftArmor/textures/trims/color_palettes/red
 import resinTexture from "../minecraftArmor/textures/trims/color_palettes/resin.png";
 import trimPaletteTexture from "../minecraftArmor/textures/trims/color_palettes/trim_palette.png";
 
-const id = "minecraft-armor-v2";
+const id = "minecraft-armor";
 const name = "Minecraft Armor";
 
 const instructions = `

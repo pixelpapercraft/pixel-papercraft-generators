@@ -220,8 +220,9 @@ export const generators: AnyGenerator[] = concatArrays([
 ]);
 
 // One finder over the flat list, tagging each result by model. Ids never
-// collide across v1/v2 (v2 versions carry a `-v2` suffix until the v1 versions
-// are deleted), so a plain first-match lookup is unambiguous.
+// collide across v1/v2: a promoted v2 uses the base id while its retired v1
+// carries a `-v1` suffix in the legacy group, so a plain first-match lookup is
+// unambiguous.
 export function findAnyGeneratorById(generatorId: string): AnyGenerator | null {
   return generators.find((entry) => entry.def.id === generatorId) ?? null;
 }

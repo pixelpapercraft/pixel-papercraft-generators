@@ -29,7 +29,7 @@ const eyeProbe = (page: Page) => readPixel(outputPage(page), 138, 123);
 test("minecraft enderman generator exposes its complete control contract", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-enderman-v2");
+  await page.goto("/generator/minecraft-enderman");
 
   // Neither texture input has enumerable presets, so each shows only its custom
   // upload rather than a select.
@@ -47,7 +47,7 @@ test("minecraft enderman generator exposes its complete control contract", async
 test("minecraft enderman generator matches the default screenshot", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-enderman-v2");
+  await page.goto("/generator/minecraft-enderman");
 
   const pageImage = outputPage(page);
   await expect(pageImage).toBeVisible();
@@ -61,7 +61,7 @@ test("minecraft enderman generator matches the default screenshot", async ({
 test("minecraft enderman generator renders a custom body texture under the eyes overlay", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-enderman-v2");
+  await page.goto("/generator/minecraft-enderman");
 
   const pageImage = outputPage(page);
   await expect(bodyProbe(page)).resolves.toEqual(bodyDefault);
@@ -83,7 +83,7 @@ test("minecraft enderman generator renders a custom body texture under the eyes 
 test("minecraft enderman generator renders a custom eyes overlay texture", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-enderman-v2");
+  await page.goto("/generator/minecraft-enderman");
 
   const pageImage = outputPage(page);
   await expect(eyeProbe(page)).resolves.toEqual(eyeDefault);
@@ -106,7 +106,7 @@ test("minecraft enderman generator renders a custom eyes overlay texture", async
 test("minecraft enderman generator hides folds and labels independently", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-enderman-v2");
+  await page.goto("/generator/minecraft-enderman");
 
   const pageImage = outputPage(page);
   const readFold = () => readPixel(pageImage, 139, 24);

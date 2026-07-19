@@ -26,7 +26,7 @@ import backgroundImage from "../minecraftSquidCharacter/images/Background.png";
 import foldsImage from "../minecraftSquidCharacter/images/Folds.png";
 import squidTexture from "../minecraftSquidCharacter/textures/Squid.png";
 
-const id = "minecraft-squid-character-v2";
+const id = "minecraft-squid-character";
 
 const name = "Minecraft Squid Character";
 

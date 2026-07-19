@@ -55,7 +55,7 @@ import ironTexture from "./textures/iron.png";
 import diamondTexture from "./textures/diamond.png";
 import netheriteTexture from "./textures/netherite.png";
 
-const id = "minecraft-horse-v2";
+const id = "minecraft-horse";
 
 const name = "Minecraft Horse";
 

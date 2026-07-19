@@ -34,7 +34,7 @@ import blackImage from "./textures/black.png";
 import catCollarImage from "./textures/cat_collar.png";
 import whiteImage from "./textures/white.png";
 
-const id = "minecraft-cat-v2";
+const id = "minecraft-cat";
 
 const name = "Minecraft Cat";
 

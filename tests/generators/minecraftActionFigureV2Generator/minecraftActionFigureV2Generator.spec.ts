@@ -63,7 +63,7 @@ const regions = (page: Page) =>
 test("minecraft action figure generator exposes its controls", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-action-figure-v2");
+  await page.goto("/generator/minecraft-action-figure");
 
   const skin = skinSelect(page);
   const modelType = modelTypeSelect(page);
@@ -84,7 +84,7 @@ test("minecraft action figure generator exposes its controls", async ({
 test("minecraft action figure generator matches the default screenshot", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-action-figure-v2");
+  await page.goto("/generator/minecraft-action-figure");
 
   const pageImage = outputPage(page);
   await expect(pageImage).toBeVisible();
@@ -98,7 +98,7 @@ test("minecraft action figure generator matches the default screenshot", async (
 test("minecraft action figure generator renders every skin selection at the head probe", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-action-figure-v2");
+  await page.goto("/generator/minecraft-action-figure");
 
   const skin = skinSelect(page);
   const pageImage = outputPage(page);
@@ -115,7 +115,7 @@ test("minecraft action figure generator renders every skin selection at the head
 test("minecraft action figure generator composes a slim Alex layout", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-action-figure-v2");
+  await page.goto("/generator/minecraft-action-figure");
 
   const pageImage = outputPage(page);
   await skinSelect(page).selectOption("Alex");
@@ -133,7 +133,7 @@ for (const toggle of presentationToggleExpectations) {
   test(`minecraft action figure generator hides ${toggle.label}`, async ({
     page,
   }) => {
-    await page.goto("/generator/minecraft-action-figure-v2");
+    await page.goto("/generator/minecraft-action-figure");
 
     const pageImage = outputPage(page);
     await expect(readPixel(pageImage, toggle.x, toggle.y)).resolves.toEqual({
@@ -153,7 +153,7 @@ for (const toggle of presentationToggleExpectations) {
 test("minecraft action figure generator hides its presentation overlays", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-action-figure-v2");
+  await page.goto("/generator/minecraft-action-figure");
 
   const pageImage = outputPage(page);
   for (const toggle of presentationToggleExpectations) {
@@ -168,7 +168,7 @@ test("minecraft action figure generator hides its presentation overlays", async 
 test("minecraft action figure generator renders a custom skin upload", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-action-figure-v2");
+  await page.goto("/generator/minecraft-action-figure");
 
   const pageImage = outputPage(page);
   await page.getByLabel("Upload Skin skin file").setInputFiles(skinFixturePath);
@@ -184,7 +184,7 @@ test("minecraft action figure generator renders a custom skin upload", async ({
 test("minecraft action figure generator enters M16 mode from its canvas region", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-action-figure-v2");
+  await page.goto("/generator/minecraft-action-figure");
 
   const pageImage = outputPage(page);
   const defaultSrc = await pageImage.getAttribute("src");

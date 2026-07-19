@@ -26,7 +26,7 @@ import backgroundImage from "./images/Background.png";
 import foldsImage from "./images/Folds.png";
 import labelsImage from "./images/Labels.png";
 
-const id = "minecraft-cat-character-v2";
+const id = "minecraft-cat-character";
 
 const name = "Minecraft Cat Character";
 

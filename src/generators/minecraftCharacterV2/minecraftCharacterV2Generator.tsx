@@ -32,7 +32,7 @@ import alexFoldsImage from "./images/AlexFolds.png";
 import labelsImage from "./images/Labels.png";
 import thumbnailImage from "./thumbnail/v2-thumbnail-256.jpeg";
 
-const id = "minecraft-character-v2";
+const id = "minecraft-character";
 
 const name = "Minecraft Character";
 

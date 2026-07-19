@@ -57,7 +57,7 @@ const collarSelect = (page: Page) => page.getByLabel("Collar", { exact: true });
 const tintSelect = (page: Page) => page.getByLabel("Collar Color");
 
 test("minecraft cat generator exposes its controls", async ({ page }) => {
-  await page.goto("/generator/minecraft-cat-v2");
+  await page.goto("/generator/minecraft-cat");
 
   await expect(page.getByRole("combobox")).toHaveCount(3);
 
@@ -88,7 +88,7 @@ test("minecraft cat generator exposes its controls", async ({ page }) => {
 test("minecraft cat generator matches the default screenshot", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-cat-v2");
+  await page.goto("/generator/minecraft-cat");
 
   const pageImage = output(page);
   await expect(pageImage).toBeVisible();
@@ -100,7 +100,7 @@ test("minecraft cat generator matches the default screenshot", async ({
 test("minecraft cat generator renders every breed and explicit None", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-cat-v2");
+  await page.goto("/generator/minecraft-cat");
 
   const pageImage = output(page);
   await renderImageAtNaturalSize(pageImage);
@@ -121,7 +121,7 @@ test("minecraft cat generator renders every breed and explicit None", async ({
 test("minecraft cat generator renders a distinctive breed composition", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-cat-v2");
+  await page.goto("/generator/minecraft-cat");
 
   const pageImage = output(page);
   await catSelect(page).selectOption({ label: "Calico" });
@@ -135,7 +135,7 @@ test("minecraft cat generator renders a distinctive breed composition", async ({
 test("minecraft cat generator tints the collar with every dye", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-cat-v2");
+  await page.goto("/generator/minecraft-cat");
 
   const pageImage = output(page);
   await renderImageAtNaturalSize(pageImage);
@@ -158,7 +158,7 @@ test("minecraft cat generator tints the collar with every dye", async ({
 });
 
 test("minecraft cat generator renders a tinted collar", async ({ page }) => {
-  await page.goto("/generator/minecraft-cat-v2");
+  await page.goto("/generator/minecraft-cat");
 
   await collarSelect(page).selectOption({ label: "Cat Collar" });
   await tintSelect(page).selectOption({ label: "Blue" });
@@ -178,7 +178,7 @@ test("minecraft cat generator renders a tinted collar", async ({ page }) => {
 test("minecraft cat generator renders a custom cat texture", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-cat-v2");
+  await page.goto("/generator/minecraft-cat");
 
   const pageImage = output(page);
   await page
@@ -196,7 +196,7 @@ test("minecraft cat generator renders a custom cat texture", async ({
 test("minecraft cat generator hides folds and labels independently", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-cat-v2");
+  await page.goto("/generator/minecraft-cat");
 
   const pageImage = output(page);
   const readFold = () => readPixel(pageImage, 82, 32);

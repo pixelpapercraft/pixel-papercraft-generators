@@ -44,7 +44,7 @@ import textureStoneDalek from "./textures/daleks/StoneDalek.png";
 import textureStrategist from "./textures/daleks/Strategist.png";
 import textureSuicideDalek from "./textures/daleks/SuicideDalek.png";
 
-const id = "dalek-v2";
+const id = "dalek";
 
 const name = "Doctor Who Dalek";
 

@@ -51,7 +51,7 @@ const currentSrc = async (pageImage: Locator): Promise<string> => {
   return src ?? "";
 };
 
-const ROUTE = "/generator/minecraft-villager-v2";
+const ROUTE = "/generator/minecraft-villager";
 
 test("minecraft villager v2 generator exposes its complete control contract", async ({
   page,

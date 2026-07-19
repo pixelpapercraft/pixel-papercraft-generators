@@ -14,7 +14,7 @@ const pageImageUrl = (page: Page) => outputPage(page).getAttribute("src");
 test("minecraft wither generator exposes its complete control contract", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-wither-v2");
+  await page.goto("/generator/minecraft-wither");
 
   const witherSkin = witherSkinSelect(page);
   await expect(witherSkin).toBeVisible();
@@ -35,7 +35,7 @@ test("minecraft wither generator exposes its complete control contract", async (
 test("minecraft wither generator matches the default screenshot", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-wither-v2");
+  await page.goto("/generator/minecraft-wither");
 
   const pageImage = outputPage(page);
   await expect(pageImage).toBeVisible();
@@ -49,7 +49,7 @@ test("minecraft wither generator matches the default screenshot", async ({
 test("minecraft wither generator renders its fallback, preset, and explicit None", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-wither-v2");
+  await page.goto("/generator/minecraft-wither");
 
   const witherSkin = witherSkinSelect(page);
   const fallback = await pageImageUrl(page);
@@ -70,7 +70,7 @@ test("minecraft wither generator renders its fallback, preset, and explicit None
 test("minecraft wither generator renders a custom texture", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-wither-v2");
+  await page.goto("/generator/minecraft-wither");
 
   const fallback = await pageImageUrl(page);
   await page

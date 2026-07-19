@@ -37,7 +37,7 @@ function getPreviewImage(page: Page) {
 test("minecraft item generator matches the default screenshots", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-item-v2");
+  await page.goto("/generator/minecraft-item");
 
   const outputPages = page.getByTestId("generator-page-image");
   await expect(outputPages).toHaveCount(1);
@@ -58,7 +58,7 @@ test("minecraft item generator matches the default screenshots", async ({
 test("minecraft item generator keeps instructions collapsed above the columns", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-item-v2");
+  await page.goto("/generator/minecraft-item");
 
   // The instructions sit above the two-column layout (under the hero), not in
   // the sidebar, as a collapsible <details> panel that should start collapsed.
@@ -92,7 +92,7 @@ test("minecraft item generator keeps instructions collapsed above the columns", 
 test("minecraft item generator renders custom atlas textures", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-item-v2");
+  await page.goto("/generator/minecraft-item");
 
   const sheetPath = path.join(
     process.cwd(),
@@ -138,7 +138,7 @@ test("minecraft item generator renders custom atlas textures", async ({
 test("minecraft item generator supports rotated and flipped textures", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-item-v2");
+  await page.goto("/generator/minecraft-item");
 
   await expect(page.getByLabel("Rotate texture")).toBeVisible();
   await expect(page.getByLabel("Flip texture horizontal")).toBeVisible();
@@ -172,7 +172,7 @@ test("minecraft item generator supports rotated and flipped textures", async ({
 test("minecraft item generator resets rotation when a new texture is selected", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-item-v2");
+  await page.goto("/generator/minecraft-item");
 
   await page.getByLabel("Version").selectOption("minecraft-26.1.2-items");
   await selectItemByTitle(page, "sword", "diamond sword");
@@ -193,7 +193,7 @@ test("minecraft item generator resets rotation when a new texture is selected", 
 test("minecraft item generator resets flip when a new texture is selected", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-item-v2");
+  await page.goto("/generator/minecraft-item");
 
   await page.getByLabel("Version").selectOption("minecraft-26.1.2-items");
   await selectItemByTitle(page, "sword", "diamond sword");
@@ -214,7 +214,7 @@ test("minecraft item generator resets flip when a new texture is selected", asyn
 test("minecraft item generator supports custom item scales", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-item-v2");
+  await page.goto("/generator/minecraft-item");
 
   await page.getByPlaceholder("Search...").fill("sword");
   await page.getByTitle("diamond sword").click();
@@ -258,7 +258,7 @@ test("minecraft item generator supports custom item scales", async ({
 test("minecraft item generator overlays onto the last item without reflowing it", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-item-v2");
+  await page.goto("/generator/minecraft-item");
 
   await page.getByLabel("Version").selectOption("minecraft-26.1.2-items");
   await selectItemByTitle(page, "sword", "diamond sword");
@@ -317,7 +317,7 @@ test("minecraft item generator overlays across size and texture transform combin
   ] as const;
 
   for (const overlayCase of overlayCases) {
-    await page.goto("/generator/minecraft-item-v2");
+    await page.goto("/generator/minecraft-item");
     await page.getByLabel("Version").selectOption("minecraft-26.1.2-items");
 
     await selectItemByTitle(page, "sword", "diamond sword");
@@ -359,7 +359,7 @@ test("minecraft item generator overlays across size and texture transform combin
 test("minecraft item generator toggles enchantment from the item region", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-item-v2");
+  await page.goto("/generator/minecraft-item");
 
   await page.getByLabel("Version").selectOption("minecraft-26.1.2-items");
   await selectItemByTitle(page, "sword", "diamond sword");
@@ -385,7 +385,7 @@ test("minecraft item generator toggles enchantment from the item region", async 
 test("minecraft item generator clears the selected texture when switching to custom", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-item-v2");
+  await page.goto("/generator/minecraft-item");
 
   await page.getByPlaceholder("Search...").fill("sword");
   await page.getByTitle("diamond sword").click();
@@ -414,7 +414,7 @@ test("minecraft item generator clears the selected texture when switching to cus
 test("minecraft item generator clears the custom selection when the version changes", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-item-v2");
+  await page.goto("/generator/minecraft-item");
 
   const sheetPath = path.join(
     process.cwd(),

@@ -35,7 +35,7 @@ import actionFigureImage from "./images/Action-Figure.png";
 import actionFigureFoldsImage from "./images/Action-Figure-Folds.png";
 import actionFigureLabelsImage from "./images/Action-Figure-Labels.png";
 
-const id = "minecraft-creeper-character-v2";
+const id = "minecraft-creeper-character";
 
 const name = "Minecraft Creeper Character";
 

@@ -21,7 +21,7 @@ import labelsImage from "./images/Labels.png";
 import endermanTexture from "./textures/enderman.png";
 import endermanEyesTexture from "./textures/enderman_eyes.png";
 
-const id = "minecraft-enderman-v2";
+const id = "minecraft-enderman";
 
 const name = "Minecraft Enderman";
 

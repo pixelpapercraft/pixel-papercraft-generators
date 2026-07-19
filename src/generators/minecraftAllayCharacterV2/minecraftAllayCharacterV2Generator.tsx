@@ -25,7 +25,7 @@ import { makeDefaultMinecraftSkinPresetOptions } from "../_common/skins/options"
 import thumbnailImage from "./thumbnail/thumbnail-256.jpeg";
 import overlayAllayImage from "./images/OverlayAllay.png";
 
-const id = "minecraft-allay-character-v2";
+const id = "minecraft-allay-character";
 
 const name = "Minecraft Allay Character";
 

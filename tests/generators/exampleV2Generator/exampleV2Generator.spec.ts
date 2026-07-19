@@ -40,7 +40,7 @@ const skinSelect = (page: Page) => page.getByRole("combobox");
 test("example generator exposes its skin and folds controls", async ({
   page,
 }) => {
-  await page.goto("/generator/example-v2");
+  await page.goto("/generator/example");
 
   const skin = skinSelect(page);
   await expect(skin).toBeVisible();
@@ -54,7 +54,7 @@ test("example generator exposes its skin and folds controls", async ({
 });
 
 test("example generator matches the default screenshot", async ({ page }) => {
-  await page.goto("/generator/example-v2");
+  await page.goto("/generator/example");
 
   const pageImage = outputPage(page);
   await expect(pageImage).toBeVisible();
@@ -66,7 +66,7 @@ test("example generator matches the default screenshot", async ({ page }) => {
 test("example generator renders every skin selection at the face probe", async ({
   page,
 }) => {
-  await page.goto("/generator/example-v2");
+  await page.goto("/generator/example");
 
   const skin = skinSelect(page);
   const pageImage = outputPage(page);
@@ -88,7 +88,7 @@ test("example generator renders every skin selection at the face probe", async (
 test("example generator composes an Alex skin across the head net", async ({
   page,
 }) => {
-  await page.goto("/generator/example-v2");
+  await page.goto("/generator/example");
 
   const pageImage = outputPage(page);
   await skinSelect(page).selectOption("Alex");
@@ -97,7 +97,7 @@ test("example generator composes an Alex skin across the head net", async ({
 });
 
 test("example generator matches the folds-off screenshot", async ({ page }) => {
-  await page.goto("/generator/example-v2");
+  await page.goto("/generator/example");
 
   const pageImage = outputPage(page);
   const showFolds = page.getByLabel("Show Folds");
@@ -115,7 +115,7 @@ test("example generator matches the folds-off screenshot", async ({ page }) => {
 test("example generator renders a custom skin upload across the head net", async ({
   page,
 }) => {
-  await page.goto("/generator/example-v2");
+  await page.goto("/generator/example");
 
   const pageImage = outputPage(page);
   await page.getByLabel("Upload Skin skin file").setInputFiles(skinFixturePath);

@@ -32,7 +32,7 @@ import foregroundM16Image from "./images/Foreground-M16.png";
 import labelsImage from "./images/Labels.png";
 import thumbnailImage from "./thumbnail/thumbnail-256.jpeg";
 
-const id = "minecraft-action-figure-v2";
+const id = "minecraft-action-figure";
 
 const name = "Minecraft Action Figure";
 

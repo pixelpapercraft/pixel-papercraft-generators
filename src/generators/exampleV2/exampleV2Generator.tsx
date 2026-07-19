@@ -22,7 +22,7 @@ import { makeDefaultMinecraftSkinPresetOptions } from "../_common/skins/options"
 import backgroundImage from "./images/Background.png";
 import foldsImage from "./images/Folds.png";
 
-const id = "example-v2";
+const id = "example";
 
 const name = "Example";
 

@@ -31,7 +31,7 @@ import foldsAlexImage from "./images/Folds-Alex.png";
 import labelsImage from "./images/Labels.png";
 import { makeDefaultMinecraftSkinPresetOptions } from "../_common/skins/options";
 
-const id = "minecraft-ultimate-bendable-v2";
+const id = "minecraft-ultimate-bendable";
 
 const name = "Minecraft Bendable Character";
 

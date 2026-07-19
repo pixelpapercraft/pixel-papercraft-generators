@@ -50,7 +50,7 @@ import titleImage from "./images/Title.png";
 import centerFoldTexture from "./textures/CenterFold.png";
 import thumbnailImage from "./thumbnail/v2-thumbnail-256.jpeg";
 
-const id = "minecraft-item-v2";
+const id = "minecraft-item";
 
 const name = "Minecraft Item";
 
