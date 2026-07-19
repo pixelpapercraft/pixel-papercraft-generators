@@ -34,7 +34,10 @@ const id = "minecraft-mutant-character-v2";
 
 const name = "Mutant Character";
 
-const history: HistoryDef = ["Created by PaperDogChannel."];
+const history: HistoryDef = [
+  "Created by PaperDogChannel.",
+  "Jul 2026 lostminer - Layout refresh.",
+];
 
 const video: VideoDef = {
   url: "https://www.youtube.com/embed/DVzumgRinjY?rel=0",
