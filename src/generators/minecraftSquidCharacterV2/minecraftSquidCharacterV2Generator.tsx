@@ -6,6 +6,7 @@ import {
   GeneratorUI,
   type GeneratorDefV2,
   type GeneratorV2,
+  type HistoryDef,
   type ImageDef,
   type RegionClickHandler,
   type RenderContext,
@@ -32,6 +33,15 @@ const name = "Minecraft Squid Character";
 const thumbnail: ThumbnailDef = {
   url: thumbnailImage.src,
 };
+
+const history: HistoryDef = [
+  "Originally developed by frownieman.",
+  "06 Feb 2015 lostminer - Add user variables.",
+  "13 Feb 2015 lostminer - Update to use new version of generator.",
+  "18 Mar 2015 frownieman - Added compatibility to 1.8 skins.",
+  "29 Sep 2020 NinjolasNJM - Fixed bottom texture rotations, and added the ability to choose which tentacle has which textures.",
+  "Jul 2026 lostminer - Layout refresh.",
+];
 
 const images: ImageDef[] = [
   {
@@ -738,6 +748,8 @@ function Component(): JSX.Element {
           />
         </div>
       </div>
+
+      <GeneratorUI.History history={history} />
     </div>
   );
 }
