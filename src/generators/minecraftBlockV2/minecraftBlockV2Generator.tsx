@@ -7,6 +7,7 @@ import {
   encodeSelectedTextures,
   type GeneratorDefV2,
   type GeneratorV2,
+  type HistoryDef,
   type ImageDef,
   type RegionClickHandler,
   type RenderContext,
@@ -68,6 +69,14 @@ import tabsShelfImage from "./images/Tabs-Shelf.png";
 
 const id = "minecraft-block-v2";
 const name = "Minecraft Block";
+const history: HistoryDef = [
+  "Dec 2021 lostminer - Block generator rewrite.",
+  "Dec 2021 NinjolasNJM - Add Stairs, Fence, Door, Trapdoor and Snow.",
+  "Jan 2022 NinjolasNJM - Add Cake Block type.",
+  "May 2026 NinjolasNJM - Add Shelf Block type.",
+  "May 2026 NinjolasNJM - Changed to use new glint and tint input.",
+  "Jul 2026 lostminer - Layout refresh.",
+];
 const thumbnail: ThumbnailDef = { url: thumbnailImage.src };
 const image = (imageId: string, importedImage: { src: string }): ImageDef => ({
   id: imageId,
@@ -442,6 +451,7 @@ function Component(): JSX.Element {
           />
         </div>
       </div>
+      <GeneratorUI.History history={history} />
     </div>
   );
 }
