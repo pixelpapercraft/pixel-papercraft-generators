@@ -6,6 +6,7 @@ import {
   GeneratorUI,
   type GeneratorDefV2,
   type GeneratorV2,
+  type HistoryDef,
   type ImageDef,
   type InstructionsDef,
   type RenderContext,
@@ -45,6 +46,12 @@ to replace dialogue in various cartoons. Additionally, Amogus refers to a even
 more simplified like drawing of a crewmate from Among Us used in these type of memes.
 ![Amogus](${amogusImage.src})
 `;
+
+// Same copy as the v1 amogus-bendable generator's `history`.
+const history: HistoryDef = [
+  "Jan 2022 PaperDogChannel - First release.",
+  "Jul 2026 lostminer - Layout refresh.",
+];
 
 const images: ImageDef[] = [
   { id: "Background", url: backgroundImage.src },
@@ -235,6 +242,8 @@ function Component(): JSX.Element {
           />
         </div>
       </div>
+
+      <GeneratorUI.History history={history} />
     </div>
   );
 }
