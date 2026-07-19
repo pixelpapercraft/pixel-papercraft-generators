@@ -15,6 +15,7 @@ import {
   type Texture,
   type TextureDef,
   type ThumbnailDef,
+  type DynamicTextures,
 } from "@genroot/builder/v2";
 import {
   type Layer,
@@ -513,12 +514,10 @@ function Component(): JSX.Element {
     : null;
   const rendererProps: MinecraftCharacterMiniProps = { mini1, mini2 };
 
-  const dynamicTextures = React.useMemo(() => {
-    const loaded = new Map<string, Texture>();
-    if (mini1Texture) loaded.set("Mini 1", mini1Texture);
-    if (mini2Texture) loaded.set("Mini 2", mini2Texture);
-    return loaded;
-  }, [mini1Texture, mini2Texture]);
+  const dynamicTextures: DynamicTextures = {
+    "Mini 1": mini1Texture,
+    "Mini 2": mini2Texture,
+  };
 
   const onRegionClick: RegionClickHandler = ({ regionId }) => {
     switch (regionId) {

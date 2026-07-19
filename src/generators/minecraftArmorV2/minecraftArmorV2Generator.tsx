@@ -16,6 +16,7 @@ import {
   type TextureDef,
   type TexturePlugin,
   type ThumbnailDef,
+  type DynamicTextures,
 } from "@genroot/builder/v2";
 import { TintSelector } from "../_common/tintSelector/tintSelector";
 import { type Dimensions, steveLegacy } from "../_common/minecraftCharacter";
@@ -1432,13 +1433,7 @@ function Component(): JSX.Element {
     if (value) setTintColors((current) => ({ ...current, [id]: value }));
   };
 
-  const dynamicTextures = React.useMemo(() => {
-    const next = new Map<string, Texture>();
-    controlTextures.forEach((texture, controlId) => {
-      if (texture) next.set(controlId, texture);
-    });
-    return next;
-  }, [controlTextures]);
+  const dynamicTextures: DynamicTextures = controlTextures;
 
   const rendererProps: MinecraftArmorProps = {
     showFolds,

@@ -12,6 +12,7 @@ import {
   type Texture,
   type TextureDef,
   type ThumbnailDef,
+  type DynamicTextures,
 } from "@genroot/builder/v2";
 
 import thumbnailImage from "./thumbnail/v2-thumbnail-256.jpeg";
@@ -782,19 +783,11 @@ function Component(): JSX.Element {
 
   // Only set a texture key when its input has a value, so `ctx.hasTexture(...)`
   // stays false for Flower/Damage until one is chosen — matching v1.
-  const dynamicTextures = React.useMemo(() => {
-    const map = new Map<string, Texture>();
-    if (golemTex) {
-      map.set("Golem", golemTex);
-    }
-    if (flowerTex) {
-      map.set("Flower", flowerTex);
-    }
-    if (damageTex) {
-      map.set("Damage", damageTex);
-    }
-    return map;
-  }, [golemTex, flowerTex, damageTex]);
+  const dynamicTextures: DynamicTextures = {
+    Golem: golemTex,
+    Flower: flowerTex,
+    Damage: damageTex,
+  };
 
   return (
     <div>

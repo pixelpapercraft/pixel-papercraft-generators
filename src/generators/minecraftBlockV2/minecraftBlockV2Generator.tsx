@@ -242,13 +242,12 @@ function Component(): JSX.Element {
   const [snowLevels, setSnowLevels] = React.useState(["1", "1"]);
   const [snowOffsets, setSnowOffsets] = React.useState([false, false]);
   const [cakeBites, setCakeBites] = React.useState(["0", "0"]);
-  const dynamicTextures = React.useMemo(
-    () =>
-      customTexture
-        ? new Map([["custom", customTexture]])
-        : new Map<string, Texture>(),
-    [customTexture]
-  );
+  // A Map (not the plain-record shape the renderer now also accepts) because
+  // AtlasControl below reads it via `.get()`.
+  const dynamicTextures = new Map<string, Texture>();
+  if (customTexture) {
+    dynamicTextures.set("custom", customTexture);
+  }
   const props: BlockProps = {
     numberOfBlocks,
     blockTypes: selectedBlockTypes,

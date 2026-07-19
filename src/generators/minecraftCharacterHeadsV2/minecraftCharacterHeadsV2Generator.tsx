@@ -13,6 +13,7 @@ import {
   type Texture,
   type TextureDef,
   type ThumbnailDef,
+  type DynamicTextures,
 } from "@genroot/builder/v2";
 import {
   MinecraftSkinControl,
@@ -182,15 +183,9 @@ function Component(): JSX.Element {
     showOverlays,
   };
 
-  const dynamicTextures = React.useMemo(() => {
-    const map = new Map<string, Texture>();
-    skinTextures.forEach((texture, index) => {
-      if (texture) {
-        map.set(`Skin ${index + 1}`, texture);
-      }
-    });
-    return map;
-  }, [skinTextures]);
+  const dynamicTextures: DynamicTextures = Object.fromEntries(
+    skinTextures.map((texture, index) => [`Skin ${index + 1}`, texture])
+  );
 
   const onRegionClick: RegionClickHandler = ({ regionId }) => {
     const index = overlayRegionIds.indexOf(regionId);

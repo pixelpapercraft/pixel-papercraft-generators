@@ -12,6 +12,7 @@ import {
   type Texture,
   type TextureDef,
   type ThumbnailDef,
+  type DynamicTextures,
 } from "@genroot/builder/v2";
 
 import thumbnailImage from "./thumbnail/v2-thumbnail-256.jpeg";
@@ -608,16 +609,10 @@ function Component(): JSX.Element {
 
   const rendererProps: MinecraftEndermanProps = { showFolds, showLabels };
 
-  const dynamicTextures = React.useMemo(() => {
-    const map = new Map<string, Texture>();
-    if (endermanTex) {
-      map.set("Enderman", endermanTex);
-    }
-    if (eyesTex) {
-      map.set("Enderman Eyes", eyesTex);
-    }
-    return map;
-  }, [endermanTex, eyesTex]);
+  const dynamicTextures: DynamicTextures = {
+    Enderman: endermanTex,
+    "Enderman Eyes": eyesTex,
+  };
 
   return (
     <div>

@@ -13,6 +13,7 @@ import {
   type Texture,
   type TextureDef,
   type ThumbnailDef,
+  type DynamicTextures,
 } from "@genroot/builder/v2";
 import {
   MinecraftSkinControl,
@@ -1236,19 +1237,11 @@ function Component(): JSX.Element {
   // stays false for Flower/Damage until one is chosen — matching v1. The Skin
   // key is likewise only set once a skin texture is loaded, so "None" renders
   // nothing rather than a stale default.
-  const dynamicTextures = React.useMemo(() => {
-    const map = new Map<string, Texture>();
-    if (skinTexture) {
-      map.set("Skin", skinTexture);
-    }
-    if (flowerTex) {
-      map.set("Flower", flowerTex);
-    }
-    if (damageTex) {
-      map.set("Damage", damageTex);
-    }
-    return map;
-  }, [skinTexture, flowerTex, damageTex]);
+  const dynamicTextures: DynamicTextures = {
+    Skin: skinTexture,
+    Flower: flowerTex,
+    Damage: damageTex,
+  };
 
   const onRegionClick: RegionClickHandler = ({ regionId }) => {
     switch (regionId) {

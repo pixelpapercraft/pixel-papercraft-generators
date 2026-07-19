@@ -13,6 +13,7 @@ import {
   type TextureDef,
   type ThumbnailDef,
   type VideoDef,
+  type DynamicTextures,
 } from "@genroot/builder/v2";
 import {
   MinecraftSkinControl,
@@ -497,19 +498,11 @@ function Component(): JSX.Element {
     faceStretch,
   };
 
-  const dynamicTextures = React.useMemo(() => {
-    const map = new Map<string, Texture>();
-    if (skinTexture) {
-      map.set("Skin", skinTexture);
-    }
-    if (headFinsTexture) {
-      map.set("Head Fins Texture", headFinsTexture);
-    }
-    if (tailFinsTexture) {
-      map.set("Tail Fins Texture", tailFinsTexture);
-    }
-    return map;
-  }, [skinTexture, headFinsTexture, tailFinsTexture]);
+  const dynamicTextures: DynamicTextures = {
+    Skin: skinTexture,
+    "Head Fins Texture": headFinsTexture,
+    "Tail Fins Texture": tailFinsTexture,
+  };
 
   return (
     <div>

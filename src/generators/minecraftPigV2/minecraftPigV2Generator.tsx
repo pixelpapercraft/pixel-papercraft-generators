@@ -14,6 +14,7 @@ import {
   type RenderContext,
   type Texture,
   type RegionLegacy,
+  type DynamicTextures,
 } from "@genroot/builder/v2";
 
 import thumbnailImage from "../minecraftPig/thumbnail/thumbnail-256.jpeg";
@@ -1229,13 +1230,11 @@ function Component(): JSX.Element {
     helmetStyle,
     bootsStyle,
   };
-  const dynamicTextures = React.useMemo(() => {
-    const map = new Map<string, Texture>();
-    if (pig) map.set("Pig", pig);
-    if (saddle) map.set("Saddle", saddle);
-    if (armor) map.set("Armor (Layer 1)", armor);
-    return map;
-  }, [pig, saddle, armor]);
+  const dynamicTextures: DynamicTextures = {
+    Pig: pig,
+    Saddle: saddle,
+    "Armor (Layer 1)": armor,
+  };
   const onRegionClick: RegionClickHandler = ({ regionId }) => {
     if (regionId === "hideHelmetOverlay") {
       setHideHelmetOverlay((value) => !value);

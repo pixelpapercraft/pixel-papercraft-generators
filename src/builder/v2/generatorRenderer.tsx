@@ -5,9 +5,12 @@ import { Model } from "@genroot/builder/modules/model";
 import { Values } from "@genroot/builder/modules/modelValues";
 import { Generator } from "@genroot/builder/modules/generator";
 import { type GeneratorDef } from "@genroot/builder/modules/generatorDef";
-import { type Texture } from "@genroot/builder/modules/texture";
 import { Pages } from "@genroot/builder/ui/pages/pages";
 import { type GeneratorV2, type RegionClickHandler } from "./generatorV2";
+import {
+  type DynamicTextures,
+  normalizeDynamicTextures,
+} from "./dynamicTextures";
 import { loadResourcesV2 } from "./loadResourcesV2";
 import { RenderContextAdapter } from "./renderContextAdapter";
 
@@ -27,9 +30,10 @@ export function GeneratorRenderer<Props>({
   // array: those are declared up front and loaded once on mount; these are
   // added to the model after them each render (so an id here overrides a
   // static one), mirroring how v1's `Controls` calls `model.addTexture` when a
-  // picker's `onChange` fires. A missing id draws nothing — same as v1's
-  // `removeTexture` on "None".
-  dynamicTextures?: Map<string, Texture>;
+  // picker's `onChange` fires. An absent value draws nothing — same as v1's
+  // `removeTexture` on "None" — so authors pass a plain record and skip the
+  // null-checks/`useMemo` (see `dynamicTextures.ts`).
+  dynamicTextures?: DynamicTextures;
   onRegionClick?: RegionClickHandler;
 }): JSX.Element {
   const [resources, setResources] = React.useState<Awaited<
@@ -78,7 +82,8 @@ export function GeneratorRenderer<Props>({
 
     // Author-supplied runtime textures override any static texture sharing an
     // id. Added after the static ones so a picker's current selection wins.
-    dynamicTextures?.forEach((texture, id) => {
+    // Absent (null/undefined) entries are dropped by `normalizeDynamicTextures`.
+    normalizeDynamicTextures(dynamicTextures).forEach(([id, texture]) => {
       newModel.addTexture(id, texture);
     });
 

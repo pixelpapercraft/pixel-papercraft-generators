@@ -13,6 +13,7 @@ import {
   type Texture,
   type TextureDef,
   type ThumbnailDef,
+  type DynamicTextures,
 } from "@genroot/builder/v2";
 import {
   MinecraftSkinControl,
@@ -771,13 +772,7 @@ function Component(): JSX.Element {
     tailType,
   };
 
-  const dynamicTextures = React.useMemo(
-    () =>
-      skinTexture
-        ? new Map<string, Texture>([["Skin", skinTexture]])
-        : new Map<string, Texture>(),
-    [skinTexture]
-  );
+  const dynamicTextures: DynamicTextures = { Skin: skinTexture };
 
   const onRegionClick: RegionClickHandler = ({ regionId }) => {
     switch (regionId) {

@@ -13,6 +13,7 @@ import {
   type Texture,
   type TextureDef,
   type ThumbnailDef,
+  type DynamicTextures,
 } from "@genroot/builder/v2";
 import {
   MinecraftSkinControl,
@@ -795,13 +796,7 @@ function Component(): JSX.Element {
     tailType,
   };
 
-  const dynamicTextures = React.useMemo(
-    () =>
-      skinTexture
-        ? new Map<string, Texture>([["Skin", skinTexture]])
-        : new Map<string, Texture>(),
-    [skinTexture]
-  );
+  const dynamicTextures: DynamicTextures = { Skin: skinTexture };
 
   // The tail region cycles 1 -> 2 -> 3 -> 4 -> 1 (V1's `cycleTailTypes`) and is
   // deliberately not backed by a visible control: V1 never defined the

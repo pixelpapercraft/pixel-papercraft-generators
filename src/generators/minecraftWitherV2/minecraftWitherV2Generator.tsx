@@ -12,6 +12,7 @@ import {
   type RenderContext,
   type Texture,
   type TextureDef,
+  type DynamicTextures,
 } from "@genroot/builder/v2";
 
 import witherTexture from "./instructions/wither.png";
@@ -542,13 +543,7 @@ const generatorV2: GeneratorV2<Record<string, never>> = {
 
 function Component(): JSX.Element {
   const [witherSkin, setWitherSkin] = React.useState<Texture | null>(null);
-  const dynamicTextures = React.useMemo(() => {
-    const map = new Map<string, Texture>();
-    if (witherSkin) {
-      map.set(witherSkinId, witherSkin);
-    }
-    return map;
-  }, [witherSkin]);
+  const dynamicTextures: DynamicTextures = { [witherSkinId]: witherSkin };
 
   return (
     <div>

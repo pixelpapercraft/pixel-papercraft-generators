@@ -34,6 +34,10 @@ export type {
   RegionClickHandler,
 } from "./generatorV2";
 
+// Runtime textures an author feeds the renderer (record or Map, nullable
+// values skipped). Lets authors drop the `new Map` + null-check + `useMemo`.
+export type { DynamicTextures } from "./dynamicTextures";
+
 // Definition shapes an author declares (images, textures, thumbnail, …).
 export type {
   ImageDef,

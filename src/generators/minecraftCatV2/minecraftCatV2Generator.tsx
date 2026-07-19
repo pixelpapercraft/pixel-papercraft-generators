@@ -12,6 +12,7 @@ import {
   type Texture,
   type TextureDef,
   type ThumbnailDef,
+  type DynamicTextures,
 } from "@genroot/builder/v2";
 import { TintSelector } from "@genroot/generators/_common/tintSelector/tintSelector";
 import { catTintChoiceGroups } from "@genroot/generators/_common/tintSelector/tints";
@@ -422,16 +423,10 @@ function Component(): JSX.Element {
     null
   );
   const props: MinecraftCatProps = { collarColor, showFolds, showLabels };
-  const dynamicTextures = React.useMemo(() => {
-    const map = new Map<string, Texture>();
-    if (catTexture) {
-      map.set("Cat", catTexture);
-    }
-    if (collarTexture) {
-      map.set("Collar", collarTexture);
-    }
-    return map;
-  }, [catTexture, collarTexture]);
+  const dynamicTextures: DynamicTextures = {
+    Cat: catTexture,
+    Collar: collarTexture,
+  };
 
   return (
     <div>

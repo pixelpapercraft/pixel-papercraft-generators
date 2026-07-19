@@ -11,6 +11,7 @@ import {
   type RenderContext,
   type Texture,
   type TextureDef,
+  type DynamicTextures,
 } from "@genroot/builder/v2";
 import {
   MinecraftSkinControl,
@@ -114,13 +115,7 @@ function Component(): JSX.Element {
 
   const rendererProps: ExampleProps = { showFolds };
 
-  const dynamicTextures = React.useMemo(
-    () =>
-      skinTexture
-        ? new Map<string, Texture>([["Skin", skinTexture]])
-        : new Map<string, Texture>(),
-    [skinTexture]
-  );
+  const dynamicTextures: DynamicTextures = { Skin: skinTexture };
 
   return (
     <div className="lg:flex gap-8">

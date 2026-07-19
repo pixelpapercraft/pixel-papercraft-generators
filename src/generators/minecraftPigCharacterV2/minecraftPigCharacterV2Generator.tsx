@@ -14,6 +14,7 @@ import {
   type RenderContext,
   type Texture,
   type RegionLegacy,
+  type DynamicTextures,
 } from "@genroot/builder/v2";
 import {
   MinecraftSkinControl,
@@ -1498,13 +1499,11 @@ function Component(): JSX.Element {
     helmetStyle,
     bootsStyle,
   };
-  const dynamicTextures = React.useMemo(() => {
-    const map = new Map<string, Texture>();
-    if (skin) map.set("Skin", skin);
-    if (saddle) map.set("Saddle", saddle);
-    if (armor) map.set("Armor (Layer 1)", armor);
-    return map;
-  }, [skin, saddle, armor]);
+  const dynamicTextures: DynamicTextures = {
+    Skin: skin,
+    Saddle: saddle,
+    "Armor (Layer 1)": armor,
+  };
   const onRegionClick: RegionClickHandler = ({ regionId }) => {
     switch (regionId) {
       case "hideHelmet":

@@ -505,16 +505,15 @@ function Component(): JSX.Element {
     glintYOffset,
   };
 
-  const dynamicTextures = React.useMemo(() => {
-    const nextTextures = new Map<string, Texture>();
-    if (customTexture) {
-      nextTextures.set("custom", customTexture);
-    }
-    if (glintTexture) {
-      nextTextures.set("Enchanted Glint", glintTexture);
-    }
-    return nextTextures;
-  }, [customTexture, glintTexture]);
+  // A Map (not the plain-record shape the renderer now also accepts) because
+  // AtlasControl below reads it via `.get()`.
+  const dynamicTextures = new Map<string, Texture>();
+  if (customTexture) {
+    dynamicTextures.set("custom", customTexture);
+  }
+  if (glintTexture) {
+    dynamicTextures.set("Enchanted Glint", glintTexture);
+  }
 
   const onVersionChange = (nextVersionId: string) => {
     setVersionId(nextVersionId);

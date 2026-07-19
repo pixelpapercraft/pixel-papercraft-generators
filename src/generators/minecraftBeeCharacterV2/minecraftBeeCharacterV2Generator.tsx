@@ -13,6 +13,7 @@ import {
   type TextureDef,
   type ThumbnailDef,
   type VideoDef,
+  type DynamicTextures,
 } from "@genroot/builder/v2";
 import {
   MinecraftSkinControl,
@@ -565,16 +566,10 @@ function Component(): JSX.Element {
     headMultiplier2,
   };
 
-  const dynamicTextures = React.useMemo(() => {
-    const map = new Map<string, Texture>();
-    if (skin1Texture) {
-      map.set("Skin 1", skin1Texture);
-    }
-    if (skin2Texture) {
-      map.set("Skin 2", skin2Texture);
-    }
-    return map;
-  }, [skin1Texture, skin2Texture]);
+  const dynamicTextures: DynamicTextures = {
+    "Skin 1": skin1Texture,
+    "Skin 2": skin2Texture,
+  };
 
   return (
     <div>

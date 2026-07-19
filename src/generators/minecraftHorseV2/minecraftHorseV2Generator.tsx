@@ -15,6 +15,7 @@ import {
   type TextureDef,
   type TexturePlugin,
   type ThumbnailDef,
+  type DynamicTextures,
 } from "@genroot/builder/v2";
 import { TintSelector } from "../_common/tintSelector/tintSelector";
 import { armorTintChoiceGroups } from "../_common/tintSelector/tints";
@@ -533,31 +534,13 @@ function Component(): JSX.Element {
     glintYOffset,
   };
 
-  const dynamicTextures = React.useMemo(() => {
-    const map = new Map<string, Texture>();
-    if (glintTexture) {
-      map.set("Enchanted Glint", glintTexture);
-    }
-    if (horseTexture) {
-      map.set("Horse", horseTexture);
-    }
-    if (markingsTexture) {
-      map.set("Markings", markingsTexture);
-    }
-    if (armorTexture) {
-      map.set("Armor", armorTexture);
-    }
-    if (armorOverlayTexture) {
-      map.set("Armor Overlay", armorOverlayTexture);
-    }
-    return map;
-  }, [
-    glintTexture,
-    horseTexture,
-    markingsTexture,
-    armorTexture,
-    armorOverlayTexture,
-  ]);
+  const dynamicTextures: DynamicTextures = {
+    "Enchanted Glint": glintTexture,
+    Horse: horseTexture,
+    Markings: markingsTexture,
+    Armor: armorTexture,
+    "Armor Overlay": armorOverlayTexture,
+  };
 
   const onRegionClick: RegionClickHandler = ({ regionId }) => {
     switch (regionId) {

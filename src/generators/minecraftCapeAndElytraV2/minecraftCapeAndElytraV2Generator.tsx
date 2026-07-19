@@ -12,6 +12,7 @@ import {
   type Texture,
   type TextureDef,
   type ThumbnailDef,
+  type DynamicTextures,
 } from "@genroot/builder/v2";
 
 import thumbnailImage from "./thumbnail/thumbnail-256.jpeg";
@@ -358,13 +359,7 @@ function Component(): JSX.Element {
   const [showLabels, setShowLabels] = React.useState(true);
   const [capeTexture, setCapeTexture] = React.useState<Texture | null>(null);
   const props: MinecraftCapeAndElytraProps = { showFolds, showLabels };
-  const dynamicTextures = React.useMemo(() => {
-    const map = new Map<string, Texture>();
-    if (capeTexture) {
-      map.set("Cape", capeTexture);
-    }
-    return map;
-  }, [capeTexture]);
+  const dynamicTextures: DynamicTextures = { Cape: capeTexture };
 
   return (
     <div>

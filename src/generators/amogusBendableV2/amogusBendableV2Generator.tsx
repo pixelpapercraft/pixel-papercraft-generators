@@ -14,6 +14,7 @@ import {
   type TextureDef,
   type ThumbnailDef,
   type VideoDef,
+  type DynamicTextures,
 } from "@genroot/builder/v2";
 import {
   MinecraftSkinControl,
@@ -185,13 +186,7 @@ function Component(): JSX.Element {
 
   const rendererProps: AmogusBendableProps = { color };
 
-  const dynamicTextures = React.useMemo(
-    () =>
-      skinTexture
-        ? new Map<string, Texture>([["Skin", skinTexture]])
-        : new Map<string, Texture>(),
-    [skinTexture]
-  );
+  const dynamicTextures: DynamicTextures = { Skin: skinTexture };
 
   return (
     <div>

@@ -13,6 +13,7 @@ import {
   type Texture,
   type TextureDef,
   type ThumbnailDef,
+  type DynamicTextures,
 } from "@genroot/builder/v2";
 
 import thumbnailImage from "./thumbnail/v2-thumbnail-256.jpeg";
@@ -379,13 +380,7 @@ function Component(): JSX.Element {
     showLabels,
     actionFigure,
   };
-  const dynamicTextures = React.useMemo(() => {
-    const map = new Map<string, Texture>();
-    if (skinTexture) {
-      map.set("Skin", skinTexture);
-    }
-    return map;
-  }, [skinTexture]);
+  const dynamicTextures: DynamicTextures = { Skin: skinTexture };
 
   return (
     <div>

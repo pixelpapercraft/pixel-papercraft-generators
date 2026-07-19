@@ -13,6 +13,7 @@ import {
   type Texture,
   type TextureDef,
   type ThumbnailDef,
+  type DynamicTextures,
 } from "@genroot/builder/v2";
 
 import thumbnailImage from "./thumbnail/v2-thumbnail-256.jpeg";
@@ -534,13 +535,7 @@ function Component(): JSX.Element {
 
   const rendererProps: DalekProps = { showColors };
 
-  const dynamicTextures = React.useMemo(
-    () =>
-      skinTexture
-        ? new Map<string, Texture>([["Skin", skinTexture]])
-        : new Map<string, Texture>(),
-    [skinTexture]
-  );
+  const dynamicTextures: DynamicTextures = { Skin: skinTexture };
 
   return (
     <div>
