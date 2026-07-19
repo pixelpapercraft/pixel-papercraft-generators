@@ -125,7 +125,7 @@ export const mob: AnyGenerator[] = [
 export const utility: AnyGenerator[] = [
   v1(minecraftBlockGenerator),
   v1(minecraftItemGenerator),
-  v1(minecraftArmorGenerator),
+  v2(minecraftArmorGeneratorDefV2),
   v1(minecraftCapeAndElytraGenerator),
   v1(minecraftCharacterHeadsGenerator),
 ];
@@ -150,6 +150,7 @@ export const legacy: AnyGenerator[] = isProductionEnvironment
       v1(exampleGenerator),
       v1(minecraftActionFigureGenerator),
       v1(minecraftAllayCharacterGenerator),
+      v1(minecraftArmorGenerator),
     ];
 
 // Incomplete / in-development generators, plus every generator's in-progress
@@ -162,7 +163,6 @@ export const dev: AnyGenerator[] = isProductionEnvironment
       v1(minecraftWitherGenerator),
       v2(minecraftCharacterGeneratorDefV2),
       v2(minecraftItemGeneratorDefV2),
-      v2(minecraftArmorGeneratorDefV2),
       v2(minecraftAxolotlCharacterGeneratorDefV2),
       v2(minecraftBeeCharacterGeneratorDefV2),
       v2(minecraftBlockGeneratorDefV2),
