@@ -36,6 +36,7 @@ const video: VideoDef = {
 
 const history: HistoryDef = [
   "1 May 2022 PaperDoggy - Initial script developed.",
+  "Jul 2026 lostminer - Layout refresh.",
 ];
 
 const thumbnail: ThumbnailDef = {
