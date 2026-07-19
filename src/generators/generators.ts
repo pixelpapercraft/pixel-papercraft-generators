@@ -107,7 +107,7 @@ export const mobCharacter: AnyGenerator[] = [
   v1(minecraftVillagerCharacterGenerator),
   v1(minecraftWolfCharacterGenerator),
   v1(minecraftAxolotlCharacterGenerator),
-  v1(minecraftAllayCharacterGenerator),
+  v2(minecraftAllayCharacterGeneratorDefV2),
   v1(minecraftBeeCharacterGenerator),
 ];
 
@@ -149,6 +149,7 @@ export const legacy: AnyGenerator[] = isProductionEnvironment
       v1(dalekModDalekGenerator),
       v1(exampleGenerator),
       v1(minecraftActionFigureGenerator),
+      v1(minecraftAllayCharacterGenerator),
     ];
 
 // Incomplete / in-development generators, plus every generator's in-progress
@@ -161,7 +162,6 @@ export const dev: AnyGenerator[] = isProductionEnvironment
       v1(minecraftWitherGenerator),
       v2(minecraftCharacterGeneratorDefV2),
       v2(minecraftItemGeneratorDefV2),
-      v2(minecraftAllayCharacterGeneratorDefV2),
       v2(minecraftArmorGeneratorDefV2),
       v2(minecraftAxolotlCharacterGeneratorDefV2),
       v2(minecraftBeeCharacterGeneratorDefV2),
