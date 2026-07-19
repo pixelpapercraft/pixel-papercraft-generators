@@ -6,6 +6,7 @@ import {
   GeneratorUI,
   type GeneratorDefV2,
   type GeneratorV2,
+  type HistoryDef,
   type ImageDef,
   type RenderContext,
   type Texture,
@@ -34,6 +35,13 @@ const thumbnail: ThumbnailDef = { url: thumbnailImage.src };
 const video: VideoDef = {
   url: "https://www.youtube.com/embed/vG-mXWu0OlA?rel=0",
 };
+
+// Same copy as the v1 minecraft-allay-character generator's `history`, plus a
+// Layout refresh entry for this V2 pass.
+const history: HistoryDef = [
+  "1 May 2022 PaperDoggy - Initial script developed.",
+  "Jul 2026 lostminer - Layout refresh.",
+];
 
 const images: ImageDef[] = [{ id: "Overlay", url: overlayAllayImage.src }];
 
@@ -640,6 +648,8 @@ function Component(): JSX.Element {
           />
         </div>
       </div>
+
+      <GeneratorUI.History history={history} />
     </div>
   );
 }
