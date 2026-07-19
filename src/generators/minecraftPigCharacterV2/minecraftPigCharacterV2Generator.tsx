@@ -51,6 +51,7 @@ const history: HistoryDef = [
   "13 Feb 2015 lostminer: Update to use new version of generator.",
   "13 Sep 2020 NinjolasNJM: Updated to use 1.8+ Skins.",
   "23 Jul 2021 NinjolasNJM: Replaced generator with one derived from Pig Generator by TepigMC.",
+  "Jul 2026 lostminer - Layout refresh.",
 ];
 
 const thumbnail: ThumbnailDef = {
