@@ -115,7 +115,7 @@ export const mob: AnyGenerator[] = [
   v2(minecraftCreeperGeneratorDefV2),
   v2(minecraftEndermanGeneratorDefV2),
   v2(minecraftGolemGeneratorDefV2),
-  v1(minecraftHorseGenerator),
+  v2(minecraftHorseGeneratorDefV2),
   v1(minecraftPigGenerator),
   v2(minecraftCatGeneratorDefV2),
   v1(minecraftVillagerGenerator),
@@ -167,6 +167,7 @@ export const legacy: AnyGenerator[] = isProductionEnvironment
       v1(minecraftEndermanCharacterGenerator),
       v1(minecraftGolemGenerator),
       v1(minecraftGolemCharacterGenerator),
+      v1(minecraftHorseGenerator),
     ];
 
 // Incomplete / in-development generators, plus every generator's in-progress
@@ -178,7 +179,6 @@ export const dev: AnyGenerator[] = isProductionEnvironment
   : [
       v1(minecraftWitherGenerator),
       v2(minecraftItemGeneratorDefV2),
-      v2(minecraftHorseGeneratorDefV2),
       v2(minecraftMutantCharacterGeneratorDefV2),
       v2(minecraftPigGeneratorDefV2),
       v2(minecraftPigCharacterGeneratorDefV2),
