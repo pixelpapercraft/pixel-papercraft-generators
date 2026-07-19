@@ -35,6 +35,7 @@ const history: HistoryDef = [
   "13 Feb 2015 lostminer - Update to use new version of generator.",
   "29 Sep 2020 NinjolasNJM - Fixed bottom textures.",
   "06 Jun 2021 NinjolasNJM - Converted to ReScript generator.",
+  "Jul 2026 lostminer - Layout refresh.",
 ];
 
 const thumbnail: ThumbnailDef = {
@@ -389,6 +390,9 @@ function Component(): JSX.Element {
   return (
     <div>
       <GeneratorUI.MediaHero video={null} thumbnail={thumbnail} />
+      <div className="mb-8">
+        <GeneratorUI.Instructions markdown={instructions} />
+      </div>
       <div className="lg:flex gap-8">
         <div
           className="flex-1 min-w-0 mb-8 lg:mb-0"
@@ -420,7 +424,6 @@ function Component(): JSX.Element {
               onCheckedChange={setActionFigure}
             />
           </div>
-          <GeneratorUI.Instructions markdown={instructions} />
         </div>
         <div className="flex-1 min-w-0">
           <GeneratorRenderer
