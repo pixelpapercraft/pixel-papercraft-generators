@@ -91,7 +91,7 @@ const v2 = (def: GeneratorDefV2): AnyGenerator => ({ kind: "v2", def });
 
 export const character: AnyGenerator[] = [
   v1(minecraftCharacterGenerator),
-  v1(minecraftActionFigureGenerator),
+  v2(minecraftActionFigureGeneratorDefV2),
   v1(minecraftUltimateBendableGenerator),
   v1(minecraftCharacterMiniGenerator),
 ];
@@ -148,6 +148,7 @@ export const legacy: AnyGenerator[] = isProductionEnvironment
       v1(amogusBendableGenerator),
       v1(dalekModDalekGenerator),
       v1(exampleGenerator),
+      v1(minecraftActionFigureGenerator),
     ];
 
 // Incomplete / in-development generators, plus every generator's in-progress
@@ -160,7 +161,6 @@ export const dev: AnyGenerator[] = isProductionEnvironment
       v1(minecraftWitherGenerator),
       v2(minecraftCharacterGeneratorDefV2),
       v2(minecraftItemGeneratorDefV2),
-      v2(minecraftActionFigureGeneratorDefV2),
       v2(minecraftAllayCharacterGeneratorDefV2),
       v2(minecraftArmorGeneratorDefV2),
       v2(minecraftAxolotlCharacterGeneratorDefV2),
