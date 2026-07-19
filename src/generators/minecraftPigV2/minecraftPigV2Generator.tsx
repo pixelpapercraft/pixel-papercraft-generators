@@ -53,6 +53,7 @@ const history: HistoryDef = [
   "27 Feb 2015 TepigMC: Compacted backgrounds and folds into sprite files.",
   '28 Feb 2015 TepigMC: Compacted labels and titles into sprite files; Added "Advanced (Standard)" head. Added "Show Helmet Overlay" option; Added texture options.',
   "09 Mar 2015 TepigMC: Fixed small bug with ultra mini pig.",
+  "Jul 2026 lostminer - Layout refresh.",
 ];
 
 const thumbnail: ThumbnailDef = {
@@ -1244,6 +1245,9 @@ function Component(): JSX.Element {
   return (
     <div>
       <GeneratorUI.MediaHero video={null} thumbnail={thumbnail} />
+      <div className="mb-8">
+        <GeneratorUI.Instructions markdown={instructions} />
+      </div>
       <div className="lg:flex gap-8">
         <div
           className="flex-1 min-w-0 mb-8 lg:mb-0"
@@ -1340,7 +1344,6 @@ function Component(): JSX.Element {
           />
         </div>
       </div>
-      <GeneratorUI.Instructions markdown={instructions} />
       <GeneratorUI.History history={history} />
     </div>
   );
