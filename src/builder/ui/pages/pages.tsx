@@ -70,7 +70,7 @@ export function Pages({
                 src={dataUrl}
                 alt=""
               />
-              {containerWidth !== null ? (
+              {containerWidth ? (
                 <RegionControls
                   containerWidth={containerWidth}
                   model={model}
