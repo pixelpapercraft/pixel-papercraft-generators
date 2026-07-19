@@ -48,7 +48,7 @@ import {
 import { defineTintInput } from "../_common/tintSelector/tintSelector";
 import { armorTintChoiceGroups } from "../_common/tintSelector/tints";
 
-const id = "minecraft-horse";
+const id = "minecraft-horse-v1";
 
 const name = "Minecraft Horse";
 

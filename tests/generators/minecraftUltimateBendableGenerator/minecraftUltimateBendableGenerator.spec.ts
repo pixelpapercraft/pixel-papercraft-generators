@@ -40,7 +40,7 @@ const currentSrc = async (pageImage: Locator): Promise<string> => {
 test("minecraft ultimate bendable generator exposes its complete control contract", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-ultimate-bendable");
+  await page.goto("/generator/minecraft-ultimate-bendable-v1");
 
   await expect(page.getByRole("combobox")).toHaveCount(2);
   await expect(skinSelect(page)).toHaveValue("Default");
@@ -61,7 +61,7 @@ test("minecraft ultimate bendable generator exposes its complete control contrac
 test("minecraft ultimate bendable generator matches the default composition", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-ultimate-bendable");
+  await page.goto("/generator/minecraft-ultimate-bendable-v1");
 
   const pageImage = outputPage(page);
   await expect(pageImage).toBeVisible();
@@ -75,7 +75,7 @@ test("minecraft ultimate bendable generator matches the default composition", as
 test("minecraft ultimate bendable generator renders every skin option distinctly", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-ultimate-bendable");
+  await page.goto("/generator/minecraft-ultimate-bendable-v1");
 
   const pageImage = outputPage(page);
   const renderedImages = new Set<string>();
@@ -103,7 +103,7 @@ test("minecraft ultimate bendable generator renders every skin option distinctly
 test("minecraft ultimate bendable generator renders a custom Slim skin", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-ultimate-bendable");
+  await page.goto("/generator/minecraft-ultimate-bendable-v1");
 
   const pageImage = outputPage(page);
   let previousSrc = await currentSrc(pageImage);
@@ -121,7 +121,7 @@ test("minecraft ultimate bendable generator renders a custom Slim skin", async (
 test("minecraft ultimate bendable generator hides presentation layers independently", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-ultimate-bendable");
+  await page.goto("/generator/minecraft-ultimate-bendable-v1");
 
   const pageImage = outputPage(page);
   for (const label of ["Show Folds", "Show Color Codes", "Show Labels"]) {
@@ -139,7 +139,7 @@ test("minecraft ultimate bendable generator hides presentation layers independen
 test("minecraft ultimate bendable generator toggles all six skin overlays", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-ultimate-bendable");
+  await page.goto("/generator/minecraft-ultimate-bendable-v1");
 
   const pageImage = outputPage(page);
   let previousSrc = await currentSrc(pageImage);

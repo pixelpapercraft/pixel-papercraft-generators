@@ -20,7 +20,7 @@ import foldsImage from "./images/Folds.png";
 import skinImage from "./textures/Skin.png";
 import colorsImage from "./textures/Colors.png";
 
-const id = "amogus-bendable";
+const id = "amogus-bendable-v1";
 
 const name = "Amogus Bendable";
 

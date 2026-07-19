@@ -65,7 +65,7 @@ import tabsCakeRightImage from "./images/Tabs-Cake-Right.png";
 import foldsShelfImage from "./images/Folds-Shelf.png";
 import tabsShelfImage from "./images/Tabs-Shelf.png";
 
-const id = "minecraft-block";
+const id = "minecraft-block-v1";
 
 const name = "Minecraft Block";
 

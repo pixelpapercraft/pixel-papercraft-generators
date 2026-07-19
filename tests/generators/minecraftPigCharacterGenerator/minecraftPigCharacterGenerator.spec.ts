@@ -60,7 +60,7 @@ async function screenshot(page: Page, name: string): Promise<void> {
 test("minecraft pig character exposes its complete control contract", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-pig-character");
+  await page.goto("/generator/minecraft-pig-character-v1");
   await expect(page.getByRole("combobox")).toHaveCount(8);
   await expect(page.getByRole("combobox").first().locator("option")).toHaveText(
     skinOptions
@@ -96,7 +96,7 @@ test("minecraft pig character exposes its complete control contract", async ({
 test("minecraft pig character matches the default composition", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-pig-character");
+  await page.goto("/generator/minecraft-pig-character-v1");
   await screenshot(page, "minecraft-pig-character-default");
 });
 
@@ -104,7 +104,7 @@ test("minecraft pig character accepts every enumerable texture choice and explic
   page,
 }) => {
   test.slow();
-  await page.goto("/generator/minecraft-pig-character");
+  await page.goto("/generator/minecraft-pig-character-v1");
   const renderedSkins = new Set<string>();
   for (const option of skinOptions) {
     const select = page.getByRole("combobox").first();
@@ -146,7 +146,7 @@ test("minecraft pig character accepts every enumerable texture choice and explic
 test("minecraft pig character renders custom textures and slim geometry", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-pig-character");
+  await page.goto("/generator/minecraft-pig-character-v1");
   await page.getByLabel("Upload Skin skin file").setInputFiles(fixture);
   await page.getByRole("combobox").nth(1).selectOption("Slim");
   for (const label of Object.keys(textureOptions))
@@ -159,7 +159,7 @@ test("minecraft pig character renders custom textures and slim geometry", async 
 test("minecraft pig character exercises styles and presentation controls", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-pig-character");
+  await page.goto("/generator/minecraft-pig-character-v1");
   await page.getByLabel("Head Style").selectOption("Advanced (Standard)");
   for (const [label, options] of Object.entries(styleOptions)) {
     for (const option of options)
@@ -184,7 +184,7 @@ test("minecraft pig character toggles all seven regions", async ({ page }) => {
   for (let index = 0; index < 7; index += 1) {
     // V1 rebuilds its controls after a region click and drops custom-upload
     // state, so exercise every region independently from the same composition.
-    await page.goto("/generator/minecraft-pig-character");
+    await page.goto("/generator/minecraft-pig-character-v1");
     const beforeSkin = await outputPages(page).first().getAttribute("src");
     await page.getByLabel("Upload Skin skin file").setInputFiles(fixture);
     await expect
@@ -206,7 +206,7 @@ test("minecraft pig character toggles all seven regions", async ({ page }) => {
 test("minecraft pig character creates one conditional accessories page", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-pig-character");
+  await page.goto("/generator/minecraft-pig-character-v1");
   for (const label of ["Saddle Style", "Helmet Style", "Boots Style"])
     await page.getByLabel(label).selectOption("Separate");
   await expect(outputPages(page)).toHaveCount(2);

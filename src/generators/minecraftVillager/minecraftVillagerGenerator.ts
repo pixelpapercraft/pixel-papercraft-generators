@@ -60,7 +60,7 @@ import zombieShepherdImage from "./textures/zombieshepherd.png";
 import zombieToolsmithImage from "./textures/zombietoolsmith.png";
 import zombieWeaponsmithImage from "./textures/zombieweaponsmith.png";
 
-const id = "minecraft-villager";
+const id = "minecraft-villager-v1";
 
 const name = "Minecraft Villager";
 

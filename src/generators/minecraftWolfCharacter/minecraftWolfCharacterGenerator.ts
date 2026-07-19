@@ -18,7 +18,7 @@ import { getSkinUrl } from "../_common/skins";
 import { makeDefaultMinecraftSkinPresetOptions } from "../_common/skins/options";
 import wolfAngryTexture from "./textures/wolf_angry.png";
 
-const id = "minecraft-wolf-character";
+const id = "minecraft-wolf-character-v1";
 
 const name = "Minecraft Wolf Character";
 

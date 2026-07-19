@@ -38,7 +38,7 @@ const readSkin2Face = (image: Locator) => readPixel(image, 135, 443);
 test("minecraft bee character generator exposes both character controls", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-bee-character");
+  await page.goto("/generator/minecraft-bee-character-v1");
 
   const selects = comboboxes(page);
   await expect(selects).toHaveCount(4);
@@ -74,7 +74,7 @@ test("minecraft bee character generator exposes both character controls", async 
 test("minecraft bee character generator matches the default screenshot", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-bee-character");
+  await page.goto("/generator/minecraft-bee-character-v1");
 
   const pageImage = outputPage(page);
   await expect(pageImage).toBeVisible();
@@ -88,7 +88,7 @@ test("minecraft bee character generator matches the default screenshot", async (
 test("minecraft bee character generator renders every Skin 1 preset", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-bee-character");
+  await page.goto("/generator/minecraft-bee-character-v1");
 
   const skin = comboboxes(page).nth(0);
   const pageImage = outputPage(page);
@@ -106,7 +106,7 @@ test("minecraft bee character generator renders every Skin 1 preset", async ({
 test("minecraft bee character generator renders every Skin 2 preset independently", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-bee-character");
+  await page.goto("/generator/minecraft-bee-character-v1");
 
   const skin1 = comboboxes(page).nth(0);
   const skin2 = comboboxes(page).nth(2);
@@ -134,7 +134,7 @@ test("minecraft bee character generator renders every Skin 2 preset independentl
 test("minecraft bee character generator renders both Slim arm branches", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-bee-character");
+  await page.goto("/generator/minecraft-bee-character-v1");
 
   const pageImage = outputPage(page);
   await comboboxes(page).nth(1).selectOption("Slim");
@@ -157,7 +157,7 @@ test("minecraft bee character generator renders both Slim arm branches", async (
 test("minecraft bee character generator expands both heads independently", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-bee-character");
+  await page.goto("/generator/minecraft-bee-character-v1");
 
   const pageImage = outputPage(page);
   await expect(readPixel(pageImage, 200, 130)).resolves.toEqual(beeLayerRgba);
@@ -186,7 +186,7 @@ test("minecraft bee character generator expands both heads independently", async
 test("minecraft bee character generator renders a custom Skin 1 upload", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-bee-character");
+  await page.goto("/generator/minecraft-bee-character-v1");
 
   const pageImage = outputPage(page);
   await page

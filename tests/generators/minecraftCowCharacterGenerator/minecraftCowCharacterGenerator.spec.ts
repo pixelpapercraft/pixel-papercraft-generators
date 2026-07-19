@@ -87,7 +87,7 @@ const regions = (page: Page) =>
 test("minecraft cow character generator exposes its controls", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-cow-character");
+  await page.goto("/generator/minecraft-cow-character-v1");
 
   const skin = skinSelect(page);
   await expect(skin).toHaveValue("Default");
@@ -109,7 +109,7 @@ test("minecraft cow character generator exposes its controls", async ({
 test("minecraft cow character generator matches the default screenshot", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-cow-character");
+  await page.goto("/generator/minecraft-cow-character-v1");
 
   const pageImage = outputPage(page);
   await expect(pageImage).toBeVisible();
@@ -123,7 +123,7 @@ test("minecraft cow character generator matches the default screenshot", async (
 test("minecraft cow character generator renders every skin preset and explicit None", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-cow-character");
+  await page.goto("/generator/minecraft-cow-character-v1");
 
   const skin = skinSelect(page);
   const pageImage = outputPage(page);
@@ -146,7 +146,7 @@ test("minecraft cow character generator renders every skin preset and explicit N
 test("minecraft cow character generator renders a custom skin upload", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-cow-character");
+  await page.goto("/generator/minecraft-cow-character-v1");
 
   const pageImage = outputPage(page);
   await page.getByLabel("Upload Skin skin file").setInputFiles(skinFixturePath);
@@ -162,7 +162,7 @@ test("minecraft cow character generator renders a custom skin upload", async ({
 test("minecraft cow character generator renders the Slim model geometry", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-cow-character");
+  await page.goto("/generator/minecraft-cow-character-v1");
 
   const pageImage = outputPage(page);
   await page.getByLabel("Upload Skin skin file").setInputFiles(skinFixturePath);
@@ -185,7 +185,7 @@ test("minecraft cow character generator renders the Slim model geometry", async 
 test("minecraft cow character generator hides every outer skin layer independently", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-cow-character");
+  await page.goto("/generator/minecraft-cow-character-v1");
 
   const pageImage = outputPage(page);
   await page.getByLabel("Upload Skin skin file").setInputFiles(skinFixturePath);
@@ -217,7 +217,7 @@ test("minecraft cow character generator hides every outer skin layer independent
 test("minecraft cow character generator hides folds and labels independently", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-cow-character");
+  await page.goto("/generator/minecraft-cow-character-v1");
 
   const pageImage = outputPage(page);
   const readFold = () => readPixel(pageImage, 74, 23);

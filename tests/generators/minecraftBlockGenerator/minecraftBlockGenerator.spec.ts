@@ -7,7 +7,7 @@ import { renderImageAtNaturalSize } from "../_shared/screenshot";
 test("minecraft block generator matches the default screenshot", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-block");
+  await page.goto("/generator/minecraft-block-v1");
 
   const outputPages = page.getByTestId("generator-page-image");
   await expect(outputPages).toHaveCount(1);
@@ -28,7 +28,7 @@ test("minecraft block generator matches the default screenshot", async ({
 test("minecraft block generator erases the last texture from a face", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-block");
+  await page.goto("/generator/minecraft-block-v1");
 
   await page.getByPlaceholder("Search...").fill("lever");
   await page.getByTitle("lever").click();
@@ -54,7 +54,7 @@ test("minecraft block generator erases the last texture from a face", async ({
 test("minecraft block generator matches the rotated and flipped screenshot", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-block");
+  await page.goto("/generator/minecraft-block-v1");
 
   await page.getByPlaceholder("Search...").fill("lever");
   await page.getByTitle("lever").click();
@@ -78,7 +78,7 @@ test("minecraft block generator matches the rotated and flipped screenshot", asy
 test("minecraft block generator matches the rotated and horizontally flipped screenshot", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-block");
+  await page.goto("/generator/minecraft-block-v1");
 
   await page.getByPlaceholder("Search...").fill("observer");
   await page.getByTitle("observer front").click();
@@ -102,7 +102,7 @@ test("minecraft block generator matches the rotated and horizontally flipped scr
 test("minecraft block generator places rotated and horizontally flipped amethyst cluster on the left face", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-block");
+  await page.goto("/generator/minecraft-block-v1");
 
   await page.getByPlaceholder("Search...").fill("amethyst cluster");
   await page.getByTitle("amethyst cluster").click();
@@ -126,7 +126,7 @@ test("minecraft block generator places rotated and horizontally flipped amethyst
 test("minecraft block generator places rotated and horizontally flipped amethyst cluster on the right face", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-block");
+  await page.goto("/generator/minecraft-block-v1");
 
   await page.getByPlaceholder("Search...").fill("amethyst cluster");
   await page.getByTitle("amethyst cluster").click();
@@ -148,7 +148,7 @@ test("minecraft block generator places rotated and horizontally flipped amethyst
 });
 
 test("minecraft block generator renders the shelf block", async ({ page }) => {
-  await page.goto("/generator/minecraft-block");
+  await page.goto("/generator/minecraft-block-v1");
 
   await page.getByPlaceholder("Search...").fill("bee nest top");
   await page.getByRole("button", { name: "bee nest top", exact: true }).click();
@@ -171,7 +171,7 @@ test("minecraft block generator renders the shelf block", async ({ page }) => {
 test("minecraft block generator shows the selected tint in the preview", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-block");
+  await page.goto("/generator/minecraft-block-v1");
 
   await page.getByPlaceholder("Search...").fill("lever");
   await page.getByTitle("lever").click();
@@ -188,7 +188,7 @@ test("minecraft block generator shows the selected tint in the preview", async (
 test("minecraft block generator applies rotation and flips only once in the preview", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-block");
+  await page.goto("/generator/minecraft-block-v1");
 
   await page.getByPlaceholder("Search...").fill("lever");
   await page.getByTitle("lever").click();
@@ -204,7 +204,7 @@ test("minecraft block generator applies rotation and flips only once in the prev
 test("minecraft block generator captures the rotated and flipped preview as a screenshot", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-block");
+  await page.goto("/generator/minecraft-block-v1");
 
   await page.getByPlaceholder("Search...").fill("lever");
   await page.getByTitle("lever").click();
@@ -223,7 +223,7 @@ test("minecraft block generator captures the rotated and flipped preview as a sc
 test("minecraft block generator shows the before and after tinting on the page", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-block");
+  await page.goto("/generator/minecraft-block-v1");
 
   await page.getByPlaceholder("Search...").fill("grass_block_top");
   await page.getByTitle("grass block top").click();
@@ -250,7 +250,7 @@ test("minecraft block generator shows the before and after tinting on the page",
 test("minecraft block generator renders custom atlas textures", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-block");
+  await page.goto("/generator/minecraft-block-v1");
 
   const sheetPath = path.join(
     process.cwd(),
@@ -296,7 +296,7 @@ test("minecraft block generator renders custom atlas textures", async ({
 test("minecraft block generator clears the selected texture when switching to custom", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-block");
+  await page.goto("/generator/minecraft-block-v1");
 
   await page.getByPlaceholder("Search...").fill("lever");
   await page.getByTitle("lever").click();
@@ -322,7 +322,7 @@ test("minecraft block generator clears the selected texture when switching to cu
 test("minecraft block generator clears the custom selection when the version changes", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-block");
+  await page.goto("/generator/minecraft-block-v1");
 
   const sheetPath = path.join(
     process.cwd(),

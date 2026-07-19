@@ -90,7 +90,7 @@ const regions = (page: Page) =>
 test("minecraft enderman character generator exposes its controls", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-enderman-character");
+  await page.goto("/generator/minecraft-enderman-character-v1");
 
   const skin = skinSelect(page);
   await expect(skin).toHaveValue("Default");
@@ -113,7 +113,7 @@ test("minecraft enderman character generator exposes its controls", async ({
 test("minecraft enderman character generator matches the default screenshot", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-enderman-character");
+  await page.goto("/generator/minecraft-enderman-character-v1");
 
   const outputPages = page.getByTestId("generator-page-image");
   await expect(outputPages).toHaveCount(1);
@@ -130,7 +130,7 @@ test("minecraft enderman character generator matches the default screenshot", as
 test("minecraft enderman character generator renders every skin preset and explicit None", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-enderman-character");
+  await page.goto("/generator/minecraft-enderman-character-v1");
 
   const skin = skinSelect(page);
   const pageImage = outputPage(page);
@@ -150,7 +150,7 @@ test("minecraft enderman character generator renders every skin preset and expli
 test("minecraft enderman character generator renders a custom Slim skin", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-enderman-character");
+  await page.goto("/generator/minecraft-enderman-character-v1");
 
   const pageImage = outputPage(page);
   await page.getByLabel("Upload Skin skin file").setInputFiles(skinFixturePath);
@@ -171,7 +171,7 @@ test("minecraft enderman character generator renders a custom Slim skin", async 
 test("minecraft enderman character generator hides every outer skin layer independently", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-enderman-character");
+  await page.goto("/generator/minecraft-enderman-character-v1");
 
   const pageImage = outputPage(page);
   await page.getByLabel("Upload Skin skin file").setInputFiles(skinFixturePath);
@@ -197,7 +197,7 @@ test("minecraft enderman character generator hides every outer skin layer indepe
 test("minecraft enderman character generator hides folds and labels independently", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-enderman-character");
+  await page.goto("/generator/minecraft-enderman-character-v1");
 
   const pageImage = outputPage(page);
   const readFold = () => readPixel(pageImage, 267, 250);

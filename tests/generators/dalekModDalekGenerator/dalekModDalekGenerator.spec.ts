@@ -124,7 +124,7 @@ const outputPage = (page: Page, index: number) =>
 test("dalek generator exposes its skin and color controls", async ({
   page,
 }) => {
-  await page.goto("/generator/dalek");
+  await page.goto("/generator/dalek-v1");
 
   const skin = page.getByLabel("Skin", { exact: true });
   await expect(skin).toBeVisible();
@@ -138,7 +138,7 @@ test("dalek generator exposes its skin and color controls", async ({
 });
 
 test("dalek generator matches the default screenshots", async ({ page }) => {
-  await page.goto("/generator/dalek");
+  await page.goto("/generator/dalek-v1");
 
   const outputPages = page.getByTestId("generator-page-image");
   await expect(outputPages).toHaveCount(2);
@@ -159,7 +159,7 @@ test("dalek generator matches the default screenshots", async ({ page }) => {
 test("dalek generator renders every skin preset at its discriminating probes", async ({
   page,
 }) => {
-  await page.goto("/generator/dalek");
+  await page.goto("/generator/dalek-v1");
 
   const skin = page.getByLabel("Skin", { exact: true });
   const page1 = outputPage(page, 0);
@@ -181,7 +181,7 @@ test("dalek generator renders every skin preset at its discriminating probes", a
 test("dalek generator composes a Red Dalek texture across both pages", async ({
   page,
 }) => {
-  await page.goto("/generator/dalek");
+  await page.goto("/generator/dalek-v1");
 
   await page.getByLabel("Skin", { exact: true }).selectOption("Red Dalek");
 
@@ -197,7 +197,7 @@ test("dalek generator composes a Red Dalek texture across both pages", async ({
 test("dalek generator shows color-code overlays on both pages", async ({
   page,
 }) => {
-  await page.goto("/generator/dalek");
+  await page.goto("/generator/dalek-v1");
 
   const showColors = page.getByLabel("Show Colors");
   const page1 = outputPage(page, 0);
@@ -223,7 +223,7 @@ test("dalek generator shows color-code overlays on both pages", async ({
 test("dalek generator renders a custom skin upload across both pages", async ({
   page,
 }) => {
-  await page.goto("/generator/dalek");
+  await page.goto("/generator/dalek-v1");
 
   const page1 = outputPage(page, 0);
   const defaultPixel = await readPixel(page1, 15, 493);

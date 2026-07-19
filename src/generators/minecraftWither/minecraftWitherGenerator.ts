@@ -14,7 +14,7 @@ import witherTexture from "./instructions/wither.png";
 import backgroundImage from "./images/Background.png";
 import foldsImage from "./images/Folds.png";
 
-const id = "minecraft-wither";
+const id = "minecraft-wither-v1";
 
 const name = "Minecraft Wither";
 

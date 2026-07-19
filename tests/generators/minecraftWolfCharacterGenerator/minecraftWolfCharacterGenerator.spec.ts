@@ -2,7 +2,7 @@ import { expect, test, type Locator, type Page } from "@playwright/test";
 import { renderImageAtNaturalSize } from "../_shared/screenshot";
 
 const fixture = "src/generators/_common/fixtures/testSheet.png";
-const route = "/generator/minecraft-wolf-character";
+const route = "/generator/minecraft-wolf-character-v1";
 const skinOptions = [
   "None",
   "Alex",

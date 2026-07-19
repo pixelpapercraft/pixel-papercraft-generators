@@ -36,7 +36,7 @@ const outputPage = (page: Page) =>
 test("amogus bendable generator exposes its color and skin controls", async ({
   page,
 }) => {
-  await page.goto("/generator/amogus-bendable");
+  await page.goto("/generator/amogus-bendable-v1");
 
   const color = page.getByLabel("Color");
   await expect(color).toBeVisible();
@@ -50,7 +50,7 @@ test("amogus bendable generator exposes its color and skin controls", async ({
 test("amogus bendable generator matches the default screenshot", async ({
   page,
 }) => {
-  await page.goto("/generator/amogus-bendable");
+  await page.goto("/generator/amogus-bendable-v1");
 
   const outputPages = page.getByTestId("generator-page-image");
   await expect(outputPages).toHaveCount(1);
@@ -71,7 +71,7 @@ test("amogus bendable generator matches the default screenshot", async ({
 test("amogus bendable generator renders every color option at the body probe", async ({
   page,
 }) => {
-  await page.goto("/generator/amogus-bendable");
+  await page.goto("/generator/amogus-bendable-v1");
 
   const color = page.getByLabel("Color");
   const pageImage = outputPage(page);
@@ -89,7 +89,7 @@ for (const colorName of ["Cyan", "Green"]) {
   test(`amogus bendable generator composes ${colorName} beneath the skin and folds`, async ({
     page,
   }) => {
-    await page.goto("/generator/amogus-bendable");
+    await page.goto("/generator/amogus-bendable-v1");
 
     const color = page.getByLabel("Color");
     const pageImage = outputPage(page);
@@ -105,7 +105,7 @@ for (const colorName of ["Cyan", "Green"]) {
 test("amogus bendable generator renders a custom skin upload in its visor", async ({
   page,
 }) => {
-  await page.goto("/generator/amogus-bendable");
+  await page.goto("/generator/amogus-bendable-v1");
 
   const pageImage = outputPage(page);
   const defaultVisorPixel = await readPixel(pageImage, 60, 240);

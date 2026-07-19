@@ -22,7 +22,7 @@ import hole3Image from "./images/Hole3.png";
 import { getSkinUrl } from "../_common/skins";
 import { makeDefaultMinecraftSkinPresetOptions } from "../_common/skins/options";
 
-const id = "minecraft-mutant-character";
+const id = "minecraft-mutant-character-v1";
 
 const name = "Mutant Character";
 

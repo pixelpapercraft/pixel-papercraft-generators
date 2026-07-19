@@ -20,7 +20,7 @@ import actionFigureImage from "./images/Action-Figure.png";
 import actionFigureFoldsImage from "./images/Action-Figure-Folds.png";
 import actionFigureLabelsImage from "./images/Action-Figure-Labels.png";
 
-const id = "minecraft-creeper";
+const id = "minecraft-creeper-v1";
 
 const name = "Minecraft Creeper";
 

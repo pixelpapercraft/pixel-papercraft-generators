@@ -38,7 +38,7 @@ import ironArmorFaithful from "./textures/faithful/iron-armor.png";
 import armorSpacePig from "./textures/space-pig/armor.png";
 import skin from "../_common/skins/wide/steve.png";
 
-const id = "minecraft-pig";
+const id = "minecraft-pig-v1";
 
 const name = "Minecraft Pig";
 

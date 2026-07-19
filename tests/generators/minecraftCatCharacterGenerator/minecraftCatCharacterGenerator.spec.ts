@@ -90,7 +90,7 @@ const regions = (page: Page) =>
 test("minecraft cat character generator exposes its controls", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-cat-character");
+  await page.goto("/generator/minecraft-cat-character-v1");
 
   const skin = skinSelect(page);
   await expect(skin).toHaveValue("Default");
@@ -112,7 +112,7 @@ test("minecraft cat character generator exposes its controls", async ({
 test("minecraft cat character generator matches the default screenshot", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-cat-character");
+  await page.goto("/generator/minecraft-cat-character-v1");
 
   const pageImage = outputPage(page);
   await expect(pageImage).toBeVisible();
@@ -126,7 +126,7 @@ test("minecraft cat character generator matches the default screenshot", async (
 test("minecraft cat character generator renders every skin preset and explicit None", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-cat-character");
+  await page.goto("/generator/minecraft-cat-character-v1");
 
   const skin = skinSelect(page);
   const pageImage = outputPage(page);
@@ -146,7 +146,7 @@ test("minecraft cat character generator renders every skin preset and explicit N
 test("minecraft cat character generator renders a custom Slim skin", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-cat-character");
+  await page.goto("/generator/minecraft-cat-character-v1");
 
   const pageImage = outputPage(page);
   await page.getByLabel("Upload Skin skin file").setInputFiles(skinFixturePath);
@@ -167,7 +167,7 @@ test("minecraft cat character generator renders a custom Slim skin", async ({
 test("minecraft cat character generator hides every outer skin layer independently", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-cat-character");
+  await page.goto("/generator/minecraft-cat-character-v1");
 
   const pageImage = outputPage(page);
   await page.getByLabel("Upload Skin skin file").setInputFiles(skinFixturePath);
@@ -193,7 +193,7 @@ test("minecraft cat character generator hides every outer skin layer independent
 test("minecraft cat character generator cycles through all four tail sources", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-cat-character");
+  await page.goto("/generator/minecraft-cat-character-v1");
 
   const pageImage = outputPage(page);
   await page.getByLabel("Upload Skin skin file").setInputFiles(skinFixturePath);
@@ -219,7 +219,7 @@ test("minecraft cat character generator cycles through all four tail sources", a
 test("minecraft cat character generator hides folds and labels independently", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-cat-character");
+  await page.goto("/generator/minecraft-cat-character-v1");
 
   const pageImage = outputPage(page);
   const readFold = () => readPixel(pageImage, 266, 234);

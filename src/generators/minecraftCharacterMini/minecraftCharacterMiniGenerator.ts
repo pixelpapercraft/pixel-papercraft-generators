@@ -30,7 +30,7 @@ import {
   serializeMinecraftSkinInputValue,
 } from "@genroot/builder/modules/minecraftSkinInputValue";
 
-const id = "minecraft-character-mini";
+const id = "minecraft-character-mini-v1";
 
 const name = "Minecraft Character Mini";
 

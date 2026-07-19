@@ -23,7 +23,7 @@ import steveTabsImage from "./images/SteveTabs.png";
 import { getSkinUrl } from "../_common/skins";
 import { makeDefaultMinecraftSkinPresetOptions } from "../_common/skins/options";
 
-const id = "minecraft-character";
+const id = "minecraft-character-v1";
 
 const name = "Minecraft Character";
 

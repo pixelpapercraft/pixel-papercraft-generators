@@ -26,7 +26,7 @@ import {
   makeMinecraftSkinTextureOption,
 } from "../_common/skins/options";
 
-const id = "minecraft-creeper-character";
+const id = "minecraft-creeper-character-v1";
 
 const name = "Minecraft Creeper Character";
 

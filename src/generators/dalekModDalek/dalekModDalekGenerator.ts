@@ -19,7 +19,7 @@ import colors1Image from "./images/Colors1.png";
 import background2Image from "./images/Background2.png";
 import colors2Image from "./images/Colors2.png";
 
-const id = "dalek";
+const id = "dalek-v1";
 
 const name = "Doctor Who Dalek";
 

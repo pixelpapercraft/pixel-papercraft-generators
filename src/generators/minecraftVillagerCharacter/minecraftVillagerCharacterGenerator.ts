@@ -17,7 +17,7 @@ import labelsImage from "./images/Labels.png";
 import { getSkinUrl } from "../_common/skins";
 import { makeDefaultMinecraftSkinPresetOptions } from "../_common/skins/options";
 
-const id = "minecraft-villager-character";
+const id = "minecraft-villager-character-v1";
 
 const name = "Minecraft Villager Character";
 

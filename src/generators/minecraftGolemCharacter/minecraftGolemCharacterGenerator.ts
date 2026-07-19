@@ -23,7 +23,7 @@ import highTexture from "./textures/Damage-High.png";
 import mediumTexture from "./textures/Damage-Medium.png";
 import lowTexture from "./textures/Damage-Low.png";
 
-const id = "minecraft-golem-character";
+const id = "minecraft-golem-character-v1";
 
 const name = "Minecraft Golem Character";
 

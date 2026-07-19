@@ -15,7 +15,7 @@ import skinImage from "./textures/Skin.png";
 import backgroundImage from "./images/Background.png";
 import foldsImage from "./images/Folds.png";
 
-const id = "example";
+const id = "example-v1";
 
 const name = "Example";
 

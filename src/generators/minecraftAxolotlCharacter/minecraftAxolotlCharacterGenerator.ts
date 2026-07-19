@@ -30,7 +30,7 @@ import axolotlLucyImage from "./textures/axolotl_lucy.png";
 import axolotlGoldImage from "./textures/axolotl_gold.png";
 import axolotlWildImage from "./textures/axolotl_wild.png";
 
-const id = "minecraft-axolotl-character";
+const id = "minecraft-axolotl-character-v1";
 
 const name = "Minecraft Axolotl Character";
 

@@ -17,7 +17,7 @@ import { getSkinUrl } from "../_common/skins";
 import { makeDefaultMinecraftSkinPresetOptions } from "../_common/skins/options";
 import squidTexture from "./textures/Squid.png";
 
-const id = "minecraft-squid-character";
+const id = "minecraft-squid-character-v1";
 
 const name = "Minecraft Squid Character";
 

@@ -57,7 +57,7 @@ async function screenshot(page: Page, name: string): Promise<void> {
 test("minecraft pig exposes its complete control contract", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-pig");
+  await page.goto("/generator/minecraft-pig-v1");
   await expect(page.getByRole("combobox")).toHaveCount(8);
   for (const [label, options] of Object.entries({
     ...textureOptions,
@@ -84,14 +84,14 @@ test("minecraft pig exposes its complete control contract", async ({
 });
 
 test("minecraft pig matches the default composition", async ({ page }) => {
-  await page.goto("/generator/minecraft-pig");
+  await page.goto("/generator/minecraft-pig-v1");
   await screenshot(page, "minecraft-pig-default");
 });
 
 test("minecraft pig accepts every enumerable texture choice and explicit None", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-pig");
+  await page.goto("/generator/minecraft-pig-v1");
   for (const [label, options] of Object.entries(textureOptions)) {
     const select = page.getByLabel(label, { exact: true });
     const renderedPngs = new Set<string>();
@@ -115,7 +115,7 @@ test("minecraft pig accepts every enumerable texture choice and explicit None", 
 test("minecraft pig renders advanced 3D composition without presentation overlays", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-pig");
+  await page.goto("/generator/minecraft-pig-v1");
   await page.getByLabel("Nose Style").selectOption({ label: "3D" });
   await page
     .getByLabel("Head Style")
@@ -134,7 +134,7 @@ test("minecraft pig renders advanced 3D composition without presentation overlay
 test("minecraft pig creates one accessories page for all separate accessories", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-pig");
+  await page.goto("/generator/minecraft-pig-v1");
   for (const label of ["Saddle Style", "Helmet Style", "Boots Style"]) {
     await page.getByLabel(label).selectOption({ label: "Separate" });
   }
@@ -149,7 +149,7 @@ test("minecraft pig creates one accessories page for all separate accessories", 
 test("minecraft pig renders custom pig saddle and armor uploads", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-pig");
+  await page.goto("/generator/minecraft-pig-v1");
   for (const label of Object.keys(textureOptions)) {
     await page
       .getByLabel(`Upload ${label} texture file`)
@@ -159,7 +159,7 @@ test("minecraft pig renders custom pig saddle and armor uploads", async ({
 });
 
 test("minecraft pig helmet region toggles its overlay", async ({ page }) => {
-  await page.goto("/generator/minecraft-pig");
+  await page.goto("/generator/minecraft-pig-v1");
   await expect(regions(page)).toHaveCount(1);
   await regions(page).click();
   await screenshot(page, "minecraft-pig-helmet-overlay-hidden");

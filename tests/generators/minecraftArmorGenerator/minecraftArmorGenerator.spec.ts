@@ -166,7 +166,7 @@ const DIAMOND_DEFAULT: Record<string, Rgba | undefined> = Object.fromEntries(
 test("minecraft armor generator matches the default screenshot", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-armor");
+  await page.goto("/generator/minecraft-armor-v1");
 
   const pageImage = outputPage(page);
   await expect(pageImage).toBeVisible();
@@ -181,7 +181,7 @@ test("minecraft armor generator matches the default screenshot", async ({
 test("minecraft armor generator exposes its full control surface", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-armor");
+  await page.goto("/generator/minecraft-armor-v1");
 
   // Gate on all five selects having mounted before snapshotting their option
   // lists — optionListsOf is a no-wait read, and on a slow runner the controls
@@ -229,7 +229,7 @@ test("minecraft armor generator exposes its full control surface", async ({
 test("minecraft armor generator reveals tint and trim controls on demand", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-armor");
+  await page.goto("/generator/minecraft-armor-v1");
 
   await expect(page.getByRole("combobox")).toHaveCount(5);
 
@@ -294,7 +294,7 @@ for (const enumeration of ENUMERATIONS) {
   test(`minecraft armor generator paints every ${enumeration.part} material at its probe`, async ({
     page,
   }) => {
-    await page.goto("/generator/minecraft-armor");
+    await page.goto("/generator/minecraft-armor-v1");
     const pageImage = outputPage(page);
     await renderImageAtNaturalSize(pageImage);
 
@@ -318,7 +318,7 @@ for (const enumeration of ENUMERATIONS) {
 test("minecraft armor generator drives only the selected part's region", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-armor");
+  await page.goto("/generator/minecraft-armor-v1");
   const pageImage = outputPage(page);
   await renderImageAtNaturalSize(pageImage);
 
@@ -348,7 +348,7 @@ test("minecraft armor generator drives only the selected part's region", async (
 test("minecraft armor generator exposes a typeable helmet tint input", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-armor");
+  await page.goto("/generator/minecraft-armor-v1");
 
   await toggleCheckbox(page, "Tint Helmet");
   await page.getByLabel("Helmet Color").selectOption({ label: "Custom tint" });
@@ -360,7 +360,7 @@ test("minecraft armor generator exposes a typeable helmet tint input", async ({
 });
 
 test("minecraft armor generator tints a part's pixels", async ({ page }) => {
-  await page.goto("/generator/minecraft-armor");
+  await page.goto("/generator/minecraft-armor-v1");
   const pageImage = outputPage(page);
   await renderImageAtNaturalSize(pageImage);
 
@@ -380,7 +380,7 @@ test("minecraft armor generator tints a part's pixels", async ({ page }) => {
 test("minecraft armor generator toggles the folds and labels overlays", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-armor");
+  await page.goto("/generator/minecraft-armor-v1");
   const pageImage = outputPage(page);
   await renderImageAtNaturalSize(pageImage);
 
@@ -406,7 +406,7 @@ test("minecraft armor generator toggles the folds and labels overlays", async ({
 test("minecraft armor generator renders tinted enchanted armor", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-armor");
+  await page.goto("/generator/minecraft-armor-v1");
 
   await toggleCheckbox(page, "Tint Helmet");
   await page.getByLabel("Helmet Color").selectOption({ label: "Blue" });
@@ -430,7 +430,7 @@ test("minecraft armor generator renders tinted enchanted armor", async ({
 test("minecraft armor generator renders a trimmed chestplate", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-armor");
+  await page.goto("/generator/minecraft-armor-v1");
 
   await toggleCheckbox(page, "Trim Chestplate");
   // Wait for the revealed trim selects to render before targeting them by index.
@@ -448,7 +448,7 @@ test("minecraft armor generator renders a trimmed chestplate", async ({
 test("minecraft armor generator composes four different materials", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-armor");
+  await page.goto("/generator/minecraft-armor-v1");
 
   await combo(page, 0).selectOption("Gold"); // Helmet
   await combo(page, 1).selectOption("Netherite"); // Chestplate
@@ -465,7 +465,7 @@ test("minecraft armor generator composes four different materials", async ({
 test("minecraft armor generator renders a custom 64x32 helmet texture", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-armor");
+  await page.goto("/generator/minecraft-armor-v1");
 
   await page
     .getByLabel("Upload Helmet texture file")

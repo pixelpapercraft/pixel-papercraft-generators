@@ -48,7 +48,7 @@ const comboboxes = (page: Page) => page.getByRole("combobox");
 test("minecraft axolotl character generator exposes its controls", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-axolotl-character");
+  await page.goto("/generator/minecraft-axolotl-character-v1");
 
   const selects = comboboxes(page);
   await expect(selects).toHaveCount(4);
@@ -95,7 +95,7 @@ test("minecraft axolotl character generator exposes its controls", async ({
 test("minecraft axolotl character generator matches the default screenshot", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-axolotl-character");
+  await page.goto("/generator/minecraft-axolotl-character-v1");
 
   const pageImage = outputPage(page);
   await expect(pageImage).toBeVisible();
@@ -109,7 +109,7 @@ test("minecraft axolotl character generator matches the default screenshot", asy
 test("minecraft axolotl character generator renders every skin preset at the face probe", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-axolotl-character");
+  await page.goto("/generator/minecraft-axolotl-character-v1");
 
   const skin = comboboxes(page).nth(0);
   const pageImage = outputPage(page);
@@ -131,7 +131,7 @@ test("minecraft axolotl character generator renders every skin preset at the fac
 test("minecraft axolotl character generator renders every head-fin choice", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-axolotl-character");
+  await page.goto("/generator/minecraft-axolotl-character-v1");
 
   const fins = page.getByLabel("Head Fins Texture", { exact: true });
   const pageImage = outputPage(page);
@@ -148,7 +148,7 @@ test("minecraft axolotl character generator renders every head-fin choice", asyn
 test("minecraft axolotl character generator renders every tail-fin choice", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-axolotl-character");
+  await page.goto("/generator/minecraft-axolotl-character-v1");
 
   const fins = page.getByLabel("Tail Fins Texture", { exact: true });
   const pageImage = outputPage(page);
@@ -165,7 +165,7 @@ test("minecraft axolotl character generator renders every tail-fin choice", asyn
 test("minecraft axolotl character generator composes the Slim model geometry", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-axolotl-character");
+  await page.goto("/generator/minecraft-axolotl-character-v1");
 
   const pageImage = outputPage(page);
   await comboboxes(page).nth(1).selectOption("Slim");
@@ -184,7 +184,7 @@ test("minecraft axolotl character generator composes the Slim model geometry", a
 test("minecraft axolotl character generator stretches its face", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-axolotl-character");
+  await page.goto("/generator/minecraft-axolotl-character-v1");
 
   const pageImage = outputPage(page);
   const face = page.getByLabel("Axolotl Face");
@@ -208,7 +208,7 @@ test("minecraft axolotl character generator stretches its face", async ({
 test("minecraft axolotl character generator hides its folds", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-axolotl-character");
+  await page.goto("/generator/minecraft-axolotl-character-v1");
 
   const pageImage = outputPage(page);
   await expect(readPixel(pageImage, 409, 547)).resolves.toEqual({
@@ -227,7 +227,7 @@ test("minecraft axolotl character generator hides its folds", async ({
 test("minecraft axolotl character generator hides its labels", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-axolotl-character");
+  await page.goto("/generator/minecraft-axolotl-character-v1");
 
   const pageImage = outputPage(page);
   await expect(readPixel(pageImage, 127, 55)).resolves.toEqual({
@@ -246,7 +246,7 @@ test("minecraft axolotl character generator hides its labels", async ({
 test("minecraft axolotl character generator hides the skin overlay", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-axolotl-character");
+  await page.goto("/generator/minecraft-axolotl-character-v1");
 
   const pageImage = outputPage(page);
   await comboboxes(page).nth(0).selectOption("Ari");
@@ -263,7 +263,7 @@ test("minecraft axolotl character generator hides the skin overlay", async ({
 test("minecraft axolotl character generator renders a custom skin upload", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-axolotl-character");
+  await page.goto("/generator/minecraft-axolotl-character-v1");
 
   const pageImage = outputPage(page);
   await page.getByLabel("Upload Skin skin file").setInputFiles(skinFixturePath);

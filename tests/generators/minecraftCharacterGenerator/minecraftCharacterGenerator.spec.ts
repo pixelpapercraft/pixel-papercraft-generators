@@ -85,7 +85,7 @@ const regions = (page: Page) =>
   outputPage(page).locator("xpath=..").locator("div.absolute");
 
 test("minecraft character generator exposes its controls", async ({ page }) => {
-  await page.goto("/generator/minecraft-character");
+  await page.goto("/generator/minecraft-character-v1");
 
   const skin = skinSelect(page);
   await expect(skin).toHaveValue("Default");
@@ -107,7 +107,7 @@ test("minecraft character generator exposes its controls", async ({ page }) => {
 test("minecraft character generator matches the default screenshot", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-character");
+  await page.goto("/generator/minecraft-character-v1");
 
   const pageImage = outputPage(page);
   await expect(pageImage).toBeVisible();
@@ -121,7 +121,7 @@ test("minecraft character generator matches the default screenshot", async ({
 test("minecraft character generator renders every skin preset and explicit None", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-character");
+  await page.goto("/generator/minecraft-character-v1");
 
   const skin = skinSelect(page);
   const pageImage = outputPage(page);
@@ -142,7 +142,7 @@ test("minecraft character generator renders every skin preset and explicit None"
 test("minecraft character generator renders a custom skin upload", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-character");
+  await page.goto("/generator/minecraft-character-v1");
 
   const pageImage = outputPage(page);
   await page.getByLabel("Upload Skin skin file").setInputFiles(skinFixturePath);
@@ -158,7 +158,7 @@ test("minecraft character generator renders a custom skin upload", async ({
 test("minecraft character generator renders the Slim model geometry", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-character");
+  await page.goto("/generator/minecraft-character-v1");
 
   const pageImage = outputPage(page);
   await page.getByLabel("Upload Skin skin file").setInputFiles(skinFixturePath);
@@ -182,7 +182,7 @@ test("minecraft character generator renders the Slim model geometry", async ({
 test("minecraft character generator hides every outer skin layer independently", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-character");
+  await page.goto("/generator/minecraft-character-v1");
 
   const pageImage = outputPage(page);
   await page.getByLabel("Upload Skin skin file").setInputFiles(skinFixturePath);
@@ -208,7 +208,7 @@ test("minecraft character generator hides every outer skin layer independently",
 test("minecraft character generator hides folds and labels independently", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-character");
+  await page.goto("/generator/minecraft-character-v1");
 
   const pageImage = outputPage(page);
   const readFold = () => readPixel(pageImage, 137, 34);

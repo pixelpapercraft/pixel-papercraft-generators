@@ -2,10 +2,13 @@ import { describe, expect, it } from "vitest";
 import { findAnyGeneratorById } from "./generators";
 
 describe("findAnyGeneratorById", () => {
-  it("resolves an always-registered v1 generator tagged as v1", () => {
-    const found = findAnyGeneratorById("minecraft-character");
+  it("resolves a legacy v1 generator tagged as v1", () => {
+    // Retired v1 generators live in the dev-only `legacy` group and are served
+    // at a `-v1` id so they no longer collide with their promoted v2. The test
+    // environment is not production, so legacy resolves here.
+    const found = findAnyGeneratorById("minecraft-character-v1");
     expect(found?.kind).toBe("v1");
-    expect(found?.def.id).toBe("minecraft-character");
+    expect(found?.def.id).toBe("minecraft-character-v1");
   });
 
   it("resolves the example v2 generator tagged as v2", () => {

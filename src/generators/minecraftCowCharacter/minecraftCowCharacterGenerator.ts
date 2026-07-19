@@ -18,7 +18,7 @@ import labelsImage from "./images/Labels.png";
 import { getSkinUrl } from "../_common/skins";
 import { makeDefaultMinecraftSkinPresetOptions } from "../_common/skins/options";
 
-const id = "minecraft-cow-character";
+const id = "minecraft-cow-character-v1";
 
 const name = "Minecraft Cow Character";
 

@@ -121,7 +121,7 @@ const MARKING_PROBES: MarkingProbe[] = [
 test("minecraft horse generator matches the default screenshot", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-horse");
+  await page.goto("/generator/minecraft-horse-v1");
 
   const pageImage = outputPage(page);
   await expect(pageImage).toBeVisible();
@@ -136,7 +136,7 @@ test("minecraft horse generator matches the default screenshot", async ({
 test("minecraft horse generator exposes its full control surface", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-horse");
+  await page.goto("/generator/minecraft-horse-v1");
 
   // Gate on all four base selects having mounted before reading them.
   await expect(page.getByRole("combobox")).toHaveCount(4);
@@ -181,7 +181,7 @@ test("minecraft horse generator exposes its full control surface", async ({
 test("minecraft horse generator reveals the armor tint controls on demand", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-horse");
+  await page.goto("/generator/minecraft-horse-v1");
   await expect(page.getByRole("combobox")).toHaveCount(4);
 
   // Enabling Tint Armor inserts the Armor Overlay + Armor Color selects.
@@ -212,7 +212,7 @@ test("minecraft horse generator reveals the armor tint controls on demand", asyn
 test("minecraft horse generator paints every coat at its probe", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-horse");
+  await page.goto("/generator/minecraft-horse-v1");
   const pageImage = outputPage(page);
   await renderImageAtNaturalSize(pageImage);
 
@@ -234,7 +234,7 @@ test("minecraft horse generator paints every coat at its probe", async ({
 test("minecraft horse generator paints every armor material at its probe", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-horse");
+  await page.goto("/generator/minecraft-horse-v1");
   const pageImage = outputPage(page);
   await renderImageAtNaturalSize(pageImage);
 
@@ -255,7 +255,7 @@ test("minecraft horse generator paints every armor material at its probe", async
 test("minecraft horse generator paints each marking over the coat", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-horse");
+  await page.goto("/generator/minecraft-horse-v1");
   const pageImage = outputPage(page);
   await renderImageAtNaturalSize(pageImage);
 
@@ -288,7 +288,7 @@ test("minecraft horse generator paints each marking over the coat", async ({
 test("minecraft horse generator toggles the folds and labels overlays", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-horse");
+  await page.goto("/generator/minecraft-horse-v1");
   const pageImage = outputPage(page);
   await renderImageAtNaturalSize(pageImage);
 
@@ -309,7 +309,7 @@ test("minecraft horse generator toggles the folds and labels overlays", async ({
 test("minecraft horse generator switches to the donkey / mule model", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-horse");
+  await page.goto("/generator/minecraft-horse-v1");
   const pageImage = outputPage(page);
   await renderImageAtNaturalSize(pageImage);
 
@@ -339,7 +339,7 @@ test("minecraft horse generator switches to the donkey / mule model", async ({
 test("minecraft horse generator renders tinted enchanted armor", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-horse");
+  await page.goto("/generator/minecraft-horse-v1");
 
   await toggleCheckbox(page, "Tint Armor");
   await page.getByLabel("Armor Color").selectOption({ label: "Blue" });
@@ -364,7 +364,7 @@ test("minecraft horse generator renders tinted enchanted armor", async ({
 test("minecraft horse generator renders a custom coat upload", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-horse");
+  await page.goto("/generator/minecraft-horse-v1");
   const pageImage = outputPage(page);
 
   await page

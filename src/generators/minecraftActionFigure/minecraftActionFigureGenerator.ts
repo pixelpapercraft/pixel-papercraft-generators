@@ -23,7 +23,7 @@ import labelsImage from "./images/Labels.png";
 import { getSkinUrl } from "../_common/skins";
 import { makeDefaultMinecraftSkinPresetOptions } from "../_common/skins/options";
 
-const id = "minecraft-action-figure";
+const id = "minecraft-action-figure-v1";
 
 const name = "Minecraft Action Figure";
 

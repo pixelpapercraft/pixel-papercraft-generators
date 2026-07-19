@@ -111,7 +111,7 @@ import {
 import { defineTintInput } from "../_common/tintSelector/tintSelector";
 import { armorTintChoiceGroups } from "../_common/tintSelector/tints";
 
-const id = "minecraft-armor";
+const id = "minecraft-armor-v1";
 const name = "Minecraft Armor";
 
 const history: HistoryDef = [

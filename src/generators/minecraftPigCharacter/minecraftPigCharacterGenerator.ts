@@ -38,7 +38,7 @@ import {
   makeMinecraftSkinTextureOption,
 } from "../_common/skins/options";
 
-const id = "minecraft-pig-character";
+const id = "minecraft-pig-character-v1";
 
 const name = "Minecraft Pig Character";
 

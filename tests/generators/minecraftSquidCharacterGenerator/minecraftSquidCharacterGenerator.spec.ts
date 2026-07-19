@@ -39,7 +39,7 @@ async function screenshot(page: Page, name: string): Promise<void> {
 test("minecraft squid character exposes its complete control contract", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-squid-character");
+  await page.goto("/generator/minecraft-squid-character-v1");
   await expect(page.getByRole("combobox")).toHaveCount(2);
   await expect(page.getByRole("combobox").first().locator("option")).toHaveText(
     skinOptions
@@ -59,7 +59,7 @@ test("minecraft squid character exposes its complete control contract", async ({
 test("minecraft squid character matches the default composition", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-squid-character");
+  await page.goto("/generator/minecraft-squid-character-v1");
   await screenshot(page, "minecraft-squid-character-default");
 });
 
@@ -67,7 +67,7 @@ test("minecraft squid character accepts every skin choice and explicit None", as
   page,
 }) => {
   test.slow();
-  await page.goto("/generator/minecraft-squid-character");
+  await page.goto("/generator/minecraft-squid-character-v1");
   const rendered = new Set<string>();
   for (const option of skinOptions) {
     const previous = await outputPages(page).first().getAttribute("src");
@@ -85,7 +85,7 @@ test("minecraft squid character accepts every skin choice and explicit None", as
 test("minecraft squid character renders a custom slim skin", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-squid-character");
+  await page.goto("/generator/minecraft-squid-character-v1");
   const beforeUpload = await outputPages(page).first().getAttribute("src");
   await page.getByLabel("Upload Skin skin file").setInputFiles(fixture);
   await expect
@@ -100,7 +100,7 @@ test("minecraft squid character renders a custom slim skin", async ({
 });
 
 test("minecraft squid character toggles folds", async ({ page }) => {
-  await page.goto("/generator/minecraft-squid-character");
+  await page.goto("/generator/minecraft-squid-character-v1");
   await page
     .getByLabel("Show Folds")
     .evaluate((element: HTMLElement) => element.click());
@@ -111,7 +111,7 @@ test("minecraft squid character toggles folds", async ({ page }) => {
 test("minecraft squid character toggles both overlay regions", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-squid-character");
+  await page.goto("/generator/minecraft-squid-character-v1");
   await page.getByLabel("Upload Skin skin file").setInputFiles(fixture);
   await regions(page).nth(0).click();
   await regions(page).nth(1).click();
@@ -123,7 +123,7 @@ test("minecraft squid character cycles all eight tentacle regions through all ty
 }) => {
   test.slow();
   for (const { index, defaultType, targetType } of tentacleCases) {
-    await page.goto("/generator/minecraft-squid-character");
+    await page.goto("/generator/minecraft-squid-character-v1");
     await page.getByLabel("Upload Skin skin file").setInputFiles(fixture);
     const clicks = ((targetType - defaultType + 7) % 8) + 1;
     for (let click = 0; click < clicks; click += 1)

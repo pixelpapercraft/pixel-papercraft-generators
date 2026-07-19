@@ -83,7 +83,7 @@ const regions = (page: Page) =>
 test("minecraft character mini generator exposes its initial controls", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-character-mini");
+  await page.goto("/generator/minecraft-character-mini-v1");
 
   const selects = comboboxes(page);
   await expect(selects).toHaveCount(5);
@@ -137,7 +137,7 @@ test("minecraft character mini generator exposes its initial controls", async ({
 test("minecraft character mini generator matches the default screenshot", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-character-mini");
+  await page.goto("/generator/minecraft-character-mini-v1");
 
   const pageImage = outputPage(page);
   await expect(pageImage).toBeVisible();
@@ -151,7 +151,7 @@ test("minecraft character mini generator matches the default screenshot", async 
 test("minecraft character mini generator renders every Mini 1 preset and explicit None", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-character-mini");
+  await page.goto("/generator/minecraft-character-mini-v1");
 
   const skin = comboboxes(page).nth(0);
   const pageImage = outputPage(page);
@@ -171,7 +171,7 @@ test("minecraft character mini generator renders every Mini 1 preset and explici
 test("minecraft character mini generator populates Mini 2 independently", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-character-mini");
+  await page.goto("/generator/minecraft-character-mini-v1");
 
   const pageImage = outputPage(page);
   await comboboxes(page).nth(3).selectOption("Alex");
@@ -196,7 +196,7 @@ test("minecraft character mini generator populates Mini 2 independently", async 
 test("minecraft character mini generator renders a custom Mini 2 upload with Slim arms", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-character-mini");
+  await page.goto("/generator/minecraft-character-mini-v1");
 
   const pageImage = outputPage(page);
   await page
@@ -220,7 +220,7 @@ test("minecraft character mini generator renders a custom Mini 2 upload with Sli
 test("minecraft character mini generator applies body height and texture style", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-character-mini");
+  await page.goto("/generator/minecraft-character-mini-v1");
 
   const pageImage = outputPage(page);
   const textureStyle = page.getByRole("combobox", {
@@ -265,7 +265,7 @@ test("minecraft character mini generator applies body height and texture style",
 test("minecraft character mini generator hides every Mini 1 outer layer independently", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-character-mini");
+  await page.goto("/generator/minecraft-character-mini-v1");
 
   const pageImage = outputPage(page);
   await page
@@ -294,7 +294,7 @@ test("minecraft character mini generator hides every Mini 1 outer layer independ
 test("minecraft character mini generator hides each mini's folds independently", async ({
   page,
 }) => {
-  await page.goto("/generator/minecraft-character-mini");
+  await page.goto("/generator/minecraft-character-mini-v1");
 
   const pageImage = outputPage(page);
   await comboboxes(page).nth(3).selectOption("Alex");

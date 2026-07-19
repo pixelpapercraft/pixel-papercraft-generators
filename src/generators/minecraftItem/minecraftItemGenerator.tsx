@@ -54,7 +54,7 @@ import backgroundImage from "./images/Background.png";
 import titleImage from "./images/Title.png";
 import centerFoldTexture from "./textures/CenterFold.png";
 
-const id = "minecraft-item";
+const id = "minecraft-item-v1";
 
 const name = "Minecraft Item";
 

@@ -27,7 +27,7 @@ import minecon2019Image from "./textures/Minecon2019.png";
 import mojangImage from "./textures/Mojang.png";
 import elytraImage from "./textures/Elytra.png";
 
-const id = "minecraft-cape-and-elytra";
+const id = "minecraft-cape-and-elytra-v1";
 
 const name = "Minecraft Cape And Elytra";
 
