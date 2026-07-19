@@ -138,12 +138,17 @@ export const mod: AnyGenerator[] = [
 export const other: AnyGenerator[] = [v2(amogusBendableGeneratorDefV2)];
 
 // Retired v1 generators, superseded by their v2 versions (which now sit in the
-// themed groups above). Kept visible so the originals stay reachable. Each
-// generator is moved here one at a time as its v2 review is completed.
-export const legacy: AnyGenerator[] = [
-  v1(amogusBendableGenerator),
-  v1(dalekModDalekGenerator),
-];
+// themed groups above). Dev-only (hidden in production) like the dev/test
+// groups — the originals are kept reachable locally for reference during the
+// migration, but not shown on the live site. Each generator is moved here one
+// at a time as its v2 review is completed.
+export const legacy: AnyGenerator[] = isProductionEnvironment
+  ? []
+  : [
+      v1(amogusBendableGenerator),
+      v1(dalekModDalekGenerator),
+      v1(exampleGenerator),
+    ];
 
 // Incomplete / in-development generators, plus every generator's in-progress
 // v2 version during the migration. Hidden in production, visible everywhere
@@ -153,7 +158,6 @@ export const dev: AnyGenerator[] = isProductionEnvironment
   ? []
   : [
       v1(minecraftWitherGenerator),
-      v2(exampleGeneratorDefV2),
       v2(minecraftCharacterGeneratorDefV2),
       v2(minecraftItemGeneratorDefV2),
       v2(minecraftActionFigureGeneratorDefV2),
@@ -199,7 +203,7 @@ export const testApiCoverage: GeneratorDef[] = [
 
 export const test: AnyGenerator[] = isProductionEnvironment
   ? []
-  : [v1(exampleGenerator), ...testApiCoverage.map(v1)];
+  : [v2(exampleGeneratorDefV2), ...testApiCoverage.map(v1)];
 
 function concatArrays<T>(arrays: Array<Array<T>>) {
   return arrays.reduce((acc, val) => acc.concat(val), []);
