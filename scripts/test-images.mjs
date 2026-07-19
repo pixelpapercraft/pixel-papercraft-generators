@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const host = '127.0.0.1';
-const port = 3000;
+const port = 3001;
 const appRootUrl = `http://${host}:${port}/`;
 const appRouteUrl = `http://${host}:${port}/generator/example`;
 const startupTimeoutMs = Number(process.env.TEST_IMAGES_STARTUP_TIMEOUT_MS ?? 60_000);
