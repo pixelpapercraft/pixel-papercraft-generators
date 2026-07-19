@@ -35,6 +35,7 @@ const history: HistoryDef = [
   "13 Feb 2015 lostminer - Update to use new version of generator.",
   "29 Sep 2020 NinjolasNJM - Updated to work with 1.8+ Skins.",
   "17 Jul 2021 M16 - Updated generator photo.",
+  "Jul 2026 lostminer - Layout refresh.",
 ];
 const images: ImageDef[] = [
   { id: "Background", url: backgroundImage.src },
