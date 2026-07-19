@@ -22,14 +22,12 @@ const id = "minecraft-wither-v2";
 
 const name = "Minecraft Wither";
 
-const history: HistoryDef = ["01 Aug 2021 Hannibanni - Created."];
+const history: HistoryDef = [
+  "01 Aug 2021 Hannibanni - Created.",
+  "Jul 2026 lostminer - Layout refresh.",
+];
 
 const instructions: InstructionsDef = `
-## TODO
-
-* Add a thumbnail image.
-* Make background the A4 page tempate with Pixel Papercraft footer.
-
 ## How to use the Wither generator
 
 ### Option 1: Use an existing Wither skin
@@ -555,6 +553,9 @@ function Component(): JSX.Element {
   return (
     <div>
       <GeneratorUI.MediaHero video={null} thumbnail={null} />
+      <div className="mb-8">
+        <GeneratorUI.Instructions markdown={instructions} />
+      </div>
       <div className="lg:flex gap-8">
         <div
           className="flex-1 min-w-0 mb-8 lg:mb-0"
@@ -571,7 +572,6 @@ function Component(): JSX.Element {
               onChange={setWitherSkin}
             />
           </div>
-          <GeneratorUI.Instructions markdown={instructions} />
         </div>
         <div className="flex-1 min-w-0">
           <GeneratorRenderer
