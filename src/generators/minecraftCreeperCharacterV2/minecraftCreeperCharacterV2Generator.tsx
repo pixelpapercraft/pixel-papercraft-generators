@@ -43,6 +43,7 @@ const history: HistoryDef = [
   "Created by CanadaCraft, template by BrickyBoy99.",
   "13 Sep 2020 NinjolasNJM - Updated to work with 1.8+ Skins.",
   "17 Jul 2021 M16 - Updated generator photo.",
+  "Jul 2026 lostminer - Layout refresh.",
 ];
 
 const thumbnail: ThumbnailDef = { url: thumbnailImage.src };
