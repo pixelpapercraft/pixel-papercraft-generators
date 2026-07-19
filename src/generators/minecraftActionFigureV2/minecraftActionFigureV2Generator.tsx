@@ -6,6 +6,7 @@ import {
   GeneratorUI,
   type GeneratorDefV2,
   type GeneratorV2,
+  type HistoryDef,
   type ImageDef,
   type RegionClickHandler,
   type RenderContext,
@@ -36,6 +37,20 @@ const id = "minecraft-action-figure-v2";
 const name = "Minecraft Action Figure";
 
 const thumbnail: ThumbnailDef = { url: thumbnailImage.src };
+
+// Same copy as the v1 minecraft-action-figure generator's `history`, plus a
+// Layout refresh entry for this V2 pass.
+const history: HistoryDef = [
+  "16 Aug 2020 NinjolasNJM - Initial script finished.",
+  "03 Oct 2020 NinjolasNJM - Added Alex support and Hand Notches.",
+  "09 Oct 2020 NinjolasNJM - Tweaked pelvis, bottom of body and leg height.",
+  "24 Feb 2021 NinjolasNJM - Moved pelvis so that the leg's pivot point is accurate to the game, changed leg height accordingly.",
+  "06 Jun 2021 NinjolasNJM - Converted to ReScript generator.",
+  "02 Feb 2024 NinjolasNJM - Reworked layout, improved notches and added skin input",
+  "22 Mar 2024 NinjolasNJM - Converted to TypeScript Generator.",
+  "24 Dec 2025 NinjolasNJM - Added option for second layer separate from main body.",
+  "Jul 2026 lostminer - Layout refresh.",
+];
 
 const images: ImageDef[] = [
   { id: "Folds-Alex", url: foldsAlexImage.src },
@@ -584,6 +599,8 @@ function Component(): JSX.Element {
           />
         </div>
       </div>
+
+      <GeneratorUI.History history={history} />
     </div>
   );
 }
