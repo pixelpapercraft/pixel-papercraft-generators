@@ -43,6 +43,7 @@ const history: HistoryDef = [
   "11 Feb 2022 LostMiner - Refactor. Add pixelate option.",
   "03 Jun 2022 NinjolasNJM - Overhauled the foreground, added a title and an opaque background, a folds toggle, and overlay region inputs",
   "02 Feb 2024 NinjolasNJM - added skin input",
+  "Jul 2026 lostminer - Layout refresh.",
 ];
 
 const thumbnail: ThumbnailDef = {
@@ -637,7 +638,6 @@ function Component(): JSX.Element {
                 />
               </>
             ) : null}
-            <GeneratorUI.History history={history} />
           </div>
         </div>
         <div className="flex-1 min-w-0">
@@ -649,6 +649,8 @@ function Component(): JSX.Element {
           />
         </div>
       </div>
+
+      <GeneratorUI.History history={history} />
     </div>
   );
 }
