@@ -46,6 +46,7 @@ const history: HistoryDef = [
   "17 Jul 2021 M16 - Updated generator photo.",
   "12 Jun 2022 NinjolasNJM - Updated to use Minecraft module, and added Action Figure option",
   "Jun 2026 NinjolasNJM - Set extra head slots to None by default.",
+  "Jul 2026 lostminer - Layout refresh.",
 ];
 
 const thumbnail: ThumbnailDef = { url: thumbnailImage.src };
@@ -249,8 +250,6 @@ function Component(): JSX.Element {
               checked={actionFigure}
               onCheckedChange={setActionFigure}
             />
-
-            <GeneratorUI.History history={history} />
           </div>
         </div>
 
@@ -263,6 +262,8 @@ function Component(): JSX.Element {
           />
         </div>
       </div>
+
+      <GeneratorUI.History history={history} />
     </div>
   );
 }
