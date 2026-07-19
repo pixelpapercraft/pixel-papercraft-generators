@@ -44,11 +44,31 @@ const history: HistoryDef = [
   "03 Feb 2022 NinjolasNJM - Converted to new generator builder, with updated backgrounds, folds and labels, as well as improved texture mappping and collar handling.",
   "06 Aug 2022 M16 - Update thumbnail photo.",
   "16 May 2026 NinjolasNJM - Changed to use new tint input.",
+  "Jul 2026 lostminer - Layout refresh.",
 ];
 
 const thumbnail: ThumbnailDef = {
   url: thumbnailImage.src,
 };
+
+const instructions = `
+## How to use the Minecraft Cat Generator?
+
+### Option 1: Use a texture pack or mod Cat skin
+
+* Download your favourite texture pack or mod.
+* Find a cat texture file.
+* Select this file in the generator.
+* Download and print your new Cat papercraft.
+
+## Option 2: Create your own Cat texture file
+
+* Download a sample Cat texture (right click and save):
+  ![Car Texture](${whiteImage.src})
+* Edit this texture in your favourite graphics program.
+* Select this file in the generator.
+* Download and print your new Cat papercraft.
+`;
 
 const images: ImageDef[] = [
   { id: "Background", url: backgroundImage.src },
@@ -416,6 +436,11 @@ function Component(): JSX.Element {
   return (
     <div>
       <GeneratorUI.MediaHero video={null} thumbnail={thumbnail} />
+
+      <div className="mb-8">
+        <GeneratorUI.Instructions markdown={instructions} />
+      </div>
+
       <div className="lg:flex gap-8">
         <div
           className="flex-1 min-w-0 mb-8 lg:mb-0"
