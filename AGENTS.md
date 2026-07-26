@@ -9,6 +9,11 @@ It includes many generators that turn characters, creatures, items, and other ga
 ## Tools
 
 - Always use the `gh` command for GitHub operations.
+- For GitHub actions that need this project's maintainer permissions (for
+  example, closing a pull request), run `direnv exec . gh <command>` from the
+  repository root. This loads the project GitHub account; use ordinary `gh`
+  commands for read-only work unless those permissions are needed. Never print
+  or record the token supplied by `direnv`.
 - After creating a new git worktree for this repo, run `npm install` and then `npm run setup` in the new worktree before running checks or making changes.
 
 ## Skills
