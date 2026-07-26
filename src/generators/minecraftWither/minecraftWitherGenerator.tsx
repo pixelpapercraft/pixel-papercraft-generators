@@ -12,20 +12,24 @@ import {
   type RenderContext,
   type Texture,
   type TextureDef,
+  type ThumbnailDef,
   type DynamicTextures,
 } from "@genroot/builder";
 
 import witherTexture from "./instructions/wither.png";
 import backgroundImage from "./images/Background.png";
 import foldsImage from "./images/Folds.png";
+import thumbnailImage from "./thumbnail/v2-thumbnail-256.jpeg";
 
 const id = "minecraft-wither";
 
 const name = "Minecraft Wither";
 
+const thumbnail: ThumbnailDef = { url: thumbnailImage.src };
+
 const history: HistoryDef = [
   "01 Aug 2021 Hannibanni - Created.",
-  "Jul 2026 lostminer - Layout refresh.",
+  "10 Jan 2025 ArgentiCityZenx - Added Pixel PaperCraft A4 layout and thumbnail.",
 ];
 
 const instructions: InstructionsDef = `
@@ -279,33 +283,33 @@ const render = (ctx: RenderContext): void => {
   ctx.drawTextureLegacy(
     witherSkinId,
     { x: 26, y: 24, w: 4, h: 2 },
-    { x: 160, y: 359, w: 32, h: 16 }
+    { x: 160, y: 554, w: 32, h: 16 }
   ); //Frnot Side
   ctx.drawTextureLegacy(
     witherSkinId,
     { x: 37, y: 22, w: 4, h: 2 },
-    { x: 160, y: 375, w: 32, h: 16 }
+    { x: 160, y: 570, w: 32, h: 16 }
   ); //Down Side
   ctx.drawTextureLegacy(
     witherSkinId,
     { x: 26, y: 22, w: 4, h: 2 },
-    { x: 160, y: 343, w: 32, h: 16 }
+    { x: 160, y: 538, w: 32, h: 16 }
   ); //Top Side
   ctx.drawTextureLegacy(
     witherSkinId,
     { x: 26, y: 24, w: 4, h: 2 },
-    { x: 240, y: 375, w: 32, h: 16 },
+    { x: 240, y: 570, w: 32, h: 16 },
     { rotateLegacy: 180.0 }
   ); //Back Side
   ctx.drawTextureLegacy(
     witherSkinId,
     { x: 24, y: 24, w: 2, h: 2 },
-    { x: 144, y: 359, w: 16, h: 16 }
+    { x: 144, y: 554, w: 16, h: 16 }
   ); //Left Side
   ctx.drawTextureLegacy(
     witherSkinId,
     { x: 24, y: 24, w: 2, h: 2 },
-    { x: 192, y: 359, w: 16, h: 16 }
+    { x: 192, y: 554, w: 16, h: 16 }
   ); //Right Side
   ctx.drawTextureLegacy(
     witherSkinId,
@@ -373,33 +377,33 @@ const render = (ctx: RenderContext): void => {
   ctx.drawTextureLegacy(
     witherSkinId,
     { x: 26, y: 24, w: 4, h: 2 },
-    { x: 319, y: 358, w: 32, h: 16 }
+    { x: 319, y: 553, w: 32, h: 16 }
   ); //Front Side
   ctx.drawTextureLegacy(
     witherSkinId,
     { x: 37, y: 22, w: 4, h: 2 },
-    { x: 319, y: 373, w: 32, h: 16 }
+    { x: 319, y: 568, w: 32, h: 16 }
   ); //Down Side
   ctx.drawTextureLegacy(
     witherSkinId,
     { x: 26, y: 24, w: 4, h: 2 },
-    { x: 319, y: 342, w: 32, h: 16 }
+    { x: 319, y: 537, w: 32, h: 16 }
   ); //Top Side
   ctx.drawTextureLegacy(
     witherSkinId,
     { x: 26, y: 24, w: 4, h: 2 },
-    { x: 303, y: 374, w: 32, h: 16 },
+    { x: 303, y: 569, w: 32, h: 16 },
     { rotateLegacy: 180.0 }
   ); //Back Side
   ctx.drawTextureLegacy(
     witherSkinId,
     { x: 26, y: 24, w: 2, h: 2 },
-    { x: 303, y: 358, w: 16, h: 16 }
+    { x: 303, y: 553, w: 16, h: 16 }
   ); //Left Side
   ctx.drawTextureLegacy(
     witherSkinId,
     { x: 26, y: 24, w: 2, h: 2 },
-    { x: 351, y: 358, w: 16, h: 16 }
+    { x: 351, y: 553, w: 16, h: 16 }
   ); //Right Side
   ctx.drawTextureLegacy(
     witherSkinId,
@@ -547,7 +551,7 @@ function Component(): JSX.Element {
 
   return (
     <div>
-      <GeneratorUI.MediaHero video={null} thumbnail={null} />
+      <GeneratorUI.MediaHero video={null} thumbnail={thumbnail} />
       <div className="mb-8">
         <GeneratorUI.Instructions markdown={instructions} />
       </div>
@@ -584,6 +588,6 @@ function Component(): JSX.Element {
 export const generator: GeneratorDefV2 = {
   id,
   name,
-  thumbnail: null,
+  thumbnail,
   Component,
 };

@@ -11,6 +11,14 @@ const witherSkinSelect = (page: Page) =>
 
 const pageImageUrl = (page: Page) => outputPage(page).getAttribute("src");
 
+test("minecraft wither generator shows its built-model thumbnail", async ({
+  page,
+}) => {
+  await page.goto("/generator/minecraft-wither");
+
+  await expect(page.locator('img[src*="v2-thumbnail-256"]')).toBeVisible();
+});
+
 test("minecraft wither generator exposes its complete control contract", async ({
   page,
 }) => {
