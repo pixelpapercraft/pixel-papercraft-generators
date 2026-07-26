@@ -1,9 +1,9 @@
 /* eslint-disable @next/next/no-img-element */
 
 import React from "react";
-import { type GeneratorDef } from "@genroot/builder/modules/generatorDef";
 import {
   type GeneratorGroup,
+  type GeneratorLink,
   generatorGroups,
 } from "@genroot/generators/generators";
 
@@ -11,7 +11,7 @@ function Heading({ children }: { children: React.ReactNode }) {
   return <h1 className="text-2xl font-bold mb-2"> {children} </h1>;
 }
 
-function GeneratorItem({ generator }: { generator: GeneratorDef }) {
+function GeneratorItem({ generator }: { generator: GeneratorLink }) {
   const { id, name, thumbnail } = generator;
   const url = `/generator/${id}`;
   return (

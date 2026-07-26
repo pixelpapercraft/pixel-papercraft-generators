@@ -1,7 +1,4 @@
-import {
-  type Generator,
-  type Region,
-} from "@genroot/builder/modules/generator";
+import { type BlockRenderContext, type Region } from "../blockRenderContext";
 import * as Face from "../face";
 
 type ShelfState = "Unpowered" | "Single" | "Left" | "Center" | "Right";
@@ -85,7 +82,7 @@ function getFrontSource(state: string | null): Region {
 }
 
 export function drawShelf(
-  generator: Generator,
+  generator: BlockRenderContext,
   blockId: string,
   ox: number,
   oy: number,

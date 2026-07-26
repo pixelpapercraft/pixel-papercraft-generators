@@ -20,8 +20,8 @@ It includes many generators that turn characters, creatures, items, and other ga
 
 Read and follow rules from any category whose "Read when" keywords match your current task. To add, update, or delete rules, use the `agent-rules` skill.
 
-| Category   | Read when                                                                     | File                                                |
-| ---------- | ------------------------------------------------------------------------------ | ---------------------------------------------------- |
+| Category   | Read when                                                                                         | File                                            |
+| ---------- | ------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
 | TypeScript | `.ts`, `.tsx`, type, interface, switch, `any`, `as`, `satisfies`, zod, vitest `expect`, test mock | [typescript.md](agent-docs/rules/typescript.md) |
 
 ## Change Scope
@@ -35,6 +35,14 @@ Read and follow rules from any category whose "Read when" keywords match your cu
 - Treat `src/builder` as the generator framework layer, but keep generator-authored content in `src/generators` unless the task is explicitly moving shared framework behavior.
   - Shared contracts and framework behavior can live in `src/builder`.
   - Generator-owned assets, version registries, and other content should stay under `src/generators`, typically in `_common` or the specific generator directory.
+
+## Generator surface
+
+- A generator (`src/generators/<name>/`) imports from exactly one place inside `src/builder`: the `@genroot/builder` barrel. It exports two runtime surfaces — `GeneratorRenderer` and `GeneratorUI` — plus the shared type vocabulary.
+- **Never reach past the barrel into `src/builder` from a generator or a test** — not `@genroot/builder/ui/*`, not `@genroot/builder/engine/*`, not a relative `../../builder/*`, not a deep path like `@genroot/builder/generator`, and not type-only. Those are framework internals, not the generator authoring surface. `npm run check:imports` enforces this: it resolves every specifier to a real file and allows exactly one target inside `src/builder` — the barrel, `src/builder/index.ts`. It covers `src/generators/**` and `tests/**`; `src/generators/_common/**` is a documented carve-out (see the script's header for why). If you find yourself wanting an exception, add the export to the barrel instead.
+- Every pre-built generic control is reached through `GeneratorUI` (`GeneratorUI.BooleanControl`, `GeneratorUI.LoadedTextureControl`, …), not imported directly.
+- Controls that are **not** generic — anything that knows what a Minecraft skin, tint, or glint is — are generator content, not framework. They live under `src/generators/_common/` (e.g. `_common/skins/skinControl`, `_common/tintSelector`, `_common/plugins/glint`) and are deliberately absent from `GeneratorUI`.
+- Copying an existing generator as a template is fine — but it is also how leaks come back, so run `npm run lint` before assuming the imports are right.
 
 ## Verification
 

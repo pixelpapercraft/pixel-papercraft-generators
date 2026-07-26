@@ -23,8 +23,8 @@ describe("selectedTexture", () => {
       enchanted: true,
     };
 
-    expect(decodeSelectedTexture(encodeSelectedTexture(selectedTexture))).toEqual(
-      selectedTexture
-    );
+    expect(
+      decodeSelectedTexture(encodeSelectedTexture(selectedTexture))
+    ).toEqual(selectedTexture);
   });
 });

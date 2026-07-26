@@ -8,8 +8,8 @@ import {
   type TextureData_Tile,
   imageToTextureFrames,
   sortTextureDataTiles,
-} from "../../builder/modules/textureData";
-import { packImages } from "../../builder/modules/texturePacking";
+} from "../../builder/engine/textureData";
+import { packImages } from "../../builder/engine/texturePacking";
 
 type ImageWithInfo = {
   name: string;
@@ -166,8 +166,8 @@ async function writeTileTypeScript(
   const code = `
     // This is a generated file
 
-    import { type TextureDef } from "@genroot/builder/modules/generatorDef";
-    import { type TextureData } from "@genroot/builder/modules/textureData";
+    import { type TextureDef } from "@genroot/builder/engine/generatorDef";
+    import { type TextureData } from "@genroot/builder/engine/textureData";
 
     import image from "./${base}";
 

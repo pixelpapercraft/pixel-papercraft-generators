@@ -26,12 +26,14 @@ export function Select({
   value,
   onChange,
   ariaLabelledBy,
+  disabled = false,
 }: {
   id?: string;
   choices: SelectOptionOrGroup[];
   value?: SelectOption;
   onChange: (choice: SelectOption) => void;
   ariaLabelledBy?: string;
+  disabled?: boolean;
 }) {
   const flatChoices = flattenChoices(choices);
   return (
@@ -39,6 +41,7 @@ export function Select({
       id={id}
       className="p-2 outline outline-1 outline-gray-300 border-r-8 border-transparent"
       aria-labelledby={ariaLabelledBy}
+      disabled={disabled}
       value={value ? value.id : undefined}
       onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
         const id = e.currentTarget.value;

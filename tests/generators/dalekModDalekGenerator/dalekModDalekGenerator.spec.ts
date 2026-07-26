@@ -2,6 +2,15 @@ import { expect, test, type Page } from "@playwright/test";
 import { readPixel, type Rgba } from "../_shared/pixelColor";
 import { renderImageAtNaturalSize } from "../_shared/screenshot";
 
+// This spec is a deliberate near-verbatim copy of
+// dalekModDalekGenerator.spec.ts (the v1 dalek generator). The ONLY change is
+// the route (`/generator/dalek` → `/generator/dalek-v2`). dalek-v2 was
+// rebuilt to be behaviourally identical to v1 — same 21-choice Skin texture
+// picker, same "Show Colors" boolean, same two-page render — so the entire
+// v1 assertion set (DOM contract, per-preset pixel probes, composition
+// snapshots, and custom-upload coverage) is expected to pass unchanged. It is
+// the regression oracle for the v1→v2 migration.
+
 type PresetExpectation = {
   name: string;
   page1: Rgba;
@@ -121,7 +130,9 @@ const skinFixturePath = "src/generators/_common/fixtures/testSheet.png";
 const outputPage = (page: Page, index: number) =>
   page.getByTestId("generator-page-image").nth(index);
 
-test("dalek generator exposes its skin and color controls", async ({ page }) => {
+test("dalek generator exposes its skin and color controls", async ({
+  page,
+}) => {
   await page.goto("/generator/dalek");
 
   const skin = page.getByLabel("Skin", { exact: true });
@@ -192,7 +203,9 @@ test("dalek generator composes a Red Dalek texture across both pages", async ({
   }
 });
 
-test("dalek generator shows color-code overlays on both pages", async ({ page }) => {
+test("dalek generator shows color-code overlays on both pages", async ({
+  page,
+}) => {
   await page.goto("/generator/dalek");
 
   const showColors = page.getByLabel("Show Colors");

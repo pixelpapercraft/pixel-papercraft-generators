@@ -34,12 +34,8 @@ test("getCurrentPage lazily creates one default page and accumulates draws drawn
   // Both marks drawn before any usePage are present on the single auto-created
   // page: proves lazy creation AND that getCurrentPage returned the same page
   // for the second draw (accumulation, not a fresh canvas).
-  expect(await readPixel(defaultPage, markLeft.x, markLeft.y)).toEqual(
-    red
-  );
-  expect(await readPixel(defaultPage, markRight.x, markRight.y)).toEqual(
-    green
-  );
+  expect(await readPixel(defaultPage, markLeft.x, markLeft.y)).toEqual(red);
+  expect(await readPixel(defaultPage, markRight.x, markRight.y)).toEqual(green);
 });
 
 test("usePage creates one page per new id, with no duplicate for a re-selected id", async ({
@@ -58,9 +54,7 @@ test("usePage appends new pages in first-use order", async ({ page }) => {
   const pages = page.getByTestId("generator-page-image");
 
   // page[1] is Alpha (first usePage), page[2] is Beta (second usePage).
-  expect(await readPixel(pages.nth(1), markLeft.x, markLeft.y)).toEqual(
-    blue
-  );
+  expect(await readPixel(pages.nth(1), markLeft.x, markLeft.y)).toEqual(blue);
   expect(await readPixel(pages.nth(2), markLeft.x, markLeft.y)).toEqual(
     magenta
   );
@@ -76,9 +70,7 @@ test("usePage re-selecting an existing page accumulates onto it rather than clea
   // Alpha carries both its first mark (blue, drawn before Beta) and the mark
   // drawn after re-selecting it (cyan): the canvas was kept, not reset.
   expect(await readPixel(alphaPage, markLeft.x, markLeft.y)).toEqual(blue);
-  expect(await readPixel(alphaPage, markRight.x, markRight.y)).toEqual(
-    cyan
-  );
+  expect(await readPixel(alphaPage, markRight.x, markRight.y)).toEqual(cyan);
 });
 
 test("usePage isolates draws to the current page — nothing leaks across pages", async ({

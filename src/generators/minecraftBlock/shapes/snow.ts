@@ -1,7 +1,4 @@
-import {
-  type Generator,
-  type Region,
-} from "@genroot/builder/modules/generator";
+import { type BlockRenderContext, type Region } from "../blockRenderContext";
 import * as Face from "../face";
 
 type Faces = {
@@ -52,7 +49,7 @@ function makeFaces(
 }
 
 export function drawSnow(
-  generator: Generator,
+  generator: BlockRenderContext,
   blockId: string,
   ox: number,
   oy: number,

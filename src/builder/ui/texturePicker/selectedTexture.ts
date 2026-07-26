@@ -1,4 +1,4 @@
-import { type TextureFrame } from "@genroot/builder/modules/textureData";
+import { type TextureFrame } from "@genroot/builder/engine/textureData";
 import { type Flip } from "./flip";
 import { type Rotation } from "./rotation";
 

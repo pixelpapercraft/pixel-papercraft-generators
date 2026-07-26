@@ -2,6 +2,15 @@ import { expect, test, type Page } from "@playwright/test";
 import { readPixel, type Rgba } from "../_shared/pixelColor";
 import { renderImageAtNaturalSize } from "../_shared/screenshot";
 
+// This spec is a deliberate near-verbatim copy of
+// amogusBendableGenerator.spec.ts (the v1 amogus-bendable). The ONLY change is
+// the route (`/generator/amogus-bendable` → `/generator/amogus-bendable-v2`).
+// amogus-bendable-v2 was rebuilt to be behaviourally identical to v1 — same
+// 18-option Color select, same reused MinecraftSkinControl picker — so the
+// entire v1 assertion set (DOM contract, per-color pixel probes, composition
+// snapshots, and custom-upload coverage) is expected to pass unchanged. It is
+// the regression oracle for the v1→v2 migration.
+
 type ColorExpectation = {
   name: string;
   rgba: Rgba;
@@ -33,7 +42,9 @@ const skinFixturePath = "src/generators/_common/fixtures/testSheet.png";
 const outputPage = (page: Page) =>
   page.getByTestId("generator-page-image").first();
 
-test("amogus bendable generator exposes its color and skin controls", async ({ page }) => {
+test("amogus bendable generator exposes its color and skin controls", async ({
+  page,
+}) => {
   await page.goto("/generator/amogus-bendable");
 
   const color = page.getByLabel("Color");
@@ -45,7 +56,9 @@ test("amogus bendable generator exposes its color and skin controls", async ({ p
   await expect(page.getByLabel("Upload Skin skin file")).toBeVisible();
 });
 
-test("amogus bendable generator matches the default screenshot", async ({ page }) => {
+test("amogus bendable generator matches the default screenshot", async ({
+  page,
+}) => {
   await page.goto("/generator/amogus-bendable");
 
   const outputPages = page.getByTestId("generator-page-image");
@@ -105,9 +118,7 @@ test("amogus bendable generator renders a custom skin upload in its visor", asyn
 
   const pageImage = outputPage(page);
   const defaultVisorPixel = await readPixel(pageImage, 60, 240);
-  await page
-    .getByLabel("Upload Skin skin file")
-    .setInputFiles(skinFixturePath);
+  await page.getByLabel("Upload Skin skin file").setInputFiles(skinFixturePath);
 
   await expect
     .poll(async () => readPixel(pageImage, 60, 240))

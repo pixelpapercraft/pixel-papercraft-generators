@@ -1,10 +1,10 @@
 import type { CSSProperties } from "react";
-import { type Model } from "@genroot/builder/modules/model";
+import { type Model } from "@genroot/builder/engine/model";
 import {
   type Control,
   type RegionControl,
-} from "@genroot/builder/modules/modelControls";
-import { A4 } from "@genroot/builder/modules/modelPage";
+} from "@genroot/builder/engine/modelControls";
+import { A4 } from "@genroot/builder/engine/modelPage";
 import { px, pageBorderWidth } from "./utils";
 
 /** [x, y, w, h] */
@@ -64,7 +64,9 @@ export function RegionControls({
             key={i}
             className="absolute border-4 border-transparent hover:border-blue-500"
             style={style}
-            data-testid={regionControl.id ? `region-${regionControl.id}` : undefined}
+            data-testid={
+              regionControl.id ? `region-${regionControl.id}` : undefined
+            }
             onClick={() => onClick(regionControl.onClick)}
           />
         );

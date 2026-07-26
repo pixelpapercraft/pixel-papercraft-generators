@@ -2,6 +2,15 @@ import { expect, test, type Page } from "@playwright/test";
 import { readPixel, type Rgba } from "../_shared/pixelColor";
 import { renderImageAtNaturalSize } from "../_shared/screenshot";
 
+// This spec is a deliberate near-verbatim copy of
+// minecraftCharacterGenerator.spec.ts (the v1 generator). The ONLY change is
+// the route (`/generator/minecraft-character` ->
+// `/generator/minecraft-character-v2`). minecraft-character-v2 was ported to
+// be behaviourally identical to v1 — same reused MinecraftSkinControl picker
+// (with model type), same Show Folds/Show Labels toggles, same six overlay
+// regions, same Minecraft.drawCuboid render — so the entire v1 assertion set
+// is expected to pass unchanged against v1's own baselines.
+
 type PresetExpectation = {
   name: string;
   rgba: Rgba;
@@ -214,12 +223,22 @@ test("minecraft character generator hides folds and labels independently", async
   const readFold = () => readPixel(pageImage, 137, 34);
   const readLabel = () => readPixel(pageImage, 119, 196);
   await expect(readFold()).resolves.toEqual({ r: 191, g: 191, b: 191, a: 255 });
-  await expect(readLabel()).resolves.toEqual({ r: 127, g: 127, b: 127, a: 255 });
+  await expect(readLabel()).resolves.toEqual({
+    r: 127,
+    g: 127,
+    b: 127,
+    a: 255,
+  });
 
   await page.getByText("Show Folds", { exact: true }).click();
   await expect(page.getByLabel("Show Folds")).not.toBeChecked();
   await expect.poll(readFold).toEqual(whiteRgba);
-  await expect(readLabel()).resolves.toEqual({ r: 127, g: 127, b: 127, a: 255 });
+  await expect(readLabel()).resolves.toEqual({
+    r: 127,
+    g: 127,
+    b: 127,
+    a: 255,
+  });
 
   await page.getByText("Show Labels", { exact: true }).click();
   await expect(page.getByLabel("Show Labels")).not.toBeChecked();

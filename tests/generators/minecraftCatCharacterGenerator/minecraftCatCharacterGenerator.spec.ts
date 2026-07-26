@@ -134,9 +134,7 @@ test("minecraft cat character generator renders every skin preset and explicit N
 
   for (const preset of presetExpectations) {
     await skin.selectOption(preset.name);
-    await expect
-      .poll(() => readPixel(pageImage, 85, 80))
-      .toEqual(preset.rgba);
+    await expect.poll(() => readPixel(pageImage, 85, 80)).toEqual(preset.rgba);
   }
 
   await skin.selectOption("");
@@ -206,9 +204,7 @@ test("minecraft cat character generator cycles through all four tail sources", a
     if (tailIndex > 0) {
       await tailRegion.click();
     }
-    await expect
-      .poll(() => readPixel(pageImage, 474, 302))
-      .toEqual(expected);
+    await expect.poll(() => readPixel(pageImage, 474, 302)).toEqual(expected);
 
     if (tailIndex === 2) {
       await renderImageAtNaturalSize(pageImage);
@@ -229,20 +225,26 @@ test("minecraft cat character generator hides folds and labels independently", a
   const readFold = () => readPixel(pageImage, 266, 234);
   const readLabel = () => readPixel(pageImage, 142, 46);
   await expect(readFold()).resolves.toEqual({ r: 123, g: 123, b: 123, a: 255 });
-  await expect(readLabel()).resolves.toEqual({ r: 102, g: 102, b: 102, a: 255 });
+  await expect(readLabel()).resolves.toEqual({
+    r: 102,
+    g: 102,
+    b: 102,
+    a: 255,
+  });
 
   await page.getByText("Show Folds", { exact: true }).click();
   await expect(page.getByLabel("Show Folds")).not.toBeChecked();
-  await expect
-    .poll(readFold)
-    .toEqual({ r: 255, g: 255, b: 255, a: 255 });
-  await expect(readLabel()).resolves.toEqual({ r: 102, g: 102, b: 102, a: 255 });
+  await expect.poll(readFold).toEqual({ r: 255, g: 255, b: 255, a: 255 });
+  await expect(readLabel()).resolves.toEqual({
+    r: 102,
+    g: 102,
+    b: 102,
+    a: 255,
+  });
 
   await page.getByText("Show Labels", { exact: true }).click();
   await expect(page.getByLabel("Show Labels")).not.toBeChecked();
-  await expect
-    .poll(readLabel)
-    .toEqual({ r: 255, g: 255, b: 255, a: 255 });
+  await expect.poll(readLabel).toEqual({ r: 255, g: 255, b: 255, a: 255 });
   await expect(readFold()).resolves.toEqual({ r: 255, g: 255, b: 255, a: 255 });
   await renderImageAtNaturalSize(pageImage);
   await expect(pageImage).toHaveScreenshot(

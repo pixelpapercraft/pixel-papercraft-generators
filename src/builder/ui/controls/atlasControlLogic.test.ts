@@ -57,7 +57,17 @@ describe("createAtlas", () => {
     expect(atlas.atlasWidth).toBe(16);
     expect(atlas.atlasHeight).toBe(16);
     expect(atlas.url).toBe("data:image/png;base64,atlas");
-    expect(atlasDrawImage).toHaveBeenCalledWith(image, 0, 0, 16, 16, 0, 0, 16, 16);
+    expect(atlasDrawImage).toHaveBeenCalledWith(
+      image,
+      0,
+      0,
+      16,
+      16,
+      0,
+      0,
+      16,
+      16
+    );
     expect(cropDrawImage).toHaveBeenCalledWith(image, 0, 0);
     expect(getImageData).toHaveBeenCalledWith(0, 0, 16, 16);
     expect(JSON.parse(atlas.framesJson)).toEqual({
@@ -75,6 +85,8 @@ describe("createAtlas", () => {
   });
 
   it("rejects an empty image list", () => {
-    expect(() => createAtlas([], 16, 16)).toThrow("No images to pack into atlas");
+    expect(() => createAtlas([], 16, 16)).toThrow(
+      "No images to pack into atlas"
+    );
   });
 });

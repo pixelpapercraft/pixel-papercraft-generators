@@ -1,41 +1,43 @@
 "use client";
 
-import type {
-  GeneratorDef,
-  ImageDef,
-  HistoryDef,
-  ThumbnailDef,
-  ScriptDef,
-  TextureDef,
-} from "@genroot/builder/modules/generatorDef";
-import { type Generator } from "@genroot/builder/modules/generator";
+import React from "react";
 import {
+  GeneratorRenderer,
+  GeneratorUI,
+  encodeSelectedTextures,
+  type GeneratorDefV2,
+  type Generator,
+  type HistoryDef,
+  type ImageDef,
+  type RegionClickHandler,
+  type RenderContext,
   type SelectedTexture,
-  encodeSelectedTexture,
-  decodeSelectedTexture,
-} from "@genroot/builder/ui/texturePicker/selectedTexture";
-import {
-  allTextureDefs,
-  versionIdsBlocksFirst,
-} from "@genroot/generators/_common/textures/textureVersions";
-import { TexturePicker } from "@genroot/generators/minecraftBlock/texturePicker";
-import { currentBlockTextureId } from "@genroot/generators/minecraftBlock/constants";
+  type Texture,
+  type TextureDef,
+  type ThumbnailDef,
+} from "@genroot/builder";
 import {
   parseAtlas,
   updateCustomTextureAtlas,
   updateCustomTextureUrl,
 } from "@genroot/generators/_common/textures/customTextureVersion";
-import { drawBlock } from "@genroot/generators/minecraftBlock/shapes/block";
-import { drawSlab } from "@genroot/generators/minecraftBlock/shapes/slab";
-import { drawStair } from "@genroot/generators/minecraftBlock/shapes/stair";
-import { drawFence } from "@genroot/generators/minecraftBlock/shapes/fence";
-import { drawDoor } from "@genroot/generators/minecraftBlock/shapes/door";
-import { drawTrapdoor } from "@genroot/generators/minecraftBlock/shapes/trapdoor";
-import { drawSnow } from "@genroot/generators/minecraftBlock/shapes/snow";
-import { drawCake } from "@genroot/generators/minecraftBlock/shapes/cake";
-import { drawShelf } from "@genroot/generators/minecraftBlock/shapes/shelf";
+import {
+  allTextureDefs,
+  versionIdsBlocksFirst,
+} from "@genroot/generators/_common/textures/textureVersions";
+import { TexturePicker } from "@genroot/generators/_common/block/texturePicker";
+import { type BlockRenderContext } from "./blockRenderContext";
+import { drawBlock } from "./shapes/block";
+import { drawCake } from "./shapes/cake";
+import { drawDoor } from "./shapes/door";
+import { drawFence } from "./shapes/fence";
+import { drawShelf } from "./shapes/shelf";
+import { drawSlab } from "./shapes/slab";
+import { drawSnow } from "./shapes/snow";
+import { drawStair } from "./shapes/stair";
+import { drawTrapdoor } from "./shapes/trapdoor";
 
-import thumnbailImage from "./thumbnail/v2-thumbnail-256.jpeg";
+import thumbnailImage from "./thumbnail/v2-thumbnail-256.jpeg";
 import backgroundImage from "./images/Background.png";
 import titleImage from "./images/Title.png";
 import foldsBlockImage from "./images/Folds-Block.png";
@@ -66,239 +68,391 @@ import foldsShelfImage from "./images/Folds-Shelf.png";
 import tabsShelfImage from "./images/Tabs-Shelf.png";
 
 const id = "minecraft-block";
-
 const name = "Minecraft Block";
-
 const history: HistoryDef = [
   "Dec 2021 lostminer - Block generator rewrite.",
   "Dec 2021 NinjolasNJM - Add Stairs, Fence, Door, Trapdoor and Snow.",
   "Jan 2022 NinjolasNJM - Add Cake Block type.",
   "May 2026 NinjolasNJM - Add Shelf Block type.",
   "May 2026 NinjolasNJM - Changed to use new glint and tint input.",
+  "Jul 2026 lostminer - Layout refresh.",
 ];
-
-const thumbnail: ThumbnailDef = {
-  url: thumnbailImage.src,
-};
-
+const thumbnail: ThumbnailDef = { url: thumbnailImage.src };
+const image = (imageId: string, importedImage: { src: string }): ImageDef => ({
+  id: imageId,
+  url: importedImage.src,
+});
 const images: ImageDef[] = [
-  { id: "Background", url: backgroundImage.src },
-  { id: "Title", url: titleImage.src },
-  { id: "Folds-Block", url: foldsBlockImage.src },
-  { id: "Tabs-Block", url: tabsBlockImage.src },
-  { id: "Folds-Slab", url: foldsSlabImage.src },
-  { id: "Tabs-Slab", url: tabsSlabImage.src },
-  { id: "Folds-Stair", url: foldsStairImage.src },
-  { id: "Tabs-Stair", url: tabsStairImage.src },
-  { id: "Folds-Fence", url: foldsFenceImage.src },
-  { id: "Tabs-Fence", url: tabsFenceImage.src },
-  { id: "Folds-Door", url: foldsDoorImage.src },
-  { id: "Tabs-Door", url: tabsDoorImage.src },
-  { id: "Folds-Trapdoor", url: foldsTrapdoorImage.src },
-  { id: "Tabs-Trapdoor", url: tabsTrapdoorImage.src },
-  { id: "Folds-Snow-Top", url: foldsSnowTopImage.src },
-  { id: "Folds-Snow-Bottom", url: foldsSnowBottomImage.src },
-  { id: "Tabs-Snow-Top", url: tabsSnowTopImage.src },
-  { id: "Tabs-Snow-Middle", url: tabsSnowMiddleImage.src },
-  { id: "Tabs-Snow-Bottom", url: tabsSnowBottomImage.src },
-  { id: "Folds-Cake-Left", url: foldsCakeLeftImage.src },
-  { id: "Folds-Cake-Middle", url: foldsCakeMiddleImage.src },
-  { id: "Folds-Cake-Right", url: foldsCakeRightImage.src },
-  { id: "Tabs-Cake-Left", url: tabsCakeLeftImage.src },
-  { id: "Tabs-Cake-Middle", url: tabsCakeMiddleImage.src },
-  { id: "Tabs-Cake-Corner", url: tabsCakeCornerImage.src },
-  { id: "Tabs-Cake-Right", url: tabsCakeRightImage.src },
-  { id: "Folds-Shelf", url: foldsShelfImage.src },
-  { id: "Tabs-Shelf", url: tabsShelfImage.src },
+  image("Background", backgroundImage),
+  image("Title", titleImage),
+  image("Folds-Block", foldsBlockImage),
+  image("Tabs-Block", tabsBlockImage),
+  image("Folds-Slab", foldsSlabImage),
+  image("Tabs-Slab", tabsSlabImage),
+  image("Folds-Stair", foldsStairImage),
+  image("Tabs-Stair", tabsStairImage),
+  image("Folds-Fence", foldsFenceImage),
+  image("Tabs-Fence", tabsFenceImage),
+  image("Folds-Door", foldsDoorImage),
+  image("Tabs-Door", tabsDoorImage),
+  image("Folds-Trapdoor", foldsTrapdoorImage),
+  image("Tabs-Trapdoor", tabsTrapdoorImage),
+  image("Folds-Snow-Top", foldsSnowTopImage),
+  image("Folds-Snow-Bottom", foldsSnowBottomImage),
+  image("Tabs-Snow-Top", tabsSnowTopImage),
+  image("Tabs-Snow-Middle", tabsSnowMiddleImage),
+  image("Tabs-Snow-Bottom", tabsSnowBottomImage),
+  image("Folds-Cake-Left", foldsCakeLeftImage),
+  image("Folds-Cake-Middle", foldsCakeMiddleImage),
+  image("Folds-Cake-Right", foldsCakeRightImage),
+  image("Tabs-Cake-Left", tabsCakeLeftImage),
+  image("Tabs-Cake-Middle", tabsCakeMiddleImage),
+  image("Tabs-Cake-Corner", tabsCakeCornerImage),
+  image("Tabs-Cake-Right", tabsCakeRightImage),
+  image("Folds-Shelf", foldsShelfImage),
+  image("Tabs-Shelf", tabsShelfImage),
 ];
-
 const textures: TextureDef[] = allTextureDefs;
-
-const script: ScriptDef = (generator: Generator) => {
-  generator.defineSelectInput("Version", versionIdsBlocksFirst);
-
-  const versionId = generator.getSelectInputValue("Version");
-
-  if (versionId === "custom") {
-    generator.defineAtlasInput("custom", {
-      label: "Custom",
-      standardWidth: 32,
-      standardHeight: 32,
-      choices: [],
-    });
-
-    const customAtlas = parseAtlas(
-      generator.getStringInputValue("custom Frames")
-    );
-    const customTexture = generator.getTexture("custom");
-    if (customTexture) {
-      const textureUrl = customTexture.imageWithCanvas.image.src;
-      if (customAtlas && customAtlas.frames.length > 0) {
-        updateCustomTextureAtlas(textureUrl, customAtlas);
-      } else {
-        updateCustomTextureUrl(textureUrl);
-      }
-    }
-  }
-
-  const currentTextureJson = generator.getStringInputValue(
-    currentBlockTextureId
-  );
-  const currentTexture = currentTextureJson
-    ? decodeSelectedTexture(currentTextureJson)
-    : null;
-  if (
-    currentTexture !== null &&
-    currentTexture.textureDefId !== "" &&
-    currentTexture.textureDefId !== versionId
-  ) {
-    // Clear stale selections when the active texture version changes.
-    generator.setStringInputValue(currentBlockTextureId, "");
-  }
-  const resolvedCurrentTextureJson = generator.getStringInputValue(
-    currentBlockTextureId
-  );
-  const resolvedCurrentTexture = resolvedCurrentTextureJson
-    ? decodeSelectedTexture(resolvedCurrentTextureJson)
-    : null;
-
-  generator.defineCustomStringInput(currentBlockTextureId, (onChange) => {
-    if (!versionId) {
-      return null;
-    }
-    return (
-      <TexturePicker
-        versionId={versionId}
-        blend={resolvedCurrentTexture ? resolvedCurrentTexture.blend : null}
-        onTextureSelected={(selectedTexture) => {
-          const newTexture: SelectedTexture = {
-            ...selectedTexture,
-            blend:
-              selectedTexture.textureDefId === ""
-                ? null
-                : resolvedCurrentTexture
-                  ? resolvedCurrentTexture.blend
-                  : null,
-          };
-          onChange(encodeSelectedTexture(newTexture));
-        }}
-        onBlendSelected={(blend) => {
-          if (!resolvedCurrentTexture) {
-            return;
-          }
-          onChange(
-            encodeSelectedTexture({
-              ...resolvedCurrentTexture,
-              blend,
-            })
-          );
-        }}
-      />
-    );
-  });
-
-  generator.defineSelectInput("Number of Blocks", ["1", "2"]);
-
-  const numberOfBlocksInput = generator.getSelectInputValue("Number of Blocks");
-
-  const numberOfBlocks = numberOfBlocksInput
-    ? parseInt(numberOfBlocksInput, 10)
-    : 1;
-
-  generator.defineBooleanInput("Show Folds", true);
-
-  const showFolds = generator.getBooleanInputValue("Show Folds") ?? false;
-
-  generator.drawImage("Background", [0, 0]);
-
-  for (let i = 1; i <= numberOfBlocks; i++) {
-    const blockId = i.toString();
-
-    const typeName = `Block ${blockId} Type`;
-
-    generator.defineSelectInput(typeName, [
-      "Block",
-      "Slab",
-      "Stair",
-      "Fence",
-      "Door",
-      "Trapdoor",
-      "Snow Layers",
-      "Cake",
-      "Shelf",
-    ]);
-
-    const blockType = generator.getSelectInputValue(typeName);
-
-    const ox = 57;
-    const oy = 16 + 400 * (i - 1);
-
-    switch (blockType) {
-      case "Block": {
-        drawBlock(generator, blockId, ox, oy, showFolds);
-        break;
-      }
-      case "Slab": {
-        drawSlab(generator, blockId, ox, oy, showFolds);
-        break;
-      }
-      case "Stair": {
-        drawStair(generator, blockId, ox, oy, showFolds);
-        break;
-      }
-      case "Fence": {
-        drawFence(generator, blockId, ox, oy, showFolds);
-        break;
-      }
-      case "Door": {
-        drawDoor(generator, blockId, ox, oy, showFolds);
-        break;
-      }
-      case "Trapdoor": {
-        drawTrapdoor(generator, blockId, ox, oy, showFolds);
-        break;
-      }
-      case "Snow Layers": {
-        drawSnow(generator, blockId, ox, oy, showFolds);
-        break;
-      }
-      case "Cake": {
-        drawCake(generator, blockId, ox, oy, showFolds);
-        break;
-      }
-      case "Shelf": {
-        drawShelf(generator, blockId, ox, oy, showFolds);
-        break;
-      }
-    }
-  }
-
-  generator.defineButtonInput("Clear", () => {
-    const currentTextureChoice = generator.getStringInputValue(
-      currentBlockTextureId
-    );
-
-    generator.clearAllVariables();
-
-    if (currentTextureChoice) {
-      generator.setStringInputValue(
-        currentBlockTextureId,
-        currentTextureChoice
-      );
-    }
-  });
-
-  generator.drawImage("Title", [0, 0]);
+const blockTypes = [
+  "Block",
+  "Slab",
+  "Stair",
+  "Fence",
+  "Door",
+  "Trapdoor",
+  "Snow Layers",
+  "Cake",
+  "Shelf",
+];
+type BlockProps = {
+  numberOfBlocks: number;
+  blockTypes: string[];
+  showFolds: boolean;
+  faceTextures: ReadonlyMap<string, SelectedTexture[]>;
+  shelfStates: string[];
+  snowLevels: string[];
+  snowOffsets: boolean[];
+  cakeBites: string[];
 };
 
-export const generator: GeneratorDef = {
+function render(ctx: RenderContext, props: BlockProps): void {
+  const adapter: BlockRenderContext = {
+    defineSelectInput: () => undefined,
+    defineBooleanInput: () => undefined,
+    defineRegionInput: (region, _onClick, regionId) =>
+      ctx.defineRegion(region, regionId),
+    getSelectInputValue: (inputId) => {
+      const match = /^Block (\d+) (State|Level|Bites Taken)$/.exec(inputId);
+      if (!match) return null;
+      const index = Number(match[1]) - 1;
+      switch (match[2]) {
+        case "State":
+          return props.shelfStates[index] ?? "Unpowered";
+        case "Level":
+          return props.snowLevels[index] ?? "1";
+        case "Bites Taken":
+          return props.cakeBites[index] ?? "0";
+        default:
+          return null;
+      }
+    },
+    getBooleanInputValue: (inputId) => {
+      const match = /^Block (\d+) Offset for Intermediate Levels$/.exec(
+        inputId
+      );
+      return match ? props.snowOffsets[Number(match[1]) - 1] ?? false : null;
+    },
+    getStringInputValue: (faceId) =>
+      encodeSelectedTextures(props.faceTextures.get(faceId) ?? []),
+    setStringInputValue: () => undefined,
+    drawImage: (imageId, position) => ctx.drawImage(imageId, position),
+    drawTexture: (textureId, source, destination, options) =>
+      ctx.drawTexture(textureId, source, destination, options),
+  };
+  ctx.drawImage("Background", [0, 0]);
+  for (let index = 0; index < props.numberOfBlocks; index += 1) {
+    const blockId = String(index + 1);
+    const ox = 57;
+    const oy = 16 + 400 * index;
+    switch (props.blockTypes[index] ?? "Block") {
+      case "Block":
+        drawBlock(adapter, blockId, ox, oy, props.showFolds);
+        break;
+      case "Slab":
+        drawSlab(adapter, blockId, ox, oy, props.showFolds);
+        break;
+      case "Stair":
+        drawStair(adapter, blockId, ox, oy, props.showFolds);
+        break;
+      case "Fence":
+        drawFence(adapter, blockId, ox, oy, props.showFolds);
+        break;
+      case "Door":
+        drawDoor(adapter, blockId, ox, oy, props.showFolds);
+        break;
+      case "Trapdoor":
+        drawTrapdoor(adapter, blockId, ox, oy, props.showFolds);
+        break;
+      case "Snow Layers":
+        drawSnow(adapter, blockId, ox, oy, props.showFolds);
+        break;
+      case "Cake":
+        drawCake(adapter, blockId, ox, oy, props.showFolds);
+        break;
+      case "Shelf":
+        drawShelf(adapter, blockId, ox, oy, props.showFolds);
+        break;
+    }
+  }
+  ctx.drawImage("Title", [0, 0]);
+}
+
+const minecraftBlockGenerator: Generator<BlockProps> = {
   id,
   name,
-  history,
-  thumbnail,
-  video: null,
-  instructions: null,
   images,
   textures,
-  script,
+  render,
 };
+const options = (values: string[]) =>
+  values.map((value) => ({ id: value, label: value }));
+
+function Component(): JSX.Element {
+  const [versionId, setVersionId] = React.useState(
+    versionIdsBlocksFirst[0] ?? ""
+  );
+  const [selectedTexture, setSelectedTexture] =
+    React.useState<SelectedTexture | null>(null);
+  const [customTexture, setCustomTexture] = React.useState<Texture | null>(
+    null
+  );
+  const [numberOfBlocks, setNumberOfBlocks] = React.useState(1);
+  const [selectedBlockTypes, setSelectedBlockTypes] = React.useState([
+    "Block",
+    "Block",
+  ]);
+  const [showFolds, setShowFolds] = React.useState(true);
+  const [faceTextures, setFaceTextures] = React.useState<
+    ReadonlyMap<string, SelectedTexture[]>
+  >(new Map());
+  const [shelfStates, setShelfStates] = React.useState([
+    "Unpowered",
+    "Unpowered",
+  ]);
+  const [snowLevels, setSnowLevels] = React.useState(["1", "1"]);
+  const [snowOffsets, setSnowOffsets] = React.useState([false, false]);
+  const [cakeBites, setCakeBites] = React.useState(["0", "0"]);
+  // A Map (not the plain-record shape the renderer now also accepts) because
+  // AtlasControl below reads it via `.get()`.
+  const dynamicTextures = new Map<string, Texture>();
+  if (customTexture) {
+    dynamicTextures.set("custom", customTexture);
+  }
+  const props: BlockProps = {
+    numberOfBlocks,
+    blockTypes: selectedBlockTypes,
+    showFolds,
+    faceTextures,
+    shelfStates,
+    snowLevels,
+    snowOffsets,
+    cakeBites,
+  };
+  const updateAt = <T,>(
+    setter: React.Dispatch<React.SetStateAction<T[]>>,
+    index: number,
+    value: T
+  ) =>
+    setter((current) =>
+      current.map((item, itemIndex) => (itemIndex === index ? value : item))
+    );
+  const onRegionClick: RegionClickHandler = ({ regionId }) => {
+    if (!selectedTexture) return;
+    setFaceTextures((current) => {
+      const next = new Map(current);
+      const stack = next.get(regionId) ?? [];
+      next.set(
+        regionId,
+        selectedTexture.textureDefId === ""
+          ? stack.slice(0, -1)
+          : [...stack, selectedTexture]
+      );
+      return next;
+    });
+  };
+  const onAtlasChange = (
+    texture: Texture | null,
+    framesJson: string | null
+  ) => {
+    setCustomTexture(texture);
+    if (!texture) return;
+    const url = texture.imageWithCanvas.image.src;
+    const atlas = parseAtlas(framesJson);
+    if (atlas && atlas.frames.length > 0) updateCustomTextureAtlas(url, atlas);
+    else updateCustomTextureUrl(url);
+  };
+  const clear = () => {
+    const defaultVersionId = versionIdsBlocksFirst[0] ?? "";
+    setVersionId(defaultVersionId);
+    setSelectedTexture((current) =>
+      current?.textureDefId === defaultVersionId ? current : null
+    );
+    setNumberOfBlocks(1);
+    setSelectedBlockTypes(["Block", "Block"]);
+    setShowFolds(true);
+    setFaceTextures(new Map());
+    setShelfStates(["Unpowered", "Unpowered"]);
+    setSnowLevels(["1", "1"]);
+    setSnowOffsets([false, false]);
+    setCakeBites(["0", "0"]);
+  };
+  return (
+    <div>
+      <GeneratorUI.MediaHero video={null} thumbnail={thumbnail} />
+      <div className="lg:flex gap-8">
+        <div
+          className="flex-1 min-w-0 mb-8 lg:mb-0"
+          data-testid="generator-sidebar"
+        >
+          <div className="w-full bg-gray-100 p-8 space-y-4">
+            <GeneratorUI.SelectControl
+              label="Version"
+              options={options(versionIdsBlocksFirst)}
+              value={versionId}
+              onValueChange={(value) => {
+                setVersionId(value);
+                setSelectedTexture((current) =>
+                  current?.textureDefId === value ? current : null
+                );
+              }}
+            />
+            {versionId === "custom" ? (
+              <GeneratorUI.AtlasControl
+                id="custom"
+                label="Custom"
+                standardWidth={32}
+                standardHeight={32}
+                choices={[]}
+                textures={dynamicTextures}
+                onChange={onAtlasChange}
+              />
+            ) : null}
+            {versionId ? (
+              <TexturePicker
+                versionId={versionId}
+                blend={selectedTexture?.blend ?? null}
+                onTextureSelected={(texture) =>
+                  setSelectedTexture({
+                    ...texture,
+                    blend:
+                      texture.textureDefId === ""
+                        ? null
+                        : selectedTexture?.blend ?? null,
+                  })
+                }
+                onBlendSelected={(blend) =>
+                  setSelectedTexture((current) =>
+                    current ? { ...current, blend } : null
+                  )
+                }
+              />
+            ) : null}
+            <GeneratorUI.SelectControl
+              label="Number of Blocks"
+              options={options(["1", "2"])}
+              value={String(numberOfBlocks)}
+              onValueChange={(value) => setNumberOfBlocks(Number(value))}
+            />
+            <GeneratorUI.BooleanControl
+              label="Show Folds"
+              checked={showFolds}
+              onCheckedChange={setShowFolds}
+            />
+            {Array.from({ length: numberOfBlocks }, (_, index) => (
+              <React.Fragment key={index}>
+                <GeneratorUI.SelectControl
+                  label={`Block ${index + 1} Type`}
+                  options={options(blockTypes)}
+                  value={selectedBlockTypes[index] ?? "Block"}
+                  onValueChange={(value) =>
+                    updateAt(setSelectedBlockTypes, index, value)
+                  }
+                />
+                {selectedBlockTypes[index] === "Shelf" ? (
+                  <GeneratorUI.SelectControl
+                    label={`Block ${index + 1} State`}
+                    options={options([
+                      "Unpowered",
+                      "Single",
+                      "Left",
+                      "Center",
+                      "Right",
+                    ])}
+                    value={shelfStates[index] ?? "Unpowered"}
+                    onValueChange={(value) =>
+                      updateAt(setShelfStates, index, value)
+                    }
+                  />
+                ) : null}
+                {selectedBlockTypes[index] === "Snow Layers" ? (
+                  <>
+                    <GeneratorUI.SelectControl
+                      label={`Block ${index + 1} Level`}
+                      options={options([
+                        "1",
+                        "2",
+                        "3",
+                        "4",
+                        "5",
+                        "6",
+                        "7",
+                        "8",
+                      ])}
+                      value={snowLevels[index] ?? "1"}
+                      onValueChange={(value) =>
+                        updateAt(setSnowLevels, index, value)
+                      }
+                    />
+                    <GeneratorUI.BooleanControl
+                      label={`Block ${index + 1} Offset for Intermediate Levels`}
+                      checked={snowOffsets[index] ?? false}
+                      onCheckedChange={(value) =>
+                        updateAt(setSnowOffsets, index, value)
+                      }
+                    />
+                  </>
+                ) : null}
+                {selectedBlockTypes[index] === "Cake" ? (
+                  <GeneratorUI.SelectControl
+                    label={`Block ${index + 1} Bites Taken`}
+                    options={options(["0", "1", "2", "3", "4", "5", "6"])}
+                    value={cakeBites[index] ?? "0"}
+                    onValueChange={(value) =>
+                      updateAt(setCakeBites, index, value)
+                    }
+                  />
+                ) : null}
+              </React.Fragment>
+            ))}
+            <GeneratorUI.ButtonControl
+              label="Clear"
+              onClick={clear}
+              color="Red"
+            />
+          </div>
+        </div>
+        <div className="flex-1 min-w-0">
+          <GeneratorRenderer
+            generator={minecraftBlockGenerator}
+            props={props}
+            dynamicTextures={dynamicTextures}
+            onRegionClick={onRegionClick}
+          />
+        </div>
+      </div>
+      <GeneratorUI.History history={history} />
+    </div>
+  );
+}
+
+export const generator: GeneratorDefV2 = { id, name, thumbnail, Component };

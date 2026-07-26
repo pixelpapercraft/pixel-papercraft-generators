@@ -1,40 +1,30 @@
 "use client";
 
-import type {
-  GeneratorDef,
-  ImageDef,
-  HistoryDef,
-  TextureDef,
-  ScriptDef,
-  InstructionsDef,
-  ThumbnailDef,
-} from "@genroot/builder/modules/generatorDef";
+import React from "react";
 import {
-  type Generator,
-  type TexturePlugin,
-} from "@genroot/builder/modules/generator";
-import { A4 } from "@genroot/builder/modules/modelPage";
-import {
-  type Flip,
+  A4,
+  GeneratorRenderer,
+  GeneratorUI,
   makeNextFlip,
-} from "@genroot/builder/ui/texturePicker/flip";
-import { rotationToDegrees } from "@genroot/builder/ui/texturePicker/rotation";
-import {
+  rotationToDegrees,
+  type Flip,
+  type GeneratorDefV2,
+  type Generator,
+  type HistoryDef,
+  type ImageDef,
+  type InstructionsDef,
+  type RegionClickHandler,
+  type RenderContext,
   type SelectedTexture,
-  encodeSelectedTexture,
-  decodeSelectedTexture,
-  encodeSelectedTextures,
-  decodeSelectedTextures,
-} from "@genroot/builder/ui/texturePicker/selectedTexture";
+  type Texture,
+  type TextureDef,
+  type TexturePlugin,
+  type ThumbnailDef,
+} from "@genroot/builder";
 import {
-  allTextureDefs,
-  versionIdsItemsFirst as versionIds,
-  findVersion,
-} from "@genroot/generators/_common/textures/textureVersions";
-import { TexturePicker } from "@genroot/generators/minecraftItem/ui/texturePicker";
-import {
-  defineGlintControls,
+  type GlintPluginOptions,
   itemGlintTextureDefs,
+  makeGlintPlugin,
 } from "@genroot/generators/_common/plugins/glint";
 import {
   parseAtlas,
@@ -42,17 +32,23 @@ import {
   updateCustomTextureUrl,
 } from "@genroot/generators/_common/textures/customTextureVersion";
 import {
+  allTextureDefs,
+  versionIdsItemsFirst as versionIds,
+  findVersion,
+} from "@genroot/generators/_common/textures/textureVersions";
+import {
   type Rectangle,
   getItemDimensions,
   getItemLayers,
   getItemLayout,
   getLayerHalfDestination,
-} from "@genroot/generators/minecraftItem/itemLayout";
+} from "@genroot/generators/_common/item/itemLayout";
+import { TexturePicker } from "@genroot/generators/_common/item/texturePicker";
 
-import thumnbailImage from "./thumbnail/v2-thumbnail-256.jpeg";
 import backgroundImage from "./images/Background.png";
 import titleImage from "./images/Title.png";
 import centerFoldTexture from "./textures/CenterFold.png";
+import thumbnailImage from "./thumbnail/v2-thumbnail-256.jpeg";
 
 const id = "minecraft-item";
 
@@ -61,11 +57,12 @@ const name = "Minecraft Item";
 const history: HistoryDef = [
   "26 Jan 2022 lostminer - First release.",
   "05 Feb 2022 NinjolasNJM - Added fold lines and gap removal feature.",
+  "16 May 2026 NinjolasNJM - Added custom textures, extra item sizes, and enchantment glint.",
+  "17 May 2026 NinjolasNJM - Added gap-free item layout.",
+  "Jul 2026 lostminer - Layout refresh.",
 ];
 
-const thumbnail: ThumbnailDef = {
-  url: thumnbailImage.src,
-};
+const thumbnail: ThumbnailDef = { url: thumbnailImage.src };
 
 const instructions: InstructionsDef = `
 ## Item Sizes
@@ -96,632 +93,703 @@ const textures: TextureDef[] = [
   },
 ];
 
-const script: ScriptDef = (generator: Generator) => {
-  const drawItemHalf = (
-    selectedTexture: SelectedTexture,
-    rectangle: Rectangle,
-    destX: number,
-    y: number,
-    width: number,
-    height: number,
-    appliedFlip: Flip = "None",
-    plugin?: TexturePlugin
-  ) => {
-    const { textureDefId, rotation, flip, blend } = selectedTexture;
-    const [nextFlip, nextRotation] = makeNextFlip(flip, appliedFlip, rotation);
-    generator.drawTexture(textureDefId, rectangle, [destX, y, width, height], {
-      flip: nextFlip,
-      rotate: rotationToDegrees(nextRotation),
-      blend: blend ? { kind: "MultiplyHex", hex: blend } : undefined,
-      plugin,
-    });
-  };
+const pageMargin = 30;
+const itemMargin = 5;
+const innerPageWidth = A4.px.width - pageMargin * 2;
+const innerPageHeight = A4.px.height - pageMargin * 2;
+const defaultItemScale = 4;
 
-  const pageMargin = 30;
-  const itemMargin = 5;
-  const innerPageWidth = A4.px.width - pageMargin * 2;
-  const innerPageHeight = A4.px.height - pageMargin * 2;
-  const defaultItemScale = 4;
+const sizeMedium = "Medium (400%)";
+const sizeLarge = "Large (700%)";
+const sizeExtraLarge = "Extra Large (1400%)";
+const sizeSmall = "Small (200%)";
+const sizeCustom = "Custom";
 
-  type SkylineNode = { x: number; y: number; width: number };
+const sizes = [sizeMedium, sizeLarge, sizeExtraLarge, sizeSmall, sizeCustom];
 
-  const getSkylineY = (
-    skyline: SkylineNode[],
-    startIndex: number,
-    requiredWidth: number
-  ) => {
-    let coveredWidth = 0;
-    let y = skyline[startIndex]!.y;
-    let index = startIndex;
+const sizeOptions = sizes.map((size) => ({ id: size, label: size }));
 
-    while (coveredWidth < requiredWidth) {
-      if (index >= skyline.length) {
-        return Infinity;
-      }
-      const node = skyline[index]!;
-      y = Math.max(y, node.y);
-      coveredWidth += node.width;
+const scaleBySize = new Map([
+  [sizeMedium, 4],
+  [sizeLarge, 7],
+  [sizeExtraLarge, 14],
+  [sizeSmall, 2],
+]);
+
+type SkylineNode = { x: number; y: number; width: number };
+
+type ItemPlacement = {
+  selectedTextureFrame: SelectedTexture;
+  selectedTextureFrameIndex: number;
+  x: number;
+  y: number;
+  leftHalfWidth: number;
+  width: number;
+  height: number;
+};
+
+type ItemPage = {
+  id: string;
+  placements: ItemPlacement[];
+};
+
+type MinecraftItemProps = {
+  selectedTextureFrames: SelectedTexture[];
+  showFolds: boolean;
+  glintEnabled: boolean;
+  glintOpacity: number;
+  glintXOffset: number;
+  glintYOffset: number;
+};
+
+function getSkylineY(
+  skyline: SkylineNode[],
+  startIndex: number,
+  requiredWidth: number
+): number {
+  const firstNode = skyline[startIndex];
+  if (!firstNode) {
+    return Infinity;
+  }
+
+  let coveredWidth = 0;
+  let y = firstNode.y;
+  let index = startIndex;
+
+  while (coveredWidth < requiredWidth) {
+    const node = skyline[index];
+    if (!node) {
+      return Infinity;
+    }
+    y = Math.max(y, node.y);
+    coveredWidth += node.width;
+    index += 1;
+  }
+
+  return y;
+}
+
+function mergeSkyline(skyline: SkylineNode[]): void {
+  for (let index = 0; index < skyline.length - 1; index += 1) {
+    const current = skyline[index];
+    const next = skyline[index + 1];
+
+    if (!current || !next) {
+      continue;
+    }
+
+    if (current.y === next.y) {
+      current.width += next.width;
+      skyline.splice(index + 1, 1);
+      index -= 1;
+    }
+  }
+}
+
+function addSkylineNode(
+  skyline: SkylineNode[],
+  x: number,
+  y: number,
+  width: number
+): void {
+  const right = x + width;
+  let index = 0;
+
+  while (index < skyline.length) {
+    const node = skyline[index];
+    if (!node) {
+      break;
+    }
+    const nodeRight = node.x + node.width;
+
+    if (nodeRight <= x) {
       index += 1;
+      continue;
     }
 
-    return y;
-  };
-
-  const mergeSkyline = (skyline: SkylineNode[]) => {
-    for (let index = 0; index < skyline.length - 1; index += 1) {
-      const current = skyline[index]!;
-      const next = skyline[index + 1]!;
-
-      if (current.y === next.y) {
-        current.width += next.width;
-        skyline.splice(index + 1, 1);
-        index -= 1;
-      }
+    if (node.x >= right) {
+      break;
     }
-  };
 
-  const addSkylineNode = (
-    skyline: SkylineNode[],
-    x: number,
-    y: number,
-    width: number
-  ) => {
-    const right = x + width;
-    let index = 0;
+    if (node.x < x) {
+      const leftWidth = x - node.x;
+      const rightWidth = nodeRight - right;
+      node.width = leftWidth;
 
-    while (index < skyline.length) {
-      const node = skyline[index]!;
-      const nodeRight = node.x + node.width;
-
-      if (nodeRight <= x) {
-        index += 1;
-        continue;
-      }
-
-      if (node.x >= right) {
-        break;
-      }
-
-      if (node.x < x) {
-        const leftWidth = x - node.x;
-        const rightWidth = nodeRight - right;
-        node.width = leftWidth;
-
-        if (rightWidth > 0) {
-          skyline.splice(index + 1, 0, {
-            x: right,
-            y: node.y,
-            width: rightWidth,
-          });
-        }
-        index += 1;
-        continue;
-      }
-
-      if (nodeRight > right) {
-        const remainingWidth = nodeRight - right;
-        skyline.splice(index, 1, {
+      if (rightWidth > 0) {
+        const remainingNode: SkylineNode = {
           x: right,
           y: node.y,
-          width: remainingWidth,
-        });
-        break;
+          width: rightWidth,
+        };
+        skyline.splice(index + 1, 0, remainingNode);
       }
-
-      skyline.splice(index, 1);
+      index += 1;
+      continue;
     }
 
-    const insertIndex = skyline.findIndex((node) => node.x > x);
-    const newNode: SkylineNode = { x, y, width };
-
-    if (insertIndex === -1) {
-      skyline.push(newNode);
-    } else {
-      skyline.splice(insertIndex, 0, newNode);
-    }
-
-    mergeSkyline(skyline);
-  };
-
-  const placeRect = (
-    skyline: SkylineNode[],
-    requiredWidth: number,
-    requiredHeight: number
-  ) => {
-    let bestX = -1;
-    let bestY = Infinity;
-    let bestIndex = -1;
-
-    for (let index = 0; index < skyline.length; index += 1) {
-      const node = skyline[index]!;
-      const rectRight = node.x + requiredWidth;
-
-      if (rectRight > pageMargin + innerPageWidth) {
-        continue;
-      }
-
-      const y = getSkylineY(skyline, index, requiredWidth);
-      if (y + requiredHeight > pageMargin + innerPageHeight) {
-        continue;
-      }
-
-      if (y < bestY || (y === bestY && node.x < bestX)) {
-        bestX = node.x;
-        bestY = y;
-        bestIndex = index;
-      }
-    }
-
-    if (bestIndex === -1) {
-      return null;
-    }
-
-    addSkylineNode(skyline, bestX, bestY + requiredHeight, requiredWidth);
-    return { x: bestX, y: bestY };
-  };
-
-  const drawItems = (
-    selectedTextureFrames: SelectedTexture[],
-    showFolds: boolean,
-    onToggleItemEnchantment: (itemIndex: number) => void,
-    getGlintPlugin: (enabled: boolean) => TexturePlugin | undefined
-  ) => {
-    const makeNewPageSkyline = (): SkylineNode[] => [
-      { x: pageMargin, y: pageMargin, width: innerPageWidth },
-    ];
-
-    const pages: Array<{
-      id: string;
-      placements: Array<{
-        selectedTextureFrame: SelectedTexture;
-        selectedTextureFrameIndex: number;
-        x: number;
-        y: number;
-        leftHalfWidth: number;
-        width: number;
-        height: number;
-      }>;
-    }> = [];
-
-    let currentPage = {
-      id: "Page 1",
-      placements: [] as Array<{
-        selectedTextureFrame: SelectedTexture;
-        selectedTextureFrameIndex: number;
-        x: number;
-        y: number;
-        leftHalfWidth: number;
-        width: number;
-        height: number;
-      }>,
-    };
-    let skyline = makeNewPageSkyline();
-
-    const pushPage = () => {
-      pages.push(currentPage);
-      const nextPageIndex = pages.length + 1;
-      currentPage = {
-        id: `Page ${nextPageIndex}`,
-        placements: [],
+    if (nodeRight > right) {
+      const remainingNode: SkylineNode = {
+        x: right,
+        y: node.y,
+        width: nodeRight - right,
       };
-      skyline = makeNewPageSkyline();
-    };
-
-    selectedTextureFrames.forEach(
-      (selectedTextureFrame, selectedTextureFrameIndex) => {
-        const { leftHalfWidth, width, height } = getItemDimensions(
-          selectedTextureFrame,
-          selectedTextureFrame.itemScale ?? defaultItemScale
-        );
-        const requiredWidth = width + itemMargin * 2;
-        const requiredHeight = height + itemMargin * 2;
-        let placement = placeRect(skyline, requiredWidth, requiredHeight);
-
-        if (!placement && currentPage.placements.length > 0) {
-          pushPage();
-          placement = placeRect(skyline, requiredWidth, requiredHeight);
-        }
-
-        if (!placement) {
-          placement = { x: pageMargin, y: pageMargin };
-        }
-
-        currentPage.placements.push({
-          selectedTextureFrame,
-          selectedTextureFrameIndex,
-          x: placement.x + itemMargin,
-          y: placement.y + itemMargin,
-          leftHalfWidth,
-          width,
-          height,
-        });
-      }
-    );
-
-    if (currentPage.placements.length > 0 || pages.length === 0) {
-      pages.push(currentPage);
+      skyline.splice(index, 1, remainingNode);
+      break;
     }
 
-    pages.forEach((page) => {
-      generator.usePage(page.id);
-      generator.drawImage("Background", [0, 0]);
-      page.placements.forEach((placement) => {
-        const {
-          selectedTextureFrame,
-          selectedTextureFrameIndex,
-          x,
-          y,
-          leftHalfWidth,
-          width,
-          height,
-        } = placement;
-        const layers = getItemLayers(selectedTextureFrame);
-        const itemScale = selectedTextureFrame.itemScale ?? defaultItemScale;
-        const glintPlugin = getGlintPlugin(
-          selectedTextureFrame.enchanted ?? false
-        );
-        const itemLayout = getItemLayout(layers);
+    skyline.splice(index, 1);
+  }
 
-        layers.forEach((layer) => {
-          const leftDestination = getLayerHalfDestination(
-            itemLayout.leftBounds,
-            itemLayout.minY,
-            layer,
-            x,
-            y,
-            itemScale,
-            "None"
-          );
-          const rightDestination = getLayerHalfDestination(
-            itemLayout.rightBounds,
-            itemLayout.minY,
-            layer,
-            x + leftHalfWidth,
-            y,
-            itemScale,
-            "Horizontal"
-          );
+  const insertIndex = skyline.findIndex((node) => node.x > x);
+  const newNode: SkylineNode = { x, y, width };
 
-          drawItemHalf(
-            layer,
-            leftDestination.source,
-            leftDestination.x,
-            leftDestination.y,
-            leftDestination.width,
-            leftDestination.height,
-            "None",
-            glintPlugin
-          );
-          drawItemHalf(
-            layer,
-            rightDestination.source,
-            rightDestination.x,
-            rightDestination.y,
-            rightDestination.width,
-            rightDestination.height,
-            "Horizontal",
-            glintPlugin
-          );
-        });
-        if (showFolds) {
-          generator.drawTexture(
-            "CenterFold",
-            [0, 0, 2, height],
-            [x + leftHalfWidth - 1, y, 2, height]
-          );
-        }
-        generator.defineRegionInput(
-          [x, y, width, height],
-          () => onToggleItemEnchantment(selectedTextureFrameIndex),
-          `Item ${selectedTextureFrameIndex + 1}`
-        );
-      });
-      generator.drawImage("Title", [0, 0]);
-    });
-  };
+  if (insertIndex === -1) {
+    skyline.push(newNode);
+  } else {
+    skyline.splice(insertIndex, 0, newNode);
+  }
 
-  const sizeMedium = "Medium (400%)";
-  const sizeLarge = "Large (700%)";
-  const sizeExtraLarge = "Extra Large (1400%)";
-  const sizeSmall = "Small (200%)";
-  const sizeCustom = "Custom";
-  const sizes = [sizeMedium, sizeLarge, sizeExtraLarge, sizeSmall, sizeCustom];
-  const scaleBySize = new Map([
-    [sizeMedium, 4],
-    [sizeLarge, 7],
-    [sizeExtraLarge, 14],
-    [sizeSmall, 2],
-  ]);
+  mergeSkyline(skyline);
+}
 
-  // Show a drop down of different texture versions
+function placeRect(
+  skyline: SkylineNode[],
+  requiredWidth: number,
+  requiredHeight: number
+): { x: number; y: number } | null {
+  let bestX = -1;
+  let bestY = Infinity;
+  let bestIndex = -1;
 
-  generator.defineSelectInput("Version", versionIds);
+  for (let index = 0; index < skyline.length; index += 1) {
+    const node = skyline[index];
+    if (!node) {
+      continue;
+    }
+    const rectRight = node.x + requiredWidth;
 
-  const versionId = generator.getSelectInputValue("Version") ?? "";
+    if (rectRight > pageMargin + innerPageWidth) {
+      continue;
+    }
 
-  if (versionId === "custom") {
-    generator.defineAtlasInput("custom", {
-      label: "Custom",
-      standardWidth: 32,
-      standardHeight: 32,
-      choices: [],
-    });
+    const y = getSkylineY(skyline, index, requiredWidth);
+    if (y + requiredHeight > pageMargin + innerPageHeight) {
+      continue;
+    }
 
-    const customAtlas = parseAtlas(
-      generator.getStringInputValue("custom Frames")
-    );
-    const customTexture = generator.getTexture("custom");
-    if (customTexture) {
-      const textureUrl = customTexture.imageWithCanvas.image.src;
-      if (customAtlas && customAtlas.frames.length > 0) {
-        updateCustomTextureAtlas(textureUrl, customAtlas);
-      } else {
-        updateCustomTextureUrl(textureUrl);
-      }
+    if (y < bestY || (y === bestY && node.x < bestX)) {
+      bestX = node.x;
+      bestY = y;
+      bestIndex = index;
     }
   }
 
-  // Get the current selected version
-
-  const textureVersion = findVersion(versionId);
-
-  // Show a drop down of sizes
-
-  generator.defineSelectInput("Item Size", sizes);
-
-  const selectedItemSize =
-    generator.getSelectInputValue("Item Size") ?? sizeMedium;
-  const selectedCustomScalePercent =
-    generator.getNumberVariable("Custom Scale (%)") ?? 400;
-
-  if (selectedItemSize === sizeCustom) {
-    generator.defineRangeInput("Custom Scale (%)", {
-      min: 100,
-      max: 1600,
-      value: selectedCustomScalePercent,
-      step: 100,
-      showValue: true,
-    });
+  if (bestIndex === -1) {
+    return null;
   }
 
-  const selectedItemScale =
-    selectedItemSize === sizeCustom
-      ? selectedCustomScalePercent / 100
-      : scaleBySize.get(selectedItemSize) ?? defaultItemScale;
+  addSkylineNode(skyline, bestX, bestY + requiredHeight, requiredWidth);
+  return { x: bestX, y: bestY };
+}
 
-  // Decode the current selected texture
-
-  const currentTextureJson = generator.getStringInputValue(
-    "SelectedTextureFrame"
-  );
-  const currentTexture: SelectedTexture | null = currentTextureJson
-    ? decodeSelectedTexture(currentTextureJson)
-    : null;
-  if (currentTexture !== null && currentTexture.textureDefId !== versionId) {
-    // Clear stale selections when the active texture version changes.
-    generator.setStringInputValue("SelectedTextureFrame", "");
-  }
-  const resolvedCurrentTextureJson = generator.getStringInputValue(
-    "SelectedTextureFrame"
-  );
-  const resolvedCurrentTexture: SelectedTexture | null =
-    resolvedCurrentTextureJson
-      ? decodeSelectedTexture(resolvedCurrentTextureJson)
-      : null;
-
-  // Show the Texture Picker
-  // When a texture is selected, we need to encode it into a string variable
-
-  generator.defineCustomStringInput("SelectedTextureFrame", (onChange) => {
-    if (!textureVersion) {
-      return null;
-    }
-    return (
-      <TexturePicker
-        textureVersion={textureVersion}
-        blend={resolvedCurrentTexture ? resolvedCurrentTexture.blend : null}
-        onSelect={(selectedTexture) => {
-          const newTexture: SelectedTexture = {
-            ...selectedTexture,
-            blend: resolvedCurrentTexture ? resolvedCurrentTexture.blend : null,
-          };
-          onChange(encodeSelectedTexture(newTexture));
-        }}
-        onBlendSelected={(blend) => {
-          if (!resolvedCurrentTexture) {
-            return;
-          }
-          onChange(
-            encodeSelectedTexture({
-              ...resolvedCurrentTexture,
-              blend,
-            })
-          );
-        }}
-      />
-    );
-  });
-
-  // Define the Show Folds Variable
-
-  generator.defineBooleanInput("Show Folds", true);
-
-  const showFolds = generator.getBooleanInputValueWithDefault(
-    "Show Folds",
-    true
-  );
-
-  // Decode the selected texture
-
-  const selectedTextureFrame: SelectedTexture | null = resolvedCurrentTexture;
-
-  // Decode the added textures
-
-  const selectedTextureFramesJson = generator.getStringInputValue(
-    "SelectedTextureFrames"
-  );
-  const selectedTextureFrames: SelectedTexture[] = selectedTextureFramesJson
-    ? decodeSelectedTextures(selectedTextureFramesJson)
-    : [];
-
-  const getItemLayersForItem = (item: SelectedTexture) =>
-    item.itemLayers ?? [item];
-
-  const addSelectedTextureFrame = (textureFrame: SelectedTexture) => [
-    ...selectedTextureFrames,
-    textureFrame,
+function makeItemPages(selectedTextureFrames: SelectedTexture[]): ItemPage[] {
+  const makeNewPageSkyline = (): SkylineNode[] => [
+    { x: pageMargin, y: pageMargin, width: innerPageWidth },
   ];
 
-  const toggleItemEnchantment = (itemIndex: number) => {
-    generator.setStringInputValue(
-      "SelectedTextureFrames",
-      encodeSelectedTextures(
-        selectedTextureFrames.map((textureFrame, index) =>
-          index === itemIndex
-            ? {
-                ...textureFrame,
-                enchanted: !(textureFrame.enchanted ?? false),
-              }
-            : textureFrame
-        )
+  const pages: ItemPage[] = [];
+  let currentPage: ItemPage = { id: "Page 1", placements: [] };
+  let skyline = makeNewPageSkyline();
+
+  const pushPage = () => {
+    pages.push(currentPage);
+    currentPage = { id: `Page ${pages.length + 1}`, placements: [] };
+    skyline = makeNewPageSkyline();
+  };
+
+  selectedTextureFrames.forEach(
+    (selectedTextureFrame, selectedTextureFrameIndex) => {
+      const { leftHalfWidth, width, height } = getItemDimensions(
+        selectedTextureFrame,
+        selectedTextureFrame.itemScale ?? defaultItemScale
+      );
+      const requiredWidth = width + itemMargin * 2;
+      const requiredHeight = height + itemMargin * 2;
+      let placement = placeRect(skyline, requiredWidth, requiredHeight);
+
+      if (!placement && currentPage.placements.length > 0) {
+        pushPage();
+        placement = placeRect(skyline, requiredWidth, requiredHeight);
+      }
+
+      const resolvedPlacement = placement ?? {
+        x: pageMargin,
+        y: pageMargin,
+      };
+      const itemPlacement: ItemPlacement = {
+        selectedTextureFrame,
+        selectedTextureFrameIndex,
+        x: resolvedPlacement.x + itemMargin,
+        y: resolvedPlacement.y + itemMargin,
+        leftHalfWidth,
+        width,
+        height,
+      };
+      currentPage.placements.push(itemPlacement);
+    }
+  );
+
+  if (currentPage.placements.length > 0 || pages.length === 0) {
+    pages.push(currentPage);
+  }
+
+  return pages;
+}
+
+function drawItemHalf(
+  ctx: RenderContext,
+  selectedTexture: SelectedTexture,
+  rectangle: Rectangle,
+  destX: number,
+  y: number,
+  width: number,
+  height: number,
+  appliedFlip: Flip = "None",
+  plugin?: TexturePlugin
+): void {
+  const { textureDefId, rotation, flip, blend } = selectedTexture;
+  const [nextFlip, nextRotation] = makeNextFlip(flip, appliedFlip, rotation);
+  ctx.drawTexture(textureDefId, rectangle, [destX, y, width, height], {
+    flip: nextFlip,
+    rotate: rotationToDegrees(nextRotation),
+    blend: blend ? { kind: "MultiplyHex", hex: blend } : undefined,
+    plugin,
+  });
+}
+
+function render(ctx: RenderContext, props: MinecraftItemProps): void {
+  const glintTexture = ctx.getTexture("Enchanted Glint");
+  const glintPluginOptions: GlintPluginOptions = {
+    opacity: props.glintOpacity / 255,
+    xOffset: props.glintXOffset,
+    yOffset: props.glintYOffset,
+  };
+  const getGlintPlugin = (enabled: boolean): TexturePlugin | undefined =>
+    glintTexture && props.glintEnabled && enabled
+      ? makeGlintPlugin(glintTexture, glintPluginOptions)
+      : undefined;
+
+  makeItemPages(props.selectedTextureFrames).forEach((page) => {
+    ctx.usePage(page.id);
+    ctx.drawImage("Background", [0, 0]);
+
+    page.placements.forEach((placement) => {
+      const {
+        selectedTextureFrame,
+        selectedTextureFrameIndex,
+        x,
+        y,
+        leftHalfWidth,
+        width,
+        height,
+      } = placement;
+      const layers = getItemLayers(selectedTextureFrame);
+      const itemScale = selectedTextureFrame.itemScale ?? defaultItemScale;
+      const glintPlugin = getGlintPlugin(
+        selectedTextureFrame.enchanted ?? false
+      );
+      const itemLayout = getItemLayout(layers);
+
+      layers.forEach((layer) => {
+        const leftDestination = getLayerHalfDestination(
+          itemLayout.leftBounds,
+          itemLayout.minY,
+          layer,
+          x,
+          y,
+          itemScale,
+          "None"
+        );
+        const rightDestination = getLayerHalfDestination(
+          itemLayout.rightBounds,
+          itemLayout.minY,
+          layer,
+          x + leftHalfWidth,
+          y,
+          itemScale,
+          "Horizontal"
+        );
+
+        drawItemHalf(
+          ctx,
+          layer,
+          leftDestination.source,
+          leftDestination.x,
+          leftDestination.y,
+          leftDestination.width,
+          leftDestination.height,
+          "None",
+          glintPlugin
+        );
+        drawItemHalf(
+          ctx,
+          layer,
+          rightDestination.source,
+          rightDestination.x,
+          rightDestination.y,
+          rightDestination.width,
+          rightDestination.height,
+          "Horizontal",
+          glintPlugin
+        );
+      });
+
+      if (props.showFolds) {
+        ctx.drawTexture(
+          "CenterFold",
+          [0, 0, 2, height],
+          [x + leftHalfWidth - 1, y, 2, height]
+        );
+      }
+
+      ctx.defineRegion(
+        [x, y, width, height],
+        `Item ${selectedTextureFrameIndex + 1}`
+      );
+    });
+
+    ctx.drawImage("Title", [0, 0]);
+  });
+}
+
+const minecraftItemGenerator: Generator<MinecraftItemProps> = {
+  id,
+  name,
+  images,
+  textures,
+  render,
+};
+
+function Component(): JSX.Element {
+  const [versionId, setVersionId] = React.useState(versionIds[0] ?? "");
+  const [selectedItemSize, setSelectedItemSize] = React.useState(sizeMedium);
+  const [customScalePercent, setCustomScalePercent] = React.useState(400);
+  const [selectedTexture, setSelectedTexture] =
+    React.useState<SelectedTexture | null>(null);
+  const [selectedTextureFrames, setSelectedTextureFrames] = React.useState<
+    SelectedTexture[]
+  >([]);
+  const [showFolds, setShowFolds] = React.useState(true);
+  const [customTexture, setCustomTexture] = React.useState<Texture | null>(
+    null
+  );
+  const [glintTexture, setGlintTexture] = React.useState<Texture | null>(null);
+  const [glintEnabled, setGlintEnabled] = React.useState(true);
+  const [glintOpacity, setGlintOpacity] = React.useState(255);
+  const [glintXOffset, setGlintXOffset] = React.useState(0);
+  const [glintYOffset, setGlintYOffset] = React.useState(0);
+
+  const textureVersion = findVersion(versionId);
+  const selectedItemScale =
+    selectedItemSize === sizeCustom
+      ? customScalePercent / 100
+      : scaleBySize.get(selectedItemSize) ?? defaultItemScale;
+
+  const rendererProps: MinecraftItemProps = {
+    selectedTextureFrames,
+    showFolds,
+    glintEnabled,
+    glintOpacity,
+    glintXOffset,
+    glintYOffset,
+  };
+
+  // A Map (not the plain-record shape the renderer now also accepts) because
+  // AtlasControl below reads it via `.get()`.
+  const dynamicTextures = new Map<string, Texture>();
+  if (customTexture) {
+    dynamicTextures.set("custom", customTexture);
+  }
+  if (glintTexture) {
+    dynamicTextures.set("Enchanted Glint", glintTexture);
+  }
+
+  const onVersionChange = (nextVersionId: string) => {
+    setVersionId(nextVersionId);
+    setSelectedTexture((currentTexture) =>
+      currentTexture?.textureDefId === nextVersionId ? currentTexture : null
+    );
+  };
+
+  const onAtlasChange = (
+    texture: Texture | null,
+    framesJson: string | null
+  ) => {
+    setCustomTexture(texture);
+    if (!texture) {
+      return;
+    }
+
+    const textureUrl = texture.imageWithCanvas.image.src;
+    const atlas = parseAtlas(framesJson);
+    if (atlas && atlas.frames.length > 0) {
+      updateCustomTextureAtlas(textureUrl, atlas);
+    } else {
+      updateCustomTextureUrl(textureUrl);
+    }
+  };
+
+  const addItem = () => {
+    if (!selectedTexture) {
+      return;
+    }
+
+    const newItem: SelectedTexture = {
+      ...selectedTexture,
+      itemScale: selectedItemScale,
+      itemLayers: undefined,
+      enchanted: false,
+    };
+    setSelectedTextureFrames((items) => [...items, newItem]);
+  };
+
+  const overlayItem = () => {
+    if (!selectedTexture) {
+      return;
+    }
+
+    setSelectedTextureFrames((items) => {
+      const previousItem = items.at(-1);
+      const overlayItemScale = previousItem?.itemScale ?? selectedItemScale;
+      const newLayer: SelectedTexture = {
+        ...selectedTexture,
+        itemScale: overlayItemScale,
+        itemLayers: undefined,
+        enchanted: undefined,
+      };
+
+      if (!previousItem) {
+        return [...items, { ...newLayer, enchanted: false }];
+      }
+
+      const overlaidItem: SelectedTexture = {
+        ...newLayer,
+        itemScale: overlayItemScale,
+        enchanted: previousItem.enchanted ?? false,
+        itemLayers: [...getItemLayers(previousItem), newLayer],
+      };
+      return [...items.slice(0, -1), overlaidItem];
+    });
+  };
+
+  const removeItem = () => {
+    setSelectedTextureFrames((items) => {
+      const previousItem = items.at(-1);
+      if (!previousItem) {
+        return items;
+      }
+
+      const previousLayers = getItemLayers(previousItem);
+      if (previousLayers.length === 1) {
+        return items.slice(0, -1);
+      }
+
+      const itemWithoutTopLayer: SelectedTexture = {
+        ...previousItem,
+        itemLayers: previousLayers.slice(0, -1),
+      };
+      return [...items.slice(0, -1), itemWithoutTopLayer];
+    });
+  };
+
+  const clearItems = () => {
+    setSelectedTextureFrames([]);
+    setSelectedTexture((currentTexture) =>
+      currentTexture ? { ...currentTexture, blend: null } : null
+    );
+  };
+
+  const onRegionClick: RegionClickHandler = ({ regionId }) => {
+    if (!regionId.startsWith("Item ")) {
+      return;
+    }
+
+    const itemIndex = Number(regionId.slice("Item ".length)) - 1;
+    if (!Number.isInteger(itemIndex) || itemIndex < 0) {
+      return;
+    }
+
+    setSelectedTextureFrames((items) =>
+      items.map((item, index) =>
+        index === itemIndex
+          ? { ...item, enchanted: !(item.enchanted ?? false) }
+          : item
       )
     );
   };
 
-  // Show a button which adds the selected texture to the page
+  return (
+    <div>
+      <GeneratorUI.MediaHero video={null} thumbnail={thumbnail} />
 
-  generator.defineButtonInput(
-    "Add Item",
-    () => {
-      if (selectedTextureFrame) {
-        const newSelectedTextureFrame: SelectedTexture = {
-          ...selectedTextureFrame,
-          itemScale: selectedItemScale,
-          itemLayers: undefined,
-          enchanted: false,
-        };
-        generator.setStringInputValue(
-          "SelectedTextureFrames",
-          encodeSelectedTextures(
-            addSelectedTextureFrame(newSelectedTextureFrame)
-          )
-        );
-      }
-    },
-    "Blue"
+      <div className="mb-8">
+        <GeneratorUI.Instructions markdown={instructions} />
+      </div>
+
+      <div className="lg:flex gap-8">
+        <div
+          className="flex-1 min-w-0 mb-8 lg:mb-0"
+          data-testid="generator-sidebar"
+        >
+          <div className="w-full bg-gray-100 p-8 space-y-4">
+            <GeneratorUI.SelectControl
+              label="Version"
+              options={versionIds.map((version) => ({
+                id: version,
+                label: version,
+              }))}
+              value={versionId}
+              onValueChange={onVersionChange}
+            />
+
+            {versionId === "custom" ? (
+              <GeneratorUI.AtlasControl
+                id="custom"
+                label="Custom"
+                standardWidth={32}
+                standardHeight={32}
+                choices={[]}
+                textures={dynamicTextures}
+                onChange={onAtlasChange}
+              />
+            ) : null}
+
+            <GeneratorUI.SelectControl
+              label="Item Size"
+              options={sizeOptions}
+              value={selectedItemSize}
+              onValueChange={setSelectedItemSize}
+            />
+
+            {selectedItemSize === sizeCustom ? (
+              <GeneratorUI.RangeControl
+                label="Custom Scale (%)"
+                min={100}
+                max={1600}
+                value={customScalePercent}
+                step={100}
+                showValue={true}
+                onValueChange={setCustomScalePercent}
+              />
+            ) : null}
+
+            {textureVersion ? (
+              <TexturePicker
+                textureVersion={textureVersion}
+                blend={selectedTexture?.blend ?? null}
+                onSelect={(nextTexture) => {
+                  const textureWithBlend: SelectedTexture = {
+                    ...nextTexture,
+                    blend: selectedTexture?.blend ?? null,
+                  };
+                  setSelectedTexture(textureWithBlend);
+                }}
+                onBlendSelected={(blend) => {
+                  setSelectedTexture((currentTexture) =>
+                    currentTexture ? { ...currentTexture, blend } : null
+                  );
+                }}
+              />
+            ) : null}
+
+            <GeneratorUI.BooleanControl
+              label="Show Folds"
+              checked={showFolds}
+              onCheckedChange={setShowFolds}
+            />
+
+            <GeneratorUI.ButtonControl
+              label="Add Item"
+              onClick={addItem}
+              color="Blue"
+            />
+            <GeneratorUI.ButtonControl
+              label="Overlay Item"
+              onClick={overlayItem}
+              color="Green"
+            />
+            <GeneratorUI.ButtonControl
+              label="Remove Item"
+              onClick={removeItem}
+              color="Red"
+            />
+            <div />
+            <GeneratorUI.ButtonControl
+              label="Clear"
+              onClick={clearItems}
+              color="Red"
+            />
+
+            <GeneratorUI.LoadedTextureControl
+              id="Enchanted Glint"
+              definitions={itemGlintTextureDefs}
+              standardWidth={128}
+              standardHeight={128}
+              choices={["1.20+", "Pre-1.20"]}
+              loadingMessage="Loading glint choices…"
+              errorMessage="Glint choices could not be loaded."
+              onChange={(texture) => {
+                setGlintTexture(texture);
+                setGlintEnabled(texture !== null);
+              }}
+            />
+
+            <GeneratorUI.RangeControl
+              label="Glint Opacity"
+              min={0}
+              max={255}
+              value={glintOpacity}
+              step={1}
+              onValueChange={setGlintOpacity}
+            />
+            <GeneratorUI.RangeControl
+              label="Glint X Offset"
+              min={0}
+              max={128}
+              value={glintXOffset}
+              step={1}
+              onValueChange={setGlintXOffset}
+            />
+            <GeneratorUI.RangeControl
+              label="Glint Y Offset"
+              min={0}
+              max={128}
+              value={glintYOffset}
+              step={1}
+              onValueChange={setGlintYOffset}
+            />
+          </div>
+        </div>
+
+        <div className="flex-1 min-w-0">
+          <GeneratorRenderer
+            generator={minecraftItemGenerator}
+            props={rendererProps}
+            dynamicTextures={dynamicTextures}
+            onRegionClick={onRegionClick}
+          />
+        </div>
+      </div>
+
+      <GeneratorUI.History history={history} />
+    </div>
   );
+}
 
-  // Show a button which overlays the selected texture onto the last added texture
-
-  generator.defineButtonInput(
-    "Overlay Item",
-    () => {
-      if (selectedTextureFrame) {
-        const previousItem = selectedTextureFrames.at(-1);
-        const overlayItemScale = previousItem?.itemScale ?? selectedItemScale;
-        const newLayer: SelectedTexture = {
-          ...selectedTextureFrame,
-          itemScale: overlayItemScale,
-          itemLayers: undefined,
-          enchanted: undefined,
-        };
-        const newSelectedTextureFrames: SelectedTexture[] = previousItem
-          ? [
-              ...selectedTextureFrames.slice(0, -1),
-              {
-                ...newLayer,
-                itemScale: overlayItemScale,
-                enchanted: previousItem.enchanted ?? false,
-                itemLayers: [...getItemLayersForItem(previousItem), newLayer],
-              },
-            ]
-          : addSelectedTextureFrame({ ...newLayer, enchanted: false });
-        generator.setStringInputValue(
-          "SelectedTextureFrames",
-          encodeSelectedTextures(newSelectedTextureFrames)
-        );
-      }
-    },
-    "Green"
-  );
-
-  // Show a button which removes the last placed item or top overlay layer
-
-  generator.defineButtonInput(
-    "Remove Item",
-    () => {
-      const previousItem = selectedTextureFrames.at(-1);
-      if (!previousItem) {
-        return;
-      }
-
-      const previousLayers = getItemLayersForItem(previousItem);
-      const newSelectedTextureFrames: SelectedTexture[] =
-        previousLayers.length > 1
-          ? [
-              ...selectedTextureFrames.slice(0, -1),
-              {
-                ...previousItem,
-                itemLayers: previousLayers.slice(0, -1),
-              },
-            ]
-          : selectedTextureFrames.slice(0, -1);
-
-      generator.setStringInputValue(
-        "SelectedTextureFrames",
-        encodeSelectedTextures(newSelectedTextureFrames)
-      );
-    },
-    "Red"
-  );
-
-  // Show a button which allows the items to be cleared
-
-  generator.defineText("");
-
-  generator.defineButtonInput(
-    "Clear",
-    () => {
-      generator.setStringInputValue(
-        "SelectedTextureFrames",
-        encodeSelectedTextures([])
-      );
-      if (selectedTextureFrame) {
-        generator.setStringInputValue(
-          "SelectedTextureFrame",
-          encodeSelectedTexture({ ...selectedTextureFrame, blend: null })
-        );
-      }
-    },
-    "Red"
-  );
-
-  const glint = defineGlintControls(generator);
-
-  // Show a blank page initially
-
-  if (selectedTextureFrames.length === 0) {
-    generator.usePage("Page 1");
-    generator.drawImage("Background", [0, 0]);
-    generator.drawImage("Title", [0, 0]);
-  }
-
-  drawItems(
-    selectedTextureFrames,
-    showFolds,
-    toggleItemEnchantment,
-    glint.getPlugin
-  );
-};
-
-export const generator: GeneratorDef = {
+export const generator: GeneratorDefV2 = {
   id,
   name,
-  history,
   thumbnail,
-  video: null,
-  instructions,
-  images,
-  textures,
-  script,
+  Component,
 };

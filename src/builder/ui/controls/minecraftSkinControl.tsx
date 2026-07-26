@@ -4,15 +4,15 @@ import {
   type Texture,
   makeTextureFromImage,
   makeTextureFromUrl,
-} from "@genroot/builder/modules/texture";
-import { makeImageFromUrl } from "@genroot/builder/modules/image";
-import { convertToStandardSkin } from "@genroot/builder/modules/minecraftSkinConverter";
-import { fetchSkinImage } from "@genroot/builder/modules/minecraftSkin";
-import { type MinecraftSkinOption } from "@genroot/builder/modules/modelControls";
+} from "@genroot/builder/engine/texture";
+import { makeImageFromUrl } from "@genroot/builder/engine/image";
+import { convertToStandardSkin } from "@genroot/builder/engine/minecraftSkinConverter";
+import { fetchSkinImage } from "@genroot/builder/engine/minecraftSkin";
+import { type MinecraftSkinOption } from "@genroot/builder/engine/modelControls";
 import {
   type MinecraftModelType,
   type MinecraftSkinInputValue,
-} from "@genroot/builder/modules/minecraftSkinInputValue";
+} from "@genroot/builder/engine/minecraftSkinInputValue";
 import { type SelectOption, Select } from "../form/select";
 import { Button, type ButtonState } from "../button/button";
 import { ArrowPathIconWithSpin } from "../icon";

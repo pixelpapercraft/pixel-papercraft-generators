@@ -1,7 +1,7 @@
 // This is a generated file
 
-import { type TextureDef } from "@genroot/builder/modules/generatorDef";
-import { type TextureData } from "@genroot/builder/modules/textureData";
+import { type TextureDef } from "@genroot/builder/engine/generatorDef";
+import { type TextureData } from "@genroot/builder/engine/textureData";
 
 import image from "./texture_minecraft_1_13_2_items.png";
 

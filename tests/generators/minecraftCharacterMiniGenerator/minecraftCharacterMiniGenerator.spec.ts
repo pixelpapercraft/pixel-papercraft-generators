@@ -77,6 +77,13 @@ const outputPage = (page: Page) =>
 
 const comboboxes = (page: Page) => page.getByRole("combobox");
 
+const mini2SkinSelect = (page: Page) =>
+  page
+    .getByText("Mini 2", { exact: true })
+    .locator("xpath=following-sibling::div[1]")
+    .getByRole("combobox")
+    .first();
+
 const regions = (page: Page) =>
   outputPage(page).locator("xpath=..").locator("div.absolute");
 
@@ -174,7 +181,7 @@ test("minecraft character mini generator populates Mini 2 independently", async 
   await page.goto("/generator/minecraft-character-mini");
 
   const pageImage = outputPage(page);
-  await comboboxes(page).nth(3).selectOption("Alex");
+  await mini2SkinSelect(page).selectOption("Alex");
 
   await expect
     .poll(() => readPixel(pageImage, 250, 559))
@@ -297,7 +304,7 @@ test("minecraft character mini generator hides each mini's folds independently",
   await page.goto("/generator/minecraft-character-mini");
 
   const pageImage = outputPage(page);
-  await comboboxes(page).nth(3).selectOption("Alex");
+  await mini2SkinSelect(page).selectOption("Alex");
   const readMini1Fold = () => readPixel(pageImage, 123, 117);
   const readMini2Fold = () => readPixel(pageImage, 123, 462);
   const foldRgba: Rgba = { r: 123, g: 123, b: 123, a: 255 };

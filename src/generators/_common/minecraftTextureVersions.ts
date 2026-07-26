@@ -1,4 +1,4 @@
-import { type TextureData } from "@genroot/builder/modules/textureData";
+import { type TextureData } from "@genroot/builder/engine/textureData";
 
 import * as Texture_1_7_10_Items from "@genroot/generators/_common/textures/texture_minecraft_1_7_10_items";
 import * as Texture_1_7_10_Blocks from "@genroot/generators/_common/textures/texture_minecraft_1_7_10_blocks";
@@ -27,13 +27,7 @@ export const minecraftTextureVersionDefinitions: TextureVersionDefinition[] = [
 ];
 
 export const minecraftTextureVersionDefinitionsBlocksFirst: TextureVersionDefinition[] =
-  [
-    ...itemDefinitions,
-    ...blockDefinitions,
-  ];
+  [...itemDefinitions, ...blockDefinitions];
 
 export const minecraftTextureVersionDefinitionsItemsFirst: TextureVersionDefinition[] =
-  [
-    ...blockDefinitions,
-    ...itemDefinitions,
-  ];
+  [...blockDefinitions, ...itemDefinitions];

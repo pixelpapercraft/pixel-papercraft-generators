@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
-import type { CanvasWithContext } from "@genroot/builder/modules/canvasWithContext";
-import type { Generator } from "@genroot/builder/modules/generator";
-import type { Texture } from "@genroot/builder/modules/texture";
+import type { CanvasWithContext } from "@genroot/builder/engine/canvasWithContext";
+import type { Engine } from "@genroot/builder/engine/engine";
+import type { Texture } from "@genroot/builder/engine/texture";
 
 type PixelKey = string | null;
 
@@ -141,8 +141,9 @@ const makeCanvasWithContext = vi.hoisted(() => {
       },
       getPixels: () =>
         Array.from({ length: height }, (_, row) =>
-          Array.from({ length: width }, (_, col) =>
-            canvas.pixels[row * width + col] ?? null
+          Array.from(
+            { length: width },
+            (_, col) => canvas.pixels[row * width + col] ?? null
           )
         ),
     };
@@ -153,15 +154,11 @@ const makeCanvasWithContext = vi.hoisted(() => {
   });
 });
 
-vi.mock("@genroot/builder/modules/canvasWithContext", () => ({
+vi.mock("@genroot/builder/engine/canvasWithContext", () => ({
   makeCanvasWithContext,
 }));
 
-import {
-  defineGlintControlInputs,
-  getGlintControls,
-  makeGlintPlugin,
-} from "./glint";
+import { getGlintControls, makeGlintPlugin } from "./glint";
 
 function makePixelKey(r: number, g: number, b: number, a: number): PixelKey {
   return `${r},${g},${b},${a}`;
@@ -170,7 +167,10 @@ function makePixelKey(r: number, g: number, b: number, a: number): PixelKey {
 function makeSourceTexture(pixels: PixelKey[][]): Texture {
   const height = pixels.length;
   const width = pixels[0]?.length ?? 0;
-  const context = makeCanvasWithContext(width, height) as unknown as FakeContext;
+  const context = makeCanvasWithContext(
+    width,
+    height
+  ) as unknown as FakeContext;
 
   pixels.forEach((row, y) => {
     row.forEach((key, x) => {
@@ -181,50 +181,14 @@ function makeSourceTexture(pixels: PixelKey[][]): Texture {
   return {
     standardWidth: width,
     standardHeight: height,
-      imageWithCanvas: {
-        image: {} as HTMLImageElement,
-        width,
-        height,
-        canvasWithContext: context as unknown as CanvasWithContext,
-      },
-    } as Texture;
+    imageWithCanvas: {
+      image: {} as HTMLImageElement,
+      width,
+      height,
+      canvasWithContext: context as unknown as CanvasWithContext,
+    },
+  } as Texture;
 }
-
-describe("defineGlintControlInputs", () => {
-  it("defines the shared glint input controls", () => {
-    const defineTextureInput = vi.fn();
-    const defineAndGetRangeInput = vi.fn();
-
-    defineGlintControlInputs({
-      defineTextureInput,
-      defineAndGetRangeInput,
-    } as unknown as Generator);
-
-    expect(defineTextureInput).toHaveBeenCalledWith("Enchanted Glint", {
-      standardWidth: 128,
-      standardHeight: 128,
-      choices: ["1.20+", "Pre-1.20"],
-    });
-    expect(defineAndGetRangeInput).toHaveBeenNthCalledWith(1, "Glint Opacity", {
-      min: 0,
-      max: 255,
-      value: 255,
-      step: 1,
-    });
-    expect(defineAndGetRangeInput).toHaveBeenNthCalledWith(2, "Glint X Offset", {
-      min: 0,
-      max: 128,
-      value: 0,
-      step: 1,
-    });
-    expect(defineAndGetRangeInput).toHaveBeenNthCalledWith(3, "Glint Y Offset", {
-      min: 0,
-      max: 128,
-      value: 0,
-      step: 1,
-    });
-  });
-});
 
 describe("getGlintControls", () => {
   it("only creates a plugin when the glint texture exists", () => {
@@ -250,7 +214,7 @@ describe("getGlintControls", () => {
     const controls = getGlintControls({
       getNumberVariable,
       getTexture,
-    } as unknown as Generator);
+    } as unknown as Engine);
 
     expect(controls.getPlugin(true)).toEqual(expect.any(Function));
     expect(controls.getPlugin(false)).toBeUndefined();

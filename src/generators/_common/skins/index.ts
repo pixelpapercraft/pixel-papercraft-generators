@@ -19,7 +19,7 @@ import noorSlim from "./slim/noor.png";
 import steveSlim from "./slim/steve.png";
 import sunnySlim from "./slim/sunny.png";
 import zuriSlim from "./slim/zuri.png";
-import type { MinecraftModelType } from "@genroot/builder/modules/minecraftSkinInputValue";
+import type { MinecraftModelType } from "@genroot/builder/engine/minecraftSkinInputValue";
 
 export const defaultSkinNames = [
   "Alex",
@@ -47,7 +47,10 @@ const SKIN_MAP: Record<string, { wide: string; slim: string }> = {
   Zuri: { wide: zuriWide.src, slim: zuriSlim.src },
 };
 
-export function getSkinUrl(name: string, modelType: MinecraftModelType): string {
+export function getSkinUrl(
+  name: string,
+  modelType: MinecraftModelType
+): string {
   const entry = SKIN_MAP[name];
   if (!entry) {
     // fallback to default wide

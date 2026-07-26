@@ -1,4 +1,4 @@
-import { type VideoDef } from "@genroot/builder/modules/generatorDef";
+import { type VideoDef } from "@genroot/builder/engine/generatorDef";
 
 export function Video({ video }: { video: VideoDef }) {
   return (

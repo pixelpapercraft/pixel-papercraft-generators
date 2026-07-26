@@ -1,7 +1,7 @@
 import { jsPDF } from "jspdf";
-import { type Model } from "@genroot/builder/modules/model";
-import { type GeneratorDef } from "@genroot/builder/modules/generatorDef";
-import { A4 } from "@genroot/builder/modules/modelPage";
+import { type Model } from "@genroot/builder/engine/model";
+import { type GeneratorDef } from "@genroot/builder/engine/generatorDef";
+import { A4 } from "@genroot/builder/engine/modelPage";
 import { Button } from "../button/button";
 
 export function SaveAsPDFButton({

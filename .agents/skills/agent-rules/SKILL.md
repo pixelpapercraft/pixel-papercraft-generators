@@ -44,8 +44,8 @@ Tighten any criterion that fails.
 
 Read and follow rules from any category whose "Read when" keywords match your current task. To add, update, or delete rules, use the `agent-rules` skill.
 
-| Category   | Read when                                    | File                                            |
-| ---------- | --------------------------------------------- | ------------------------------------------------ |
+| Category   | Read when                                     | File                                            |
+| ---------- | --------------------------------------------- | ----------------------------------------------- |
 | Migrations | d1, database schema, migration, `wrangler d1` | [migrations.md](agent-docs/rules/migrations.md) |
 ```
 

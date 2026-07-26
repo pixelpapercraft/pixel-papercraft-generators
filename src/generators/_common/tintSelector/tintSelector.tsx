@@ -1,5 +1,4 @@
 import React from "react";
-import { type Generator } from "@genroot/builder/modules/generator";
 import { Select, type SelectOption } from "@genroot/builder/ui/form/select";
 import {
   defaultTintChoiceGroups,
@@ -11,7 +10,6 @@ import {
   flattenTintChoiceGroups,
   getColorFromSelectedTint,
   getTintFromOption,
-  getTintInputValue,
   getTintSelectorStateFromValue,
   makeTintChoices,
   normalizeTint,
@@ -92,7 +90,7 @@ export function TintSelector({
       <div id={labelId} className="font-bold mb-1">
         {label}
       </div>
-      <div className="flex space-x-4">
+      <div className="flex items-center space-x-4">
         <Select
           choices={choices}
           value={selectedOption}
@@ -112,11 +110,11 @@ export function TintSelector({
         />
 
         {selectedTint.kind === "CustomTint" ? (
-          <div>
+          <div className="flex shrink-0 items-center">
             <span className="mr-1">#</span>
             <input
               placeholder="Enter hex color"
-              className="p-2 border border-gray-300"
+              className="w-24 p-2 border border-gray-300"
               value={customTintInput}
               onChange={onInputChange}
             />
@@ -124,47 +122,11 @@ export function TintSelector({
         ) : null}
 
         {color ? (
-          <div className="border bg-white p-1">
+          <div className="border bg-white p-1 shrink-0">
             <div className="w-8 h-8" style={{ backgroundColor: color }} />
           </div>
         ) : null}
       </div>
     </div>
   );
-}
-
-export function defineTintInput(
-  generator: Generator,
-  id: string,
-  {
-    defaultValue = null,
-    label = id,
-    choiceGroups,
-    includeNoTint = true,
-  }: {
-    defaultValue?: string | null;
-    label?: string;
-    choiceGroups?: TintChoiceGroup[];
-    includeNoTint?: boolean;
-  } = {}
-): string | null {
-  const tintChoices = flattenTintChoiceGroups(
-    choiceGroups ?? defaultTintChoiceGroups
-  );
-  const storedValue = generator.getStringInputValue(id);
-  const value = getTintInputValue(storedValue, defaultValue, tintChoices);
-
-  generator.defineCustomStringInput(id, (onChange) => (
-    <TintSelector
-      value={value}
-      label={label}
-      choiceGroups={choiceGroups}
-      includeNoTint={includeNoTint}
-      onChange={(hex) => {
-        onChange(hex ?? "");
-      }}
-    />
-  ));
-
-  return value;
 }

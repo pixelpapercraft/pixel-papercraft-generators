@@ -1,5 +1,5 @@
-import { type Atlas, imageToTextureFrames } from "../../modules/textureData";
-import { packImages } from "../../modules/texturePacking";
+import { type Atlas, imageToTextureFrames } from "../../engine/textureData";
+import { packImages } from "../../engine/texturePacking";
 
 type AtlasBuildResult = Atlas & {
   url: string;
@@ -19,8 +19,12 @@ function getFrameCrop(
   }
 
   context.drawImage(image, 0, 0);
-  const pixels = context.getImageData(frameX, frameY, frameWidth, frameHeight)
-    .data;
+  const pixels = context.getImageData(
+    frameX,
+    frameY,
+    frameWidth,
+    frameHeight
+  ).data;
 
   let minX = frameWidth;
   let minY = frameHeight;

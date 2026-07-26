@@ -23,7 +23,9 @@ jobs:
       - run: npm run setup
       - run: npm run types:check
       - run: npm run lint
+      - run: npm run check:imports
       - run: npm run test:unit
+      - run: npm run build
 
   browser:
     name: Playwright browser tests

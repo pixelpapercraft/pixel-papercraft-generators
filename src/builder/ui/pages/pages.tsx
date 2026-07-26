@@ -1,9 +1,9 @@
 /* eslint-disable @next/next/no-img-element */
 
 import React from "react";
-import { type GeneratorDef } from "@genroot/builder/modules/generatorDef";
-import { type Model } from "@genroot/builder/modules/model";
-import { A4 } from "@genroot/builder/modules/modelPage";
+import { type GeneratorDef } from "@genroot/builder/engine/generatorDef";
+import { type Model } from "@genroot/builder/engine/model";
+import { A4 } from "@genroot/builder/engine/modelPage";
 
 import { RegionControls } from "./regionControls";
 import { SaveAsPDFButton } from "./saveAsPDFButton";
@@ -70,7 +70,7 @@ export function Pages({
                 src={dataUrl}
                 alt=""
               />
-              {containerWidth !== null ? (
+              {containerWidth ? (
                 <RegionControls
                   containerWidth={containerWidth}
                   model={model}

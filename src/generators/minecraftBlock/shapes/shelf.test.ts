@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
-import { type Generator } from "@genroot/builder/modules/generator";
-import { encodeSelectedTextures } from "@genroot/builder/ui/texturePicker/selectedTexture";
+import { encodeSelectedTextures } from "@genroot/builder";
+import { type BlockRenderContext } from "../blockRenderContext";
+import { makeBlockRenderContext } from "../blockRenderContext.fake";
 import { drawShelf } from "./shelf";
 
 function makeShelfFaceJson(): string {
@@ -10,8 +11,8 @@ function makeShelfFaceJson(): string {
       frame: {
         id: "frame",
         label: "frame",
-        rectangle: [0, 0, 16, 16] as [number, number, number, number],
-        crop: [0, 0, 16, 16] as [number, number, number, number],
+        rectangle: [0, 0, 16, 16],
+        crop: [0, 0, 16, 16],
       },
       rotation: "Rot0",
       flip: "None",
@@ -20,19 +21,17 @@ function makeShelfFaceJson(): string {
   ]);
 }
 
-function makeGenerator(state: string): Generator {
+function makeGenerator(state: string): BlockRenderContext {
   const faceJson = makeShelfFaceJson();
 
-  return {
-    defineSelectInput: vi.fn(),
-    defineRegionInput: vi.fn(),
-    drawImage: vi.fn(),
-    drawTexture: vi.fn(),
-    getSelectInputValue: (id: string) =>
-      id === "Block 1 State" ? state : null,
-    getStringInputValue: (id: string) =>
-      id === "ShelfFace1" ? faceJson : null,
-  } as unknown as Generator;
+  return makeBlockRenderContext({
+    getSelectInputValue: vi.fn((id: string) =>
+      id === "Block 1 State" ? state : null
+    ),
+    getStringInputValue: vi.fn((id: string) =>
+      id === "ShelfFace1" ? faceJson : null
+    ),
+  });
 }
 
 describe("drawShelf", () => {

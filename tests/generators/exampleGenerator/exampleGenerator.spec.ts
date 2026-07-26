@@ -2,6 +2,16 @@ import { expect, test, type Page } from "@playwright/test";
 import { readPixel, type Rgba } from "../_shared/pixelColor";
 import { renderImageAtNaturalSize } from "../_shared/screenshot";
 
+// This spec is a deliberate near-verbatim copy of exampleGenerator.spec.ts (the
+// v1 example). The ONLY change is the route (`/generator/example` →
+// `/generator/example-v2`). example-v2 was rebuilt to be behaviourally
+// identical to v1 — same reused MinecraftSkinControl picker, same "Show Folds"
+// toggle, same head render — so the entire v1 assertion set (DOM contract,
+// per-preset pixel probes, None→white, custom-upload pixel, and all four
+// screenshots against v1's own baselines) is expected to pass unchanged. It is
+// the regression oracle for the v1→v2 migration mechanism (dynamicTextures +
+// control reuse).
+
 type PresetExpectation = {
   name: string;
   rgba: Rgba;
@@ -27,7 +37,9 @@ const outputPage = (page: Page) =>
 
 const skinSelect = (page: Page) => page.getByRole("combobox");
 
-test("example generator exposes its skin and folds controls", async ({ page }) => {
+test("example generator exposes its skin and folds controls", async ({
+  page,
+}) => {
   await page.goto("/generator/example");
 
   const skin = skinSelect(page);
@@ -106,9 +118,7 @@ test("example generator renders a custom skin upload across the head net", async
   await page.goto("/generator/example");
 
   const pageImage = outputPage(page);
-  await page
-    .getByLabel("Upload Skin skin file")
-    .setInputFiles(skinFixturePath);
+  await page.getByLabel("Upload Skin skin file").setInputFiles(skinFixturePath);
 
   await expect
     .poll(async () => readPixel(pageImage, 189, 121))

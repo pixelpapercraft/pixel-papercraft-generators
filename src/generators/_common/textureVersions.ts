@@ -1,9 +1,9 @@
-import { type TextureDef } from "@genroot/builder/modules/generatorDef";
-import { type TextureData } from "@genroot/builder/modules/textureData";
+import { type TextureDef } from "@genroot/builder/engine/generatorDef";
+import { type TextureData } from "@genroot/builder/engine/textureData";
 
 import { makeTextureVersions as makeSharedTextureVersions } from "./textures/textureVersions";
 import { customTextureVersion } from "./customTextureVersion";
-import { type TextureFrame } from "@genroot/builder/modules/textureData";
+import { type TextureFrame } from "@genroot/builder/engine/textureData";
 
 export type TextureVersion = {
   textureDef: TextureDef;

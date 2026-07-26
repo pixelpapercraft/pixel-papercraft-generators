@@ -7,20 +7,13 @@ import {
   BackspaceIcon,
   XMarkIcon,
 } from "@genroot/builder/ui/icon";
-import { type TextureDef } from "@genroot/builder/modules/generatorDef";
-import { type TextureFrame } from "@genroot/builder/modules/textureData";
-import { makeCanvasWithContext } from "@genroot/builder/modules/canvasWithContext";
-import { drawTexture } from "@genroot/builder/modules/renderers/drawTexture";
-import { makeTextureFromImage } from "@genroot/builder/modules/texture";
-import {
-  type Flip,
-  makeNextFlip,
-} from "./flip";
-import {
-  type Rotation,
-  makeNextRotation,
-  rotationToDegrees,
-} from "./rotation";
+import { type TextureDef } from "@genroot/builder/engine/generatorDef";
+import { type TextureFrame } from "@genroot/builder/engine/textureData";
+import { makeCanvasWithContext } from "@genroot/builder/engine/canvasWithContext";
+import { drawTexture } from "@genroot/builder/engine/renderers/drawTexture";
+import { makeTextureFromImage } from "@genroot/builder/engine/texture";
+import { type Flip, makeNextFlip } from "./flip";
+import { type Rotation, makeNextRotation, rotationToDegrees } from "./rotation";
 import { type SelectedTexture } from "./selectedTexture";
 import { shouldClearSelectedFrame } from "./selectionState";
 import { makeTileStyle } from "./texturePickerStyle";
@@ -94,18 +87,12 @@ function PreviewCanvas({
         textureDef.standardHeight
       );
       const page = makeCanvasWithContext(128, 128);
-      drawTexture(
-        page,
-        texture,
-        frame.rectangle,
-        [0, 0, 128, 128],
-        {
-          pixelate: true,
-          rotate: rotationToDegrees(rotation),
-          flip,
-          blend: blend ? { kind: "MultiplyHex", hex: blend } : undefined,
-        }
-      );
+      drawTexture(page, texture, frame.rectangle, [0, 0, 128, 128], {
+        pixelate: true,
+        rotate: rotationToDegrees(rotation),
+        flip,
+        blend: blend ? { kind: "MultiplyHex", hex: blend } : undefined,
+      });
 
       context.clearRect(0, 0, 128, 128);
       context.imageSmoothingEnabled = false;
@@ -120,7 +107,15 @@ function PreviewCanvas({
     return () => {
       cancelled = true;
     };
-  }, [blend, flip, frame, rotation, textureDef.standardHeight, textureDef.standardWidth, textureDef.url]);
+  }, [
+    blend,
+    flip,
+    frame,
+    rotation,
+    textureDef.standardHeight,
+    textureDef.standardWidth,
+    textureDef.url,
+  ]);
 
   return (
     <canvas
@@ -444,7 +439,9 @@ export function TexturePicker({
           />
           <div>
             <div className="flex justify-around mt-3">
-              {enableErase ? <EraseButton onClick={() => onEraseClick()} /> : null}
+              {enableErase ? (
+                <EraseButton onClick={() => onEraseClick()} />
+              ) : null}
               <RotationButton onClick={() => onRotateClick()} />
             </div>
             <div className="flex justify-around mt-3">

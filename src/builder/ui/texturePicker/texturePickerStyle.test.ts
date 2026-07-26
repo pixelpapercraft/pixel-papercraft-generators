@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { type TextureDef } from "@genroot/builder/modules/generatorDef";
-import { type TextureFrame } from "@genroot/builder/modules/textureData";
+import { type TextureDef } from "@genroot/builder/engine/generatorDef";
+import { type TextureFrame } from "@genroot/builder/engine/textureData";
 import { makeTileStyle } from "./texturePickerStyle";
 
 const textureDef: TextureDef = {

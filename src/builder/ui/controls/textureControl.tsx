@@ -1,6 +1,6 @@
 import React from "react";
 
-import { type Texture } from "../../modules/texture";
+import { type Texture } from "../../engine/texture";
 import { type SelectOption, Select } from "../form/select";
 import {
   isSupportedTextureUploadFile,
@@ -16,6 +16,8 @@ export function TextureControl({
   standardHeight,
   textures,
   onChange,
+  disabled = false,
+  statusMessage,
 }: {
   id: string;
   label?: string;
@@ -24,6 +26,8 @@ export function TextureControl({
   standardHeight: number;
   textures: Map<string, Texture>;
   onChange: (image: Texture | null) => void;
+  disabled?: boolean;
+  statusMessage?: string;
 }) {
   const baseId = React.useId();
   const legendId = `${baseId}-legend`;
@@ -71,6 +75,7 @@ export function TextureControl({
                 ariaLabelledBy={legendId}
                 choices={selectChoices}
                 onChange={onChoiceChange}
+                disabled={disabled}
               />
               <div>or</div>
             </>
@@ -85,11 +90,17 @@ export function TextureControl({
               className="border border-gray-300 p-1 bg-white text-gray-400"
               type="file"
               accept={textureUploadAccept}
+              disabled={disabled}
               onChange={onInputChange}
             />
           </div>
         </div>
       </div>
+      {statusMessage ? (
+        <p className="text-sm text-gray-500" role="status">
+          {statusMessage}
+        </p>
+      ) : null}
     </fieldset>
   );
 }

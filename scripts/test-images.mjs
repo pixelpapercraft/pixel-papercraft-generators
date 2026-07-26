@@ -1,18 +1,35 @@
-import { spawn } from 'node:child_process';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { spawn } from "node:child_process";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const host = '127.0.0.1';
-const port = 3000;
+const projectRoot = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  ".."
+);
+const host = "127.0.0.1";
+const port = 3001;
 const appRootUrl = `http://${host}:${port}/`;
 const appRouteUrl = `http://${host}:${port}/generator/example`;
-const startupTimeoutMs = Number(process.env.TEST_IMAGES_STARTUP_TIMEOUT_MS ?? 60_000);
-const update = process.argv.includes('--update');
-const vitestArgs = process.argv.slice(2).filter((arg) => arg !== '--update');
+const startupTimeoutMs = Number(
+  process.env.TEST_IMAGES_STARTUP_TIMEOUT_MS ?? 60_000
+);
+const update = process.argv.includes("--update");
+const vitestArgs = process.argv.slice(2).filter((arg) => arg !== "--update");
 
-const nextBin = path.join(projectRoot, 'node_modules', 'next', 'dist', 'bin', 'next');
-const vitestBin = path.join(projectRoot, 'node_modules', 'vitest', 'vitest.mjs');
+const nextBin = path.join(
+  projectRoot,
+  "node_modules",
+  "next",
+  "dist",
+  "bin",
+  "next"
+);
+const vitestBin = path.join(
+  projectRoot,
+  "node_modules",
+  "vitest",
+  "vitest.mjs"
+);
 
 let nextServer = null;
 let vitestRun = null;
@@ -25,7 +42,7 @@ function spawnNodeModule(scriptPath, args, extraEnv = {}) {
       ...process.env,
       ...extraEnv,
     },
-    stdio: 'inherit',
+    stdio: "inherit",
   });
 }
 
@@ -34,10 +51,10 @@ function terminate(child) {
     return;
   }
 
-  child.kill('SIGTERM');
+  child.kill("SIGTERM");
   setTimeout(() => {
     if (child.exitCode === null && child.signalCode === null) {
-      child.kill('SIGKILL');
+      child.kill("SIGKILL");
     }
   }, 5_000).unref?.();
 }
@@ -55,13 +72,13 @@ function cleanup(code = 0) {
   }
 }
 
-for (const signal of ['SIGINT', 'SIGTERM']) {
+for (const signal of ["SIGINT", "SIGTERM"]) {
   process.on(signal, () => {
     cleanup(1);
   });
 }
 
-process.on('exit', () => {
+process.on("exit", () => {
   cleanup(process.exitCode ?? 0);
 });
 
@@ -88,12 +105,16 @@ function waitForApp(url, timeoutMs, child) {
       }
 
       if (child.exitCode !== null || child.signalCode !== null) {
-        rejectOnce(new Error(`next dev exited before ${url} became ready (exitCode=${child.exitCode}, signal=${child.signalCode ?? 'null'})`));
+        rejectOnce(
+          new Error(
+            `next dev exited before ${url} became ready (exitCode=${child.exitCode}, signal=${child.signalCode ?? "null"})`
+          )
+        );
         return;
       }
 
       try {
-        const response = await fetch(url, { cache: 'no-store' });
+        const response = await fetch(url, { cache: "no-store" });
         if (response.ok) {
           resolveOnce();
           return;
@@ -103,17 +124,23 @@ function waitForApp(url, timeoutMs, child) {
       }
 
       if (Date.now() >= deadline) {
-        rejectOnce(new Error(`Timed out after ${timeoutMs}ms waiting for ${url}`));
+        rejectOnce(
+          new Error(`Timed out after ${timeoutMs}ms waiting for ${url}`)
+        );
         return;
       }
 
       setTimeout(poll, 500).unref?.();
     };
 
-    child.once('error', rejectOnce);
-    child.once('exit', (code, signal) => {
+    child.once("error", rejectOnce);
+    child.once("exit", (code, signal) => {
       if (!settled) {
-        rejectOnce(new Error(`next dev exited before ${url} became ready (exitCode=${code}, signal=${signal ?? 'null'})`));
+        rejectOnce(
+          new Error(
+            `next dev exited before ${url} became ready (exitCode=${code}, signal=${signal ?? "null"})`
+          )
+        );
       }
     });
 
@@ -122,18 +149,34 @@ function waitForApp(url, timeoutMs, child) {
 }
 
 async function main() {
-  nextServer = spawnNodeModule(nextBin, ['dev', '--hostname', host, '-p', String(port)]);
+  nextServer = spawnNodeModule(nextBin, [
+    "dev",
+    "--hostname",
+    host,
+    "-p",
+    String(port),
+  ]);
   await waitForApp(appRootUrl, startupTimeoutMs, nextServer);
 
   const env = {
     VITE_IMAGE_APP_URL: appRouteUrl,
   };
 
-  vitestRun = spawnNodeModule(vitestBin, ['run', '--project', 'browser', ...(update ? ['--update'] : []), ...vitestArgs], env);
+  vitestRun = spawnNodeModule(
+    vitestBin,
+    [
+      "run",
+      "--project",
+      "browser",
+      ...(update ? ["--update"] : []),
+      ...vitestArgs,
+    ],
+    env
+  );
 
   const vitestExitCode = await new Promise((resolve, reject) => {
-    vitestRun.once('error', reject);
-    vitestRun.once('exit', (code, signal) => {
+    vitestRun.once("error", reject);
+    vitestRun.once("exit", (code, signal) => {
       if (signal) {
         reject(new Error(`vitest exited via ${signal}`));
         return;

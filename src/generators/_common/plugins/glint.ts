@@ -1,10 +1,10 @@
-import { makeCanvasWithContext } from "@genroot/builder/modules/canvasWithContext";
+import { makeCanvasWithContext } from "@genroot/builder/engine/canvasWithContext";
 import {
-  type Generator,
+  type Engine,
   type TexturePlugin,
-} from "@genroot/builder/modules/generator";
-import { type Texture } from "@genroot/builder/modules/texture";
-import { type TextureDef } from "@genroot/builder/modules/generatorDef";
+} from "@genroot/builder/engine/engine";
+import { type Texture } from "@genroot/builder/engine/texture";
+import { type TextureDef } from "@genroot/builder/engine/generatorDef";
 import enchantedGlintEntity from "@genroot/generators/_common/textures/enchanted_glint_entity.png";
 import enchantedGlintItem from "@genroot/generators/_common/textures/enchanted_glint_item.png";
 import enchantedGlintOld from "@genroot/generators/_common/textures/enchanted_item_glint.png";
@@ -63,34 +63,7 @@ export type GlintControls = {
   getPlugin: (enabled: boolean) => TexturePlugin | undefined;
 };
 
-export function defineGlintControlInputs(generator: Generator): void {
-  generator.defineTextureInput("Enchanted Glint", {
-    standardWidth: GLINT_TEXTURE_STANDARD_SIZE,
-    standardHeight: GLINT_TEXTURE_STANDARD_SIZE,
-    choices: ["1.20+", "Pre-1.20"],
-  });
-
-  generator.defineAndGetRangeInput("Glint Opacity", {
-    min: 0,
-    max: 255,
-    value: 255,
-    step: 1,
-  });
-  generator.defineAndGetRangeInput("Glint X Offset", {
-    min: 0,
-    max: GLINT_TEXTURE_STANDARD_SIZE,
-    value: 0,
-    step: 1,
-  });
-  generator.defineAndGetRangeInput("Glint Y Offset", {
-    min: 0,
-    max: GLINT_TEXTURE_STANDARD_SIZE,
-    value: 0,
-    step: 1,
-  });
-}
-
-export function getGlintControls(generator: Generator): GlintControls {
+export function getGlintControls(generator: Engine): GlintControls {
   const opacity = generator.getNumberVariable("Glint Opacity") ?? 255;
   const xOffset = generator.getNumberVariable("Glint X Offset") ?? 0;
   const yOffset = generator.getNumberVariable("Glint Y Offset") ?? 0;
@@ -107,11 +80,6 @@ export function getGlintControls(generator: Generator): GlintControls {
         ? makeGlintPlugin(glintTexture, glintPluginOptions)
         : undefined,
   };
-}
-
-export function defineGlintControls(generator: Generator): GlintControls {
-  defineGlintControlInputs(generator);
-  return getGlintControls(generator);
 }
 
 export const makeGlintPlugin: (

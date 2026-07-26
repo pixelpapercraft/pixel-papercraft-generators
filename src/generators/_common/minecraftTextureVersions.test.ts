@@ -17,11 +17,11 @@ describe("minecraft texture version definitions", () => {
   });
 
   it("keeps block-first and item-first ordering available for the legacy wrappers", () => {
-    expect(minecraftTextureVersionDefinitionsBlocksFirst[0]?.[0].textureDef.id).toBe(
-      "minecraft-1.7.10-items"
-    );
-    expect(minecraftTextureVersionDefinitionsItemsFirst[0]?.[0].textureDef.id).toBe(
-      "minecraft-1.7.10-blocks"
-    );
+    expect(
+      minecraftTextureVersionDefinitionsBlocksFirst[0]?.[0].textureDef.id
+    ).toBe("minecraft-1.7.10-items");
+    expect(
+      minecraftTextureVersionDefinitionsItemsFirst[0]?.[0].textureDef.id
+    ).toBe("minecraft-1.7.10-blocks");
   });
 });

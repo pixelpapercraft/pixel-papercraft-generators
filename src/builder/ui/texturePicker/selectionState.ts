@@ -1,4 +1,4 @@
-import { type TextureFrame } from "@genroot/builder/modules/textureData";
+import { type TextureFrame } from "@genroot/builder/engine/textureData";
 
 export function shouldClearSelectedFrame(
   selectedFrame: TextureFrame | null,
