@@ -39,6 +39,22 @@
       - `@tailwindcss/typography`
       - Next.js build and styling output
 
+- Delete the orphaned duplicate `customTextureVersion`/`textureVersions` pair
+  at the top level of `_common/` — **only if it's still there**; it's expected
+  to be removed as part of the Banner & Shield `makeCustomTextureVersion()`
+  factory work (see the migration plan in the vault), so check that first.
+
+  - Files: `src/generators/_common/customTextureVersion.ts` +
+    `.test.ts`, and `src/generators/_common/textureVersions.ts` + `.test.ts`.
+  - Context: confirmed 2026-07-26 to have **zero production importers** —
+    only their own test files reference them. Left behind when PR #31's
+    rebuild (`2687f0e`) added the real, live sibling at
+    `src/generators/_common/textures/customTextureVersion.ts` (the one
+    `minecraftBlock`/`minecraftItem`/`minecraftDiorama` actually import) without
+    deleting the original top-level singleton it superseded.
+  - Before deleting, re-confirm with a fresh grep for real importers (not just
+    the two known test files) in case something changed since.
+
 - Investigate a proper long-term Playwright screenshot tolerance solution.
   - Context: `playwright.config.ts`'s `threshold`/`maxDiffPixelRatio` now split
     on `process.env.CI` — 0 locally (macOS dev matches the macOS-captured
