@@ -37,9 +37,17 @@ import { defineConfig } from "@playwright/test";
  * comfortably under both. If you ever need pixel-exact matching back, the
  * alternative is to regenerate the baselines on Linux (e.g. via the matching
  * Playwright Docker image) so local dev and CI share one rendering environment.
+ *
+ * Local runs are pixel-exact (threshold/ratio 0) rather than reusing the CI
+ * tolerance: local dev and the baselines are both macOS, so there's no
+ * cross-platform noise to absorb, and a strict local comparison catches real
+ * regressions (e.g. a 1px geometry shift) immediately instead of letting them
+ * hide under a 3%-of-image allowance. See todo.md for the follow-up on
+ * whether this split is the right long-term shape.
  */
-const SCREENSHOT_THRESHOLD = 0.2; // per-pixel YIQ tolerance, 0..1; 0.2 (Playwright's default) absorbs the Δ1 rounding of flavour 1
-const SCREENSHOT_MAX_DIFF_PIXEL_RATIO = 0.03; // image fraction over threshold allowed, 0..1; 3% clears flavour 2's ~0.6% edge drift, well under a real regression (>=15%)
+const IS_CI = Boolean(process.env.CI);
+const SCREENSHOT_THRESHOLD = IS_CI ? 0.2 : 0; // per-pixel YIQ tolerance, 0..1; 0.2 (Playwright's default) absorbs the Δ1 rounding of flavour 1 on CI's Linux renderer
+const SCREENSHOT_MAX_DIFF_PIXEL_RATIO = IS_CI ? 0.03 : 0; // image fraction over threshold allowed, 0..1; 3% clears flavour 2's ~0.6% edge drift on CI, well under a real regression (>=15%)
 
 export default defineConfig({
   testDir: "./tests/generators",

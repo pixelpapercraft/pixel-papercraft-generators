@@ -17,6 +17,7 @@
     - replace `jimp` in `src/tools/makeTextures/` if the upstream path remains blocked
 
 - Evaluate a separate `tailwindcss` upgrade track.
+
   - Current repo state: `tailwindcss@3.4.15`
   - Latest upstream checked: `tailwindcss@4.1.12`
   - Why this matters: the removed `diff` advisory was not from Tailwind itself, but from Tailwind's transitive config-loader path on the v3 line:
@@ -37,3 +38,45 @@
       - `tailwind.config.ts`
       - `@tailwindcss/typography`
       - Next.js build and styling output
+
+- Investigate a proper long-term Playwright screenshot tolerance solution.
+  - Context: `playwright.config.ts`'s `threshold`/`maxDiffPixelRatio` now split
+    on `process.env.CI` — 0 locally (macOS dev matches the macOS-captured
+    baselines exactly), the existing 0.2/0.03 in CI (absorbs macOS-vs-Linux
+    Chromium rendering drift, see the file's own comment for the two measured
+    noise flavours). This was a quick fix, not a designed solution.
+  - Why it matters: at the old blanket 0.2/0.03 tolerance, a real ~1%
+    pixel-diff regression (a 1px fold-line border-offset bug found while
+    porting `_common/cuboidFolds.ts` on a separate branch) passed silently
+    for a full session before being caught by manual inspection, not by CI.
+    The tolerance was wide enough to hide a real defect.
+  - Also found and fixed while investigating: switching local runs to zero
+    tolerance surfaced 39 stale screenshot baselines across 16 generators
+    (Armor, Block, Cat Character, Character, Character Heads, Character Mini,
+    Creeper Character, Enderman Character, Golem Character, Horse, Item, Pig,
+    Pig Character, Squid Character, Ultimate Bendable, Villager Character,
+    Wolf Character) — all deterministic, all traced to the same root cause: a
+    CSS `hover:border-blue-500` highlight on the region overlay div a test
+    clicks right before its final screenshot (Playwright's virtual cursor
+    stays on it), whose on-page position depends on `containerWidth` from
+    `useElementWidthListener`. That hook's `window.resize`-listener
+    implementation was replaced by a `ResizeObserver` on the image element
+    (landed in the V1-removal squash-merge, 2026-07-26) to fix a real bug —
+    the old approach could measure width before the page image finished
+    decoding/laying out — but none of these baselines were regenerated
+    against the fix before now. Confirmed via diff images (thin border
+    outline only, nothing else differs) and via git blame (every affected
+    baseline predates or was carried unregenerated through that commit).
+    Regenerated all 39 in this PR.
+  - Options to evaluate:
+    - keep the CI/local split, but audit whether 0 locally is safe long-term
+      (e.g. could local macOS/Chromium point-updates reintroduce Δ1 noise the
+      old blanket tolerance was absorbing for _local_ runs too, not just CI)
+    - regenerate all baselines on Linux (e.g. matching Playwright Docker
+      image) so CI and local dev share one rendering environment and a single
+      strict tolerance works everywhere, per the alternative already noted in
+      `playwright.config.ts`'s comment
+    - consider whether tests should move the mouse away (or otherwise reset
+      hover state) before a final screenshot, so a region's hover style is
+      never incidentally part of what's being asserted on — would prevent
+      this specific staleness pattern from recurring for unrelated reasons
