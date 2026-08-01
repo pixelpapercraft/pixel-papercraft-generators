@@ -60,11 +60,11 @@ test("minecraft banner and shield renders Template 1's banner flag base", async 
 
   const pageImage = outputPage(page);
 
-  // The front face spans roughly [119, 219] horizontally. (122, 150) sits
+  // The front face spans roughly [142, 262] horizontally. (146, 180) sits
   // inside it, where the texture is dark, unlike the white page background.
-  await expect.poll(() => readPixel(pageImage, 122, 150)).not.toEqual(white);
+  await expect.poll(() => readPixel(pageImage, 146, 180)).not.toEqual(white);
 
   await page.getByLabel("Template 1 Type").selectOption("Shield");
 
-  await expect.poll(() => readPixel(pageImage, 122, 150)).toEqual(white);
+  await expect.poll(() => readPixel(pageImage, 146, 180)).toEqual(white);
 });

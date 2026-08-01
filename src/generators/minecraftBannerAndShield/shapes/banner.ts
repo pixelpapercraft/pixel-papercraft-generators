@@ -13,15 +13,15 @@ import {
 import { findBannerShieldTextureVersion } from "../textures/textureVersions";
 
 // Every shape's destination size is derived from its own source-cuboid
-// units at an integer scale of 5, so every face's source:destination
+// units at an integer scale of 6, so every face's source:destination
 // stretch ratio is a whole number and nearest-neighbour pixel replication
 // is even across the shape. Position uses a separate, non-integer page
-// scale (5/16): translation does not resample a texture, so it carries no
+// scale (6/16): translation does not resample a texture, so it carries no
 // equivalent distortion risk. Both approximate pr-35-head's own design,
 // which draws every axis of every shape at exactly 16 destination pixels
 // per source-cuboid unit.
-const pageScale = 5 / 16;
-const sourceUnitScale = 5;
+const pageScale = 6 / 16;
+const sourceUnitScale = 6;
 
 function scaleToPage(value: number): number {
   return value * pageScale;
