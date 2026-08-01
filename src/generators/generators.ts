@@ -40,6 +40,7 @@ import { generator as testApiDrawingPrimitivesGenerator } from "@genroot/generat
 import { generator as testApiDrawingTexturesGenerator } from "@genroot/generators/testApiDrawingTextures/testApiDrawingTexturesGenerator";
 import { generator as testApiPixelQueriesGenerator } from "@genroot/generators/testApiPixelQueries/testApiPixelQueriesGenerator";
 import { generator as testApiSkinControlGenerator } from "@genroot/generators/testApiSkinControl/testApiSkinControlGenerator";
+import { generator as testApiTintSelectorGenerator } from "@genroot/generators/testApiTintSelector/testApiTintSelectorGenerator";
 
 const isProductionEnvironment: boolean = process.env.NODE_ENV === "production";
 
@@ -120,6 +121,7 @@ export const testApiCoverage: GeneratorDefV2[] = [
   testApiDrawingTexturesGenerator,
   testApiPixelQueriesGenerator,
   testApiSkinControlGenerator,
+  testApiTintSelectorGenerator,
 ];
 
 export const test: GeneratorDefV2[] = isProductionEnvironment
