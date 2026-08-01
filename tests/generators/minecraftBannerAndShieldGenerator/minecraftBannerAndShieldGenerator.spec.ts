@@ -60,8 +60,8 @@ test("minecraft banner and shield renders Template 1's banner flag base", async 
 
   const pageImage = outputPage(page);
 
-  // The front face begins at the reference layout's [121, 123] after the
-  // 1/3 A4 scale. Its left edge is dark, unlike the white page background.
+  // The front face spans roughly [119, 219] horizontally. (122, 150) sits
+  // inside it, where the texture is dark, unlike the white page background.
   await expect.poll(() => readPixel(pageImage, 122, 150)).not.toEqual(white);
 
   await page.getByLabel("Template 1 Type").selectOption("Shield");

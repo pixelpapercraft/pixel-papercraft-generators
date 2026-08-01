@@ -21,7 +21,11 @@ import {
   bannerShieldTextureVersions,
   findBannerShieldTextureVersion,
 } from "./textures/textureVersions";
-import { drawBannerFlag, drawBannerPole } from "./shapes/banner";
+import {
+  drawBannerCrossbar,
+  drawBannerFlag,
+  drawBannerPole,
+} from "./shapes/banner";
 import titleImage from "./images/title-a4.png";
 
 const id = "minecraft-banner-and-shield";
@@ -29,8 +33,8 @@ const id = "minecraft-banner-and-shield";
 const name = "Minecraft Banner and Shield";
 
 const instructions: InstructionsDef = `
-Component-by-component rebuild in progress. The banner flag base and pole are
-currently rendered; the crossbar, patterns, folds, tabs, and shield follow in
+Component-by-component rebuild in progress. The banner flag base, pole, and
+crossbar are currently rendered; patterns, folds, tabs, and shield follow in
 separate slices.
 `;
 
@@ -55,6 +59,7 @@ const render = (ctx: RenderContext, props: BannerAndShieldProps): void => {
   if (props.templateType === "Banner") {
     drawBannerFlag(ctx, props.versionId, props.bannerBaseId);
     drawBannerPole(ctx, props.versionId, props.bannerBaseId);
+    drawBannerCrossbar(ctx, props.versionId, props.bannerBaseId);
   }
 
   if (props.showPlaceholderBorder) {
