@@ -37,6 +37,7 @@ function scaleDimensions([width, height, depth]: Dimensions): Dimensions {
 
 const flagSourceDimensions: Dimensions = [20, 40, 1];
 const bannerFlag = translateCuboid(makeCuboid(flagSourceDimensions), [0, 0]);
+const flagPosition: [number, number] = [scaleToPage(364), scaleToPage(368)];
 
 // pr-35-head's declared pole height is 704, not the pattern's 42 * 16 =
 // 672; this generator's pole height follows the same source-unit rule as
@@ -192,9 +193,59 @@ export function drawBannerFlag(
   minecraft.drawCuboid(
     "",
     bannerFlag,
-    [scaleToPage(364), scaleToPage(368)],
+    flagPosition,
     scaleDimensions(flagSourceDimensions)
   );
+}
+
+// The stack's always-present first entry, present even before the user has
+// placed anything. `pr-35-head`'s `face.ts` names this same pattern id/tint
+// pair `defaultPatternId`/`defaultPatternTint` for the identical purpose.
+// The hex is Minecraft's actual "White" dye color, not pure white.
+export const defaultBannerPatternId = "base";
+export const defaultBannerPatternTint = "#F9FFFE";
+
+export function drawBannerPattern(
+  ctx: RenderContext,
+  versionId: string,
+  patternId: string,
+  blend: string | null
+): void {
+  const version = findBannerShieldTextureVersion(versionId);
+  const pattern = version?.patterns.find(({ id }) => id === patternId);
+  const frame = pattern?.bannerFrame;
+  if (!version || !frame) {
+    return;
+  }
+
+  const minecraft = new BannerBaseMinecraft(
+    ctx,
+    version.bannerTextureDef.id,
+    frame
+  );
+
+  minecraft.drawCuboid(
+    "",
+    bannerFlag,
+    flagPosition,
+    scaleDimensions(flagSourceDimensions),
+    blend ? { blend: { kind: "MultiplyHex", hex: blend } } : {}
+  );
+}
+
+// The single clickable region for arming/placing a pattern on the flag —
+// matches `pr-35-head`'s own design (`Face.defineInputRegion` in his
+// `shapes/banner.ts`), which defines exactly one region sized to the front
+// face and lets it drive a pattern stack shared by every face of the
+// cuboid, so the back face mirrors the front automatically at render time.
+// The offset/size formula mirrors `drawCuboid`'s own front-face placement
+// for this cuboid's default `orientation: "West"`/`center: "Front"`: the
+// front face sits at the cuboid's position shifted by its own depth on both
+// axes, sized to its declared width/height.
+export function bannerFlagFrontRegion(): Rectangle {
+  const [width, height, depth] = scaleDimensions(flagSourceDimensions);
+  const [x, y] = flagPosition;
+  return roundRectangleToPixelBounds([x + depth, y + depth, width, height]);
 }
 
 export function drawBannerPole(

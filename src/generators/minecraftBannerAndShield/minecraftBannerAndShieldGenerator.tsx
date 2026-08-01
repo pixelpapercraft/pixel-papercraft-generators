@@ -8,6 +8,7 @@ import {
   type Generator,
   type ImageDef,
   type InstructionsDef,
+  type RegionClickHandler,
   type RenderContext,
   type TextureDef,
 } from "@genroot/builder";
@@ -22,8 +23,12 @@ import {
   findBannerShieldTextureVersion,
 } from "./textures/textureVersions";
 import {
+  bannerFlagFrontRegion,
+  defaultBannerPatternId,
+  defaultBannerPatternTint,
   drawBannerCrossbar,
   drawBannerFlag,
+  drawBannerPattern,
   drawBannerPole,
 } from "./shapes/banner";
 import titleImage from "./images/title-a4.png";
@@ -34,16 +39,23 @@ const name = "Minecraft Banner and Shield";
 
 const instructions: InstructionsDef = `
 Component-by-component rebuild in progress. The banner flag base, pole, and
-crossbar are currently rendered; patterns, folds, tabs, and shield follow in
-separate slices.
+crossbar are rendered, and clicking the flag arms/stamps the selected
+pattern; folds, tabs, and shield follow in separate slices.
 `;
 
 const images: ImageDef[] = [{ id: "Title", url: titleImage.src }];
 
 const textures: TextureDef[] = [...bannerShieldTextureDefs];
 
+type SelectedBannerPattern = {
+  patternId: string;
+  blend: string | null;
+};
+
+const bannerFlagRegionId = "BannerFlag";
+
 type BannerAndShieldProps = {
-  tint: string | null;
+  bannerPatterns: SelectedBannerPattern[];
   versionId: string;
   templateType: TemplateType;
   bannerBaseId: string;
@@ -57,8 +69,12 @@ const render = (ctx: RenderContext, props: BannerAndShieldProps): void => {
 
   if (props.templateType === "Banner") {
     drawBannerFlag(ctx, props.versionId, props.bannerBaseId);
+    props.bannerPatterns.forEach(({ patternId, blend }) => {
+      drawBannerPattern(ctx, props.versionId, patternId, blend);
+    });
     drawBannerPole(ctx, props.versionId, props.bannerBaseId);
     drawBannerCrossbar(ctx, props.versionId, props.bannerBaseId);
+    ctx.defineRegion(bannerFlagFrontRegion(), bannerFlagRegionId);
   }
 
   // Temporary: proves the Title overlay is wired end to end. Removed once
@@ -89,6 +105,9 @@ function Component(): JSX.Element {
   );
   const [templateType, setTemplateType] =
     React.useState<TemplateType>("Banner");
+  const [bannerPatterns, setBannerPatterns] = React.useState<
+    SelectedBannerPattern[]
+  >([{ patternId: defaultBannerPatternId, blend: defaultBannerPatternTint }]);
 
   const textureVersion =
     findBannerShieldTextureVersion(versionId) ??
@@ -100,10 +119,27 @@ function Component(): JSX.Element {
   );
 
   const rendererProps: BannerAndShieldProps = {
-    tint,
+    bannerPatterns,
     versionId,
     templateType,
     bannerBaseId,
+  };
+
+  const onRegionClick: RegionClickHandler = ({ regionId }) => {
+    if (regionId !== bannerFlagRegionId) {
+      return;
+    }
+
+    setBannerPatterns((current) =>
+      selectedPatternId === null
+        ? // The stack's first entry is the always-present default base
+          // layer (seeded above), not a user-placed pattern, so erase
+          // leaves it in place rather than clearing the flag entirely.
+          current.length > 1
+          ? current.slice(0, -1)
+          : current
+        : current.concat([{ patternId: selectedPatternId, blend: tint }])
+    );
   };
 
   return (
@@ -153,15 +189,13 @@ function Component(): JSX.Element {
             />
           )}
 
-          {/* Temporary: exercises the tint selector V2 port in isolation. */}
           <TintSelector
             value={tint}
-            label="Tint (V2 port test)"
+            label="Tint"
             swatchGroups={[dyeTintGroup]}
             onChange={setTint}
           />
 
-          {/* Temporary: exercises the pattern texture picker in isolation. */}
           <PatternTexturePicker
             patterns={patternOptions}
             selectedPatternId={selectedPatternId}
@@ -175,6 +209,7 @@ function Component(): JSX.Element {
         <GeneratorRenderer
           generator={bannerAndShieldGenerator}
           props={rendererProps}
+          onRegionClick={onRegionClick}
         />
       </div>
     </div>

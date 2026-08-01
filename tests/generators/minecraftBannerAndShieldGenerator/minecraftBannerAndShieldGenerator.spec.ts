@@ -47,3 +47,42 @@ test("minecraft banner and shield renders Template 1's banner flag base", async 
 
   await expect.poll(() => readPixel(pageImage, 146, 180)).toEqual(white);
 });
+
+test("minecraft banner and shield stamps and erases a pattern on the flag click region", async ({
+  page,
+}) => {
+  await page.goto("/generator/minecraft-banner-and-shield");
+
+  const pageImage = outputPage(page);
+  const region = page.getByTestId("region-BannerFlag");
+  const beforeColor = await readPixel(pageImage, 146, 180);
+
+  // Re-stamps the "base" pattern with the picker's default tint (dye Black),
+  // clearly distinguishable from the near-white default base layer.
+  await page.getByTitle("base").click();
+  await region.click();
+  await expect
+    .poll(() => readPixel(pageImage, 146, 180))
+    .not.toEqual(beforeColor);
+
+  await page.getByLabel("Erase texture").click();
+  await region.click();
+  await expect.poll(() => readPixel(pageImage, 146, 180)).toEqual(beforeColor);
+});
+
+test("minecraft banner and shield keeps the default base layer through repeated erase clicks", async ({
+  page,
+}) => {
+  await page.goto("/generator/minecraft-banner-and-shield");
+
+  const pageImage = outputPage(page);
+  const region = page.getByTestId("region-BannerFlag");
+  const defaultColor = await readPixel(pageImage, 146, 180);
+
+  await page.getByLabel("Erase texture").click();
+  await region.click();
+  await region.click();
+  await region.click();
+
+  await expect.poll(() => readPixel(pageImage, 146, 180)).toEqual(defaultColor);
+});
