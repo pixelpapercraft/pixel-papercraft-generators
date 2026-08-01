@@ -43,7 +43,6 @@ const images: ImageDef[] = [{ id: "Title", url: titleImage.src }];
 const textures: TextureDef[] = [...bannerShieldTextureDefs];
 
 type BannerAndShieldProps = {
-  showPlaceholderBorder: boolean;
   tint: string | null;
   versionId: string;
   templateType: TemplateType;
@@ -60,10 +59,6 @@ const render = (ctx: RenderContext, props: BannerAndShieldProps): void => {
     drawBannerFlag(ctx, props.versionId, props.bannerBaseId);
     drawBannerPole(ctx, props.versionId, props.bannerBaseId);
     drawBannerCrossbar(ctx, props.versionId, props.bannerBaseId);
-  }
-
-  if (props.showPlaceholderBorder) {
-    ctx.drawRectangle([20, 20, 555, 802]);
   }
 
   // Temporary: proves the Title overlay is wired end to end. Removed once
@@ -83,8 +78,6 @@ const bannerAndShieldGenerator: Generator<BannerAndShieldProps> = {
 };
 
 function Component(): JSX.Element {
-  const [showPlaceholderBorder, setShowPlaceholderBorder] =
-    React.useState(true);
   const [tint, setTint] = React.useState<string | null>(
     getFirstSwatchColor(dyeTintGroup)
   );
@@ -107,7 +100,6 @@ function Component(): JSX.Element {
   );
 
   const rendererProps: BannerAndShieldProps = {
-    showPlaceholderBorder,
     tint,
     versionId,
     templateType,
@@ -122,12 +114,6 @@ function Component(): JSX.Element {
       >
         <div className="w-full bg-gray-100 p-8 space-y-4">
           <GeneratorUI.Instructions markdown={instructions} />
-
-          <GeneratorUI.BooleanControl
-            label="Show Placeholder Border"
-            checked={showPlaceholderBorder}
-            onCheckedChange={setShowPlaceholderBorder}
-          />
 
           <GeneratorUI.SelectControl
             label="Version"
