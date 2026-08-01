@@ -14,6 +14,11 @@ import {
 import { TintSelector } from "../_common/tintSelectorV2/tintSelector";
 import { getFirstSwatchColor } from "../_common/tintSelectorV2/tintSelectorLogic";
 import { dyeTintGroup } from "../_common/tintSelectorV2/tints";
+import { PatternTexturePicker } from "../_common/patternTexturePicker/patternTexturePicker";
+import { makePatternOptions } from "../_common/patternTexturePicker/patternTexturePickerLogic";
+import { bannerShieldTextureVersions } from "../_common/patternTexturePicker/textureVersions";
+
+const patternOptions = makePatternOptions(bannerShieldTextureVersions[0]!);
 
 const id = "minecraft-banner-and-shield";
 
@@ -64,6 +69,9 @@ function Component(): JSX.Element {
   const [tint, setTint] = React.useState<string | null>(
     getFirstSwatchColor(dyeTintGroup)
   );
+  const [selectedPatternId, setSelectedPatternId] = React.useState<
+    string | null
+  >(null);
 
   const rendererProps: BannerAndShieldProps = { showPlaceholderBorder, tint };
 
@@ -88,6 +96,14 @@ function Component(): JSX.Element {
             label="Tint (V2 port test)"
             swatchGroups={[dyeTintGroup]}
             onChange={setTint}
+          />
+
+          {/* Temporary: exercises the pattern texture picker in isolation. */}
+          <PatternTexturePicker
+            patterns={patternOptions}
+            selectedPatternId={selectedPatternId}
+            blend={tint}
+            onSelectPattern={setSelectedPatternId}
           />
         </div>
       </div>
