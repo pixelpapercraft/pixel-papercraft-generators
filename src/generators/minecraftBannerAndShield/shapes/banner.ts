@@ -5,6 +5,10 @@ import {
   translateCuboid,
 } from "../../_common/cuboid";
 import {
+  drawCuboidTabs,
+  uniformTabBaseDimensions,
+} from "../../_common/cuboidTabs";
+import {
   Minecraft,
   type Face,
   type Rectangle,
@@ -190,12 +194,21 @@ export function drawBannerFlag(
     return;
   }
 
-  minecraft.drawCuboid(
-    "",
-    bannerFlag,
-    flagPosition,
-    scaleDimensions(flagSourceDimensions)
-  );
+  const dimensions = scaleDimensions(flagSourceDimensions);
+  minecraft.drawCuboid("", bannerFlag, flagPosition, dimensions);
+  drawCuboidTabs(ctx, flagPosition, dimensions, {
+    tabThickness: 12,
+    placements: [
+      { face: "top", edge: "Top" },
+      { face: "right", edge: "Left" },
+      { face: "back", edge: "Top", tabThickness: 6 },
+      { face: "back", edge: "Bottom", tabThickness: 6 },
+      { face: "right", edge: "Top", tabThickness: 6 },
+      { face: "right", edge: "Bottom", tabThickness: 6 },
+      { face: "left", edge: "Top", tabThickness: 6 },
+      { face: "left", edge: "Bottom", tabThickness: 6 },
+    ],
+  });
 }
 
 // The stack's always-present first entry, present even before the user has
@@ -248,6 +261,8 @@ export function bannerFlagFrontRegion(): Rectangle {
   return roundRectangleToPixelBounds([x + depth, y + depth, width, height]);
 }
 
+const polePosition: [number, number] = [scaleToPage(1292), scaleToPage(320)];
+
 export function drawBannerPole(
   ctx: RenderContext,
   versionId: string,
@@ -258,13 +273,18 @@ export function drawBannerPole(
     return;
   }
 
-  minecraft.drawCuboid(
-    "",
-    bannerPole,
-    [scaleToPage(1292), scaleToPage(320)],
-    scaleDimensions(poleSourceDimensions)
-  );
+  const dimensions = scaleDimensions(poleSourceDimensions);
+  minecraft.drawCuboid("", bannerPole, polePosition, dimensions);
+  drawCuboidTabs(ctx, polePosition, dimensions, {
+    baseDimensions: uniformTabBaseDimensions(dimensions).map((v) => v * 2) as [
+      number,
+      number,
+      number,
+    ],
+  });
 }
+
+const crossbarPosition: [number, number] = [scaleToPage(516), scaleToPage(112)];
 
 export function drawBannerCrossbar(
   ctx: RenderContext,
@@ -276,11 +296,27 @@ export function drawBannerCrossbar(
     return;
   }
 
-  minecraft.drawCuboid(
-    "",
-    bannerCrossbar,
-    [scaleToPage(516), scaleToPage(112)],
-    scaleDimensions(crossbarSourceDimensions),
-    { center: "Bottom", orientation: "North" }
-  );
+  const dimensions = scaleDimensions(crossbarSourceDimensions);
+  minecraft.drawCuboid("", bannerCrossbar, crossbarPosition, dimensions, {
+    center: "Bottom",
+    orientation: "North",
+  });
+  drawCuboidTabs(ctx, crossbarPosition, dimensions, {
+    center: "Bottom",
+    orientation: "North",
+    baseDimensions: uniformTabBaseDimensions(dimensions).map((v) => v * 2) as [
+      number,
+      number,
+      number,
+    ],
+    placements: [
+      { face: "front", edge: "Top" },
+      { face: "front", edge: "Left" },
+      { face: "front", edge: "Right" },
+      { face: "back", edge: "Left" },
+      { face: "back", edge: "Right" },
+      { face: "top", edge: "Left" },
+      { face: "top", edge: "Right" },
+    ],
+  });
 }
