@@ -4,6 +4,7 @@ import {
   makeCuboid,
   translateCuboid,
 } from "../../_common/cuboid";
+import { drawCuboidFolds } from "../../_common/cuboidFolds";
 import {
   drawCuboidTabs,
   uniformTabBaseDimensions,
@@ -21,14 +22,23 @@ import { findBannerShieldTextureVersion } from "../textures/textureVersions";
 // stretch ratio is a whole number and nearest-neighbour pixel replication
 // is even across the shape. Position uses a separate, non-integer page
 // scale (6/16): translation does not resample a texture, so it carries no
-// equivalent distortion risk. Both approximate pr-35-head's own design,
-// which draws every axis of every shape at exactly 16 destination pixels
-// per source-cuboid unit.
+// equivalent distortion risk to the texture itself. Both approximate
+// pr-35-head's own design, which draws every axis of every shape at exactly
+// 16 destination pixels per source-cuboid unit.
 const pageScale = 6 / 16;
 const sourceUnitScale = 6;
 
+// Rounded rather than left fractional: a fractional position doesn't distort
+// a texture (see above), but it does put a 1px stroked line (a fold/tab
+// guide) astride two pixel rows/columns instead of one, since the
+// canvas-line-crispness offset trick assumes an integer starting
+// coordinate. Every downstream shape dimension is already an integer
+// (`scaleDimensions`'s `sourceUnitScale` is a whole number), so rounding
+// only `position` keeps every face's texture, fold line, and tab exactly
+// self-consistent — the existing per-face `roundRectangleToPixelBounds`
+// rounding becomes a no-op instead of doing real work.
 function scaleToPage(value: number): number {
-  return value * pageScale;
+  return Math.round(value * pageScale);
 }
 
 function scaleDimensions([width, height, depth]: Dimensions): Dimensions {
@@ -187,7 +197,8 @@ function makeBannerBaseMinecraft(
 export function drawBannerFlag(
   ctx: RenderContext,
   versionId: string,
-  baseId: string
+  baseId: string,
+  showFolds: boolean
 ): void {
   const minecraft = makeBannerBaseMinecraft(ctx, versionId, baseId);
   if (!minecraft) {
@@ -196,6 +207,9 @@ export function drawBannerFlag(
 
   const dimensions = scaleDimensions(flagSourceDimensions);
   minecraft.drawCuboid("", bannerFlag, flagPosition, dimensions);
+  if (showFolds) {
+    drawCuboidFolds(ctx, flagPosition, dimensions);
+  }
   drawCuboidTabs(ctx, flagPosition, dimensions, {
     tabThickness: 12,
     placements: [
@@ -266,7 +280,8 @@ const polePosition: [number, number] = [scaleToPage(1292), scaleToPage(320)];
 export function drawBannerPole(
   ctx: RenderContext,
   versionId: string,
-  baseId: string
+  baseId: string,
+  showFolds: boolean
 ): void {
   const minecraft = makeBannerBaseMinecraft(ctx, versionId, baseId);
   if (!minecraft) {
@@ -275,6 +290,9 @@ export function drawBannerPole(
 
   const dimensions = scaleDimensions(poleSourceDimensions);
   minecraft.drawCuboid("", bannerPole, polePosition, dimensions);
+  if (showFolds) {
+    drawCuboidFolds(ctx, polePosition, dimensions);
+  }
   drawCuboidTabs(ctx, polePosition, dimensions, {
     baseDimensions: uniformTabBaseDimensions(dimensions).map((v) => v * 2) as [
       number,
@@ -289,7 +307,8 @@ const crossbarPosition: [number, number] = [scaleToPage(516), scaleToPage(112)];
 export function drawBannerCrossbar(
   ctx: RenderContext,
   versionId: string,
-  baseId: string
+  baseId: string,
+  showFolds: boolean
 ): void {
   const minecraft = makeBannerBaseMinecraft(ctx, versionId, baseId);
   if (!minecraft) {
@@ -301,6 +320,12 @@ export function drawBannerCrossbar(
     center: "Bottom",
     orientation: "North",
   });
+  if (showFolds) {
+    drawCuboidFolds(ctx, crossbarPosition, dimensions, {
+      center: "Bottom",
+      orientation: "North",
+    });
+  }
   drawCuboidTabs(ctx, crossbarPosition, dimensions, {
     center: "Bottom",
     orientation: "North",

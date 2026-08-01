@@ -39,8 +39,8 @@ const name = "Minecraft Banner and Shield";
 
 const instructions: InstructionsDef = `
 Component-by-component rebuild in progress. The banner flag base, pole, and
-crossbar are rendered, and clicking the flag arms/stamps the selected
-pattern; folds, tabs, and shield follow in separate slices.
+crossbar are rendered with fold and tab guides, and clicking the flag
+arms/stamps the selected pattern; shield follows in a separate slice.
 `;
 
 const images: ImageDef[] = [{ id: "Title", url: titleImage.src }];
@@ -59,6 +59,7 @@ type BannerAndShieldProps = {
   versionId: string;
   templateType: TemplateType;
   bannerBaseId: string;
+  showFolds: boolean;
 };
 
 type TemplateType = "Banner" | "Shield";
@@ -68,12 +69,17 @@ const render = (ctx: RenderContext, props: BannerAndShieldProps): void => {
   ctx.fillBackgroundColorWithWhite();
 
   if (props.templateType === "Banner") {
-    drawBannerFlag(ctx, props.versionId, props.bannerBaseId);
+    drawBannerFlag(ctx, props.versionId, props.bannerBaseId, props.showFolds);
     props.bannerPatterns.forEach(({ patternId, blend }) => {
       drawBannerPattern(ctx, props.versionId, patternId, blend);
     });
-    drawBannerPole(ctx, props.versionId, props.bannerBaseId);
-    drawBannerCrossbar(ctx, props.versionId, props.bannerBaseId);
+    drawBannerPole(ctx, props.versionId, props.bannerBaseId, props.showFolds);
+    drawBannerCrossbar(
+      ctx,
+      props.versionId,
+      props.bannerBaseId,
+      props.showFolds
+    );
     ctx.defineRegion(bannerFlagFrontRegion(), bannerFlagRegionId);
   }
 
@@ -105,6 +111,7 @@ function Component(): JSX.Element {
   );
   const [templateType, setTemplateType] =
     React.useState<TemplateType>("Banner");
+  const [showFolds, setShowFolds] = React.useState(true);
   const [bannerPatterns, setBannerPatterns] = React.useState<
     SelectedBannerPattern[]
   >([{ patternId: defaultBannerPatternId, blend: defaultBannerPatternTint }]);
@@ -123,6 +130,7 @@ function Component(): JSX.Element {
     versionId,
     templateType,
     bannerBaseId,
+    showFolds,
   };
 
   const onRegionClick: RegionClickHandler = ({ regionId }) => {
@@ -188,6 +196,12 @@ function Component(): JSX.Element {
               onValueChange={setBannerBaseId}
             />
           )}
+
+          <GeneratorUI.BooleanControl
+            label="Show Folds"
+            checked={showFolds}
+            onCheckedChange={setShowFolds}
+          />
 
           <TintSelector
             value={tint}
