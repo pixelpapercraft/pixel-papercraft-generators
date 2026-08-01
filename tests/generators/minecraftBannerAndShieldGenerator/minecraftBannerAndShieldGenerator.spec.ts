@@ -52,3 +52,19 @@ test("minecraft banner and shield exposes the Template 1 banner controls", async
   await expect(page.getByLabel("Template 1 Type")).toHaveValue("Shield");
   await expect(page.getByLabel("Template 1 Banner Base")).toHaveCount(0);
 });
+
+test("minecraft banner and shield renders Template 1's banner flag base", async ({
+  page,
+}) => {
+  await page.goto("/generator/minecraft-banner-and-shield");
+
+  const pageImage = outputPage(page);
+
+  // The front face begins at the reference layout's [121, 123] after the
+  // 1/3 A4 scale. Its left edge is dark, unlike the white page background.
+  await expect.poll(() => readPixel(pageImage, 122, 150)).not.toEqual(white);
+
+  await page.getByLabel("Template 1 Type").selectOption("Shield");
+
+  await expect.poll(() => readPixel(pageImage, 122, 150)).toEqual(white);
+});

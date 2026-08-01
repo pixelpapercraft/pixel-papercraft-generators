@@ -21,6 +21,7 @@ import {
   bannerShieldTextureVersions,
   findBannerShieldTextureVersion,
 } from "./textures/textureVersions";
+import { drawBannerFlag } from "./shapes/bannerFlag";
 import titleImage from "./images/title-a4.png";
 
 const id = "minecraft-banner-and-shield";
@@ -28,7 +29,9 @@ const id = "minecraft-banner-and-shield";
 const name = "Minecraft Banner and Shield";
 
 const instructions: InstructionsDef = `
-Skeleton generator — component-by-component rebuild in progress. No banner or shield content yet.
+Component-by-component rebuild in progress. The banner flag base is currently
+rendered; the pole, crossbar, patterns, folds, tabs, and shield follow in
+separate slices.
 `;
 
 const images: ImageDef[] = [{ id: "Title", url: titleImage.src }];
@@ -38,6 +41,9 @@ const textures: TextureDef[] = [...bannerShieldTextureDefs];
 type BannerAndShieldProps = {
   showPlaceholderBorder: boolean;
   tint: string | null;
+  versionId: string;
+  templateType: TemplateType;
+  bannerBaseId: string;
 };
 
 type TemplateType = "Banner" | "Shield";
@@ -46,8 +52,9 @@ const render = (ctx: RenderContext, props: BannerAndShieldProps): void => {
   ctx.usePage("Page");
   ctx.fillBackgroundColorWithWhite();
 
-  ctx.drawText("Banner and Shield", [40, 60], 24);
-  ctx.drawText("Skeleton page - no content yet", [40, 90], 12);
+  if (props.templateType === "Banner") {
+    drawBannerFlag(ctx, props.versionId, props.bannerBaseId);
+  }
 
   if (props.showPlaceholderBorder) {
     ctx.drawRectangle([20, 20, 555, 802]);
@@ -99,7 +106,13 @@ function Component(): JSX.Element {
     bannerBaseOptions[0]?.id ?? ""
   );
 
-  const rendererProps: BannerAndShieldProps = { showPlaceholderBorder, tint };
+  const rendererProps: BannerAndShieldProps = {
+    showPlaceholderBorder,
+    tint,
+    versionId,
+    templateType,
+    bannerBaseId,
+  };
 
   return (
     <div className="lg:flex gap-8">
