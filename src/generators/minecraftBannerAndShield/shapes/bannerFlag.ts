@@ -11,6 +11,23 @@ function scaleToPage(value: number): number {
   return value * scale;
 }
 
+// Faces in one cuboid share their mathematical boundaries. Quantising each
+// rectangle from its absolute edges (rather than rounding its width alone)
+// makes those shared boundaries remain identical on the integer-pixel page.
+export function roundRectangleToPixelBounds([
+  x,
+  y,
+  width,
+  height,
+]: Rectangle): Rectangle {
+  const left = Math.round(x);
+  const top = Math.round(y);
+  const right = Math.round(x + width);
+  const bottom = Math.round(y + height);
+
+  return [left, top, right - left, bottom - top];
+}
+
 function makeFrameSourceRegion(
   frame: TextureFrame,
   source: Rectangle
@@ -45,7 +62,7 @@ class BannerBaseMinecraft extends Minecraft {
     this.ctx.drawTexture(
       this.textureId,
       makeFrameSourceRegion(this.frame, source),
-      destination.rectangle,
+      roundRectangleToPixelBounds(destination.rectangle),
       {
         flip: destination.flip,
         rotateLegacy: destination.rotate,
