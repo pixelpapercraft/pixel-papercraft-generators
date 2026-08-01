@@ -1,11 +1,9 @@
 import { expect, test, type Page } from "@playwright/test";
 import { readPixel } from "../_shared/pixelColor";
 
-// Skeleton-only coverage: this generator has no real content yet (see the
-// component rebuild plan), so these tests only prove the scaffold itself
-// works — the control panel renders and is wired to the render pass — not
-// any banner/shield behavior. Expect this file to be replaced as each real
-// component (texture picker, tint picker, rendering) lands.
+// The rendering is still a scaffold, so these tests cover only the controls
+// that have been introduced so far. Rendering coverage grows alongside the
+// banner and shield geometry slices.
 
 const white = { r: 255, g: 255, b: 255, a: 255 };
 
@@ -37,4 +35,20 @@ test("minecraft banner and shield skeleton's placeholder border toggle drives th
   await page.getByText("Show Placeholder Border", { exact: true }).click();
   await expect(page.getByLabel("Show Placeholder Border")).not.toBeChecked();
   await expect.poll(() => readPixel(pageImage, 300, 20)).toEqual(white);
+});
+
+test("minecraft banner and shield exposes the Template 1 banner controls", async ({
+  page,
+}) => {
+  await page.goto("/generator/minecraft-banner-and-shield");
+
+  await expect(page.getByLabel("Template 1 Type")).toHaveValue("Banner");
+  await expect(page.getByLabel("Template 1 Banner Base")).toHaveValue(
+    "banner_base"
+  );
+
+  await page.getByLabel("Template 1 Type").selectOption("Shield");
+
+  await expect(page.getByLabel("Template 1 Type")).toHaveValue("Shield");
+  await expect(page.getByLabel("Template 1 Banner Base")).toHaveCount(0);
 });

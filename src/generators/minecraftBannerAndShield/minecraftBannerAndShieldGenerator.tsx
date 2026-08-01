@@ -40,6 +40,8 @@ type BannerAndShieldProps = {
   tint: string | null;
 };
 
+type TemplateType = "Banner" | "Shield";
+
 const render = (ctx: RenderContext, props: BannerAndShieldProps): void => {
   ctx.usePage("Page");
   ctx.fillBackgroundColorWithWhite();
@@ -85,11 +87,17 @@ function Component(): JSX.Element {
   const [versionId, setVersionId] = React.useState(
     bannerShieldTextureVersions[0]!.id
   );
+  const [templateType, setTemplateType] =
+    React.useState<TemplateType>("Banner");
 
   const textureVersion =
     findBannerShieldTextureVersion(versionId) ??
     bannerShieldTextureVersions[0]!;
   const patternOptions = makePatternOptions(textureVersion);
+  const bannerBaseOptions = textureVersion.bases.bannerOptions;
+  const [bannerBaseId, setBannerBaseId] = React.useState(
+    bannerBaseOptions[0]?.id ?? ""
+  );
 
   const rendererProps: BannerAndShieldProps = { showPlaceholderBorder, tint };
 
@@ -119,6 +127,32 @@ function Component(): JSX.Element {
             value={versionId}
             onValueChange={setVersionId}
           />
+
+          <GeneratorUI.SelectControl
+            label="Template 1 Type"
+            options={[
+              { id: "Banner", label: "Banner" },
+              { id: "Shield", label: "Shield" },
+            ]}
+            value={templateType}
+            onValueChange={(value) => {
+              if (value === "Banner" || value === "Shield") {
+                setTemplateType(value);
+              }
+            }}
+          />
+
+          {templateType === "Banner" && (
+            <GeneratorUI.SelectControl
+              label="Template 1 Banner Base"
+              options={bannerBaseOptions.map(({ id: baseId, label }) => ({
+                id: baseId,
+                label,
+              }))}
+              value={bannerBaseId}
+              onValueChange={setBannerBaseId}
+            />
+          )}
 
           {/* Temporary: exercises the tint selector V2 port in isolation. */}
           <TintSelector
