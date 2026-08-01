@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { type TextureFrame } from "@genroot/builder/engine/textureData";
+import { type TextureFrame } from "@genroot/builder";
 import { pairBannerShieldPatterns } from "./pairPatterns";
 
 function frame(id: string): TextureFrame {

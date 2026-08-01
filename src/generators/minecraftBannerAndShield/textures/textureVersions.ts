@@ -1,12 +1,13 @@
 import {
+  type TextureDef,
   type TextureData,
   tilesToTextureFrames,
-} from "@genroot/builder/engine/textureData";
+} from "@genroot/builder";
 import { pairBannerShieldPatterns } from "./pairPatterns";
-import { type BannerShieldTextureVersion } from "./types";
-import * as Texture_26_2_Banner from "./textures/texture_minecraft_26_2_banner_patterns";
-import * as Texture_26_2_Shield from "./textures/texture_minecraft_26_2_shield_patterns";
-import * as Texture_26_2_HD_Shield from "./textures/texture_vanilla_tweaks_26_2_shield_patterns";
+import { type BannerShieldTextureVersion } from "../../_common/patternTexturePicker/types";
+import * as Texture_26_2_Banner from "./texture_minecraft_26_2_banner_patterns";
+import * as Texture_26_2_Shield from "./texture_minecraft_26_2_shield_patterns";
+import * as Texture_26_2_HD_Shield from "./texture_vanilla_tweaks_26_2_shield_patterns";
 
 type BannerShieldTextureDefinition = {
   id: string;
@@ -82,3 +83,11 @@ export function findPatternVersionId(
 export const bannerShieldVersionIds = bannerShieldTextureVersions.map(
   ({ id }) => id
 );
+
+export const bannerShieldTextureDefs: TextureDef[] =
+  bannerShieldTextureVersions.flatMap(
+    ({ bannerTextureDef, shieldTextureDef }) => [
+      bannerTextureDef,
+      shieldTextureDef,
+    ]
+  );

@@ -16,9 +16,12 @@ import { getFirstSwatchColor } from "../_common/tintSelectorV2/tintSelectorLogic
 import { dyeTintGroup } from "../_common/tintSelectorV2/tints";
 import { PatternTexturePicker } from "../_common/patternTexturePicker/patternTexturePicker";
 import { makePatternOptions } from "../_common/patternTexturePicker/patternTexturePickerLogic";
-import { bannerShieldTextureVersions } from "../_common/patternTexturePicker/textureVersions";
-
-const patternOptions = makePatternOptions(bannerShieldTextureVersions[0]!);
+import {
+  bannerShieldTextureDefs,
+  bannerShieldTextureVersions,
+  findBannerShieldTextureVersion,
+} from "./textures/textureVersions";
+import titleImage from "./images/title-a4.png";
 
 const id = "minecraft-banner-and-shield";
 
@@ -28,9 +31,9 @@ const instructions: InstructionsDef = `
 Skeleton generator — component-by-component rebuild in progress. No banner or shield content yet.
 `;
 
-const images: ImageDef[] = [];
+const images: ImageDef[] = [{ id: "Title", url: titleImage.src }];
 
-const textures: TextureDef[] = [];
+const textures: TextureDef[] = [...bannerShieldTextureDefs];
 
 type BannerAndShieldProps = {
   showPlaceholderBorder: boolean;
@@ -53,6 +56,13 @@ const render = (ctx: RenderContext, props: BannerAndShieldProps): void => {
   if (props.tint) {
     ctx.fillRectangle([420, 40, 130, 130], props.tint);
   }
+
+  // Temporary: proves the Title overlay is wired end to end. Removed once
+  // real banner/shield content exists for it to overlay. Pre-scaled to its
+  // exact on-page size and drawn as a plain image rather than a texture —
+  // drawTexture's per-source-pixel scaling is far too slow for an asset this
+  // large redrawn on every render.
+  ctx.drawImage("Title", [0, 0]);
 };
 
 const bannerAndShieldGenerator: Generator<BannerAndShieldProps> = {
@@ -72,6 +82,14 @@ function Component(): JSX.Element {
   const [selectedPatternId, setSelectedPatternId] = React.useState<
     string | null
   >(null);
+  const [versionId, setVersionId] = React.useState(
+    bannerShieldTextureVersions[0]!.id
+  );
+
+  const textureVersion =
+    findBannerShieldTextureVersion(versionId) ??
+    bannerShieldTextureVersions[0]!;
+  const patternOptions = makePatternOptions(textureVersion);
 
   const rendererProps: BannerAndShieldProps = { showPlaceholderBorder, tint };
 
@@ -88,6 +106,18 @@ function Component(): JSX.Element {
             label="Show Placeholder Border"
             checked={showPlaceholderBorder}
             onCheckedChange={setShowPlaceholderBorder}
+          />
+
+          <GeneratorUI.SelectControl
+            label="Version"
+            options={bannerShieldTextureVersions.map(
+              ({ id: versionOptionId, label }) => ({
+                id: versionOptionId,
+                label,
+              })
+            )}
+            value={versionId}
+            onValueChange={setVersionId}
           />
 
           {/* Temporary: exercises the tint selector V2 port in isolation. */}

@@ -1,7 +1,6 @@
 // This is a generated file
 
-import { type TextureDef } from "@genroot/builder/engine/generatorDef";
-import { type TextureData } from "@genroot/builder/engine/textureData";
+import { type TextureDef, type TextureData } from "@genroot/builder";
 
 import image from "./texture_minecraft_26_2_banner_patterns.png";
 

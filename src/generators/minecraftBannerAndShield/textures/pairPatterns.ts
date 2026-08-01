@@ -1,5 +1,8 @@
-import { type TextureFrame } from "@genroot/builder/engine/textureData";
-import { type BannerShieldBases, type BannerShieldPattern } from "./types";
+import { type TextureFrame } from "@genroot/builder";
+import {
+  type BannerShieldBases,
+  type BannerShieldPattern,
+} from "../../_common/patternTexturePicker/types";
 
 const bannerBaseId = "banner_base";
 const shieldBaseId = "shield_base";
