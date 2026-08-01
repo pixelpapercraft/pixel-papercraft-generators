@@ -6,6 +6,7 @@ import { findBannerShieldTextureVersion } from "../textures/textureVersions";
 const scale = 1 / 3;
 
 const bannerFlag = translateCuboid(makeCuboid([20, 40, 1]), [0, 0]);
+const bannerPole = translateCuboid(makeCuboid([2, 42, 2]), [44, 0]);
 
 function scaleToPage(value: number): number {
   return value * scale;
@@ -73,24 +74,53 @@ class BannerBaseMinecraft extends Minecraft {
   }
 }
 
+function makeBannerBaseMinecraft(
+  ctx: RenderContext,
+  versionId: string,
+  baseId: string
+): BannerBaseMinecraft | null {
+  const version = findBannerShieldTextureVersion(versionId);
+  const base = version?.bases.bannerOptions.find(({ id }) => id === baseId);
+  if (!version || !base) {
+    return null;
+  }
+
+  const textureId = (base.textureDef ?? version.bannerTextureDef).id;
+  return new BannerBaseMinecraft(ctx, textureId, base);
+}
+
 export function drawBannerFlag(
   ctx: RenderContext,
   versionId: string,
   baseId: string
 ): void {
-  const version = findBannerShieldTextureVersion(versionId);
-  const base = version?.bases.bannerOptions.find(({ id }) => id === baseId);
-  if (!version || !base) {
+  const minecraft = makeBannerBaseMinecraft(ctx, versionId, baseId);
+  if (!minecraft) {
     return;
   }
-
-  const textureId = (base.textureDef ?? version.bannerTextureDef).id;
-  const minecraft = new BannerBaseMinecraft(ctx, textureId, base);
 
   minecraft.drawCuboid(
     "",
     bannerFlag,
     [scaleToPage(364), scaleToPage(368)],
     [scaleToPage(320), scaleToPage(640), scaleToPage(16)]
+  );
+}
+
+export function drawBannerPole(
+  ctx: RenderContext,
+  versionId: string,
+  baseId: string
+): void {
+  const minecraft = makeBannerBaseMinecraft(ctx, versionId, baseId);
+  if (!minecraft) {
+    return;
+  }
+
+  minecraft.drawCuboid(
+    "",
+    bannerPole,
+    [scaleToPage(1292), scaleToPage(320)],
+    [scaleToPage(32), scaleToPage(704), scaleToPage(32)]
   );
 }
