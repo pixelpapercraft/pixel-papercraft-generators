@@ -11,6 +11,9 @@ import {
   type RenderContext,
   type TextureDef,
 } from "@genroot/builder";
+import { TintSelector } from "../_common/tintSelectorV2/tintSelector";
+import { getFirstSwatchColor } from "../_common/tintSelectorV2/tintSelectorLogic";
+import { dyeTintGroup } from "../_common/tintSelectorV2/tints";
 
 const id = "minecraft-banner-and-shield";
 
@@ -26,6 +29,7 @@ const textures: TextureDef[] = [];
 
 type BannerAndShieldProps = {
   showPlaceholderBorder: boolean;
+  tint: string | null;
 };
 
 const render = (ctx: RenderContext, props: BannerAndShieldProps): void => {
@@ -37,6 +41,12 @@ const render = (ctx: RenderContext, props: BannerAndShieldProps): void => {
 
   if (props.showPlaceholderBorder) {
     ctx.drawRectangle([20, 20, 555, 802]);
+  }
+
+  // Temporary: proves the tint selector V2 port is wired end to end. Removed
+  // once the pattern picker component lands and consumes the tint itself.
+  if (props.tint) {
+    ctx.fillRectangle([420, 40, 130, 130], props.tint);
   }
 };
 
@@ -51,8 +61,11 @@ const bannerAndShieldGenerator: Generator<BannerAndShieldProps> = {
 function Component(): JSX.Element {
   const [showPlaceholderBorder, setShowPlaceholderBorder] =
     React.useState(true);
+  const [tint, setTint] = React.useState<string | null>(
+    getFirstSwatchColor(dyeTintGroup)
+  );
 
-  const rendererProps: BannerAndShieldProps = { showPlaceholderBorder };
+  const rendererProps: BannerAndShieldProps = { showPlaceholderBorder, tint };
 
   return (
     <div className="lg:flex gap-8">
@@ -67,6 +80,14 @@ function Component(): JSX.Element {
             label="Show Placeholder Border"
             checked={showPlaceholderBorder}
             onCheckedChange={setShowPlaceholderBorder}
+          />
+
+          {/* Temporary: exercises the tint selector V2 port in isolation. */}
+          <TintSelector
+            value={tint}
+            label="Tint (V2 port test)"
+            swatchGroups={[dyeTintGroup]}
+            onChange={setTint}
           />
         </div>
       </div>
