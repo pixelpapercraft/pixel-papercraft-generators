@@ -14,6 +14,7 @@ import {
   type Texture,
   type TextureDef,
   type TexturePlugin,
+  type ThumbnailDef,
 } from "@genroot/builder";
 import { TintSelector } from "../_common/tintSelectorV2/tintSelector";
 import { getFirstSwatchColor } from "../_common/tintSelectorV2/tintSelectorLogic";
@@ -56,6 +57,7 @@ import {
 } from "./shapes/shield";
 import titleImage from "./images/title-a4.png";
 import shieldHandleJoinImage from "./images/shield-handle-join.png";
+import thumbnailImage from "./thumbnail/v3-thumbnail-256.jpg";
 
 const id = "minecraft-banner-and-shield";
 
@@ -84,6 +86,8 @@ const images: ImageDef[] = [
 ];
 
 const textures: TextureDef[] = [...bannerShieldTextureDefs];
+
+const thumbnail: ThumbnailDef = { url: thumbnailImage.src };
 
 const bannerFlagRegionId = "BannerFlag";
 const shieldPlateRegionId = "ShieldPlate";
@@ -235,124 +239,128 @@ function Component(): JSX.Element {
   };
 
   return (
-    <div className="lg:flex gap-8">
-      <div
-        className="flex-1 min-w-0 mb-8 lg:mb-0"
-        data-testid="generator-sidebar"
-      >
-        <div className="w-full bg-gray-100 p-8 space-y-4">
-          <GeneratorUI.Instructions markdown={instructions} />
+    <div>
+      <GeneratorUI.MediaHero video={null} thumbnail={thumbnail} />
 
-          <GeneratorUI.SelectControl
-            label="Version"
-            options={bannerShieldTextureVersions.map(
-              ({ id: versionOptionId, label }) => ({
-                id: versionOptionId,
-                label,
-              })
-            )}
-            value={versionId}
-            onValueChange={setVersionId}
-          />
+      <div className="lg:flex gap-8">
+        <div
+          className="flex-1 min-w-0 mb-8 lg:mb-0"
+          data-testid="generator-sidebar"
+        >
+          <div className="w-full bg-gray-100 p-8 space-y-4">
+            <GeneratorUI.Instructions markdown={instructions} />
 
-          <GeneratorUI.SelectControl
-            label="Template 1 Type"
-            options={[
-              { id: "Banner", label: "Banner" },
-              { id: "Shield", label: "Shield" },
-            ]}
-            value={templateType}
-            onValueChange={(value) => {
-              if (value === "Banner" || value === "Shield") {
-                setTemplateType(value);
-              }
-            }}
-          />
-
-          {templateType === "Banner" && (
             <GeneratorUI.SelectControl
-              label="Template 1 Banner Base"
-              options={bannerBaseOptions.map(({ id: baseId, label }) => ({
-                id: baseId,
-                label,
-              }))}
-              value={bannerBaseId}
-              onValueChange={setBannerBaseId}
+              label="Version"
+              options={bannerShieldTextureVersions.map(
+                ({ id: versionOptionId, label }) => ({
+                  id: versionOptionId,
+                  label,
+                })
+              )}
+              value={versionId}
+              onValueChange={setVersionId}
             />
-          )}
 
-          <GeneratorUI.BooleanControl
-            label="Show Folds"
-            checked={showFolds}
-            onCheckedChange={setShowFolds}
-          />
+            <GeneratorUI.SelectControl
+              label="Template 1 Type"
+              options={[
+                { id: "Banner", label: "Banner" },
+                { id: "Shield", label: "Shield" },
+              ]}
+              value={templateType}
+              onValueChange={(value) => {
+                if (value === "Banner" || value === "Shield") {
+                  setTemplateType(value);
+                }
+              }}
+            />
 
-          {templateType === "Shield" && (
-            <>
-              <GeneratorUI.BooleanControl
-                label="Glint"
-                checked={glintEnabled}
-                onCheckedChange={setGlintEnabled}
+            {templateType === "Banner" && (
+              <GeneratorUI.SelectControl
+                label="Template 1 Banner Base"
+                options={bannerBaseOptions.map(({ id: baseId, label }) => ({
+                  id: baseId,
+                  label,
+                }))}
+                value={bannerBaseId}
+                onValueChange={setBannerBaseId}
               />
-              <GeneratorUI.LoadedTextureControl
-                id="Enchanted Glint"
-                definitions={entityGlintTextureDefs}
-                choices={["1.20+", "Pre-1.20"]}
-                standardWidth={128}
-                standardHeight={128}
-                initialTextureId="Enchanted Glint"
-                onChange={setGlintTexture}
-              />
-              <GeneratorUI.RangeControl
-                label="Glint Opacity"
-                min={0}
-                max={255}
-                step={1}
-                value={glintOpacity}
-                onValueChange={setGlintOpacity}
-              />
-              <GeneratorUI.RangeControl
-                label="Glint X Offset"
-                min={0}
-                max={128}
-                step={1}
-                value={glintXOffset}
-                onValueChange={setGlintXOffset}
-              />
-              <GeneratorUI.RangeControl
-                label="Glint Y Offset"
-                min={0}
-                max={128}
-                step={1}
-                value={glintYOffset}
-                onValueChange={setGlintYOffset}
-              />
-            </>
-          )}
+            )}
 
-          <TintSelector
-            value={tint}
-            label="Tint"
-            swatchGroups={[dyeTintGroup]}
-            onChange={setTint}
-          />
+            <GeneratorUI.BooleanControl
+              label="Show Folds"
+              checked={showFolds}
+              onCheckedChange={setShowFolds}
+            />
 
-          <PatternTexturePicker
-            patterns={patternOptions}
-            selectedPatternId={selectedPatternId}
-            blend={tint}
-            onSelectPattern={setSelectedPatternId}
+            {templateType === "Shield" && (
+              <>
+                <GeneratorUI.BooleanControl
+                  label="Glint"
+                  checked={glintEnabled}
+                  onCheckedChange={setGlintEnabled}
+                />
+                <GeneratorUI.LoadedTextureControl
+                  id="Enchanted Glint"
+                  definitions={entityGlintTextureDefs}
+                  choices={["1.20+", "Pre-1.20"]}
+                  standardWidth={128}
+                  standardHeight={128}
+                  initialTextureId="Enchanted Glint"
+                  onChange={setGlintTexture}
+                />
+                <GeneratorUI.RangeControl
+                  label="Glint Opacity"
+                  min={0}
+                  max={255}
+                  step={1}
+                  value={glintOpacity}
+                  onValueChange={setGlintOpacity}
+                />
+                <GeneratorUI.RangeControl
+                  label="Glint X Offset"
+                  min={0}
+                  max={128}
+                  step={1}
+                  value={glintXOffset}
+                  onValueChange={setGlintXOffset}
+                />
+                <GeneratorUI.RangeControl
+                  label="Glint Y Offset"
+                  min={0}
+                  max={128}
+                  step={1}
+                  value={glintYOffset}
+                  onValueChange={setGlintYOffset}
+                />
+              </>
+            )}
+
+            <TintSelector
+              value={tint}
+              label="Tint"
+              swatchGroups={[dyeTintGroup]}
+              onChange={setTint}
+            />
+
+            <PatternTexturePicker
+              patterns={patternOptions}
+              selectedPatternId={selectedPatternId}
+              blend={tint}
+              onSelectPattern={setSelectedPatternId}
+            />
+          </div>
+        </div>
+
+        <div className="flex-1 min-w-0">
+          <GeneratorRenderer
+            generator={bannerAndShieldGenerator}
+            props={rendererProps}
+            dynamicTextures={dynamicTextures}
+            onRegionClick={onRegionClick}
           />
         </div>
-      </div>
-
-      <div className="flex-1 min-w-0">
-        <GeneratorRenderer
-          generator={bannerAndShieldGenerator}
-          props={rendererProps}
-          dynamicTextures={dynamicTextures}
-          onRegionClick={onRegionClick}
-        />
       </div>
     </div>
   );
