@@ -70,6 +70,30 @@ test("minecraft banner and shield stamps and erases a pattern on the flag click 
   await expect.poll(() => readPixel(pageImage, 146, 180)).toEqual(beforeColor);
 });
 
+test("minecraft banner and shield renders fold guides on top of a stamped pattern", async ({
+  page,
+}) => {
+  await page.goto("/generator/minecraft-banner-and-shield");
+
+  const pageImage = outputPage(page);
+  const region = page.getByTestId("region-BannerFlag");
+
+  // Stamps the "base" pattern with the picker's default near-black tint,
+  // which repaints the flag's full texture and would previously paint over
+  // any fold guide that fell on the fabric rather than blank page background.
+  await page.getByTitle("base").click();
+  await region.click();
+
+  // (151, 143) sits on the front face's top fold-guide dash; (153, 143), one
+  // dash-gap over, confirms the stamped pattern actually reached this row.
+  const foldDash = { r: 123, g: 123, b: 123, a: 255 };
+  await expect.poll(() => readPixel(pageImage, 151, 143)).toEqual(foldDash);
+  await expect.poll(() => readPixel(pageImage, 153, 143)).not.toEqual(foldDash);
+
+  await page.getByText("Show Folds", { exact: true }).click();
+  await expect.poll(() => readPixel(pageImage, 151, 143)).not.toEqual(foldDash);
+});
+
 test("minecraft banner and shield keeps the default base layer through repeated erase clicks", async ({
   page,
 }) => {
