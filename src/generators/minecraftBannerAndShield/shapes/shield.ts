@@ -21,6 +21,14 @@ const sourceUnitScale = 8;
 // page's top-left quadrant.
 const platePosition: [number, number] = [40, 40];
 
+const handleSourceDimensions: Dimensions = [2, 6, 6];
+const shieldHandle = translateCuboid(
+  makeCuboid(handleSourceDimensions),
+  [26, 0]
+);
+
+const handlePosition: [number, number] = [300, 80];
+
 function makeShieldBaseMinecraft(ctx: RenderContext, versionId: string) {
   const version = findBannerShieldTextureVersion(versionId);
   const baseId = version?.bases.shieldOptions[0]?.id;
@@ -44,6 +52,30 @@ export function drawShieldPlate(ctx: RenderContext, versionId: string): void {
 
   const dimensions = scaleDimensions(plateSourceDimensions, sourceUnitScale);
   minecraft.drawCuboid("", shieldPlate, platePosition, dimensions);
+}
+
+export function drawShieldHandle(ctx: RenderContext, versionId: string): void {
+  const minecraft = makeShieldBaseMinecraft(ctx, versionId);
+  if (!minecraft) {
+    return;
+  }
+
+  const dimensions = scaleDimensions(handleSourceDimensions, sourceUnitScale);
+  minecraft.drawCuboid("", shieldHandle, handlePosition, dimensions, {
+    center: "Right",
+  });
+}
+
+export function drawShieldHandleGuides(
+  ctx: RenderContext,
+  showFolds: boolean
+): void {
+  if (!showFolds) {
+    return;
+  }
+
+  const dimensions = scaleDimensions(handleSourceDimensions, sourceUnitScale);
+  drawCuboidFolds(ctx, handlePosition, dimensions, { center: "Right" });
 }
 
 export function drawShieldPlateGuides(
