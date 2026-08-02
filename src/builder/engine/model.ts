@@ -1,9 +1,19 @@
 import { type ImageWithCanvas } from "./imageWithCanvas";
 import { type Texture } from "./texture";
 import { type Page, makePage } from "./modelPage";
-import { type RegionControl, type Region } from "./modelControls";
 import { type Variable } from "./variables";
 import { type Values } from "./modelValues";
+
+/** [x, y, width, height] */
+export type Region = [number, number, number, number];
+
+export type RegionControl = {
+  kind: "Region";
+  pageId: string;
+  region: Region;
+  onClick: () => void;
+  id?: string;
+};
 
 export class Model {
   regionControls: RegionControl[];
