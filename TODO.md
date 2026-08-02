@@ -8,6 +8,23 @@
 
 ## Follow-up Tasks
 
+- Migrate `_common/minecraft.ts` (tab-size) and `_common/plugins/glint.ts`
+  (opacity/x-offset/y-offset) off `Model`'s deprecated number-variable
+  storage (`setNumberVariable`/`getNumberVariable`, reached through
+  `Engine`/`RenderContext`) onto ordinary React state.
+
+  - Context: while removing the pre-V2 control system's leftover engine
+    code, confirmed the `String`/`Boolean` variants of `Model`'s variable
+    storage (and the generic `setVariable`/`clearAllVariables`) had zero
+    callers anywhere and were deleted outright. `Number` survived only
+    because these two call sites still use it, so it's now marked
+    `@deprecated` in `Model`, `Engine`, and the `RenderContext` interface
+    rather than removed.
+  - Why this is separate work: the deprecation/cleanup was a mechanical,
+    zero-behavior-change slice; migrating these two call sites to React
+    state is a real behavior-preserving refactor of shared rendering
+    helpers and deserves its own verification pass.
+
 - Resolve the remaining `jimp@1.6.0` -> `file-type@16.5.4` vulnerability path.
 
   - Context: the `jimp` v0 -> v1 migration is complete, but `npm audit` still reports `file-type` through the current upstream `jimp` release.

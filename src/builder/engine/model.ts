@@ -1,7 +1,6 @@
 import { type ImageWithCanvas } from "./imageWithCanvas";
 import { type Texture } from "./texture";
 import { type Page, makePage } from "./modelPage";
-import { type Variable } from "./variables";
 import { type Values } from "./modelValues";
 
 /** [x, y, width, height] */
@@ -75,36 +74,20 @@ export class Model {
     this.values.removeTexture(id);
   }
 
-  setVariable(id: string, variable: Variable) {
-    this.values.setVariable(id, variable);
-  }
-
-  setStringVariable(id: string, value: string): void {
-    this.values.setStringVariable(id, value);
-  }
-
-  getStringVariable(id: string): string | null {
-    return this.values.getStringVariable(id);
-  }
-
-  cleatAllVariables(): void {
-    this.values.clearAllVariables();
-  }
-
+  /**
+   * @deprecated Model-tracked variable state is a leftover from the pre-V2
+   * control system. Generator authors should hold this kind of state in
+   * React state instead. Not removed because `_common/minecraft.ts` (tab
+   * size) and `_common/plugins/glint.ts` (glint opacity/offsets) still
+   * depend on it; migrating those is tracked separately in TODO.md.
+   */
   setNumberVariable(id: string, value: number): void {
     this.values.setNumberVariable(id, value);
   }
 
+  /** @deprecated See `setNumberVariable`. */
   getNumberVariable(id: string): number | null {
     return this.values.getNumberVariable(id);
-  }
-
-  setBooleanVariable(id: string, value: boolean): void {
-    this.values.setBooleanVariable(id, value);
-  }
-
-  getBooleanVariable(id: string): boolean | null {
-    return this.values.getBooleanVariable(id);
   }
 
   setCurrentPage(page: Page) {

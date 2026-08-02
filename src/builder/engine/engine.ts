@@ -37,10 +37,17 @@ export class Engine {
     return this.model.hasTexture(id);
   }
 
+  /**
+   * @deprecated Model-tracked variable state predates V2 generators. Authors
+   * should hold this kind of state in React state instead — see
+   * `Model.setNumberVariable`'s doc comment for why this hasn't been removed
+   * yet.
+   */
   setNumberVariable(id: string, value: number): void {
     this.model.setNumberVariable(id, value);
   }
 
+  /** @deprecated See `setNumberVariable`. */
   getNumberVariable(id: string): number | null {
     return this.model.getNumberVariable(id);
   }
