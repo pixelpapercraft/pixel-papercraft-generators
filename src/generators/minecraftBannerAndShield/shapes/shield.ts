@@ -4,8 +4,13 @@ import {
   makeCuboid,
   translateCuboid,
 } from "../../_common/cuboid";
-import { drawCuboidFolds } from "../../_common/cuboidFolds";
+import { drawCuboidFolds, drawRectangleFolds } from "../../_common/cuboidFolds";
 import { drawCuboidTabs } from "../../_common/cuboidTabs";
+import {
+  resolveCuboidFaces,
+  resolveFaceVisualRectangle,
+  type Rectangle,
+} from "../../_common/minecraft";
 import { findBannerShieldTextureVersion } from "../textures/textureVersions";
 import { makeBaseMinecraft, scaleDimensions } from "./shared";
 
@@ -28,6 +33,25 @@ const shieldHandle = translateCuboid(
 );
 
 const handlePosition: [number, number] = [300, 80];
+
+// The handle's right/left faces each carry a square hole for the hand
+// grip, inset one source unit on every side — a property of the texture
+// art (measured against the rendered pixels), not derived from the
+// cuboid's own geometry.
+const handleHoleInsetSourceUnits = 1;
+
+function handleHoleRectangle([x, y, width, height]: Rectangle): Rectangle {
+  const inset = handleHoleInsetSourceUnits * sourceUnitScale;
+  // One further pixel in from the hole's own bounds, so the fold line lands
+  // on the black cut-out itself rather than straddling its edge.
+  const lineInset = inset + 1;
+  return [
+    x + lineInset,
+    y + lineInset,
+    width - lineInset * 2,
+    height - lineInset * 2,
+  ];
+}
 
 function makeShieldBaseMinecraft(ctx: RenderContext, versionId: string) {
   const version = findBannerShieldTextureVersion(versionId);
@@ -76,6 +100,18 @@ export function drawShieldHandleGuides(
 
   const dimensions = scaleDimensions(handleSourceDimensions, sourceUnitScale);
   drawCuboidFolds(ctx, handlePosition, dimensions, { center: "Right" });
+
+  const dest = resolveCuboidFaces(handlePosition, dimensions, {
+    center: "Right",
+  });
+  drawRectangleFolds(
+    ctx,
+    handleHoleRectangle(resolveFaceVisualRectangle(dest.right))
+  );
+  drawRectangleFolds(
+    ctx,
+    handleHoleRectangle(resolveFaceVisualRectangle(dest.left))
+  );
 }
 
 export function drawShieldPlateGuides(
