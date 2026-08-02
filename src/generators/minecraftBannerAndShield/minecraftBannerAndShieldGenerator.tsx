@@ -93,7 +93,7 @@ const thumbnail: ThumbnailDef = { url: thumbnailImage.src };
 const history: HistoryDef = [
   "May 2026 NinjolasNJM - Initial TypeScript version.",
   "May 2026 NinjolasNJM - Added pattern tint selector.",
-  "Aug 2026 lostminer - Rebuilt as a working generator with real banner/shield geometry, pattern stamping, folds, tabs, and glint.",
+  "Aug 2026 lostminer - Layout refresh.",
 ];
 
 const bannerFlagRegionId = "BannerFlag";
