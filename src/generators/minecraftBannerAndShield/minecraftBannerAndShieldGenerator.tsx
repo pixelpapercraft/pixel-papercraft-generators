@@ -24,14 +24,17 @@ import {
 } from "./textures/textureVersions";
 import {
   bannerFlagFrontRegion,
-  defaultBannerPatternId,
-  defaultBannerPatternTint,
   drawBannerCrossbar,
   drawBannerFlag,
   drawBannerFlagGuides,
   drawBannerPattern,
   drawBannerPole,
 } from "./shapes/banner";
+import {
+  applyPatternSelection,
+  defaultPatternStack,
+  type SelectedPattern,
+} from "./patternStack";
 import {
   drawShieldHandle,
   drawShieldHandleGuides,
@@ -69,15 +72,10 @@ const images: ImageDef[] = [
 
 const textures: TextureDef[] = [...bannerShieldTextureDefs];
 
-type SelectedBannerPattern = {
-  patternId: string;
-  blend: string | null;
-};
-
 const bannerFlagRegionId = "BannerFlag";
 
 type BannerAndShieldProps = {
-  bannerPatterns: SelectedBannerPattern[];
+  bannerPatterns: SelectedPattern[];
   versionId: string;
   templateType: TemplateType;
   bannerBaseId: string;
@@ -147,9 +145,9 @@ function Component(): JSX.Element {
   const [templateType, setTemplateType] =
     React.useState<TemplateType>("Shield");
   const [showFolds, setShowFolds] = React.useState(true);
-  const [bannerPatterns, setBannerPatterns] = React.useState<
-    SelectedBannerPattern[]
-  >([{ patternId: defaultBannerPatternId, blend: defaultBannerPatternTint }]);
+  const [bannerPatterns, setBannerPatterns] = React.useState<SelectedPattern[]>(
+    defaultPatternStack()
+  );
 
   const textureVersion =
     findBannerShieldTextureVersion(versionId) ??
@@ -174,14 +172,7 @@ function Component(): JSX.Element {
     }
 
     setBannerPatterns((current) =>
-      selectedPatternId === null
-        ? // The stack's first entry is the always-present default base
-          // layer (seeded above), not a user-placed pattern, so erase
-          // leaves it in place rather than clearing the flag entirely.
-          current.length > 1
-          ? current.slice(0, -1)
-          : current
-        : current.concat([{ patternId: selectedPatternId, blend: tint }])
+      applyPatternSelection(current, selectedPatternId, tint)
     );
   };
 

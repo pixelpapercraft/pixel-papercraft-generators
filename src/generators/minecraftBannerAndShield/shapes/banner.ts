@@ -121,13 +121,6 @@ export function drawBannerFlagGuides(
   });
 }
 
-// The stack's always-present first entry, present even before the user has
-// placed anything. `pr-35-head`'s `face.ts` names this same pattern id/tint
-// pair `defaultPatternId`/`defaultPatternTint` for the identical purpose.
-// The hex is Minecraft's actual "White" dye color, not pure white.
-export const defaultBannerPatternId = "base";
-export const defaultBannerPatternTint = "#F9FFFE";
-
 export function drawBannerPattern(
   ctx: RenderContext,
   versionId: string,
