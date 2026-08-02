@@ -112,12 +112,11 @@ export function drawBannerFlagGuides(
     placements: [
       { face: "top", edge: "Top" },
       { face: "right", edge: "Left" },
-      { face: "back", edge: "Top", tabThickness: 6 },
-      { face: "back", edge: "Bottom", tabThickness: 6 },
-      { face: "right", edge: "Top", tabThickness: 6 },
-      { face: "right", edge: "Bottom", tabThickness: 6 },
-      { face: "left", edge: "Top", tabThickness: 6 },
-      { face: "left", edge: "Bottom", tabThickness: 6 },
+      { face: "bottom", edge: "Bottom" },
+      { face: "right", edge: "Top" },
+      { face: "right", edge: "Bottom" },
+      { face: "left", edge: "Top" },
+      { face: "left", edge: "Bottom" },
     ],
   });
 }
