@@ -7,6 +7,7 @@ import {
   type DynamicTextures,
   type GeneratorDefV2,
   type Generator,
+  type HistoryDef,
   type ImageDef,
   type InstructionsDef,
   type RegionClickHandler,
@@ -88,6 +89,12 @@ const images: ImageDef[] = [
 const textures: TextureDef[] = [...bannerShieldTextureDefs];
 
 const thumbnail: ThumbnailDef = { url: thumbnailImage.src };
+
+const history: HistoryDef = [
+  "May 2026 NinjolasNJM - Initial TypeScript version.",
+  "May 2026 NinjolasNJM - Added pattern tint selector.",
+  "Aug 2026 lostminer - Rebuilt as a working generator with real banner/shield geometry, pattern stamping, folds, tabs, and glint.",
+];
 
 const bannerFlagRegionId = "BannerFlag";
 const shieldPlateRegionId = "ShieldPlate";
@@ -362,6 +369,8 @@ function Component(): JSX.Element {
           />
         </div>
       </div>
+
+      <GeneratorUI.History history={history} />
     </div>
   );
 }
@@ -369,6 +378,6 @@ function Component(): JSX.Element {
 export const generator: GeneratorDefV2 = {
   id,
   name,
-  thumbnail: null,
+  thumbnail,
   Component,
 };
