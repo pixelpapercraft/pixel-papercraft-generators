@@ -1,10 +1,8 @@
 import type { CSSProperties } from "react";
 import { type Model } from "@genroot/builder/engine/model";
 import { A4 } from "@genroot/builder/engine/modelPage";
+import { type Region } from "@genroot/builder/engine/renderers/types";
 import { px, pageBorderWidth } from "./utils";
-
-/** [x, y, w, h] */
-type Region = [number, number, number, number];
 
 function scaleNumber(value: number, scale: number): number {
   return Math.round(value * scale);

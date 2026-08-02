@@ -2,9 +2,7 @@ import { type ImageWithCanvas } from "./imageWithCanvas";
 import { type Texture } from "./texture";
 import { type Page, makePage } from "./modelPage";
 import { type Values } from "./modelValues";
-
-/** [x, y, width, height] */
-export type Region = [number, number, number, number];
+import { type Region } from "./renderers/types";
 
 export type RegionControl = {
   kind: "Region";
