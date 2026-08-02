@@ -145,3 +145,69 @@ test("minecraft banner and shield keeps the default base layer through repeated 
 
   await expect.poll(() => readPixel(pageImage, 146, 180)).toEqual(defaultColor);
 });
+
+test("minecraft banner and shield stamps and erases a pattern on the shield plate click region", async ({
+  page,
+}) => {
+  await page.goto("/generator/minecraft-banner-and-shield");
+
+  await page.getByLabel("Template 1 Type").selectOption("Shield");
+
+  const pageImage = outputPage(page);
+  const region = page.getByTestId("region-ShieldPlate");
+  const beforeColor = await readPixel(pageImage, 90, 100);
+
+  // Re-stamps the "base" pattern with the picker's default tint (dye Black),
+  // clearly distinguishable from the plate's default light-gray base layer.
+  await page.getByTitle("base").click();
+  await region.click();
+  await expect
+    .poll(() => readPixel(pageImage, 90, 100))
+    .not.toEqual(beforeColor);
+
+  await page.getByLabel("Erase texture").click();
+  await region.click();
+  await expect.poll(() => readPixel(pageImage, 90, 100)).toEqual(beforeColor);
+});
+
+test("minecraft banner and shield keeps the default base layer on the shield plate through repeated erase clicks", async ({
+  page,
+}) => {
+  await page.goto("/generator/minecraft-banner-and-shield");
+
+  await page.getByLabel("Template 1 Type").selectOption("Shield");
+
+  const pageImage = outputPage(page);
+  const region = page.getByTestId("region-ShieldPlate");
+  const defaultColor = await readPixel(pageImage, 90, 100);
+
+  await page.getByLabel("Erase texture").click();
+  await region.click();
+  await region.click();
+  await region.click();
+
+  await expect.poll(() => readPixel(pageImage, 90, 100)).toEqual(defaultColor);
+});
+
+test("minecraft banner and shield does not stamp a pattern onto the shield handle or inner lining", async ({
+  page,
+}) => {
+  await page.goto("/generator/minecraft-banner-and-shield");
+
+  await page.getByLabel("Template 1 Type").selectOption("Shield");
+
+  const pageImage = outputPage(page);
+  // (320, 100) sits on the handle; (310, 208) sits on the inner lining's
+  // first cell. Both stay identical before/after stamping, unlike the
+  // reference generator's own architecture (a shared pattern stack across
+  // plate/handle/lining), because every pattern's texture tile is blank at
+  // these parts' crop coordinates — see shield.ts's drawShieldPattern.
+  const handleColor = await readPixel(pageImage, 320, 100);
+  const liningColor = await readPixel(pageImage, 310, 208);
+
+  await page.getByTitle("base").click();
+  await page.getByTestId("region-ShieldPlate").click();
+
+  await expect.poll(() => readPixel(pageImage, 320, 100)).toEqual(handleColor);
+  await expect.poll(() => readPixel(pageImage, 310, 208)).toEqual(liningColor);
+});
