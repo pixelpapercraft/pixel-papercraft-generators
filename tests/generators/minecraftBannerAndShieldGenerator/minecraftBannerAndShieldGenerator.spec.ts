@@ -21,15 +21,18 @@ test("minecraft banner and shield exposes the Template 1 banner controls", async
 }) => {
   await page.goto("/generator/minecraft-banner-and-shield");
 
+  // Defaults to Shield, a dev convenience while shield work is in progress
+  // (see AGENTS.md status) — flip to Banner explicitly to exercise its
+  // controls rather than assuming the default.
+  await expect(page.getByLabel("Template 1 Type")).toHaveValue("Shield");
+  await expect(page.getByLabel("Template 1 Banner Base")).toHaveCount(0);
+
+  await page.getByLabel("Template 1 Type").selectOption("Banner");
+
   await expect(page.getByLabel("Template 1 Type")).toHaveValue("Banner");
   await expect(page.getByLabel("Template 1 Banner Base")).toHaveValue(
     "banner_base"
   );
-
-  await page.getByLabel("Template 1 Type").selectOption("Shield");
-
-  await expect(page.getByLabel("Template 1 Type")).toHaveValue("Shield");
-  await expect(page.getByLabel("Template 1 Banner Base")).toHaveCount(0);
 });
 
 test("minecraft banner and shield renders Template 1's banner flag base", async ({
@@ -38,6 +41,8 @@ test("minecraft banner and shield renders Template 1's banner flag base", async 
   await page.goto("/generator/minecraft-banner-and-shield");
 
   const pageImage = outputPage(page);
+
+  await page.getByLabel("Template 1 Type").selectOption("Banner");
 
   // The front face spans roughly [142, 262] horizontally, [144, 384]
   // vertically. (146, 300) sits inside it, where the texture is dark, unlike
@@ -77,6 +82,8 @@ test("minecraft banner and shield stamps and erases a pattern on the flag click 
 }) => {
   await page.goto("/generator/minecraft-banner-and-shield");
 
+  await page.getByLabel("Template 1 Type").selectOption("Banner");
+
   const pageImage = outputPage(page);
   const region = page.getByTestId("region-BannerFlag");
   const beforeColor = await readPixel(pageImage, 146, 180);
@@ -98,6 +105,8 @@ test("minecraft banner and shield renders fold guides on top of a stamped patter
   page,
 }) => {
   await page.goto("/generator/minecraft-banner-and-shield");
+
+  await page.getByLabel("Template 1 Type").selectOption("Banner");
 
   const pageImage = outputPage(page);
   const region = page.getByTestId("region-BannerFlag");
@@ -122,6 +131,8 @@ test("minecraft banner and shield keeps the default base layer through repeated 
   page,
 }) => {
   await page.goto("/generator/minecraft-banner-and-shield");
+
+  await page.getByLabel("Template 1 Type").selectOption("Banner");
 
   const pageImage = outputPage(page);
   const region = page.getByTestId("region-BannerFlag");
