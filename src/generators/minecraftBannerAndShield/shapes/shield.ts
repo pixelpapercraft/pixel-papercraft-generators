@@ -83,6 +83,13 @@ export function drawShieldPlate(ctx: RenderContext, versionId: string): void {
   minecraft.drawCuboid("", shieldPlate, platePosition, dimensions);
 }
 
+// Only the plate carries a pattern. Unlike the banner flag, the reference
+// generator's own shared pattern stack technically reaches the handle too
+// (same `patternFaceId` in `pr-35-head`'s `face.ts`), but every pattern's
+// texture tile is blank at the handle's crop coordinates — confirmed
+// empirically (a stamped pattern produces a pixel-identical handle before
+// and after) — so drawing it there would be a real draw call with no
+// possible visible effect, for every pattern in the current texture data.
 export function drawShieldPattern(
   ctx: RenderContext,
   versionId: string,

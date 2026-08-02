@@ -59,7 +59,8 @@ crossbar are rendered with fold and tab guides, and clicking the flag
 arms/stamps the selected pattern. The shield plate, handle, and inner
 lining render their base geometry, fold/tab guides, and a join marker
 showing where they glue together; clicking the plate arms/stamps the
-selected pattern onto the plate only so far, not yet the handle or lining.
+selected pattern onto the plate only — the handle and lining are never
+patterned, matching real Minecraft shields.
 `;
 
 const shieldHandleJoinImageId = "ShieldHandleJoin";
