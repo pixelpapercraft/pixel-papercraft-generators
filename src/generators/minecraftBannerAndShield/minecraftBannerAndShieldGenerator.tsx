@@ -96,15 +96,27 @@ const history: HistoryDef = [
   "Aug 2026 lostminer - Layout refresh.",
 ];
 
-const bannerFlagRegionId = "BannerFlag";
-const shieldPlateRegionId = "ShieldPlate";
+const template1RegionId = "Template1";
+const template2RegionId = "Template2";
+
+// The page is split into a top half (Template 1, yOffset 0) and a bottom
+// half (Template 2, yOffset halfPageHeight) — half of the A4 page's 842px
+// height. Region ids and pattern stacks are keyed by slot, not content type,
+// so a slot keeps its own identity/state independent of which type
+// currently occupies it and independent of the other slot even when both
+// hold the same type — matching pr-35-head's own `templateId`-keyed
+// convention (`makePatternFaceId`/`makeTemplateBaseInputId`), just applied
+// to a top/bottom split instead of its own ever-growing stacked page.
+const halfPageHeight = 421;
 
 type BannerAndShieldProps = {
-  bannerPatterns: SelectedPattern[];
-  shieldPatterns: SelectedPattern[];
+  template1Type: TemplateType;
+  template2Type: TemplateType;
+  template1Patterns: SelectedPattern[];
+  template2Patterns: SelectedPattern[];
   versionId: string;
-  templateType: TemplateType;
-  bannerBaseId: string;
+  bannerBaseId1: string;
+  bannerBaseId2: string;
   showFolds: boolean;
   glintEnabled: boolean;
   glintOpacity: number;
@@ -112,55 +124,98 @@ type BannerAndShieldProps = {
   glintYOffset: number;
 };
 
-type TemplateType = "Banner" | "Shield";
+type TemplateType = "None" | "Banner" | "Shield";
+
+function renderTemplate(
+  ctx: RenderContext,
+  {
+    type,
+    yOffset,
+    versionId,
+    bannerBaseId,
+    patterns,
+    showFolds,
+    glintPlugin,
+    regionId,
+  }: {
+    type: TemplateType;
+    yOffset: number;
+    versionId: string;
+    bannerBaseId: string;
+    patterns: SelectedPattern[];
+    showFolds: boolean;
+    glintPlugin: TexturePlugin | undefined;
+    regionId: string;
+  }
+): void {
+  if (type === "Banner") {
+    drawBannerFlag(ctx, versionId, bannerBaseId, yOffset);
+    patterns.forEach(({ patternId, blend }) => {
+      drawBannerPattern(ctx, versionId, patternId, blend, yOffset);
+    });
+    drawBannerFlagGuides(ctx, showFolds, yOffset);
+    drawBannerPole(ctx, versionId, bannerBaseId, showFolds, yOffset);
+    drawBannerCrossbar(ctx, versionId, bannerBaseId, showFolds, yOffset);
+    ctx.defineRegion(bannerFlagFrontRegion(yOffset), regionId);
+  } else if (type === "Shield") {
+    drawShieldPlate(ctx, versionId, yOffset, glintPlugin);
+    patterns.forEach(({ patternId, blend }) => {
+      drawShieldPattern(ctx, versionId, patternId, blend, yOffset, glintPlugin);
+    });
+    drawShieldHandle(ctx, versionId, yOffset, glintPlugin);
+    drawShieldHandleInnerLining(ctx, versionId, yOffset, glintPlugin);
+    drawShieldPlateGuides(ctx, showFolds, yOffset);
+    drawShieldHandleGuides(ctx, showFolds, yOffset);
+    drawShieldHandleInnerLiningGuides(ctx, showFolds, yOffset);
+    drawShieldHandleJoinMarker(
+      ctx,
+      shieldHandleJoinImageId,
+      shieldHandleJoinImageDimensions,
+      yOffset
+    );
+    ctx.defineRegion(shieldPlateFrontRegion(yOffset), regionId);
+  }
+}
 
 const render = (ctx: RenderContext, props: BannerAndShieldProps): void => {
   ctx.usePage("Page");
   ctx.fillBackgroundColorWithWhite();
 
-  if (props.templateType === "Banner") {
-    drawBannerFlag(ctx, props.versionId, props.bannerBaseId);
-    props.bannerPatterns.forEach(({ patternId, blend }) => {
-      drawBannerPattern(ctx, props.versionId, patternId, blend);
-    });
-    drawBannerFlagGuides(ctx, props.showFolds);
-    drawBannerPole(ctx, props.versionId, props.bannerBaseId, props.showFolds);
-    drawBannerCrossbar(
-      ctx,
-      props.versionId,
-      props.bannerBaseId,
-      props.showFolds
-    );
-    ctx.defineRegion(bannerFlagFrontRegion(), bannerFlagRegionId);
-  } else {
-    // Glint is Shield-only — real Minecraft banners can't be enchanted.
-    const glintTexture = ctx.getTexture("Enchanted Glint");
-    const glintPluginOptions: GlintPluginOptions = {
-      opacity: props.glintOpacity / 255,
-      xOffset: props.glintXOffset,
-      yOffset: props.glintYOffset,
-    };
-    const glintPlugin: TexturePlugin | undefined =
-      glintTexture && props.glintEnabled
-        ? makeGlintPlugin(glintTexture, glintPluginOptions)
-        : undefined;
+  // Glint is Shield-only — real Minecraft banners can't be enchanted. Global
+  // across both slots (this slice's scope), so built once and handed to
+  // whichever slot(s) are Shield.
+  const glintTexture = ctx.getTexture("Enchanted Glint");
+  const glintPluginOptions: GlintPluginOptions = {
+    opacity: props.glintOpacity / 255,
+    xOffset: props.glintXOffset,
+    yOffset: props.glintYOffset,
+  };
+  const glintPlugin: TexturePlugin | undefined =
+    glintTexture && props.glintEnabled
+      ? makeGlintPlugin(glintTexture, glintPluginOptions)
+      : undefined;
 
-    drawShieldPlate(ctx, props.versionId, glintPlugin);
-    props.shieldPatterns.forEach(({ patternId, blend }) => {
-      drawShieldPattern(ctx, props.versionId, patternId, blend, glintPlugin);
-    });
-    drawShieldHandle(ctx, props.versionId, glintPlugin);
-    drawShieldHandleInnerLining(ctx, props.versionId, glintPlugin);
-    drawShieldPlateGuides(ctx, props.showFolds);
-    drawShieldHandleGuides(ctx, props.showFolds);
-    drawShieldHandleInnerLiningGuides(ctx, props.showFolds);
-    drawShieldHandleJoinMarker(
-      ctx,
-      shieldHandleJoinImageId,
-      shieldHandleJoinImageDimensions
-    );
-    ctx.defineRegion(shieldPlateFrontRegion(), shieldPlateRegionId);
-  }
+  renderTemplate(ctx, {
+    type: props.template1Type,
+    yOffset: 0,
+    versionId: props.versionId,
+    bannerBaseId: props.bannerBaseId1,
+    patterns: props.template1Patterns,
+    showFolds: props.showFolds,
+    glintPlugin,
+    regionId: template1RegionId,
+  });
+
+  renderTemplate(ctx, {
+    type: props.template2Type,
+    yOffset: halfPageHeight,
+    versionId: props.versionId,
+    bannerBaseId: props.bannerBaseId2,
+    patterns: props.template2Patterns,
+    showFolds: props.showFolds,
+    glintPlugin,
+    regionId: template2RegionId,
+  });
 
   // Temporary: proves the Title overlay is wired end to end. Removed once
   // real banner/shield content exists for it to overlay. Pre-scaled to its
@@ -188,15 +243,17 @@ function Component(): JSX.Element {
   const [versionId, setVersionId] = React.useState(
     bannerShieldTextureVersions[0]!.id
   );
-  const [templateType, setTemplateType] =
+  const [template1Type, setTemplate1Type] =
+    React.useState<TemplateType>("Banner");
+  const [template2Type, setTemplate2Type] =
     React.useState<TemplateType>("Shield");
   const [showFolds, setShowFolds] = React.useState(true);
-  const [bannerPatterns, setBannerPatterns] = React.useState<SelectedPattern[]>(
-    defaultPatternStack()
-  );
-  const [shieldPatterns, setShieldPatterns] = React.useState<SelectedPattern[]>(
-    defaultPatternStack()
-  );
+  const [template1Patterns, setTemplate1Patterns] = React.useState<
+    SelectedPattern[]
+  >(defaultPatternStack());
+  const [template2Patterns, setTemplate2Patterns] = React.useState<
+    SelectedPattern[]
+  >(defaultPatternStack());
   const [glintTexture, setGlintTexture] = React.useState<Texture | null>(null);
   const [glintEnabled, setGlintEnabled] = React.useState(false);
   const [glintOpacity, setGlintOpacity] = React.useState(255);
@@ -208,16 +265,21 @@ function Component(): JSX.Element {
     bannerShieldTextureVersions[0]!;
   const patternOptions = makePatternOptions(textureVersion);
   const bannerBaseOptions = textureVersion.bases.bannerOptions;
-  const [bannerBaseId, setBannerBaseId] = React.useState(
+  const [bannerBaseId1, setBannerBaseId1] = React.useState(
+    bannerBaseOptions[0]?.id ?? ""
+  );
+  const [bannerBaseId2, setBannerBaseId2] = React.useState(
     bannerBaseOptions[0]?.id ?? ""
   );
 
   const rendererProps: BannerAndShieldProps = {
-    bannerPatterns,
-    shieldPatterns,
+    template1Type,
+    template2Type,
+    template1Patterns,
+    template2Patterns,
     versionId,
-    templateType,
-    bannerBaseId,
+    bannerBaseId1,
+    bannerBaseId2,
     showFolds,
     glintEnabled,
     glintOpacity,
@@ -230,15 +292,15 @@ function Component(): JSX.Element {
   };
 
   const onRegionClick: RegionClickHandler = ({ regionId }) => {
-    if (regionId === bannerFlagRegionId) {
-      setBannerPatterns((current) =>
+    if (regionId === template1RegionId) {
+      setTemplate1Patterns((current) =>
         applyPatternSelection(current, selectedPatternId, tint)
       );
       return;
     }
 
-    if (regionId === shieldPlateRegionId) {
-      setShieldPatterns((current) =>
+    if (regionId === template2RegionId) {
+      setTemplate2Patterns((current) =>
         applyPatternSelection(current, selectedPatternId, tint)
       );
       return;
@@ -288,26 +350,62 @@ function Component(): JSX.Element {
             <GeneratorUI.SelectControl
               label="Template 1 Type"
               options={[
+                { id: "None", label: "None" },
                 { id: "Banner", label: "Banner" },
                 { id: "Shield", label: "Shield" },
               ]}
-              value={templateType}
+              value={template1Type}
               onValueChange={(value) => {
-                if (value === "Banner" || value === "Shield") {
-                  setTemplateType(value);
+                if (
+                  value === "None" ||
+                  value === "Banner" ||
+                  value === "Shield"
+                ) {
+                  setTemplate1Type(value);
                 }
               }}
             />
 
-            {templateType === "Banner" && (
+            {template1Type === "Banner" && (
               <GeneratorUI.SelectControl
                 label="Template 1 Banner Base"
                 options={bannerBaseOptions.map(({ id: baseId, label }) => ({
                   id: baseId,
                   label,
                 }))}
-                value={bannerBaseId}
-                onValueChange={setBannerBaseId}
+                value={bannerBaseId1}
+                onValueChange={setBannerBaseId1}
+              />
+            )}
+
+            <GeneratorUI.SelectControl
+              label="Template 2 Type"
+              options={[
+                { id: "None", label: "None" },
+                { id: "Banner", label: "Banner" },
+                { id: "Shield", label: "Shield" },
+              ]}
+              value={template2Type}
+              onValueChange={(value) => {
+                if (
+                  value === "None" ||
+                  value === "Banner" ||
+                  value === "Shield"
+                ) {
+                  setTemplate2Type(value);
+                }
+              }}
+            />
+
+            {template2Type === "Banner" && (
+              <GeneratorUI.SelectControl
+                label="Template 2 Banner Base"
+                options={bannerBaseOptions.map(({ id: baseId, label }) => ({
+                  id: baseId,
+                  label,
+                }))}
+                value={bannerBaseId2}
+                onValueChange={setBannerBaseId2}
               />
             )}
 
@@ -317,7 +415,7 @@ function Component(): JSX.Element {
               onCheckedChange={setShowFolds}
             />
 
-            {templateType === "Shield" && (
+            {(template1Type === "Shield" || template2Type === "Shield") && (
               <>
                 <GeneratorUI.BooleanControl
                   label="Glint"

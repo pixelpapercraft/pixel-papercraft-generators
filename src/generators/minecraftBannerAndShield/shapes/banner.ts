@@ -18,6 +18,18 @@ import {
   scaleDimensions,
 } from "./shared";
 
+// Shifts a shape's own fixed page position down by a slot's vertical offset
+// (0 for the top-half template, half the page height for the bottom-half
+// one) — every position constant in this file assumes the single-template,
+// full-page layout, so this is applied at each call site rather than baked
+// into the constants themselves.
+function withYOffset(
+  [x, y]: [number, number],
+  yOffset: number
+): [number, number] {
+  return [x, y + yOffset];
+}
+
 // Chosen for a round ~2m pole height rather than the exact-model-proportion
 // value of 8 (128 destination px per meter, the same convention
 // minecraftBlock/minecraftCharacter use) — every banner shape's destination
@@ -82,7 +94,8 @@ function makeBannerBaseMinecraft(
 export function drawBannerFlag(
   ctx: RenderContext,
   versionId: string,
-  baseId: string
+  baseId: string,
+  yOffset: number
 ): void {
   const minecraft = makeBannerBaseMinecraft(ctx, versionId, baseId);
   if (!minecraft) {
@@ -90,7 +103,12 @@ export function drawBannerFlag(
   }
 
   const dimensions = scaleDimensions(flagSourceDimensions, sourceUnitScale);
-  minecraft.drawCuboid("", bannerFlag, flagPosition, dimensions);
+  minecraft.drawCuboid(
+    "",
+    bannerFlag,
+    withYOffset(flagPosition, yOffset),
+    dimensions
+  );
 }
 
 // Fold/tab guides, drawn separately from the base texture so the caller can
@@ -101,13 +119,15 @@ export function drawBannerFlag(
 // drawn over them afterward).
 export function drawBannerFlagGuides(
   ctx: RenderContext,
-  showFolds: boolean
+  showFolds: boolean,
+  yOffset: number
 ): void {
   const dimensions = scaleDimensions(flagSourceDimensions, sourceUnitScale);
+  const position = withYOffset(flagPosition, yOffset);
   if (showFolds) {
-    drawCuboidFolds(ctx, flagPosition, dimensions);
+    drawCuboidFolds(ctx, position, dimensions);
   }
-  drawCuboidTabs(ctx, flagPosition, dimensions, {
+  drawCuboidTabs(ctx, position, dimensions, {
     tabThickness: 12,
     placements: [
       { face: "top", edge: "Top" },
@@ -125,7 +145,8 @@ export function drawBannerPattern(
   ctx: RenderContext,
   versionId: string,
   patternId: string,
-  blend: string | null
+  blend: string | null,
+  yOffset: number
 ): void {
   const version = findBannerShieldTextureVersion(versionId);
   const pattern = version?.patterns.find(({ id }) => id === patternId);
@@ -139,7 +160,7 @@ export function drawBannerPattern(
   minecraft.drawCuboid(
     "",
     bannerFlag,
-    flagPosition,
+    withYOffset(flagPosition, yOffset),
     scaleDimensions(flagSourceDimensions, sourceUnitScale),
     blend ? { blend: { kind: "MultiplyHex", hex: blend } } : {}
   );
@@ -154,12 +175,12 @@ export function drawBannerPattern(
 // for this cuboid's default `orientation: "West"`/`center: "Front"`: the
 // front face sits at the cuboid's position shifted by its own depth on both
 // axes, sized to its declared width/height.
-export function bannerFlagFrontRegion(): Rectangle {
+export function bannerFlagFrontRegion(yOffset: number): Rectangle {
   const [width, height, depth] = scaleDimensions(
     flagSourceDimensions,
     sourceUnitScale
   );
-  const [x, y] = flagPosition;
+  const [x, y] = withYOffset(flagPosition, yOffset);
   return roundRectangleToPixelBounds([x + depth, y + depth, width, height]);
 }
 
@@ -169,19 +190,21 @@ export function drawBannerPole(
   ctx: RenderContext,
   versionId: string,
   baseId: string,
-  showFolds: boolean
+  showFolds: boolean,
+  yOffset: number
 ): void {
   const minecraft = makeBannerBaseMinecraft(ctx, versionId, baseId);
   if (!minecraft) {
     return;
   }
 
+  const position = withYOffset(polePosition, yOffset);
   const dimensions = scaleDimensions(poleSourceDimensions, sourceUnitScale);
-  minecraft.drawCuboid("", bannerPole, polePosition, dimensions);
+  minecraft.drawCuboid("", bannerPole, position, dimensions);
   if (showFolds) {
-    drawCuboidFolds(ctx, polePosition, dimensions);
+    drawCuboidFolds(ctx, position, dimensions);
   }
-  drawCuboidTabs(ctx, polePosition, dimensions, {
+  drawCuboidTabs(ctx, position, dimensions, {
     baseDimensions: uniformTabBaseDimensions(dimensions).map((v) => v * 2) as [
       number,
       number,
@@ -196,25 +219,27 @@ export function drawBannerCrossbar(
   ctx: RenderContext,
   versionId: string,
   baseId: string,
-  showFolds: boolean
+  showFolds: boolean,
+  yOffset: number
 ): void {
   const minecraft = makeBannerBaseMinecraft(ctx, versionId, baseId);
   if (!minecraft) {
     return;
   }
 
+  const position = withYOffset(crossbarPosition, yOffset);
   const dimensions = scaleDimensions(crossbarSourceDimensions, sourceUnitScale);
-  minecraft.drawCuboid("", bannerCrossbar, crossbarPosition, dimensions, {
+  minecraft.drawCuboid("", bannerCrossbar, position, dimensions, {
     center: "Bottom",
     orientation: "North",
   });
   if (showFolds) {
-    drawCuboidFolds(ctx, crossbarPosition, dimensions, {
+    drawCuboidFolds(ctx, position, dimensions, {
       center: "Bottom",
       orientation: "North",
     });
   }
-  drawCuboidTabs(ctx, crossbarPosition, dimensions, {
+  drawCuboidTabs(ctx, position, dimensions, {
     center: "Bottom",
     orientation: "North",
     baseDimensions: uniformTabBaseDimensions(dimensions).map((v) => v * 2) as [

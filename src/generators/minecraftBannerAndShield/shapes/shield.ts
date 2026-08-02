@@ -19,6 +19,18 @@ import {
   scaleDimensions,
 } from "./shared";
 
+// Shifts a shape's own fixed page position down by a slot's vertical offset
+// (0 for the top-half template, half the page height for the bottom-half
+// one) — every position constant in this file assumes the single-template,
+// full-page layout, so this is applied at each call site rather than baked
+// into the constants themselves.
+function withYOffset(
+  [x, y]: [number, number],
+  yOffset: number
+): [number, number] {
+  return [x, y + yOffset];
+}
+
 const plateSourceDimensions: Dimensions = [12, 22, 1];
 const shieldPlate = translateCuboid(makeCuboid(plateSourceDimensions), [0, 0]);
 
@@ -76,6 +88,7 @@ function makeShieldBaseMinecraft(ctx: RenderContext, versionId: string) {
 export function drawShieldPlate(
   ctx: RenderContext,
   versionId: string,
+  yOffset: number,
   plugin?: TexturePlugin
 ): void {
   const minecraft = makeShieldBaseMinecraft(ctx, versionId);
@@ -84,7 +97,13 @@ export function drawShieldPlate(
   }
 
   const dimensions = scaleDimensions(plateSourceDimensions, sourceUnitScale);
-  minecraft.drawCuboid("", shieldPlate, platePosition, dimensions, { plugin });
+  minecraft.drawCuboid(
+    "",
+    shieldPlate,
+    withYOffset(platePosition, yOffset),
+    dimensions,
+    { plugin }
+  );
 }
 
 // Only the plate carries a pattern. Unlike the banner flag, the reference
@@ -99,6 +118,7 @@ export function drawShieldPattern(
   versionId: string,
   patternId: string,
   blend: string | null,
+  yOffset: number,
   plugin?: TexturePlugin
 ): void {
   const version = findBannerShieldTextureVersion(versionId);
@@ -111,10 +131,16 @@ export function drawShieldPattern(
   const minecraft = new BaseMinecraft(ctx, version.shieldTextureDef.id, frame);
 
   const dimensions = scaleDimensions(plateSourceDimensions, sourceUnitScale);
-  minecraft.drawCuboid("", shieldPlate, platePosition, dimensions, {
-    blend: blend ? { kind: "MultiplyHex", hex: blend } : undefined,
-    plugin,
-  });
+  minecraft.drawCuboid(
+    "",
+    shieldPlate,
+    withYOffset(platePosition, yOffset),
+    dimensions,
+    {
+      blend: blend ? { kind: "MultiplyHex", hex: blend } : undefined,
+      plugin,
+    }
+  );
 }
 
 // The single clickable region for arming/placing a pattern on the plate —
@@ -123,15 +149,19 @@ export function drawShieldPattern(
 // `patternStack.ts`). Derived from real cuboid-layout geometry
 // (`resolveCuboidFaces`/`resolveFaceVisualRectangle`) rather than hand
 // arithmetic, per the lesson from the tab/fold investigations.
-export function shieldPlateFrontRegion(): Rectangle {
+export function shieldPlateFrontRegion(yOffset: number): Rectangle {
   const dimensions = scaleDimensions(plateSourceDimensions, sourceUnitScale);
-  const front = resolveCuboidFaces(platePosition, dimensions).front;
+  const front = resolveCuboidFaces(
+    withYOffset(platePosition, yOffset),
+    dimensions
+  ).front;
   return roundRectangleToPixelBounds(resolveFaceVisualRectangle(front));
 }
 
 export function drawShieldHandle(
   ctx: RenderContext,
   versionId: string,
+  yOffset: number,
   plugin?: TexturePlugin
 ): void {
   const minecraft = makeShieldBaseMinecraft(ctx, versionId);
@@ -140,22 +170,30 @@ export function drawShieldHandle(
   }
 
   const dimensions = scaleDimensions(handleSourceDimensions, sourceUnitScale);
-  minecraft.drawCuboid("", shieldHandle, handlePosition, dimensions, {
-    center: "Right",
-    plugin,
-  });
+  minecraft.drawCuboid(
+    "",
+    shieldHandle,
+    withYOffset(handlePosition, yOffset),
+    dimensions,
+    {
+      center: "Right",
+      plugin,
+    }
+  );
 }
 
 export function drawShieldHandleGuides(
   ctx: RenderContext,
-  showFolds: boolean
+  showFolds: boolean,
+  yOffset: number
 ): void {
+  const position = withYOffset(handlePosition, yOffset);
   const dimensions = scaleDimensions(handleSourceDimensions, sourceUnitScale);
 
   if (showFolds) {
-    drawCuboidFolds(ctx, handlePosition, dimensions, { center: "Right" });
+    drawCuboidFolds(ctx, position, dimensions, { center: "Right" });
 
-    const dest = resolveCuboidFaces(handlePosition, dimensions, {
+    const dest = resolveCuboidFaces(position, dimensions, {
       center: "Right",
     });
     drawRectangleFolds(
@@ -168,7 +206,7 @@ export function drawShieldHandleGuides(
     );
   }
 
-  drawCuboidTabs(ctx, handlePosition, dimensions, {
+  drawCuboidTabs(ctx, position, dimensions, {
     center: "Right",
     tabThickness: 12,
     placements: [
@@ -206,6 +244,7 @@ function handleInnerLiningCellDimensions(): [number, number] {
 export function drawShieldHandleInnerLining(
   ctx: RenderContext,
   versionId: string,
+  yOffset: number,
   plugin?: TexturePlugin
 ): void {
   const minecraft = makeShieldBaseMinecraft(ctx, versionId);
@@ -214,7 +253,7 @@ export function drawShieldHandleInnerLining(
   }
 
   const [cellWidth, cellHeight] = handleInnerLiningCellDimensions();
-  const [x, y] = handleInnerLiningPosition;
+  const [x, y] = withYOffset(handleInnerLiningPosition, yOffset);
 
   for (let i = 0; i < handleInnerLiningCellCount; i++) {
     minecraft.drawFace(
@@ -230,10 +269,11 @@ const handleInnerLiningTabThickness = 8;
 
 export function drawShieldHandleInnerLiningGuides(
   ctx: RenderContext,
-  showFolds: boolean
+  showFolds: boolean,
+  yOffset: number
 ): void {
   const [cellWidth, cellHeight] = handleInnerLiningCellDimensions();
-  const [x, y] = handleInnerLiningPosition;
+  const [x, y] = withYOffset(handleInnerLiningPosition, yOffset);
   const totalWidth = cellWidth * handleInnerLiningCellCount;
 
   if (showFolds) {
@@ -298,14 +338,16 @@ function drawJoinMarker(
 export function drawShieldHandleJoinMarker(
   ctx: RenderContext,
   imageId: string,
-  imageDimensions: [number, number]
+  imageDimensions: [number, number],
+  yOffset: number
 ): void {
   const plateDimensions = scaleDimensions(
     plateSourceDimensions,
     sourceUnitScale
   );
   const plateBack = resolveFaceVisualRectangle(
-    resolveCuboidFaces(platePosition, plateDimensions).back
+    resolveCuboidFaces(withYOffset(platePosition, yOffset), plateDimensions)
+      .back
   );
   drawJoinMarker(ctx, imageId, imageDimensions, plateBack);
 
@@ -314,7 +356,7 @@ export function drawShieldHandleJoinMarker(
     sourceUnitScale
   );
   const handleFront = resolveFaceVisualRectangle(
-    resolveCuboidFaces(handlePosition, handleDimensions, {
+    resolveCuboidFaces(withYOffset(handlePosition, yOffset), handleDimensions, {
       center: "Right",
     }).front
   );
@@ -323,13 +365,15 @@ export function drawShieldHandleJoinMarker(
 
 export function drawShieldPlateGuides(
   ctx: RenderContext,
-  showFolds: boolean
+  showFolds: boolean,
+  yOffset: number
 ): void {
+  const position = withYOffset(platePosition, yOffset);
   const dimensions = scaleDimensions(plateSourceDimensions, sourceUnitScale);
   if (showFolds) {
-    drawCuboidFolds(ctx, platePosition, dimensions);
+    drawCuboidFolds(ctx, position, dimensions);
   }
-  drawCuboidTabs(ctx, platePosition, dimensions, {
+  drawCuboidTabs(ctx, position, dimensions, {
     tabThickness: 12,
     placements: [
       { face: "top", edge: "Top" },
