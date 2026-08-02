@@ -211,3 +211,50 @@ test("minecraft banner and shield does not stamp a pattern onto the shield handl
   await expect.poll(() => readPixel(pageImage, 320, 100)).toEqual(handleColor);
   await expect.poll(() => readPixel(pageImage, 310, 208)).toEqual(liningColor);
 });
+
+test("minecraft banner and shield applies a glint overlay across the shield plate, handle, and inner lining", async ({
+  page,
+}) => {
+  await page.goto("/generator/minecraft-banner-and-shield");
+
+  await page.getByLabel("Template 1 Type").selectOption("Shield");
+
+  const pageImage = outputPage(page);
+  // Same three probe points as the "does not stamp a pattern" test above:
+  // plate (60, 100), handle (320, 100), inner lining (310, 208) — glint is a
+  // whole-shield overlay, so unlike pattern stamping it must reach all three.
+  const plateColor = await readPixel(pageImage, 60, 100);
+  const handleColor = await readPixel(pageImage, 320, 100);
+  const liningColor = await readPixel(pageImage, 310, 208);
+
+  await page.getByText("Glint", { exact: true }).click();
+
+  await expect
+    .poll(() => readPixel(pageImage, 60, 100))
+    .not.toEqual(plateColor);
+  await expect
+    .poll(() => readPixel(pageImage, 320, 100))
+    .not.toEqual(handleColor);
+  await expect
+    .poll(() => readPixel(pageImage, 310, 208))
+    .not.toEqual(liningColor);
+
+  await page.getByText("Glint", { exact: true }).click();
+
+  await expect.poll(() => readPixel(pageImage, 60, 100)).toEqual(plateColor);
+  await expect.poll(() => readPixel(pageImage, 320, 100)).toEqual(handleColor);
+  await expect.poll(() => readPixel(pageImage, 310, 208)).toEqual(liningColor);
+});
+
+test("minecraft banner and shield hides the Glint controls for the banner template", async ({
+  page,
+}) => {
+  await page.goto("/generator/minecraft-banner-and-shield");
+
+  // Glint is Shield-only — real Minecraft banners can't be enchanted.
+  await expect(page.getByText("Glint", { exact: true })).toHaveCount(1);
+
+  await page.getByLabel("Template 1 Type").selectOption("Banner");
+
+  await expect(page.getByText("Glint", { exact: true })).toHaveCount(0);
+});

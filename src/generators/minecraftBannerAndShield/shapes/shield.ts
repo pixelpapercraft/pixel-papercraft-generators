@@ -1,4 +1,4 @@
-import { type RenderContext } from "@genroot/builder";
+import { type RenderContext, type TexturePlugin } from "@genroot/builder";
 import {
   type Dimensions,
   makeCuboid,
@@ -73,14 +73,18 @@ function makeShieldBaseMinecraft(ctx: RenderContext, versionId: string) {
   );
 }
 
-export function drawShieldPlate(ctx: RenderContext, versionId: string): void {
+export function drawShieldPlate(
+  ctx: RenderContext,
+  versionId: string,
+  plugin?: TexturePlugin
+): void {
   const minecraft = makeShieldBaseMinecraft(ctx, versionId);
   if (!minecraft) {
     return;
   }
 
   const dimensions = scaleDimensions(plateSourceDimensions, sourceUnitScale);
-  minecraft.drawCuboid("", shieldPlate, platePosition, dimensions);
+  minecraft.drawCuboid("", shieldPlate, platePosition, dimensions, { plugin });
 }
 
 // Only the plate carries a pattern. Unlike the banner flag, the reference
@@ -94,7 +98,8 @@ export function drawShieldPattern(
   ctx: RenderContext,
   versionId: string,
   patternId: string,
-  blend: string | null
+  blend: string | null,
+  plugin?: TexturePlugin
 ): void {
   const version = findBannerShieldTextureVersion(versionId);
   const pattern = version?.patterns.find(({ id }) => id === patternId);
@@ -106,13 +111,10 @@ export function drawShieldPattern(
   const minecraft = new BaseMinecraft(ctx, version.shieldTextureDef.id, frame);
 
   const dimensions = scaleDimensions(plateSourceDimensions, sourceUnitScale);
-  minecraft.drawCuboid(
-    "",
-    shieldPlate,
-    platePosition,
-    dimensions,
-    blend ? { blend: { kind: "MultiplyHex", hex: blend } } : {}
-  );
+  minecraft.drawCuboid("", shieldPlate, platePosition, dimensions, {
+    blend: blend ? { kind: "MultiplyHex", hex: blend } : undefined,
+    plugin,
+  });
 }
 
 // The single clickable region for arming/placing a pattern on the plate —
@@ -127,7 +129,11 @@ export function shieldPlateFrontRegion(): Rectangle {
   return roundRectangleToPixelBounds(resolveFaceVisualRectangle(front));
 }
 
-export function drawShieldHandle(ctx: RenderContext, versionId: string): void {
+export function drawShieldHandle(
+  ctx: RenderContext,
+  versionId: string,
+  plugin?: TexturePlugin
+): void {
   const minecraft = makeShieldBaseMinecraft(ctx, versionId);
   if (!minecraft) {
     return;
@@ -136,6 +142,7 @@ export function drawShieldHandle(ctx: RenderContext, versionId: string): void {
   const dimensions = scaleDimensions(handleSourceDimensions, sourceUnitScale);
   minecraft.drawCuboid("", shieldHandle, handlePosition, dimensions, {
     center: "Right",
+    plugin,
   });
 }
 
@@ -198,7 +205,8 @@ function handleInnerLiningCellDimensions(): [number, number] {
 
 export function drawShieldHandleInnerLining(
   ctx: RenderContext,
-  versionId: string
+  versionId: string,
+  plugin?: TexturePlugin
 ): void {
   const minecraft = makeShieldBaseMinecraft(ctx, versionId);
   if (!minecraft) {
@@ -209,12 +217,12 @@ export function drawShieldHandleInnerLining(
   const [x, y] = handleInnerLiningPosition;
 
   for (let i = 0; i < handleInnerLiningCellCount; i++) {
-    minecraft.drawFace(handleInnerLiningCellSource, [
-      x + i * cellWidth,
-      y,
-      cellWidth,
-      cellHeight,
-    ]);
+    minecraft.drawFace(
+      handleInnerLiningCellSource,
+      [x + i * cellWidth, y, cellWidth, cellHeight],
+      0,
+      plugin
+    );
   }
 }
 

@@ -4,19 +4,27 @@ import React from "react";
 import {
   GeneratorRenderer,
   GeneratorUI,
+  type DynamicTextures,
   type GeneratorDefV2,
   type Generator,
   type ImageDef,
   type InstructionsDef,
   type RegionClickHandler,
   type RenderContext,
+  type Texture,
   type TextureDef,
+  type TexturePlugin,
 } from "@genroot/builder";
 import { TintSelector } from "../_common/tintSelectorV2/tintSelector";
 import { getFirstSwatchColor } from "../_common/tintSelectorV2/tintSelectorLogic";
 import { dyeTintGroup } from "../_common/tintSelectorV2/tints";
 import { PatternTexturePicker } from "../_common/patternTexturePicker/patternTexturePicker";
 import { makePatternOptions } from "../_common/patternTexturePicker/patternTexturePickerLogic";
+import {
+  type GlintPluginOptions,
+  entityGlintTextureDefs,
+  makeGlintPlugin,
+} from "../_common/plugins/glint";
 import {
   bannerShieldTextureDefs,
   bannerShieldTextureVersions,
@@ -60,7 +68,8 @@ arms/stamps the selected pattern. The shield plate, handle, and inner
 lining render their base geometry, fold/tab guides, and a join marker
 showing where they glue together; clicking the plate arms/stamps the
 selected pattern onto the plate only — the handle and lining are never
-patterned, matching real Minecraft shields.
+patterned, matching real Minecraft shields. The Shield can also be given an
+enchanted glint overlay.
 `;
 
 const shieldHandleJoinImageId = "ShieldHandleJoin";
@@ -86,6 +95,10 @@ type BannerAndShieldProps = {
   templateType: TemplateType;
   bannerBaseId: string;
   showFolds: boolean;
+  glintEnabled: boolean;
+  glintOpacity: number;
+  glintXOffset: number;
+  glintYOffset: number;
 };
 
 type TemplateType = "Banner" | "Shield";
@@ -109,12 +122,24 @@ const render = (ctx: RenderContext, props: BannerAndShieldProps): void => {
     );
     ctx.defineRegion(bannerFlagFrontRegion(), bannerFlagRegionId);
   } else {
-    drawShieldPlate(ctx, props.versionId);
+    // Glint is Shield-only — real Minecraft banners can't be enchanted.
+    const glintTexture = ctx.getTexture("Enchanted Glint");
+    const glintPluginOptions: GlintPluginOptions = {
+      opacity: props.glintOpacity / 255,
+      xOffset: props.glintXOffset,
+      yOffset: props.glintYOffset,
+    };
+    const glintPlugin: TexturePlugin | undefined =
+      glintTexture && props.glintEnabled
+        ? makeGlintPlugin(glintTexture, glintPluginOptions)
+        : undefined;
+
+    drawShieldPlate(ctx, props.versionId, glintPlugin);
     props.shieldPatterns.forEach(({ patternId, blend }) => {
-      drawShieldPattern(ctx, props.versionId, patternId, blend);
+      drawShieldPattern(ctx, props.versionId, patternId, blend, glintPlugin);
     });
-    drawShieldHandle(ctx, props.versionId);
-    drawShieldHandleInnerLining(ctx, props.versionId);
+    drawShieldHandle(ctx, props.versionId, glintPlugin);
+    drawShieldHandleInnerLining(ctx, props.versionId, glintPlugin);
     drawShieldPlateGuides(ctx, props.showFolds);
     drawShieldHandleGuides(ctx, props.showFolds);
     drawShieldHandleInnerLiningGuides(ctx, props.showFolds);
@@ -161,6 +186,11 @@ function Component(): JSX.Element {
   const [shieldPatterns, setShieldPatterns] = React.useState<SelectedPattern[]>(
     defaultPatternStack()
   );
+  const [glintTexture, setGlintTexture] = React.useState<Texture | null>(null);
+  const [glintEnabled, setGlintEnabled] = React.useState(false);
+  const [glintOpacity, setGlintOpacity] = React.useState(255);
+  const [glintXOffset, setGlintXOffset] = React.useState(0);
+  const [glintYOffset, setGlintYOffset] = React.useState(0);
 
   const textureVersion =
     findBannerShieldTextureVersion(versionId) ??
@@ -178,6 +208,14 @@ function Component(): JSX.Element {
     templateType,
     bannerBaseId,
     showFolds,
+    glintEnabled,
+    glintOpacity,
+    glintXOffset,
+    glintYOffset,
+  };
+
+  const dynamicTextures: DynamicTextures = {
+    "Enchanted Glint": glintTexture,
   };
 
   const onRegionClick: RegionClickHandler = ({ regionId }) => {
@@ -249,6 +287,49 @@ function Component(): JSX.Element {
             onCheckedChange={setShowFolds}
           />
 
+          {templateType === "Shield" && (
+            <>
+              <GeneratorUI.BooleanControl
+                label="Glint"
+                checked={glintEnabled}
+                onCheckedChange={setGlintEnabled}
+              />
+              <GeneratorUI.LoadedTextureControl
+                id="Enchanted Glint"
+                definitions={entityGlintTextureDefs}
+                choices={["1.20+", "Pre-1.20"]}
+                standardWidth={128}
+                standardHeight={128}
+                initialTextureId="Enchanted Glint"
+                onChange={setGlintTexture}
+              />
+              <GeneratorUI.RangeControl
+                label="Glint Opacity"
+                min={0}
+                max={255}
+                step={1}
+                value={glintOpacity}
+                onValueChange={setGlintOpacity}
+              />
+              <GeneratorUI.RangeControl
+                label="Glint X Offset"
+                min={0}
+                max={128}
+                step={1}
+                value={glintXOffset}
+                onValueChange={setGlintXOffset}
+              />
+              <GeneratorUI.RangeControl
+                label="Glint Y Offset"
+                min={0}
+                max={128}
+                step={1}
+                value={glintYOffset}
+                onValueChange={setGlintYOffset}
+              />
+            </>
+          )}
+
           <TintSelector
             value={tint}
             label="Tint"
@@ -269,6 +350,7 @@ function Component(): JSX.Element {
         <GeneratorRenderer
           generator={bannerAndShieldGenerator}
           props={rendererProps}
+          dynamicTextures={dynamicTextures}
           onRegionClick={onRegionClick}
         />
       </div>

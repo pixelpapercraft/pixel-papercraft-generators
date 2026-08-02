@@ -2,6 +2,7 @@ import {
   type RenderContext,
   type TextureDef,
   type TextureFrame,
+  type TexturePlugin,
 } from "@genroot/builder";
 import { type Dimensions } from "../../_common/cuboid";
 import {
@@ -149,13 +150,14 @@ export class BaseMinecraft extends Minecraft {
   drawFace(
     source: Rectangle,
     destination: Rectangle,
-    rotate: RotationDegrees = 0
+    rotate: RotationDegrees = 0,
+    plugin?: TexturePlugin
   ): void {
     this.ctx.drawTexture(
       this.textureId,
       makeFrameSourceRegion(this.frame, source),
       destination,
-      { rotateLegacy: rotate }
+      { rotateLegacy: rotate, plugin }
     );
   }
 }
