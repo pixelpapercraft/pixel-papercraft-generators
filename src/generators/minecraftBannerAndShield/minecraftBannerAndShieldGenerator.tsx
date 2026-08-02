@@ -28,6 +28,7 @@ import {
   defaultBannerPatternTint,
   drawBannerCrossbar,
   drawBannerFlag,
+  drawBannerFlagGuides,
   drawBannerPattern,
   drawBannerPole,
 } from "./shapes/banner";
@@ -69,10 +70,11 @@ const render = (ctx: RenderContext, props: BannerAndShieldProps): void => {
   ctx.fillBackgroundColorWithWhite();
 
   if (props.templateType === "Banner") {
-    drawBannerFlag(ctx, props.versionId, props.bannerBaseId, props.showFolds);
+    drawBannerFlag(ctx, props.versionId, props.bannerBaseId);
     props.bannerPatterns.forEach(({ patternId, blend }) => {
       drawBannerPattern(ctx, props.versionId, patternId, blend);
     });
+    drawBannerFlagGuides(ctx, props.showFolds);
     drawBannerPole(ctx, props.versionId, props.bannerBaseId, props.showFolds);
     drawBannerCrossbar(
       ctx,

@@ -197,8 +197,7 @@ function makeBannerBaseMinecraft(
 export function drawBannerFlag(
   ctx: RenderContext,
   versionId: string,
-  baseId: string,
-  showFolds: boolean
+  baseId: string
 ): void {
   const minecraft = makeBannerBaseMinecraft(ctx, versionId, baseId);
   if (!minecraft) {
@@ -207,6 +206,19 @@ export function drawBannerFlag(
 
   const dimensions = scaleDimensions(flagSourceDimensions);
   minecraft.drawCuboid("", bannerFlag, flagPosition, dimensions);
+}
+
+// Fold/tab guides, drawn separately from the base texture so the caller can
+// stamp pattern layers on top of the flag *between* the two calls — patterns
+// re-draw the flag's full cuboid texture, which would otherwise paint over
+// any guide line that falls on the printed fabric rather than blank page
+// background (only the flag has this problem: pole/crossbar have nothing
+// drawn over them afterward).
+export function drawBannerFlagGuides(
+  ctx: RenderContext,
+  showFolds: boolean
+): void {
+  const dimensions = scaleDimensions(flagSourceDimensions);
   if (showFolds) {
     drawCuboidFolds(ctx, flagPosition, dimensions);
   }
