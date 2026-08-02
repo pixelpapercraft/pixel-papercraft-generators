@@ -127,6 +127,53 @@ export function drawShieldHandleGuides(
   });
 }
 
+// The image asset is pre-scaled to its exact on-page size, so it's drawn
+// as a plain image rather than a texture — drawTexture's nearest-neighbor
+// downscaling composites each source pixel onto its destination pixel with
+// normal alpha blending, so scaling a partially-transparent image down
+// stacks multiple overlapping composites onto the same destination pixel,
+// driving its opacity far higher than the source alpha.
+function drawJoinMarker(
+  ctx: RenderContext,
+  imageId: string,
+  [imageWidth, imageHeight]: [number, number],
+  [x, y, width, height]: Rectangle
+): void {
+  ctx.drawImage(imageId, [
+    x + (width - imageWidth) / 2,
+    y + (height - imageHeight) / 2,
+  ]);
+}
+
+// Marks the center of the plate's back face and the handle's front face —
+// the two faces that get glued together — with the same arrow image, so
+// the user can align them without guessing which way the handle faces.
+export function drawShieldHandleJoinMarker(
+  ctx: RenderContext,
+  imageId: string,
+  imageDimensions: [number, number]
+): void {
+  const plateDimensions = scaleDimensions(
+    plateSourceDimensions,
+    sourceUnitScale
+  );
+  const plateBack = resolveFaceVisualRectangle(
+    resolveCuboidFaces(platePosition, plateDimensions).back
+  );
+  drawJoinMarker(ctx, imageId, imageDimensions, plateBack);
+
+  const handleDimensions = scaleDimensions(
+    handleSourceDimensions,
+    sourceUnitScale
+  );
+  const handleFront = resolveFaceVisualRectangle(
+    resolveCuboidFaces(handlePosition, handleDimensions, {
+      center: "Right",
+    }).front
+  );
+  drawJoinMarker(ctx, imageId, imageDimensions, handleFront);
+}
+
 export function drawShieldPlateGuides(
   ctx: RenderContext,
   showFolds: boolean

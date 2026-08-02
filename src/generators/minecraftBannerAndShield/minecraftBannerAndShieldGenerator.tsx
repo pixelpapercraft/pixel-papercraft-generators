@@ -35,10 +35,12 @@ import {
 import {
   drawShieldHandle,
   drawShieldHandleGuides,
+  drawShieldHandleJoinMarker,
   drawShieldPlate,
   drawShieldPlateGuides,
 } from "./shapes/shield";
 import titleImage from "./images/title-a4.png";
+import shieldHandleJoinImage from "./images/shield-handle-join.png";
 
 const id = "minecraft-banner-and-shield";
 
@@ -47,12 +49,21 @@ const name = "Minecraft Banner and Shield";
 const instructions: InstructionsDef = `
 Component-by-component rebuild in progress. The banner flag base, pole, and
 crossbar are rendered with fold and tab guides, and clicking the flag
-arms/stamps the selected pattern. The shield plate renders its base geometry and fold/tab guides, and the
-handle renders its base geometry and fold guides, with no handle tabs or
-pattern stamping yet.
+arms/stamps the selected pattern. The shield plate and handle render their
+base geometry, fold/tab guides, and a join marker showing where they glue
+together, with no pattern stamping yet.
 `;
 
-const images: ImageDef[] = [{ id: "Title", url: titleImage.src }];
+const shieldHandleJoinImageId = "ShieldHandleJoin";
+const shieldHandleJoinImageDimensions: [number, number] = [
+  shieldHandleJoinImage.width,
+  shieldHandleJoinImage.height,
+];
+
+const images: ImageDef[] = [
+  { id: "Title", url: titleImage.src },
+  { id: shieldHandleJoinImageId, url: shieldHandleJoinImage.src },
+];
 
 const textures: TextureDef[] = [...bannerShieldTextureDefs];
 
@@ -96,6 +107,11 @@ const render = (ctx: RenderContext, props: BannerAndShieldProps): void => {
     drawShieldHandle(ctx, props.versionId);
     drawShieldPlateGuides(ctx, props.showFolds);
     drawShieldHandleGuides(ctx, props.showFolds);
+    drawShieldHandleJoinMarker(
+      ctx,
+      shieldHandleJoinImageId,
+      shieldHandleJoinImageDimensions
+    );
   }
 
   // Temporary: proves the Title overlay is wired end to end. Removed once
