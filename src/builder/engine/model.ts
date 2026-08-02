@@ -1,25 +1,21 @@
 import { type ImageWithCanvas } from "./imageWithCanvas";
 import { type Texture } from "./texture";
 import { type Page, makePage } from "./modelPage";
-import { type Control, type Region } from "./modelControls";
+import { type RegionControl, type Region } from "./modelControls";
 import { type Variable } from "./variables";
 import { type Values } from "./modelValues";
 
 export class Model {
-  controls: Control[];
+  regionControls: RegionControl[];
   pages: Page[];
   currentPage: Page | null;
   values: Values;
 
   constructor(values: Values) {
-    this.controls = [];
+    this.regionControls = [];
     this.pages = [];
     this.currentPage = null;
     this.values = values;
-  }
-
-  addControl(control: Control) {
-    this.controls.push(control);
   }
 
   addRegionControl(
@@ -28,7 +24,7 @@ export class Model {
     onClick: () => void,
     id?: string
   ) {
-    this.addControl({
+    this.regionControls.push({
       kind: "Region",
       pageId,
       region,

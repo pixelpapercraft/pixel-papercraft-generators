@@ -30,8 +30,6 @@ export type MinecraftSkinOption =
   | MinecraftSkinOptionPreset
   | MinecraftSkinOptionTexture;
 
-export type Control = RegionControl;
-
 export type {
   MinecraftModelType,
   MinecraftSkinInputValue,
