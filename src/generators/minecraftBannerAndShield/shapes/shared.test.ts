@@ -3,7 +3,7 @@ import { type Rectangle } from "../../_common/minecraft";
 import {
   roundDestinationRectangle,
   roundRectangleToPixelBounds,
-} from "./banner";
+} from "./shared";
 
 describe("roundRectangleToPixelBounds", () => {
   it("keeps the banner flag's touching faces on shared pixel boundaries", () => {

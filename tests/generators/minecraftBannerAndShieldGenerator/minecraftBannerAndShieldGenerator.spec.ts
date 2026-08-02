@@ -48,6 +48,28 @@ test("minecraft banner and shield renders Template 1's banner flag base", async 
   await expect.poll(() => readPixel(pageImage, 146, 180)).toEqual(white);
 });
 
+test("minecraft banner and shield renders Template 1's shield plate base", async ({
+  page,
+}) => {
+  await page.goto("/generator/minecraft-banner-and-shield");
+
+  const pageImage = outputPage(page);
+
+  await page.getByLabel("Template 1 Type").selectOption("Shield");
+
+  // The plate's front face spans roughly [226, 298] horizontally, [355, 487]
+  // vertically. (240, 400) sits inside it, where the base texture is a light
+  // gray, unlike the white page background. (340, 400) sits on the plate's
+  // back face (wood-brown), confirming the net's second face also renders.
+  await expect.poll(() => readPixel(pageImage, 240, 400)).not.toEqual(white);
+  await expect.poll(() => readPixel(pageImage, 340, 400)).not.toEqual(white);
+
+  await page.getByLabel("Template 1 Type").selectOption("Banner");
+
+  await expect.poll(() => readPixel(pageImage, 240, 400)).toEqual(white);
+  await expect.poll(() => readPixel(pageImage, 340, 400)).toEqual(white);
+});
+
 test("minecraft banner and shield stamps and erases a pattern on the flag click region", async ({
   page,
 }) => {
