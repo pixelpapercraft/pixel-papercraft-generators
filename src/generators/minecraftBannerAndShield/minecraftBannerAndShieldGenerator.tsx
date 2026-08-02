@@ -145,7 +145,7 @@ function Component(): JSX.Element {
     bannerShieldTextureVersions[0]!.id
   );
   const [templateType, setTemplateType] =
-    React.useState<TemplateType>("Banner");
+    React.useState<TemplateType>("Shield");
   const [showFolds, setShowFolds] = React.useState(true);
   const [bannerPatterns, setBannerPatterns] = React.useState<
     SelectedBannerPattern[]
