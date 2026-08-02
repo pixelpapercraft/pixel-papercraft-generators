@@ -17,16 +17,16 @@ import {
   type CuboidTabEdge,
   type CuboidTabFace,
 } from "../_common/cuboidTabs";
+import { steve } from "../_common/minecraftCharacter";
 import {
   Minecraft,
   makeFace,
-  resolveCuboidFaces,
-  resolveFaceVisualRectangle,
   type Cuboid,
   type Orientation,
   type RotationDegrees,
 } from "../_common/minecraft";
 import quadrants from "./fixtures/quadrants.png";
+import steveWide from "../_common/skins/wide/steve.png";
 
 const id = "test-api-cuboid-tabs";
 
@@ -42,10 +42,16 @@ per-face texture rotation/flip, not just face position. Every face samples
 the same 4-colour \`quadrants\` fixture (red top-left, green top-right, blue
 bottom-left, yellow bottom-right — see Test API: Drawing Textures), so a
 face rendered with the wrong rotation/flip shows up as the wrong colour in
-the wrong corner. Each face is also labelled by name. Plus exactly one tab
-per net drawn via \`drawCuboidTabs\`'s \`placements\` option — the same
+the wrong corner. Plus exactly one tab per net drawn via
+\`drawCuboidTabs\`'s \`placements\` option — the same
 face/edge/uniform-base selection applied to all four, so any
 orientation-specific difference is visible side by side.
+
+A second page, "Steve head", repeats the identical four-orientation grid —
+same dimensions, same tab placement — using Steve's real head texture
+(\`_common/skins/wide/steve.png\`) instead of the synthetic quadrants, so
+tab placement can also be checked against recognisable art, not just flat
+colour.
 
 Fixed dimensions for this board: width 90, height 60, depth 30 (all
 different, so the three axes are never ambiguous at a glance).
@@ -59,6 +65,12 @@ const textures: TextureDef[] = [
     url: quadrants.src,
     standardWidth: 4,
     standardHeight: 4,
+  },
+  {
+    id: "Steve",
+    url: steveWide.src,
+    standardWidth: 64,
+    standardHeight: 64,
   },
 ];
 
@@ -84,15 +96,6 @@ const gridCellHeight = 260;
 const gridOrigin: [number, number] = [20, 90];
 const netInset: [number, number] = [40, 30];
 
-const faceNames: CuboidTabFace[] = [
-  "front",
-  "back",
-  "top",
-  "bottom",
-  "left",
-  "right",
-];
-
 type CuboidTabsProps = {
   face: CuboidTabFace;
   edge: CuboidTabEdge;
@@ -103,28 +106,13 @@ function drawLabeledNetWithTab(
   ctx: RenderContext,
   position: [number, number],
   orientation: Orientation,
+  textureId: string,
+  source: Cuboid,
   props: CuboidTabsProps
 ): void {
   const minecraft = new Minecraft(ctx);
-  minecraft.drawCuboid(
-    "Quadrants",
-    quadrantCuboidSource,
-    position,
-    dimensions,
-    {
-      orientation,
-    }
-  );
-
-  const dest = resolveCuboidFaces(position, dimensions, { orientation });
-  faceNames.forEach((face) => {
-    // Label/border go on the true visual rectangle, not `dest[face]`'s raw
-    // stored one — for a rotated face those differ (see
-    // `resolveFaceVisualRectangle`'s doc comment), and `Minecraft.drawCuboid`
-    // above already drew the real texture at the visual position.
-    const rectangle = resolveFaceVisualRectangle(dest[face]);
-    ctx.drawRectangle(rectangle, { color: "#000000", width: 1 });
-    ctx.drawText(face, [rectangle[0] + 4, rectangle[1] + 14], 11);
+  minecraft.drawCuboid(textureId, source, position, dimensions, {
+    orientation,
   });
 
   drawCuboidTabs(ctx, position, dimensions, {
@@ -137,8 +125,14 @@ function drawLabeledNetWithTab(
   });
 }
 
-const render = (ctx: RenderContext, props: CuboidTabsProps): void => {
-  ctx.usePage("Page");
+function drawNetGridPage(
+  ctx: RenderContext,
+  pageName: string,
+  textureId: string,
+  source: Cuboid,
+  props: CuboidTabsProps
+): void {
+  ctx.usePage(pageName);
   ctx.fillBackgroundColorWithWhite();
 
   ctx.drawText(
@@ -168,9 +162,20 @@ const render = (ctx: RenderContext, props: CuboidTabsProps): void => {
       cellOrigin[0] + netInset[0],
       cellOrigin[1] + netInset[1],
     ];
-    drawLabeledNetWithTab(ctx, netPosition, orientation, props);
+    drawLabeledNetWithTab(
+      ctx,
+      netPosition,
+      orientation,
+      textureId,
+      source,
+      props
+    );
   });
+}
 
+const render = (ctx: RenderContext, props: CuboidTabsProps): void => {
+  drawNetGridPage(ctx, "Page", "Quadrants", quadrantCuboidSource, props);
+  drawNetGridPage(ctx, "Steve head", "Steve", steve.base.head, props);
   drawRotationGroundTruthPage(ctx);
 };
 
