@@ -260,7 +260,7 @@ function Component(): JSX.Element {
 
           <div className="w-full bg-gray-100 p-8 space-y-4">
             <GeneratorUI.SelectControl
-              label="Version"
+              label="Texture Version"
               options={bannerShieldTextureVersions.map(
                 ({ id: versionOptionId, label }) => ({
                   id: versionOptionId,
