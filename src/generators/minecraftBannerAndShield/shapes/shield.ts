@@ -12,7 +12,12 @@ import {
   type Rectangle,
 } from "../../_common/minecraft";
 import { findBannerShieldTextureVersion } from "../textures/textureVersions";
-import { makeBaseMinecraft, scaleDimensions } from "./shared";
+import {
+  BaseMinecraft,
+  makeBaseMinecraft,
+  roundRectangleToPixelBounds,
+  scaleDimensions,
+} from "./shared";
 
 const plateSourceDimensions: Dimensions = [12, 22, 1];
 const shieldPlate = translateCuboid(makeCuboid(plateSourceDimensions), [0, 0]);
@@ -76,6 +81,43 @@ export function drawShieldPlate(ctx: RenderContext, versionId: string): void {
 
   const dimensions = scaleDimensions(plateSourceDimensions, sourceUnitScale);
   minecraft.drawCuboid("", shieldPlate, platePosition, dimensions);
+}
+
+export function drawShieldPattern(
+  ctx: RenderContext,
+  versionId: string,
+  patternId: string,
+  blend: string | null
+): void {
+  const version = findBannerShieldTextureVersion(versionId);
+  const pattern = version?.patterns.find(({ id }) => id === patternId);
+  const frame = pattern?.shieldFrame;
+  if (!version || !frame) {
+    return;
+  }
+
+  const minecraft = new BaseMinecraft(ctx, version.shieldTextureDef.id, frame);
+
+  const dimensions = scaleDimensions(plateSourceDimensions, sourceUnitScale);
+  minecraft.drawCuboid(
+    "",
+    shieldPlate,
+    platePosition,
+    dimensions,
+    blend ? { blend: { kind: "MultiplyHex", hex: blend } } : {}
+  );
+}
+
+// The single clickable region for arming/placing a pattern on the plate —
+// matches the banner flag's `bannerFlagFrontRegion` convention (one region
+// drives a pattern stack shared by every part of the shield's net, see
+// `patternStack.ts`). Derived from real cuboid-layout geometry
+// (`resolveCuboidFaces`/`resolveFaceVisualRectangle`) rather than hand
+// arithmetic, per the lesson from the tab/fold investigations.
+export function shieldPlateFrontRegion(): Rectangle {
+  const dimensions = scaleDimensions(plateSourceDimensions, sourceUnitScale);
+  const front = resolveCuboidFaces(platePosition, dimensions).front;
+  return roundRectangleToPixelBounds(resolveFaceVisualRectangle(front));
 }
 
 export function drawShieldHandle(ctx: RenderContext, versionId: string): void {

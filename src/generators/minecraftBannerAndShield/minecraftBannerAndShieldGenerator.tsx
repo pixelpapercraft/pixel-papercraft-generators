@@ -41,8 +41,10 @@ import {
   drawShieldHandleInnerLining,
   drawShieldHandleInnerLiningGuides,
   drawShieldHandleJoinMarker,
+  drawShieldPattern,
   drawShieldPlate,
   drawShieldPlateGuides,
+  shieldPlateFrontRegion,
 } from "./shapes/shield";
 import titleImage from "./images/title-a4.png";
 import shieldHandleJoinImage from "./images/shield-handle-join.png";
@@ -54,9 +56,10 @@ const name = "Minecraft Banner and Shield";
 const instructions: InstructionsDef = `
 Component-by-component rebuild in progress. The banner flag base, pole, and
 crossbar are rendered with fold and tab guides, and clicking the flag
-arms/stamps the selected pattern. The shield plate and handle render their
-base geometry, fold/tab guides, and a join marker showing where they glue
-together, with no pattern stamping yet.
+arms/stamps the selected pattern. The shield plate, handle, and inner
+lining render their base geometry, fold/tab guides, and a join marker
+showing where they glue together; clicking the plate arms/stamps the
+selected pattern onto the plate only so far, not yet the handle or lining.
 `;
 
 const shieldHandleJoinImageId = "ShieldHandleJoin";
@@ -73,9 +76,11 @@ const images: ImageDef[] = [
 const textures: TextureDef[] = [...bannerShieldTextureDefs];
 
 const bannerFlagRegionId = "BannerFlag";
+const shieldPlateRegionId = "ShieldPlate";
 
 type BannerAndShieldProps = {
   bannerPatterns: SelectedPattern[];
+  shieldPatterns: SelectedPattern[];
   versionId: string;
   templateType: TemplateType;
   bannerBaseId: string;
@@ -104,6 +109,9 @@ const render = (ctx: RenderContext, props: BannerAndShieldProps): void => {
     ctx.defineRegion(bannerFlagFrontRegion(), bannerFlagRegionId);
   } else {
     drawShieldPlate(ctx, props.versionId);
+    props.shieldPatterns.forEach(({ patternId, blend }) => {
+      drawShieldPattern(ctx, props.versionId, patternId, blend);
+    });
     drawShieldHandle(ctx, props.versionId);
     drawShieldHandleInnerLining(ctx, props.versionId);
     drawShieldPlateGuides(ctx, props.showFolds);
@@ -114,6 +122,7 @@ const render = (ctx: RenderContext, props: BannerAndShieldProps): void => {
       shieldHandleJoinImageId,
       shieldHandleJoinImageDimensions
     );
+    ctx.defineRegion(shieldPlateFrontRegion(), shieldPlateRegionId);
   }
 
   // Temporary: proves the Title overlay is wired end to end. Removed once
@@ -148,6 +157,9 @@ function Component(): JSX.Element {
   const [bannerPatterns, setBannerPatterns] = React.useState<SelectedPattern[]>(
     defaultPatternStack()
   );
+  const [shieldPatterns, setShieldPatterns] = React.useState<SelectedPattern[]>(
+    defaultPatternStack()
+  );
 
   const textureVersion =
     findBannerShieldTextureVersion(versionId) ??
@@ -160,6 +172,7 @@ function Component(): JSX.Element {
 
   const rendererProps: BannerAndShieldProps = {
     bannerPatterns,
+    shieldPatterns,
     versionId,
     templateType,
     bannerBaseId,
@@ -167,13 +180,19 @@ function Component(): JSX.Element {
   };
 
   const onRegionClick: RegionClickHandler = ({ regionId }) => {
-    if (regionId !== bannerFlagRegionId) {
+    if (regionId === bannerFlagRegionId) {
+      setBannerPatterns((current) =>
+        applyPatternSelection(current, selectedPatternId, tint)
+      );
       return;
     }
 
-    setBannerPatterns((current) =>
-      applyPatternSelection(current, selectedPatternId, tint)
-    );
+    if (regionId === shieldPlateRegionId) {
+      setShieldPatterns((current) =>
+        applyPatternSelection(current, selectedPatternId, tint)
+      );
+      return;
+    }
   };
 
   return (
