@@ -10,10 +10,14 @@ import { makeBaseMinecraft, scaleDimensions } from "./shared";
 const plateSourceDimensions: Dimensions = [12, 22, 1];
 const shieldPlate = translateCuboid(makeCuboid(plateSourceDimensions), [0, 0]);
 
-// Chosen to center the plate's full six-face net (not just its front face)
-// on the page; not derived from pr-35-head's own coordinates, which use a
-// different destination scale.
-const platePosition: [number, number] = [220, 349];
+// 128 destination px per meter, the same convention minecraftBlock/
+// minecraftCharacter use — renders the plate at its true modeled
+// proportions rather than the banner's own deliberately-compressed scale.
+const sourceUnitScale = 8;
+
+// Positions the plate's full six-face net (not just its front face) in the
+// page's top-left quadrant.
+const platePosition: [number, number] = [40, 40];
 
 function makeShieldBaseMinecraft(ctx: RenderContext, versionId: string) {
   const version = findBannerShieldTextureVersion(versionId);
@@ -36,6 +40,6 @@ export function drawShieldPlate(ctx: RenderContext, versionId: string): void {
     return;
   }
 
-  const dimensions = scaleDimensions(plateSourceDimensions);
+  const dimensions = scaleDimensions(plateSourceDimensions, sourceUnitScale);
   minecraft.drawCuboid("", shieldPlate, platePosition, dimensions);
 }

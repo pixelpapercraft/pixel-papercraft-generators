@@ -39,13 +39,15 @@ test("minecraft banner and shield renders Template 1's banner flag base", async 
 
   const pageImage = outputPage(page);
 
-  // The front face spans roughly [142, 262] horizontally. (146, 180) sits
-  // inside it, where the texture is dark, unlike the white page background.
-  await expect.poll(() => readPixel(pageImage, 146, 180)).not.toEqual(white);
+  // The front face spans roughly [142, 262] horizontally, [144, 384]
+  // vertically. (146, 300) sits inside it, where the texture is dark, unlike
+  // the white page background, and outside the shield plate's own footprint
+  // (up to y=232), so it stays a clean probe when Shield is selected too.
+  await expect.poll(() => readPixel(pageImage, 146, 300)).not.toEqual(white);
 
   await page.getByLabel("Template 1 Type").selectOption("Shield");
 
-  await expect.poll(() => readPixel(pageImage, 146, 180)).toEqual(white);
+  await expect.poll(() => readPixel(pageImage, 146, 300)).toEqual(white);
 });
 
 test("minecraft banner and shield renders Template 1's shield plate base", async ({
@@ -57,17 +59,17 @@ test("minecraft banner and shield renders Template 1's shield plate base", async
 
   await page.getByLabel("Template 1 Type").selectOption("Shield");
 
-  // The plate's front face spans roughly [226, 298] horizontally, [355, 487]
-  // vertically. (240, 400) sits inside it, where the base texture is a light
-  // gray, unlike the white page background. (340, 400) sits on the plate's
+  // The plate's front face spans roughly [46, 118] horizontally, [46, 178]
+  // vertically. (60, 100) sits inside it, where the base texture is a light
+  // gray, unlike the white page background. (160, 100) sits on the plate's
   // back face (wood-brown), confirming the net's second face also renders.
-  await expect.poll(() => readPixel(pageImage, 240, 400)).not.toEqual(white);
-  await expect.poll(() => readPixel(pageImage, 340, 400)).not.toEqual(white);
+  await expect.poll(() => readPixel(pageImage, 60, 100)).not.toEqual(white);
+  await expect.poll(() => readPixel(pageImage, 160, 100)).not.toEqual(white);
 
   await page.getByLabel("Template 1 Type").selectOption("Banner");
 
-  await expect.poll(() => readPixel(pageImage, 240, 400)).toEqual(white);
-  await expect.poll(() => readPixel(pageImage, 340, 400)).toEqual(white);
+  await expect.poll(() => readPixel(pageImage, 60, 100)).toEqual(white);
+  await expect.poll(() => readPixel(pageImage, 160, 100)).toEqual(white);
 });
 
 test("minecraft banner and shield stamps and erases a pattern on the flag click region", async ({

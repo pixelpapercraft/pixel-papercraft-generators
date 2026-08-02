@@ -12,22 +12,16 @@ import {
 } from "../../_common/minecraft";
 import { type BannerShieldBaseOption } from "../../_common/patternTexturePicker/types";
 
-// Every shape's destination size is derived from its own source-cuboid
-// units at an integer scale of 6, so every face's source:destination
-// stretch ratio is a whole number and nearest-neighbour pixel replication
-// is even across the shape.
-export const sourceUnitScale = 6;
-
-export function scaleDimensions([
-  width,
-  height,
-  depth,
-]: Dimensions): Dimensions {
-  return [
-    width * sourceUnitScale,
-    height * sourceUnitScale,
-    depth * sourceUnitScale,
-  ];
+// A shape's destination size is its own source-cuboid units at an integer
+// scale, so every face's source:destination stretch ratio is a whole number
+// and nearest-neighbour pixel replication is even across the shape. Each
+// shape picks its own scale rather than sharing one constant, since banner
+// and shield shapes target different real-world sizes.
+export function scaleDimensions(
+  [width, height, depth]: Dimensions,
+  scale: number
+): Dimensions {
+  return [width * scale, height * scale, depth * scale];
 }
 
 // Faces in one cuboid share their mathematical boundaries. Quantising each

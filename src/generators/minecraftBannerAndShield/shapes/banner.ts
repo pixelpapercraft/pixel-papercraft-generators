@@ -18,14 +18,18 @@ import {
   scaleDimensions,
 } from "./shared";
 
-// Every shape's destination size is derived from its own source-cuboid
-// units at an integer scale of 6, so every face's source:destination
-// stretch ratio is a whole number and nearest-neighbour pixel replication
-// is even across the shape. Position uses a separate, non-integer page
-// scale (6/16): translation does not resample a texture, so it carries no
-// equivalent distortion risk to the texture itself. Both approximate
-// pr-35-head's own design, which draws every axis of every shape at exactly
-// 16 destination pixels per source-cuboid unit.
+// Chosen for a round ~2m pole height rather than the exact-model-proportion
+// value of 8 (128 destination px per meter, the same convention
+// minecraftBlock/minecraftCharacter use) — every banner shape's destination
+// size is its own source-cuboid units at this scale, so every face's
+// source:destination stretch ratio stays a whole number.
+const sourceUnitScale = 6;
+
+// Position uses a separate, non-integer page scale (6/16): translation does
+// not resample a texture, so it carries no equivalent distortion risk to the
+// texture itself. Both approximate pr-35-head's own design, which draws
+// every axis of every shape at exactly 16 destination pixels per
+// source-cuboid unit.
 const pageScale = 6 / 16;
 
 // Rounded rather than left fractional: a fractional position doesn't distort
@@ -33,10 +37,10 @@ const pageScale = 6 / 16;
 // guide) astride two pixel rows/columns instead of one, since the
 // canvas-line-crispness offset trick assumes an integer starting
 // coordinate. Every downstream shape dimension is already an integer
-// (`scaleDimensions`'s `sourceUnitScale` is a whole number), so rounding
-// only `position` keeps every face's texture, fold line, and tab exactly
-// self-consistent — the existing per-face `roundRectangleToPixelBounds`
-// rounding becomes a no-op instead of doing real work.
+// (`sourceUnitScale` is a whole number), so rounding only `position` keeps
+// every face's texture, fold line, and tab exactly self-consistent — the
+// existing per-face `roundRectangleToPixelBounds` rounding becomes a no-op
+// instead of doing real work.
 function scaleToPage(value: number): number {
   return Math.round(value * pageScale);
 }
@@ -85,7 +89,7 @@ export function drawBannerFlag(
     return;
   }
 
-  const dimensions = scaleDimensions(flagSourceDimensions);
+  const dimensions = scaleDimensions(flagSourceDimensions, sourceUnitScale);
   minecraft.drawCuboid("", bannerFlag, flagPosition, dimensions);
 }
 
@@ -99,7 +103,7 @@ export function drawBannerFlagGuides(
   ctx: RenderContext,
   showFolds: boolean
 ): void {
-  const dimensions = scaleDimensions(flagSourceDimensions);
+  const dimensions = scaleDimensions(flagSourceDimensions, sourceUnitScale);
   if (showFolds) {
     drawCuboidFolds(ctx, flagPosition, dimensions);
   }
@@ -144,7 +148,7 @@ export function drawBannerPattern(
     "",
     bannerFlag,
     flagPosition,
-    scaleDimensions(flagSourceDimensions),
+    scaleDimensions(flagSourceDimensions, sourceUnitScale),
     blend ? { blend: { kind: "MultiplyHex", hex: blend } } : {}
   );
 }
@@ -159,7 +163,10 @@ export function drawBannerPattern(
 // front face sits at the cuboid's position shifted by its own depth on both
 // axes, sized to its declared width/height.
 export function bannerFlagFrontRegion(): Rectangle {
-  const [width, height, depth] = scaleDimensions(flagSourceDimensions);
+  const [width, height, depth] = scaleDimensions(
+    flagSourceDimensions,
+    sourceUnitScale
+  );
   const [x, y] = flagPosition;
   return roundRectangleToPixelBounds([x + depth, y + depth, width, height]);
 }
@@ -177,7 +184,7 @@ export function drawBannerPole(
     return;
   }
 
-  const dimensions = scaleDimensions(poleSourceDimensions);
+  const dimensions = scaleDimensions(poleSourceDimensions, sourceUnitScale);
   minecraft.drawCuboid("", bannerPole, polePosition, dimensions);
   if (showFolds) {
     drawCuboidFolds(ctx, polePosition, dimensions);
@@ -204,7 +211,7 @@ export function drawBannerCrossbar(
     return;
   }
 
-  const dimensions = scaleDimensions(crossbarSourceDimensions);
+  const dimensions = scaleDimensions(crossbarSourceDimensions, sourceUnitScale);
   minecraft.drawCuboid("", bannerCrossbar, crossbarPosition, dimensions, {
     center: "Bottom",
     orientation: "North",
