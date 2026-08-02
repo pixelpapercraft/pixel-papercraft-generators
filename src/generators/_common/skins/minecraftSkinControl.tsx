@@ -6,16 +6,16 @@ import {
   makeTextureFromUrl,
 } from "@genroot/builder/engine/texture";
 import { makeImageFromUrl } from "@genroot/builder/engine/image";
-import { convertToStandardSkin } from "@genroot/builder/engine/minecraftSkinConverter";
-import { fetchSkinImage } from "@genroot/builder/engine/minecraftSkin";
-import { type MinecraftSkinOption } from "@genroot/builder/engine/modelControls";
+import { convertToStandardSkin } from "./minecraftSkinConverter";
+import { fetchSkinImage } from "./minecraftSkin";
+import { type MinecraftSkinOption } from "./options";
 import {
   type MinecraftModelType,
   type MinecraftSkinInputValue,
-} from "@genroot/builder/engine/minecraftSkinInputValue";
-import { type SelectOption, Select } from "../form/select";
-import { Button, type ButtonState } from "../button/button";
-import { ArrowPathIconWithSpin } from "../icon";
+} from "./minecraftSkinInputValue";
+import { type SelectOption, Select } from "@genroot/builder/ui/form/select";
+import { Button, type ButtonState } from "@genroot/builder/ui/button/button";
+import { ArrowPathIconWithSpin } from "@genroot/builder/ui/icon";
 
 // UI state for username-based skin fetching.
 // This is intentionally explicit rather than a boolean so rendering and

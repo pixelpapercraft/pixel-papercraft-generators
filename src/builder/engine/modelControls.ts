@@ -8,30 +8,3 @@ export type RegionControl = {
   onClick: () => void;
   id?: string;
 };
-
-export type MinecraftSkinOptionPreset = {
-  kind: "preset";
-  id: string;
-  label: string;
-  urls: {
-    wide: string;
-    slim: string;
-  };
-};
-
-export type MinecraftSkinOptionTexture = {
-  kind: "texture";
-  id: string;
-  label: string;
-  textureId: string;
-};
-
-export type MinecraftSkinOption =
-  | MinecraftSkinOptionPreset
-  | MinecraftSkinOptionTexture;
-
-export type {
-  MinecraftModelType,
-  MinecraftSkinInputValue,
-  MinecraftSkinSelection,
-} from "./minecraftSkinInputValue";

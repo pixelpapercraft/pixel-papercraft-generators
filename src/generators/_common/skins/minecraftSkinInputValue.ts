@@ -1,4 +1,4 @@
-import type { MinecraftSkinOption } from "./modelControls";
+import type { MinecraftSkinOption } from "./options";
 
 export type MinecraftModelType = "Wide" | "Slim";
 
