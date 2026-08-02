@@ -54,14 +54,14 @@ test("minecraft banner and shield renders Template 1's banner flag base by defau
 
   const pageImage = outputPage(page);
 
-  // (146, 300) sits on the flag's front face, unaffected by Template 1's
+  // (146, 180) sits on the flag's front face, unaffected by Template 1's
   // yOffset of 0.
-  await expect.poll(() => readPixel(pageImage, 146, 300)).not.toEqual(white);
+  await expect.poll(() => readPixel(pageImage, 146, 180)).not.toEqual(white);
   await expect(page.getByTestId("region-Template1")).toHaveCount(1);
 
   await page.getByLabel("Template 1 Type").selectOption("None");
 
-  await expect.poll(() => readPixel(pageImage, 146, 300)).toEqual(white);
+  await expect.poll(() => readPixel(pageImage, 146, 180)).toEqual(white);
   await expect(page.getByTestId("region-Template1")).toHaveCount(0);
   await expect(page.getByLabel("Template 1 Banner Base")).toHaveCount(0);
 });
@@ -127,14 +127,14 @@ test("minecraft banner and shield renders fold guides on top of a stamped patter
   await page.getByTitle("base").click();
   await region.click();
 
-  // (151, 143) sits on the front face's top fold-guide dash; (153, 143), one
+  // (50, 45) sits on the front face's top fold-guide dash; (52, 45), one
   // dash-gap over, confirms the stamped pattern actually reached this row.
   const foldDash = { r: 123, g: 123, b: 123, a: 255 };
-  await expect.poll(() => readPixel(pageImage, 151, 143)).toEqual(foldDash);
-  await expect.poll(() => readPixel(pageImage, 153, 143)).not.toEqual(foldDash);
+  await expect.poll(() => readPixel(pageImage, 50, 45)).toEqual(foldDash);
+  await expect.poll(() => readPixel(pageImage, 52, 45)).not.toEqual(foldDash);
 
   await page.getByText("Show Folds", { exact: true }).click();
-  await expect.poll(() => readPixel(pageImage, 151, 143)).not.toEqual(foldDash);
+  await expect.poll(() => readPixel(pageImage, 50, 45)).not.toEqual(foldDash);
 });
 
 test("minecraft banner and shield keeps the default base layer on Template 1 through repeated erase clicks", async ({
@@ -162,7 +162,7 @@ test("minecraft banner and shield stamps and erases a pattern on the Template 2 
   const pageImage = outputPage(page);
   const region = page.getByTestId("region-Template2");
   const beforeColor = await readPixel(pageImage, 90, 521);
-  const template1Color = await readPixel(pageImage, 146, 300);
+  const template1Color = await readPixel(pageImage, 146, 180);
 
   // Re-stamps the "base" pattern with the picker's default tint (dye Black),
   // clearly distinguishable from the plate's default light-gray base layer.
@@ -173,7 +173,7 @@ test("minecraft banner and shield stamps and erases a pattern on the Template 2 
     .not.toEqual(beforeColor);
   // Template 1's banner is untouched by stamping Template 2's region.
   await expect
-    .poll(() => readPixel(pageImage, 146, 300))
+    .poll(() => readPixel(pageImage, 146, 180))
     .toEqual(template1Color);
 
   await page.getByLabel("Erase texture").click();
@@ -284,9 +284,9 @@ test("minecraft banner and shield supports the same type in both slots independe
   // Template 2's flag front face, shifted down by 421px — renders
   // independently alongside Template 1's own banner.
   await expect
-    .poll(() => readPixel(pageImage, 146, 300 + 421))
+    .poll(() => readPixel(pageImage, 146, 180 + 421))
     .not.toEqual(white);
-  await expect.poll(() => readPixel(pageImage, 146, 300)).not.toEqual(white);
+  await expect.poll(() => readPixel(pageImage, 146, 180)).not.toEqual(white);
 
   // Stamping Template 2's region doesn't affect Template 1's, even though
   // both are the same content type.

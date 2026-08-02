@@ -37,29 +37,13 @@ function withYOffset(
 // source:destination stretch ratio stays a whole number.
 const sourceUnitScale = 6;
 
-// Position uses a separate, non-integer page scale (6/16): translation does
-// not resample a texture, so it carries no equivalent distortion risk to the
-// texture itself. Both approximate pr-35-head's own design, which draws
-// every axis of every shape at exactly 16 destination pixels per
-// source-cuboid unit.
-const pageScale = 6 / 16;
-
-// Rounded rather than left fractional: a fractional position doesn't distort
-// a texture (see above), but it does put a 1px stroked line (a fold/tab
-// guide) astride two pixel rows/columns instead of one, since the
-// canvas-line-crispness offset trick assumes an integer starting
-// coordinate. Every downstream shape dimension is already an integer
-// (`sourceUnitScale` is a whole number), so rounding only `position` keeps
-// every face's texture, fold line, and tab exactly self-consistent — the
-// existing per-face `roundRectangleToPixelBounds` rounding becomes a no-op
-// instead of doing real work.
-function scaleToPage(value: number): number {
-  return Math.round(value * pageScale);
-}
-
 const flagSourceDimensions: Dimensions = [20, 40, 1];
 const bannerFlag = translateCuboid(makeCuboid(flagSourceDimensions), [0, 0]);
-const flagPosition: [number, number] = [scaleToPage(364), scaleToPage(368)];
+// x/y hand-tuned to 40 to match the shield plate's own top-left offset
+// (shapes/shield.ts's platePosition) now that both templates share a page;
+// pole/crossbar below are shifted by the same deltas to keep their
+// alignment to the flag unchanged (-97 on x, -98 on y).
+const flagPosition: [number, number] = [40, 40];
 
 // pr-35-head's declared pole height is 704, not the pattern's 42 * 16 =
 // 672; this generator's pole height follows the same source-unit rule as
@@ -184,7 +168,16 @@ export function bannerFlagFrontRegion(yOffset: number): Rectangle {
   return roundRectangleToPixelBounds([x + depth, y + depth, width, height]);
 }
 
-const polePosition: [number, number] = [scaleToPage(1292), scaleToPage(320)];
+// Hand-tuned so flag/pole/crossbar sit in one evenly-spaced horizontal row.
+// Net widths follow makeDest's real West-orientation face layout (right/
+// front/left/back all placed side by side) — right + front + left + back =
+// depth + width + depth + width = 2 * (width + depth) — not just
+// right + front + left as first assumed:
+// flag ~252px (2 * (120 + 6)), pole ~48px (2 * (12 + 12)), crossbar ~144px
+// (North orientation stacks front/back vertically instead, so its span is
+// just 2 * depth + width = 2 * 12 + 120). Spaced with ~36px gaps so the
+// row's left/right margins both land near 40px.
+const polePosition: [number, number] = [328, 22];
 
 export function drawBannerPole(
   ctx: RenderContext,
@@ -213,7 +206,9 @@ export function drawBannerPole(
   });
 }
 
-const crossbarPosition: [number, number] = [scaleToPage(516), scaleToPage(112)];
+// Positioned to the right of the pole, at the same y as the flag, to sit in
+// the same evenly-spaced row (see polePosition's comment).
+const crossbarPosition: [number, number] = [412, flagPosition[1]];
 
 export function drawBannerCrossbar(
   ctx: RenderContext,
