@@ -35,6 +35,8 @@ import {
 import {
   drawShieldHandle,
   drawShieldHandleGuides,
+  drawShieldHandleInnerLining,
+  drawShieldHandleInnerLiningGuides,
   drawShieldHandleJoinMarker,
   drawShieldPlate,
   drawShieldPlateGuides,
@@ -105,8 +107,10 @@ const render = (ctx: RenderContext, props: BannerAndShieldProps): void => {
   } else {
     drawShieldPlate(ctx, props.versionId);
     drawShieldHandle(ctx, props.versionId);
+    drawShieldHandleInnerLining(ctx, props.versionId);
     drawShieldPlateGuides(ctx, props.showFolds);
     drawShieldHandleGuides(ctx, props.showFolds);
+    drawShieldHandleInnerLiningGuides(ctx, props.showFolds);
     drawShieldHandleJoinMarker(
       ctx,
       shieldHandleJoinImageId,

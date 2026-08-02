@@ -141,6 +141,23 @@ export class BaseMinecraft extends Minecraft {
       }
     );
   }
+
+  // Draws a flat texture crop at an explicit destination rectangle, outside
+  // the cuboid-face abstraction drawCuboid uses — for content that isn't one
+  // of a cuboid's 6 faces (e.g. a separate cut-out piece drawn alongside a
+  // shape's net).
+  drawFace(
+    source: Rectangle,
+    destination: Rectangle,
+    rotate: RotationDegrees = 0
+  ): void {
+    this.ctx.drawTexture(
+      this.textureId,
+      makeFrameSourceRegion(this.frame, source),
+      destination,
+      { rotateLegacy: rotate }
+    );
+  }
 }
 
 export function makeBaseMinecraft(

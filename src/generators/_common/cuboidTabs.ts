@@ -148,7 +148,11 @@ function makeCuboidTabFaces(
   return faces;
 }
 
-function makeTabRegion(
+// Exported for content that draws a tab against an explicit rectangle
+// outside the cuboid-face abstraction (e.g. a flat, non-cuboid piece drawn
+// alongside a shape's net) — the same tab-region math drawCuboidTabs uses
+// per placement, without needing a resolved cuboid face.
+export function makeTabRegion(
   [x, y, width, height]: Rectangle,
   edge: CuboidTabEdge,
   baseWidth: number,

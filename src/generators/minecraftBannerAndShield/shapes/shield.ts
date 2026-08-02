@@ -5,7 +5,7 @@ import {
   translateCuboid,
 } from "../../_common/cuboid";
 import { drawCuboidFolds, drawRectangleFolds } from "../../_common/cuboidFolds";
-import { drawCuboidTabs } from "../../_common/cuboidTabs";
+import { drawCuboidTabs, makeTabRegion } from "../../_common/cuboidTabs";
 import {
   resolveCuboidFaces,
   resolveFaceVisualRectangle,
@@ -125,6 +125,96 @@ export function drawShieldHandleGuides(
       { face: "front", edge: "Bottom" },
     ],
   });
+}
+
+// The handle's grip hole runs all the way through, so assembly needs a
+// lining for the tunnel between its two faces. pr-35-head's own reference
+// cuts this as one strip of 4 equal flaps, individually folded in during
+// assembly rather than hinged to the hole's edges in the flat net. All 4
+// of its source crops render as flat gray with no discernible texture, so
+// which crop lands on which physical wall doesn't matter — one crop reused
+// 4 times reproduces the same result.
+const handleInnerLiningCellSource: Rectangle = [32, 7, 2, 4];
+const handleInnerLiningCellCount = 4;
+const handleInnerLiningPosition: [number, number] = [300, 200];
+
+// Each cell is laid out landscape (wider than tall) rather than matching
+// the source crop's own portrait orientation — width/height swapped from
+// source, not a texture rotation, since the flat gray crop looks identical
+// either way.
+function handleInnerLiningCellDimensions(): [number, number] {
+  const [, , sourceWidth, sourceHeight] = handleInnerLiningCellSource;
+  return [sourceHeight * sourceUnitScale, sourceWidth * sourceUnitScale];
+}
+
+export function drawShieldHandleInnerLining(
+  ctx: RenderContext,
+  versionId: string
+): void {
+  const minecraft = makeShieldBaseMinecraft(ctx, versionId);
+  if (!minecraft) {
+    return;
+  }
+
+  const [cellWidth, cellHeight] = handleInnerLiningCellDimensions();
+  const [x, y] = handleInnerLiningPosition;
+
+  for (let i = 0; i < handleInnerLiningCellCount; i++) {
+    minecraft.drawFace(handleInnerLiningCellSource, [
+      x + i * cellWidth,
+      y,
+      cellWidth,
+      cellHeight,
+    ]);
+  }
+}
+
+const handleInnerLiningTabThickness = 8;
+
+export function drawShieldHandleInnerLiningGuides(
+  ctx: RenderContext,
+  showFolds: boolean
+): void {
+  const [cellWidth, cellHeight] = handleInnerLiningCellDimensions();
+  const [x, y] = handleInnerLiningPosition;
+  const totalWidth = cellWidth * handleInnerLiningCellCount;
+
+  if (showFolds) {
+    drawRectangleFolds(ctx, [x, y, totalWidth, cellHeight]);
+    for (let i = 1; i < handleInnerLiningCellCount; i++) {
+      // Matches the -1 convention cuboidFolds.ts's own internal seam lines use.
+      const seamX = x + i * cellWidth - 1;
+      ctx.drawFoldLine([seamX, y], [seamX, y + cellHeight]);
+    }
+  }
+
+  for (let i = 0; i < handleInnerLiningCellCount; i++) {
+    const cellRectangle: Rectangle = [
+      x + i * cellWidth,
+      y,
+      cellWidth,
+      cellHeight,
+    ];
+    const edges =
+      i === 0
+        ? (["Top", "Bottom", "Left"] as const)
+        : (["Top", "Bottom"] as const);
+    edges.forEach((edge) => {
+      const { region, orientation } = makeTabRegion(
+        cellRectangle,
+        edge,
+        cellWidth,
+        cellHeight,
+        cellWidth,
+        handleInnerLiningTabThickness
+      );
+      // drawTab's own showFoldLine parameter defaults to true when omitted,
+      // unlike drawCuboidTabs's explicit `options.showFoldLine ?? false` —
+      // pass false here to match that convention and keep the tab's own
+      // base line out of the always-visible cut-outline.
+      ctx.drawTab(region, orientation, false);
+    });
+  }
 }
 
 // The image asset is pre-scaled to its exact on-page size, so it's drawn
