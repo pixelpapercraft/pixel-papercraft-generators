@@ -4,6 +4,8 @@ import {
   makeCuboid,
   translateCuboid,
 } from "../../_common/cuboid";
+import { drawCuboidFolds } from "../../_common/cuboidFolds";
+import { drawCuboidTabs } from "../../_common/cuboidTabs";
 import { findBannerShieldTextureVersion } from "../textures/textureVersions";
 import { makeBaseMinecraft, scaleDimensions } from "./shared";
 
@@ -42,4 +44,26 @@ export function drawShieldPlate(ctx: RenderContext, versionId: string): void {
 
   const dimensions = scaleDimensions(plateSourceDimensions, sourceUnitScale);
   minecraft.drawCuboid("", shieldPlate, platePosition, dimensions);
+}
+
+export function drawShieldPlateGuides(
+  ctx: RenderContext,
+  showFolds: boolean
+): void {
+  const dimensions = scaleDimensions(plateSourceDimensions, sourceUnitScale);
+  if (showFolds) {
+    drawCuboidFolds(ctx, platePosition, dimensions);
+  }
+  drawCuboidTabs(ctx, platePosition, dimensions, {
+    tabThickness: 12,
+    placements: [
+      { face: "top", edge: "Top" },
+      { face: "right", edge: "Left" },
+      { face: "bottom", edge: "Bottom" },
+      { face: "right", edge: "Top" },
+      { face: "right", edge: "Bottom" },
+      { face: "left", edge: "Top" },
+      { face: "left", edge: "Bottom" },
+    ],
+  });
 }

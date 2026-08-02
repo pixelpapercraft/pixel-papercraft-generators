@@ -32,7 +32,7 @@ import {
   drawBannerPattern,
   drawBannerPole,
 } from "./shapes/banner";
-import { drawShieldPlate } from "./shapes/shield";
+import { drawShieldPlate, drawShieldPlateGuides } from "./shapes/shield";
 import titleImage from "./images/title-a4.png";
 
 const id = "minecraft-banner-and-shield";
@@ -43,7 +43,7 @@ const instructions: InstructionsDef = `
 Component-by-component rebuild in progress. The banner flag base, pole, and
 crossbar are rendered with fold and tab guides, and clicking the flag
 arms/stamps the selected pattern. The shield plate renders its base geometry
-only so far, with no fold/tab guides, handle, or pattern stamping yet.
+and fold/tab guides so far, with no handle or pattern stamping yet.
 `;
 
 const images: ImageDef[] = [{ id: "Title", url: titleImage.src }];
@@ -87,6 +87,7 @@ const render = (ctx: RenderContext, props: BannerAndShieldProps): void => {
     ctx.defineRegion(bannerFlagFrontRegion(), bannerFlagRegionId);
   } else {
     drawShieldPlate(ctx, props.versionId);
+    drawShieldPlateGuides(ctx, props.showFolds);
   }
 
   // Temporary: proves the Title overlay is wired end to end. Removed once
