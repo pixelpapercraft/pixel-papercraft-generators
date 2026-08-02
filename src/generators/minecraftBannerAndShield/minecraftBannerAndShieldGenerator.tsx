@@ -271,6 +271,20 @@ function Component(): JSX.Element {
               onValueChange={setVersionId}
             />
 
+            <PatternTexturePicker
+              patterns={patternOptions}
+              selectedPatternId={selectedPatternId}
+              blend={tint}
+              onSelectPattern={setSelectedPatternId}
+            />
+
+            <TintSelector
+              value={tint}
+              label="Tint"
+              swatchGroups={[dyeTintGroup]}
+              onChange={setTint}
+            />
+
             <GeneratorUI.SelectControl
               label="Template 1 Type"
               options={[
@@ -345,20 +359,6 @@ function Component(): JSX.Element {
                 />
               </>
             )}
-
-            <TintSelector
-              value={tint}
-              label="Tint"
-              swatchGroups={[dyeTintGroup]}
-              onChange={setTint}
-            />
-
-            <PatternTexturePicker
-              patterns={patternOptions}
-              selectedPatternId={selectedPatternId}
-              blend={tint}
-              onSelectPattern={setSelectedPatternId}
-            />
           </div>
         </div>
 
