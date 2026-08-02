@@ -94,24 +94,37 @@ export function drawShieldHandleGuides(
   ctx: RenderContext,
   showFolds: boolean
 ): void {
-  if (!showFolds) {
-    return;
+  const dimensions = scaleDimensions(handleSourceDimensions, sourceUnitScale);
+
+  if (showFolds) {
+    drawCuboidFolds(ctx, handlePosition, dimensions, { center: "Right" });
+
+    const dest = resolveCuboidFaces(handlePosition, dimensions, {
+      center: "Right",
+    });
+    drawRectangleFolds(
+      ctx,
+      handleHoleRectangle(resolveFaceVisualRectangle(dest.right))
+    );
+    drawRectangleFolds(
+      ctx,
+      handleHoleRectangle(resolveFaceVisualRectangle(dest.left))
+    );
   }
 
-  const dimensions = scaleDimensions(handleSourceDimensions, sourceUnitScale);
-  drawCuboidFolds(ctx, handlePosition, dimensions, { center: "Right" });
-
-  const dest = resolveCuboidFaces(handlePosition, dimensions, {
+  drawCuboidTabs(ctx, handlePosition, dimensions, {
     center: "Right",
+    tabThickness: 12,
+    placements: [
+      { face: "left", edge: "Top" },
+      { face: "left", edge: "Bottom" },
+      { face: "left", edge: "Right" },
+      { face: "back", edge: "Top" },
+      { face: "back", edge: "Bottom" },
+      { face: "front", edge: "Top" },
+      { face: "front", edge: "Bottom" },
+    ],
   });
-  drawRectangleFolds(
-    ctx,
-    handleHoleRectangle(resolveFaceVisualRectangle(dest.right))
-  );
-  drawRectangleFolds(
-    ctx,
-    handleHoleRectangle(resolveFaceVisualRectangle(dest.left))
-  );
 }
 
 export function drawShieldPlateGuides(
