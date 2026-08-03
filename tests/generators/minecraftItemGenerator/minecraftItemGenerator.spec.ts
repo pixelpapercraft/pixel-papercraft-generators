@@ -34,6 +34,22 @@ function getPreviewImage(page: Page) {
   return page.getByTestId("texture-picker-preview-image");
 }
 
+async function makeEnchantedDiamondSword(page: Page, glintVersion: string) {
+  await page.goto("/generator/minecraft-item");
+
+  const glintSelect = page.getByRole("combobox", {
+    name: "Enchanted Glint",
+  });
+  await expect(glintSelect).toBeEnabled();
+  await glintSelect.selectOption(glintVersion);
+  await expect(glintSelect).toHaveValue(glintVersion);
+
+  await page.getByLabel("Version").selectOption("minecraft-26.1.2-items");
+  await selectItemByTitle(page, "sword", "diamond sword");
+  await page.getByLabel("Add Item").click();
+  await page.getByTestId("region-Item 1").click();
+}
+
 test("minecraft item generator matches the default screenshots", async ({
   page,
 }) => {
@@ -380,6 +396,51 @@ test("minecraft item generator toggles enchantment from the item region", async 
   await expect(outputPage).toHaveScreenshot(
     "minecraft-item-enchanted-toggle-page-1.png"
   );
+});
+
+test("minecraft item generator preserves each selected glint version", async ({
+  page,
+}) => {
+  const glintVersions = [
+    {
+      version: "1.20+",
+      snapshot: "minecraft-item-enchanted-1-20-page-1.png",
+    },
+    {
+      version: "Pre-1.20",
+      snapshot: "minecraft-item-enchanted-pre-1-20-page-1.png",
+    },
+  ];
+
+  for (const glintVersion of glintVersions) {
+    await makeEnchantedDiamondSword(page, glintVersion.version);
+
+    const outputPage = page.getByTestId("generator-page-image").first();
+    await expect(outputPage).toBeVisible();
+    await renderImageAtNaturalSize(outputPage);
+    await expect(outputPage).toHaveScreenshot(glintVersion.snapshot);
+  }
+});
+
+test("minecraft item generator keeps its hidden default glint selection and offset bounds", async ({
+  page,
+}) => {
+  await page.goto("/generator/minecraft-item");
+
+  const glintSelect = page.getByRole("combobox", {
+    name: "Enchanted Glint",
+  });
+  await expect(glintSelect).toBeEnabled();
+  await expect(glintSelect).toHaveValue("");
+  await expect(glintSelect.locator("option")).toHaveText([
+    "None",
+    "1.20+",
+    "Pre-1.20",
+  ]);
+  await expect(page.getByLabel("Glint X Offset")).toHaveAttribute("min", "0");
+  await expect(page.getByLabel("Glint X Offset")).toHaveAttribute("max", "128");
+  await expect(page.getByLabel("Glint Y Offset")).toHaveAttribute("min", "0");
+  await expect(page.getByLabel("Glint Y Offset")).toHaveAttribute("max", "128");
 });
 
 test("minecraft item generator clears the selected texture when switching to custom", async ({

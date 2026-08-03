@@ -11,6 +11,7 @@ import { BooleanControl as BooleanControlV1 } from "@genroot/builder/ui/controls
 import { ButtonControl as ButtonControlV1 } from "@genroot/builder/ui/controls/buttonControl";
 import { RangeControl as RangeControlV1 } from "@genroot/builder/ui/controls/rangeControl";
 import { LoadedTextureControl } from "./loadedTextureControl";
+import { LoadedTextureControlV2 } from "./loadedTextureControlV2";
 
 // V2's controls wrap v1's so both generations render identical markup while v2
 // authors get explicit, controlled props (`label`/`onValueChange`) instead of
@@ -153,6 +154,7 @@ export const GeneratorUI = {
   // Owns its own texture-choice loading, so authors never see the load
   // lifecycle. See the framework-owned loading plan.
   LoadedTextureControl,
+  LoadedTextureControlV2,
   // Same collapsible markdown panel v1 renders from `GeneratorDef.instructions`.
   // V2 has no `instructions` field on `Generator` — authors place it
   // themselves, wherever it fits their custom UI layout.
