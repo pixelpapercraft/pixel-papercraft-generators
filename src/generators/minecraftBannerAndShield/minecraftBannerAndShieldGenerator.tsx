@@ -355,12 +355,13 @@ function Component(): JSX.Element {
     bannerShieldTextureVersions[0]!;
   const patternOptions = makePatternOptions(textureVersion);
   const bannerBaseOptions = textureVersion.bases.bannerOptions;
-  const [bannerBaseId1, setBannerBaseId1] = React.useState(
-    bannerBaseOptions[0]?.id ?? ""
-  );
-  const [bannerBaseId2, setBannerBaseId2] = React.useState(
-    bannerBaseOptions[0]?.id ?? ""
-  );
+  // Every texture version (including Custom) pairs down to exactly one
+  // banner base option — real Minecraft's dye patterns are shared between
+  // banners and shields, leaving only the base cloth itself as banner-only.
+  // There's nothing for a user to choose, so both slots use the fixed id
+  // directly rather than exposing a single-option dropdown.
+  const bannerBaseId1 = bannerBaseOptions[0]?.id ?? "";
+  const bannerBaseId2 = bannerBaseOptions[0]?.id ?? "";
   // Defaults to bare (no banner attached) — matching real Minecraft, where
   // a shield starts undecorated and a banner is a deliberate act, not the
   // default state.
@@ -576,18 +577,6 @@ function Component(): JSX.Element {
                 }}
               />
 
-              {template1Type === "Banner" && (
-                <GeneratorUI.SelectControl
-                  label="Template 1 Banner Base"
-                  options={bannerBaseOptions.map(({ id: baseId, label }) => ({
-                    id: baseId,
-                    label,
-                  }))}
-                  value={bannerBaseId1}
-                  onValueChange={setBannerBaseId1}
-                />
-              )}
-
               {template1Type === "Shield" && (
                 <GeneratorUI.SelectControl
                   label="Template 1 Shield Pattern"
@@ -619,18 +608,6 @@ function Component(): JSX.Element {
                   }
                 }}
               />
-
-              {template2Type === "Banner" && (
-                <GeneratorUI.SelectControl
-                  label="Template 2 Banner Base"
-                  options={bannerBaseOptions.map(({ id: baseId, label }) => ({
-                    id: baseId,
-                    label,
-                  }))}
-                  value={bannerBaseId2}
-                  onValueChange={setBannerBaseId2}
-                />
-              )}
 
               {template2Type === "Shield" && (
                 <GeneratorUI.SelectControl

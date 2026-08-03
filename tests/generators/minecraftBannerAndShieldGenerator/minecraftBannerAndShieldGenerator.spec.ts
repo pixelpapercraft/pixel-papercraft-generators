@@ -20,7 +20,7 @@ test("minecraft banner and shield renders a page image", async ({ page }) => {
   await expect(pageImage).toHaveAttribute("src", /data:image\/png/);
 });
 
-test("minecraft banner and shield exposes independent Template 1 and Template 2 type/base controls", async ({
+test("minecraft banner and shield exposes independent Template 1 and Template 2 type/pattern controls", async ({
   page,
 }) => {
   await page.goto("/generator/minecraft-banner-and-shield");
@@ -29,28 +29,15 @@ test("minecraft banner and shield exposes independent Template 1 and Template 2 
   // convenience, both slots render simultaneously. Shield defaults to bare
   // (no banner attached), matching the real game.
   await expect(page.getByLabel("Template 1 Type")).toHaveValue("Banner");
-  await expect(page.getByLabel("Template 1 Banner Base")).toHaveValue(
-    "banner_base"
-  );
   await expect(page.getByLabel("Template 1 Shield Pattern")).toHaveCount(0);
   await expect(page.getByLabel("Template 2 Type")).toHaveValue("Shield");
-  await expect(page.getByLabel("Template 2 Banner Base")).toHaveCount(0);
   await expect(page.getByLabel("Template 2 Shield Pattern")).toHaveValue(
     "None"
   );
 
   await page.getByLabel("Template 2 Type").selectOption("Banner");
 
-  await expect(page.getByLabel("Template 2 Banner Base")).toHaveValue(
-    "banner_base"
-  );
   await expect(page.getByLabel("Template 2 Shield Pattern")).toHaveCount(0);
-
-  // Each slot's Base selector is independent of the other's.
-  await page.getByLabel("Template 2 Banner Base").selectOption("banner_base");
-  await expect(page.getByLabel("Template 1 Banner Base")).toHaveValue(
-    "banner_base"
-  );
 
   await page.getByLabel("Template 1 Type").selectOption("Shield");
 
@@ -87,7 +74,6 @@ test("minecraft banner and shield renders Template 1's banner flag base by defau
 
   await expect.poll(() => readPixel(pageImage, 146, 180)).toEqual(white);
   await expect(page.getByTestId("region-Template1")).toHaveCount(0);
-  await expect(page.getByLabel("Template 1 Banner Base")).toHaveCount(0);
 });
 
 test("minecraft banner and shield renders Template 2's bare shield plate by default, with no clickable region, and hides it when set to None", async ({
@@ -359,12 +345,6 @@ test("minecraft banner and shield supports the same type in both slots independe
   await page.getByLabel("Template 2 Type").selectOption("Banner");
 
   const pageImage = outputPage(page);
-
-  // Template 2's own Banner Base selector, independent of Template 1's.
-  await page.getByLabel("Template 2 Banner Base").selectOption({ index: 0 });
-  await expect(page.getByLabel("Template 2 Banner Base")).toHaveValue(
-    "banner_base"
-  );
 
   // Template 2's flag front face, shifted down by 421px — renders
   // independently alongside Template 1's own banner.
