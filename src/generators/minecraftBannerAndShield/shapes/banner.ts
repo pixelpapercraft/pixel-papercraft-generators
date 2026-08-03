@@ -203,6 +203,18 @@ export function drawBannerPole(
       number,
       number,
     ],
+    // Same placements as cuboidTabs.ts's own default set, except the right
+    // face's Left-edge tab (the one facing the flag) is a little larger
+    // than its auto-derived ~6px thickness.
+    placements: [
+      { face: "right", edge: "Top" },
+      { face: "right", edge: "Bottom" },
+      { face: "right", edge: "Left", tabThickness: 10 },
+      { face: "left", edge: "Top" },
+      { face: "left", edge: "Bottom" },
+      { face: "back", edge: "Top" },
+      { face: "back", edge: "Bottom" },
+    ],
   });
 }
 
@@ -243,7 +255,7 @@ export function drawBannerCrossbar(
       number,
     ],
     placements: [
-      { face: "front", edge: "Top" },
+      { face: "front", edge: "Top", tabThickness: 10 },
       { face: "front", edge: "Left" },
       { face: "front", edge: "Right" },
       { face: "back", edge: "Left" },

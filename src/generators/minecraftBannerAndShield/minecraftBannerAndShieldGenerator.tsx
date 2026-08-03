@@ -69,10 +69,12 @@ Component-by-component rebuild in progress. The banner flag base, pole, and
 crossbar are rendered with fold and tab guides, and clicking the flag
 arms/stamps the selected pattern. The shield plate, handle, and inner
 lining render their base geometry, fold/tab guides, and a join marker
-showing where they glue together; clicking the plate arms/stamps the
-selected pattern onto the plate only — the handle and lining are never
-patterned, matching real Minecraft shields. The Shield can also be given an
-enchanted glint overlay.
+showing where they glue together; a shield starts bare with no banner
+attached, matching the real game — enable "Shield Pattern" to attach a
+banner, which arms clicking the plate to stamp the selected pattern onto
+the plate only (the handle and lining are never patterned, matching real
+Minecraft shields). The Shield can also be given an enchanted glint
+overlay.
 `;
 
 const shieldHandleJoinImageId = "ShieldHandleJoin";
@@ -117,6 +119,8 @@ type BannerAndShieldProps = {
   versionId: string;
   bannerBaseId1: string;
   bannerBaseId2: string;
+  shieldHasBanner1: boolean;
+  shieldHasBanner2: boolean;
   showFolds: boolean;
   glintEnabled: boolean;
   glintOpacity: number;
@@ -126,6 +130,13 @@ type BannerAndShieldProps = {
 
 type TemplateType = "None" | "Banner" | "Shield";
 
+// "No Pattern" first and default, matching real Minecraft: a shield starts
+// bare, and attaching a banner is a deliberate act, not the default state.
+const shieldPatternOptions = [
+  { id: "None", label: "No Pattern" },
+  { id: "Banner", label: "Banner" },
+];
+
 function renderTemplate(
   ctx: RenderContext,
   {
@@ -133,6 +144,7 @@ function renderTemplate(
     yOffset,
     versionId,
     bannerBaseId,
+    shieldHasBanner,
     patterns,
     showFolds,
     glintPlugin,
@@ -142,6 +154,7 @@ function renderTemplate(
     yOffset: number;
     versionId: string;
     bannerBaseId: string;
+    shieldHasBanner: boolean;
     patterns: SelectedPattern[];
     showFolds: boolean;
     glintPlugin: TexturePlugin | undefined;
@@ -158,12 +171,41 @@ function renderTemplate(
     drawBannerCrossbar(ctx, versionId, bannerBaseId, showFolds, yOffset);
     ctx.defineRegion(bannerFlagFrontRegion(yOffset), regionId);
   } else if (type === "Shield") {
-    drawShieldPlate(ctx, versionId, yOffset, glintPlugin);
-    patterns.forEach(({ patternId, blend }) => {
-      drawShieldPattern(ctx, versionId, patternId, blend, yOffset, glintPlugin);
-    });
-    drawShieldHandle(ctx, versionId, yOffset, glintPlugin);
-    drawShieldHandleInnerLining(ctx, versionId, yOffset, glintPlugin);
+    // A shield is either genuinely bare (no banner attached at all — real
+    // Minecraft has no in-between state) or has a banner, which always
+    // carries at least its own base color. `shieldHasBanner` picks which of
+    // the two base textures to draw and gates the pattern layers/clickable
+    // region on top of it; the stamped pattern stack itself stays in state
+    // either way, so toggling back doesn't lose it.
+    const version = findBannerShieldTextureVersion(versionId);
+    const shieldBaseId = shieldHasBanner
+      ? version?.bases.shieldBase?.id
+      : version?.bases.shieldBaseNoPattern?.id;
+    if (!shieldBaseId) {
+      return;
+    }
+
+    drawShieldPlate(ctx, versionId, shieldBaseId, yOffset, glintPlugin);
+    if (shieldHasBanner) {
+      patterns.forEach(({ patternId, blend }) => {
+        drawShieldPattern(
+          ctx,
+          versionId,
+          patternId,
+          blend,
+          yOffset,
+          glintPlugin
+        );
+      });
+    }
+    drawShieldHandle(ctx, versionId, shieldBaseId, yOffset, glintPlugin);
+    drawShieldHandleInnerLining(
+      ctx,
+      versionId,
+      shieldBaseId,
+      yOffset,
+      glintPlugin
+    );
     drawShieldPlateGuides(ctx, showFolds, yOffset);
     drawShieldHandleGuides(ctx, showFolds, yOffset);
     drawShieldHandleInnerLiningGuides(ctx, showFolds, yOffset);
@@ -173,7 +215,9 @@ function renderTemplate(
       shieldHandleJoinImageDimensions,
       yOffset
     );
-    ctx.defineRegion(shieldPlateFrontRegion(yOffset), regionId);
+    if (shieldHasBanner) {
+      ctx.defineRegion(shieldPlateFrontRegion(yOffset), regionId);
+    }
   }
 }
 
@@ -200,6 +244,7 @@ const render = (ctx: RenderContext, props: BannerAndShieldProps): void => {
     yOffset: 0,
     versionId: props.versionId,
     bannerBaseId: props.bannerBaseId1,
+    shieldHasBanner: props.shieldHasBanner1,
     patterns: props.template1Patterns,
     showFolds: props.showFolds,
     glintPlugin,
@@ -211,6 +256,7 @@ const render = (ctx: RenderContext, props: BannerAndShieldProps): void => {
     yOffset: halfPageHeight,
     versionId: props.versionId,
     bannerBaseId: props.bannerBaseId2,
+    shieldHasBanner: props.shieldHasBanner2,
     patterns: props.template2Patterns,
     showFolds: props.showFolds,
     glintPlugin,
@@ -271,6 +317,11 @@ function Component(): JSX.Element {
   const [bannerBaseId2, setBannerBaseId2] = React.useState(
     bannerBaseOptions[0]?.id ?? ""
   );
+  // Defaults to bare (no banner attached) — matching real Minecraft, where
+  // a shield starts undecorated and a banner is a deliberate act, not the
+  // default state.
+  const [shieldHasBanner1, setShieldHasBanner1] = React.useState(false);
+  const [shieldHasBanner2, setShieldHasBanner2] = React.useState(false);
 
   const rendererProps: BannerAndShieldProps = {
     template1Type,
@@ -280,6 +331,8 @@ function Component(): JSX.Element {
     versionId,
     bannerBaseId1,
     bannerBaseId2,
+    shieldHasBanner1,
+    shieldHasBanner2,
     showFolds,
     glintEnabled,
     glintOpacity,
@@ -347,67 +400,93 @@ function Component(): JSX.Element {
               onChange={setTint}
             />
 
-            <GeneratorUI.SelectControl
-              label="Template 1 Type"
-              options={[
-                { id: "None", label: "None" },
-                { id: "Banner", label: "Banner" },
-                { id: "Shield", label: "Shield" },
-              ]}
-              value={template1Type}
-              onValueChange={(value) => {
-                if (
-                  value === "None" ||
-                  value === "Banner" ||
-                  value === "Shield"
-                ) {
-                  setTemplate1Type(value);
-                }
-              }}
-            />
-
-            {template1Type === "Banner" && (
+            <div className="flex gap-4">
               <GeneratorUI.SelectControl
-                label="Template 1 Banner Base"
-                options={bannerBaseOptions.map(({ id: baseId, label }) => ({
-                  id: baseId,
-                  label,
-                }))}
-                value={bannerBaseId1}
-                onValueChange={setBannerBaseId1}
+                label="Template 1 Type"
+                options={[
+                  { id: "None", label: "None" },
+                  { id: "Banner", label: "Banner" },
+                  { id: "Shield", label: "Shield" },
+                ]}
+                value={template1Type}
+                onValueChange={(value) => {
+                  if (
+                    value === "None" ||
+                    value === "Banner" ||
+                    value === "Shield"
+                  ) {
+                    setTemplate1Type(value);
+                  }
+                }}
               />
-            )}
 
-            <GeneratorUI.SelectControl
-              label="Template 2 Type"
-              options={[
-                { id: "None", label: "None" },
-                { id: "Banner", label: "Banner" },
-                { id: "Shield", label: "Shield" },
-              ]}
-              value={template2Type}
-              onValueChange={(value) => {
-                if (
-                  value === "None" ||
-                  value === "Banner" ||
-                  value === "Shield"
-                ) {
-                  setTemplate2Type(value);
-                }
-              }}
-            />
+              {template1Type === "Banner" && (
+                <GeneratorUI.SelectControl
+                  label="Template 1 Banner Base"
+                  options={bannerBaseOptions.map(({ id: baseId, label }) => ({
+                    id: baseId,
+                    label,
+                  }))}
+                  value={bannerBaseId1}
+                  onValueChange={setBannerBaseId1}
+                />
+              )}
 
-            {template2Type === "Banner" && (
+              {template1Type === "Shield" && (
+                <GeneratorUI.SelectControl
+                  label="Template 1 Shield Pattern"
+                  options={shieldPatternOptions}
+                  value={shieldHasBanner1 ? "Banner" : "None"}
+                  onValueChange={(value) =>
+                    setShieldHasBanner1(value === "Banner")
+                  }
+                />
+              )}
+            </div>
+
+            <div className="flex gap-4">
               <GeneratorUI.SelectControl
-                label="Template 2 Banner Base"
-                options={bannerBaseOptions.map(({ id: baseId, label }) => ({
-                  id: baseId,
-                  label,
-                }))}
-                value={bannerBaseId2}
-                onValueChange={setBannerBaseId2}
+                label="Template 2 Type"
+                options={[
+                  { id: "None", label: "None" },
+                  { id: "Banner", label: "Banner" },
+                  { id: "Shield", label: "Shield" },
+                ]}
+                value={template2Type}
+                onValueChange={(value) => {
+                  if (
+                    value === "None" ||
+                    value === "Banner" ||
+                    value === "Shield"
+                  ) {
+                    setTemplate2Type(value);
+                  }
+                }}
               />
-            )}
+
+              {template2Type === "Banner" && (
+                <GeneratorUI.SelectControl
+                  label="Template 2 Banner Base"
+                  options={bannerBaseOptions.map(({ id: baseId, label }) => ({
+                    id: baseId,
+                    label,
+                  }))}
+                  value={bannerBaseId2}
+                  onValueChange={setBannerBaseId2}
+                />
+              )}
+
+              {template2Type === "Shield" && (
+                <GeneratorUI.SelectControl
+                  label="Template 2 Shield Pattern"
+                  options={shieldPatternOptions}
+                  value={shieldHasBanner2 ? "Banner" : "None"}
+                  onValueChange={(value) =>
+                    setShieldHasBanner2(value === "Banner")
+                  }
+                />
+              )}
+            </div>
 
             <GeneratorUI.BooleanControl
               label="Show Folds"
@@ -422,39 +501,45 @@ function Component(): JSX.Element {
                   checked={glintEnabled}
                   onCheckedChange={setGlintEnabled}
                 />
-                <GeneratorUI.LoadedTextureControl
-                  id="Enchanted Glint"
-                  definitions={entityGlintTextureDefs}
-                  choices={["1.20+", "Pre-1.20"]}
-                  standardWidth={128}
-                  standardHeight={128}
-                  initialTextureId="Enchanted Glint"
-                  onChange={setGlintTexture}
-                />
-                <GeneratorUI.RangeControl
-                  label="Glint Opacity"
-                  min={0}
-                  max={255}
-                  step={1}
-                  value={glintOpacity}
-                  onValueChange={setGlintOpacity}
-                />
-                <GeneratorUI.RangeControl
-                  label="Glint X Offset"
-                  min={0}
-                  max={128}
-                  step={1}
-                  value={glintXOffset}
-                  onValueChange={setGlintXOffset}
-                />
-                <GeneratorUI.RangeControl
-                  label="Glint Y Offset"
-                  min={0}
-                  max={128}
-                  step={1}
-                  value={glintYOffset}
-                  onValueChange={setGlintYOffset}
-                />
+                {glintEnabled && (
+                  <>
+                    <GeneratorUI.LoadedTextureControl
+                      id="Enchanted Glint"
+                      definitions={entityGlintTextureDefs}
+                      choices={["1.20+", "Pre-1.20"]}
+                      standardWidth={128}
+                      standardHeight={128}
+                      initialTextureId="Enchanted Glint"
+                      onChange={setGlintTexture}
+                    />
+                    <div className="flex gap-4">
+                      <GeneratorUI.RangeControl
+                        label="Glint Opacity"
+                        min={0}
+                        max={255}
+                        step={1}
+                        value={glintOpacity}
+                        onValueChange={setGlintOpacity}
+                      />
+                      <GeneratorUI.RangeControl
+                        label="Glint X Offset"
+                        min={0}
+                        max={128}
+                        step={1}
+                        value={glintXOffset}
+                        onValueChange={setGlintXOffset}
+                      />
+                      <GeneratorUI.RangeControl
+                        label="Glint Y Offset"
+                        min={0}
+                        max={128}
+                        step={1}
+                        value={glintYOffset}
+                        onValueChange={setGlintYOffset}
+                      />
+                    </div>
+                  </>
+                )}
               </>
             )}
           </div>

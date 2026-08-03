@@ -70,10 +70,13 @@ function handleHoleRectangle([x, y, width, height]: Rectangle): Rectangle {
   ];
 }
 
-function makeShieldBaseMinecraft(ctx: RenderContext, versionId: string) {
+function makeShieldBaseMinecraft(
+  ctx: RenderContext,
+  versionId: string,
+  baseId: string
+) {
   const version = findBannerShieldTextureVersion(versionId);
-  const baseId = version?.bases.shieldOptions[0]?.id;
-  if (!version || !baseId) {
+  if (!version) {
     return null;
   }
 
@@ -88,10 +91,11 @@ function makeShieldBaseMinecraft(ctx: RenderContext, versionId: string) {
 export function drawShieldPlate(
   ctx: RenderContext,
   versionId: string,
+  baseId: string,
   yOffset: number,
   plugin?: TexturePlugin
 ): void {
-  const minecraft = makeShieldBaseMinecraft(ctx, versionId);
+  const minecraft = makeShieldBaseMinecraft(ctx, versionId, baseId);
   if (!minecraft) {
     return;
   }
@@ -161,10 +165,11 @@ export function shieldPlateFrontRegion(yOffset: number): Rectangle {
 export function drawShieldHandle(
   ctx: RenderContext,
   versionId: string,
+  baseId: string,
   yOffset: number,
   plugin?: TexturePlugin
 ): void {
-  const minecraft = makeShieldBaseMinecraft(ctx, versionId);
+  const minecraft = makeShieldBaseMinecraft(ctx, versionId, baseId);
   if (!minecraft) {
     return;
   }
@@ -244,10 +249,11 @@ function handleInnerLiningCellDimensions(): [number, number] {
 export function drawShieldHandleInnerLining(
   ctx: RenderContext,
   versionId: string,
+  baseId: string,
   yOffset: number,
   plugin?: TexturePlugin
 ): void {
-  const minecraft = makeShieldBaseMinecraft(ctx, versionId);
+  const minecraft = makeShieldBaseMinecraft(ctx, versionId, baseId);
   if (!minecraft) {
     return;
   }

@@ -26,24 +26,48 @@ test("minecraft banner and shield exposes independent Template 1 and Template 2 
   await page.goto("/generator/minecraft-banner-and-shield");
 
   // Real defaults: Template 1 is Banner, Template 2 is Shield — not a dev
-  // convenience, both slots render simultaneously.
+  // convenience, both slots render simultaneously. Shield defaults to bare
+  // (no banner attached), matching the real game.
   await expect(page.getByLabel("Template 1 Type")).toHaveValue("Banner");
   await expect(page.getByLabel("Template 1 Banner Base")).toHaveValue(
     "banner_base"
   );
+  await expect(page.getByLabel("Template 1 Shield Pattern")).toHaveCount(0);
   await expect(page.getByLabel("Template 2 Type")).toHaveValue("Shield");
   await expect(page.getByLabel("Template 2 Banner Base")).toHaveCount(0);
+  await expect(page.getByLabel("Template 2 Shield Pattern")).toHaveValue(
+    "None"
+  );
 
   await page.getByLabel("Template 2 Type").selectOption("Banner");
 
   await expect(page.getByLabel("Template 2 Banner Base")).toHaveValue(
     "banner_base"
   );
+  await expect(page.getByLabel("Template 2 Shield Pattern")).toHaveCount(0);
 
   // Each slot's Base selector is independent of the other's.
   await page.getByLabel("Template 2 Banner Base").selectOption("banner_base");
   await expect(page.getByLabel("Template 1 Banner Base")).toHaveValue(
     "banner_base"
+  );
+
+  await page.getByLabel("Template 1 Type").selectOption("Shield");
+
+  await expect(page.getByLabel("Template 1 Shield Pattern")).toHaveValue(
+    "None"
+  );
+
+  await page.getByLabel("Template 1 Shield Pattern").selectOption("Banner");
+  await expect(page.getByLabel("Template 1 Shield Pattern")).toHaveValue(
+    "Banner"
+  );
+
+  // Switching Template 1's Shield Pattern on and Template 2 back to Shield
+  // doesn't disturb Template 2's own independent Shield Pattern state.
+  await page.getByLabel("Template 2 Type").selectOption("Shield");
+  await expect(page.getByLabel("Template 2 Shield Pattern")).toHaveValue(
+    "None"
   );
 });
 
@@ -66,7 +90,7 @@ test("minecraft banner and shield renders Template 1's banner flag base by defau
   await expect(page.getByLabel("Template 1 Banner Base")).toHaveCount(0);
 });
 
-test("minecraft banner and shield renders Template 2's shield plate base by default, and hides it when set to None", async ({
+test("minecraft banner and shield renders Template 2's bare shield plate by default, with no clickable region, and hides it when set to None", async ({
   page,
 }) => {
   await page.goto("/generator/minecraft-banner-and-shield");
@@ -74,16 +98,55 @@ test("minecraft banner and shield renders Template 2's shield plate base by defa
   const pageImage = outputPage(page);
 
   // (60, 521) and (160, 521) are the plate's front/back faces from the old
-  // single-template layout, shifted down by Template 2's 421px yOffset.
+  // single-template layout, shifted down by Template 2's 421px yOffset. The
+  // bare "no pattern" base texture is still real art, so both are non-white
+  // — but there's no banner attached yet, so no clickable region either.
   await expect.poll(() => readPixel(pageImage, 60, 521)).not.toEqual(white);
   await expect.poll(() => readPixel(pageImage, 160, 521)).not.toEqual(white);
-  await expect(page.getByTestId("region-Template2")).toHaveCount(1);
+  await expect(page.getByTestId("region-Template2")).toHaveCount(0);
 
   await page.getByLabel("Template 2 Type").selectOption("None");
 
   await expect.poll(() => readPixel(pageImage, 60, 521)).toEqual(white);
   await expect.poll(() => readPixel(pageImage, 160, 521)).toEqual(white);
+  await expect(page.getByLabel("Template 2 Shield Pattern")).toHaveCount(0);
+});
+
+test("minecraft banner and shield's Shield Pattern toggle attaches a banner to Template 2's plate, with the pattern stack kept in memory across toggles", async ({
+  page,
+}) => {
+  await page.goto("/generator/minecraft-banner-and-shield");
+
+  const pageImage = outputPage(page);
+  // (60, 521) sits on the plate's front face, shifted down by Template 2's
+  // 421px yOffset (same probe as the "renders Template 2's bare shield
+  // plate" test).
+  const bareColor = await readPixel(pageImage, 60, 521);
   await expect(page.getByTestId("region-Template2")).toHaveCount(0);
+
+  // Selecting "Banner" attaches one: the seeded default white layer becomes
+  // visible and the plate becomes clickable.
+  await page.getByLabel("Template 2 Shield Pattern").selectOption("Banner");
+  const bannerColor = await readPixel(pageImage, 60, 521);
+  expect(bannerColor).not.toEqual(bareColor);
+  await expect(page.getByTestId("region-Template2")).toHaveCount(1);
+
+  // Stamp a distinct pattern onto it.
+  await page.getByTitle("base").click();
+  await page.getByTestId("region-Template2").click();
+  const stampedColor = await readPixel(pageImage, 60, 521);
+  expect(stampedColor).not.toEqual(bannerColor);
+
+  // Selecting "No Pattern" again goes back to bare — same pixels as before,
+  // no clickable region — without discarding the stamped pattern stack.
+  await page.getByLabel("Template 2 Shield Pattern").selectOption("None");
+  await expect.poll(() => readPixel(pageImage, 60, 521)).toEqual(bareColor);
+  await expect(page.getByTestId("region-Template2")).toHaveCount(0);
+
+  // Selecting "Banner" again restores the exact stamped state, proving it
+  // was kept in memory rather than reset back to the seeded default.
+  await page.getByLabel("Template 2 Shield Pattern").selectOption("Banner");
+  await expect.poll(() => readPixel(pageImage, 60, 521)).toEqual(stampedColor);
 });
 
 test("minecraft banner and shield stamps and erases a pattern on the Template 1 region, independently of Template 2", async ({
@@ -159,6 +222,10 @@ test("minecraft banner and shield stamps and erases a pattern on the Template 2 
 }) => {
   await page.goto("/generator/minecraft-banner-and-shield");
 
+  // Template 2 defaults to a bare shield with no clickable region — attach
+  // a banner first.
+  await page.getByLabel("Template 2 Shield Pattern").selectOption("Banner");
+
   const pageImage = outputPage(page);
   const region = page.getByTestId("region-Template2");
   const beforeColor = await readPixel(pageImage, 90, 521);
@@ -181,10 +248,12 @@ test("minecraft banner and shield stamps and erases a pattern on the Template 2 
   await expect.poll(() => readPixel(pageImage, 90, 521)).toEqual(beforeColor);
 });
 
-test("minecraft banner and shield keeps the default base layer on Template 2 through repeated erase clicks", async ({
+test("minecraft banner and shield keeps the default base layer on Template 2 through repeated erase clicks, same as Template 1", async ({
   page,
 }) => {
   await page.goto("/generator/minecraft-banner-and-shield");
+
+  await page.getByLabel("Template 2 Shield Pattern").selectOption("Banner");
 
   const pageImage = outputPage(page);
   const region = page.getByTestId("region-Template2");
@@ -203,6 +272,8 @@ test("minecraft banner and shield does not stamp a pattern onto Template 2's shi
 }) => {
   await page.goto("/generator/minecraft-banner-and-shield");
 
+  await page.getByLabel("Template 2 Shield Pattern").selectOption("Banner");
+
   const pageImage = outputPage(page);
   // (320, 521) sits on the handle; (310, 629) sits on the inner lining's
   // first cell — the old single-template coordinates shifted down by
@@ -219,7 +290,7 @@ test("minecraft banner and shield does not stamp a pattern onto Template 2's shi
   await expect.poll(() => readPixel(pageImage, 310, 629)).toEqual(liningColor);
 });
 
-test("minecraft banner and shield applies a glint overlay across Template 2's shield plate, handle, and inner lining", async ({
+test("minecraft banner and shield applies a glint overlay across Template 2's bare shield plate, handle, and inner lining", async ({
   page,
 }) => {
   await page.goto("/generator/minecraft-banner-and-shield");

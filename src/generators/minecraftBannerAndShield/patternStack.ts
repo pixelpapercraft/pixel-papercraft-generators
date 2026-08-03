@@ -19,7 +19,10 @@ export function defaultPatternStack(): SelectedPattern[] {
 // pattern stack: arming a pattern (`selectedPatternId` set) pushes a new
 // layer; arming erase (`selectedPatternId` null) pops the last layer, but
 // never below the seeded default entry so a target can't be cleared back to
-// bare fabric/plate.
+// bare fabric/plate. Shared by both the banner flag and the shield plate —
+// a genuinely bare shield (no banner attached at all) is a separate mode,
+// toggled independently of this stack, matching the real game's rule that a
+// banner is never attached without at least its own base color.
 export function applyPatternSelection(
   current: SelectedPattern[],
   selectedPatternId: string | null,
