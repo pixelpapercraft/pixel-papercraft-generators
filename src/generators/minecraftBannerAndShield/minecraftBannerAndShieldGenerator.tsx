@@ -10,6 +10,7 @@ import {
   type HistoryDef,
   type ImageDef,
   type InstructionsDef,
+  type LoadedTextureControlV2Value,
   type RegionClickHandler,
   type RenderContext,
   type Texture,
@@ -323,6 +324,11 @@ function Component(): JSX.Element {
     SelectedPattern[]
   >(defaultPatternStack());
   const [glintTexture, setGlintTexture] = React.useState<Texture | null>(null);
+  const [glintSelection, setGlintSelection] =
+    React.useState<LoadedTextureControlV2Value>({
+      kind: "Preset",
+      id: "Enchanted Glint",
+    });
   const [glintEnabled, setGlintEnabled] = React.useState(false);
   const [glintOpacity, setGlintOpacity] = React.useState(255);
   const [glintXOffset, setGlintXOffset] = React.useState(0);
@@ -649,13 +655,14 @@ function Component(): JSX.Element {
                 />
                 {glintEnabled && (
                   <>
-                    <GeneratorUI.LoadedTextureControl
+                    <GeneratorUI.LoadedTextureControlV2
                       id="Enchanted Glint"
                       definitions={entityGlintTextureDefs}
                       choices={["1.20+", "Pre-1.20"]}
                       standardWidth={128}
                       standardHeight={128}
-                      initialTextureId="Enchanted Glint"
+                      value={glintSelection}
+                      onValueChange={setGlintSelection}
                       onChange={setGlintTexture}
                     />
                     <div className="flex gap-4">

@@ -319,6 +319,23 @@ test("minecraft banner and shield applies a glint overlay across Template 2's ba
   await expect.poll(() => readPixel(pageImage, 310, 629)).toEqual(liningColor);
 });
 
+test("minecraft banner and shield's glint texture selector reflects the actual selection", async ({
+  page,
+}) => {
+  await page.goto("/generator/minecraft-banner-and-shield");
+
+  await page.getByText("Glint", { exact: true }).click();
+
+  const glintSelect = page.getByLabel("Enchanted Glint", { exact: true });
+  await expect(glintSelect).toHaveValue("");
+
+  await glintSelect.selectOption("1.20+");
+  await expect(glintSelect).toHaveValue("1.20+");
+
+  await glintSelect.selectOption("Pre-1.20");
+  await expect(glintSelect).toHaveValue("Pre-1.20");
+});
+
 test("minecraft banner and shield only shows the Glint controls while a template is Shield", async ({
   page,
 }) => {
