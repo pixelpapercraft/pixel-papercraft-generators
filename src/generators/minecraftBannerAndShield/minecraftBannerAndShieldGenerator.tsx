@@ -324,10 +324,14 @@ function Component(): JSX.Element {
     SelectedPattern[]
   >(defaultPatternStack());
   const [glintTexture, setGlintTexture] = React.useState<Texture | null>(null);
+  // Defaults to the "1.20+" preset rather than the hidden "Enchanted Glint"
+  // fallback id: both resolve to the same texture asset, but only "1.20+" is
+  // one of the dropdown's own selectable choices, so the picker displays the
+  // real active selection instead of falling back to "None".
   const [glintSelection, setGlintSelection] =
     React.useState<LoadedTextureControlV2Value>({
       kind: "Preset",
-      id: "Enchanted Glint",
+      id: "1.20+",
     });
   const [glintEnabled, setGlintEnabled] = React.useState(false);
   const [glintOpacity, setGlintOpacity] = React.useState(255);

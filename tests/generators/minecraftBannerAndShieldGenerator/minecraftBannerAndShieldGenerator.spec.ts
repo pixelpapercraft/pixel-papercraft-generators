@@ -327,9 +327,6 @@ test("minecraft banner and shield's glint texture selector reflects the actual s
   await page.getByText("Glint", { exact: true }).click();
 
   const glintSelect = page.getByLabel("Enchanted Glint", { exact: true });
-  await expect(glintSelect).toHaveValue("");
-
-  await glintSelect.selectOption("1.20+");
   await expect(glintSelect).toHaveValue("1.20+");
 
   await glintSelect.selectOption("Pre-1.20");
