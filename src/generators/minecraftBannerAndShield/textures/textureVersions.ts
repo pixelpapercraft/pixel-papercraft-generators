@@ -5,6 +5,7 @@ import {
 } from "@genroot/builder";
 import { pairBannerShieldPatterns } from "./pairPatterns";
 import { type BannerShieldTextureVersion } from "../../_common/patternTexturePicker/types";
+import { makeCustomBannerShieldTextureVersion } from "./customBannerShieldTextureVersion";
 import * as Texture_26_2_Banner from "./texture_minecraft_26_2_banner_patterns";
 import * as Texture_26_2_Shield from "./texture_minecraft_26_2_shield_patterns";
 import * as Texture_26_2_HD_Shield from "./texture_vanilla_tweaks_26_2_shield_patterns";
@@ -58,6 +59,10 @@ export const bannerShieldTextureVersions: BannerShieldTextureVersion[] =
 export function findBannerShieldTextureVersion(
   versionId: string
 ): BannerShieldTextureVersion | null {
+  if (versionId === "custom") {
+    return makeCustomBannerShieldTextureVersion();
+  }
+
   return bannerShieldTextureVersions.find(({ id }) => id === versionId) ?? null;
 }
 

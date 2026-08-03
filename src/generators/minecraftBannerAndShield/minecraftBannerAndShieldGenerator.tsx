@@ -33,6 +33,19 @@ import {
   findBannerShieldTextureVersion,
 } from "./textures/textureVersions";
 import {
+  cleanUploadedFrames,
+  customBannerBaseTextureDef,
+  customBannerPatternsVersion,
+  customBannerShieldTextureDefs,
+  customShieldBaseNoPatternTextureDef,
+  customShieldBaseTextureDef,
+  customShieldPatternsVersion,
+  updateCustomBannerBaseTexture,
+  updateCustomShieldBaseNoPatternTexture,
+  updateCustomShieldBaseTexture,
+} from "./textures/customBannerShieldTextureVersion";
+import { parseAtlas } from "../_common/textures/customTextureVersion";
+import {
   bannerFlagFrontRegion,
   drawBannerCrossbar,
   drawBannerFlag,
@@ -88,9 +101,18 @@ const images: ImageDef[] = [
   { id: shieldHandleJoinImageId, url: shieldHandleJoinImage.src },
 ];
 
-const textures: TextureDef[] = [...bannerShieldTextureDefs];
+const textures: TextureDef[] = [
+  ...bannerShieldTextureDefs,
+  ...customBannerShieldTextureDefs,
+];
 
 const thumbnail: ThumbnailDef = { url: thumbnailImage.src };
+
+// TextureControl/AtlasControl's `textures` prop only matters when `choices`
+// is non-empty (it drives a "pick a preset" dropdown); every custom banner/
+// shield upload control is upload-only (`choices={[]}`), so this empty map
+// is never actually read — it just satisfies the prop's type.
+const noPresetTextures = new Map<string, Texture>();
 
 const history: HistoryDef = [
   "May 2026 NinjolasNJM - Initial TypeScript version.",
@@ -305,6 +327,18 @@ function Component(): JSX.Element {
   const [glintOpacity, setGlintOpacity] = React.useState(255);
   const [glintXOffset, setGlintXOffset] = React.useState(0);
   const [glintYOffset, setGlintYOffset] = React.useState(0);
+  const [customBannerPatternsTexture, setCustomBannerPatternsTexture] =
+    React.useState<Texture | null>(null);
+  const [customShieldPatternsTexture, setCustomShieldPatternsTexture] =
+    React.useState<Texture | null>(null);
+  const [customBannerBaseTexture, setCustomBannerBaseTexture] =
+    React.useState<Texture | null>(null);
+  const [customShieldBaseTexture, setCustomShieldBaseTexture] =
+    React.useState<Texture | null>(null);
+  const [
+    customShieldBaseNoPatternTexture,
+    setCustomShieldBaseNoPatternTexture,
+  ] = React.useState<Texture | null>(null);
 
   const textureVersion =
     findBannerShieldTextureVersion(versionId) ??
@@ -342,6 +376,62 @@ function Component(): JSX.Element {
 
   const dynamicTextures: DynamicTextures = {
     "Enchanted Glint": glintTexture,
+    [customBannerPatternsVersion.textureDef.id]: customBannerPatternsTexture,
+    [customShieldPatternsVersion.textureDef.id]: customShieldPatternsTexture,
+    [customBannerBaseTextureDef.id]: customBannerBaseTexture,
+    [customShieldBaseTextureDef.id]: customShieldBaseTexture,
+    [customShieldBaseNoPatternTextureDef.id]: customShieldBaseNoPatternTexture,
+  };
+
+  const onBannerPatternsChange = (
+    texture: Texture | null,
+    framesJson: string | null
+  ) => {
+    setCustomBannerPatternsTexture(texture);
+    if (!texture) {
+      return;
+    }
+    const atlas = parseAtlas(framesJson);
+    customBannerPatternsVersion.updateAtlas(
+      texture.imageWithCanvas.image.src,
+      atlas ? { ...atlas, frames: cleanUploadedFrames(atlas.frames) } : null
+    );
+  };
+
+  const onShieldPatternsChange = (
+    texture: Texture | null,
+    framesJson: string | null
+  ) => {
+    setCustomShieldPatternsTexture(texture);
+    if (!texture) {
+      return;
+    }
+    const atlas = parseAtlas(framesJson);
+    customShieldPatternsVersion.updateAtlas(
+      texture.imageWithCanvas.image.src,
+      atlas ? { ...atlas, frames: cleanUploadedFrames(atlas.frames) } : null
+    );
+  };
+
+  const onBannerBaseChange = (texture: Texture | null) => {
+    setCustomBannerBaseTexture(texture);
+    if (texture) {
+      updateCustomBannerBaseTexture(texture.imageWithCanvas.image.src);
+    }
+  };
+
+  const onShieldBaseChange = (texture: Texture | null) => {
+    setCustomShieldBaseTexture(texture);
+    if (texture) {
+      updateCustomShieldBaseTexture(texture.imageWithCanvas.image.src);
+    }
+  };
+
+  const onShieldBaseNoPatternChange = (texture: Texture | null) => {
+    setCustomShieldBaseNoPatternTexture(texture);
+    if (texture) {
+      updateCustomShieldBaseNoPatternTexture(texture.imageWithCanvas.image.src);
+    }
   };
 
   const onRegionClick: RegionClickHandler = ({ regionId }) => {
@@ -376,15 +466,71 @@ function Component(): JSX.Element {
           <div className="w-full bg-gray-100 p-8 space-y-4">
             <GeneratorUI.SelectControl
               label="Texture Version"
-              options={bannerShieldTextureVersions.map(
-                ({ id: versionOptionId, label }) => ({
-                  id: versionOptionId,
-                  label,
-                })
-              )}
+              options={[
+                ...bannerShieldTextureVersions.map(
+                  ({ id: versionOptionId, label }) => ({
+                    id: versionOptionId,
+                    label,
+                  })
+                ),
+                { id: "custom", label: "Custom" },
+              ]}
               value={versionId}
               onValueChange={setVersionId}
             />
+
+            {versionId === "custom" && (
+              <>
+                {/* Each base texture is its own dedicated upload input —
+                    the input a file is dropped into determines its role,
+                    not the file's name. */}
+                <GeneratorUI.TextureControl
+                  id="custom-banner-base"
+                  label="Banner Base"
+                  choices={[]}
+                  standardWidth={64}
+                  standardHeight={64}
+                  textures={noPresetTextures}
+                  onChange={onBannerBaseChange}
+                />
+                <GeneratorUI.TextureControl
+                  id="custom-shield-base"
+                  label="Shield Base"
+                  choices={[]}
+                  standardWidth={64}
+                  standardHeight={64}
+                  textures={noPresetTextures}
+                  onChange={onShieldBaseChange}
+                />
+                <GeneratorUI.TextureControl
+                  id="custom-shield-base-nopattern"
+                  label="Shield Base (No Pattern)"
+                  choices={[]}
+                  standardWidth={64}
+                  standardHeight={64}
+                  textures={noPresetTextures}
+                  onChange={onShieldBaseNoPatternChange}
+                />
+                <GeneratorUI.AtlasControl
+                  id="custom-banner-patterns"
+                  label="Custom Banner Patterns"
+                  standardWidth={64}
+                  standardHeight={64}
+                  choices={[]}
+                  textures={noPresetTextures}
+                  onChange={onBannerPatternsChange}
+                />
+                <GeneratorUI.AtlasControl
+                  id="custom-shield-patterns"
+                  label="Custom Shield Patterns"
+                  standardWidth={64}
+                  standardHeight={64}
+                  choices={[]}
+                  textures={noPresetTextures}
+                  onChange={onShieldPatternsChange}
+                />
+              </>
+            )}
 
             <PatternTexturePicker
               patterns={patternOptions}
