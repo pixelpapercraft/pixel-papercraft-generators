@@ -27,6 +27,10 @@ export type {
   ButtonControlProps,
   TextControlProps,
 } from "./generatorUI";
+export type {
+  LoadedTextureControlV2Props,
+  LoadedTextureControlV2Value,
+} from "./loadedTextureControlV2";
 
 // The V2 generator contract.
 export type {

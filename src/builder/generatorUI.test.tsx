@@ -150,6 +150,7 @@ describe("GeneratorUI surface", () => {
       "History",
       "Instructions",
       "LoadedTextureControl",
+      "LoadedTextureControlV2",
       "MediaHero",
       "RangeControl",
       "SelectControl",

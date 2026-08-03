@@ -16,6 +16,7 @@ import {
   type RegionClickHandler,
   type RenderContext,
   type SelectedTexture,
+  type LoadedTextureControlV2Value,
   type Texture,
   type TextureDef,
   type TexturePlugin,
@@ -26,6 +27,7 @@ import {
   itemGlintTextureDefs,
   makeGlintPlugin,
 } from "@genroot/generators/_common/plugins/glint";
+import { GlintControlV2 } from "@genroot/generators/_common/plugins/glintControlV2";
 import {
   parseAtlas,
   updateCustomTextureAtlas,
@@ -485,6 +487,11 @@ function Component(): JSX.Element {
     null
   );
   const [glintTexture, setGlintTexture] = React.useState<Texture | null>(null);
+  const [glintSelection, setGlintSelection] =
+    React.useState<LoadedTextureControlV2Value>({
+      kind: "Preset",
+      id: "Enchanted Glint",
+    });
   const [glintEnabled, setGlintEnabled] = React.useState(true);
   const [glintOpacity, setGlintOpacity] = React.useState(255);
   const [glintXOffset, setGlintXOffset] = React.useState(0);
@@ -731,43 +738,22 @@ function Component(): JSX.Element {
               color="Red"
             />
 
-            <GeneratorUI.LoadedTextureControl
-              id="Enchanted Glint"
+            <GlintControlV2
               definitions={itemGlintTextureDefs}
-              standardWidth={128}
-              standardHeight={128}
-              choices={["1.20+", "Pre-1.20"]}
+              value={glintSelection}
+              onValueChange={setGlintSelection}
               loadingMessage="Loading glint choices…"
               errorMessage="Glint choices could not be loaded."
-              onChange={(texture) => {
+              onTextureChange={(texture) => {
                 setGlintTexture(texture);
                 setGlintEnabled(texture !== null);
               }}
-            />
-
-            <GeneratorUI.RangeControl
-              label="Glint Opacity"
-              min={0}
-              max={255}
-              value={glintOpacity}
-              step={1}
-              onValueChange={setGlintOpacity}
-            />
-            <GeneratorUI.RangeControl
-              label="Glint X Offset"
-              min={0}
-              max={128}
-              value={glintXOffset}
-              step={1}
-              onValueChange={setGlintXOffset}
-            />
-            <GeneratorUI.RangeControl
-              label="Glint Y Offset"
-              min={0}
-              max={128}
-              value={glintYOffset}
-              step={1}
-              onValueChange={setGlintYOffset}
+              opacity={glintOpacity}
+              onOpacityChange={setGlintOpacity}
+              xOffset={glintXOffset}
+              onXOffsetChange={setGlintXOffset}
+              yOffset={glintYOffset}
+              onYOffsetChange={setGlintYOffset}
             />
           </div>
         </div>
