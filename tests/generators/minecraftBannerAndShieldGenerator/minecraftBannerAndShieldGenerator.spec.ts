@@ -286,7 +286,7 @@ test("minecraft banner and shield applies a glint overlay across Template 2's ba
   const handleColor = await readPixel(pageImage, 320, 521);
   const liningColor = await readPixel(pageImage, 310, 629);
 
-  await page.getByText("Glint", { exact: true }).click();
+  await page.getByText("Show Glint", { exact: true }).click();
 
   await expect
     .poll(() => readPixel(pageImage, 60, 521))
@@ -298,7 +298,7 @@ test("minecraft banner and shield applies a glint overlay across Template 2's ba
     .poll(() => readPixel(pageImage, 310, 629))
     .not.toEqual(liningColor);
 
-  await page.getByText("Glint", { exact: true }).click();
+  await page.getByText("Show Glint", { exact: true }).click();
 
   await expect.poll(() => readPixel(pageImage, 60, 521)).toEqual(plateColor);
   await expect.poll(() => readPixel(pageImage, 320, 521)).toEqual(handleColor);
@@ -310,7 +310,7 @@ test("minecraft banner and shield's glint texture selector reflects the actual s
 }) => {
   await page.goto("/generator/minecraft-banner-and-shield");
 
-  await page.getByText("Glint", { exact: true }).click();
+  await page.getByText("Show Glint", { exact: true }).click();
 
   const glintSelect = page.getByLabel("Enchanted Glint", { exact: true });
   await expect(glintSelect).toHaveValue("1.20+");
@@ -325,16 +325,16 @@ test("minecraft banner and shield only shows the Glint controls while a template
   await page.goto("/generator/minecraft-banner-and-shield");
 
   // Visible by default (Template 2 defaults to Shield).
-  await expect(page.getByText("Glint", { exact: true })).toHaveCount(1);
+  await expect(page.getByText("Show Glint", { exact: true })).toHaveCount(1);
 
   await page.getByLabel("Template 2 Type").selectOption("Banner");
 
   // Neither slot is Shield now (Template 1 defaults to Banner too).
-  await expect(page.getByText("Glint", { exact: true })).toHaveCount(0);
+  await expect(page.getByText("Show Glint", { exact: true })).toHaveCount(0);
 
   await page.getByLabel("Template 1 Type").selectOption("Shield");
 
-  await expect(page.getByText("Glint", { exact: true })).toHaveCount(1);
+  await expect(page.getByText("Show Glint", { exact: true })).toHaveCount(1);
 });
 
 test("minecraft banner and shield supports the same type in both slots independently", async ({

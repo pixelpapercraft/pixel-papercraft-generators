@@ -630,7 +630,7 @@ function Component(): JSX.Element {
             {(template1Type === "Shield" || template2Type === "Shield") && (
               <>
                 <GeneratorUI.BooleanControl
-                  label="Glint"
+                  label="Show Glint"
                   checked={glintEnabled}
                   onCheckedChange={setGlintEnabled}
                 />
