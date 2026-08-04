@@ -28,7 +28,6 @@ import { generator as minecraftPigGeneratorDef } from "@genroot/generators/minec
 import { generator as minecraftPigCharacterGeneratorDef } from "@genroot/generators/minecraftPigCharacter/minecraftPigCharacterGenerator";
 import { generator as minecraftSquidCharacterGeneratorDef } from "@genroot/generators/minecraftSquidCharacter/minecraftSquidCharacterGenerator";
 import { generator as minecraftSpiderGeneratorDef } from "@genroot/generators/minecraftSpider/minecraftSpiderGenerator";
-import { generator as minecraftDioramaGeneratorDef } from "@genroot/generators/minecraftDiorama/minecraftDioramaGenerator";
 import { generator as minecraftUltimateBendableGeneratorDef } from "@genroot/generators/minecraftUltimateBendable/minecraftUltimateBendableGenerator";
 import { generator as minecraftVillagerGeneratorDef } from "@genroot/generators/minecraftVillager/minecraftVillagerGenerator";
 import { generator as minecraftVillagerCharacterGeneratorDef } from "@genroot/generators/minecraftVillagerCharacter/minecraftVillagerCharacterGenerator";
@@ -96,11 +95,7 @@ export const other: GeneratorDefV2[] = [amogusBendableGeneratorDef];
 // versions can be reached by URL and exercised by the reused v1 test suites.
 export const dev: GeneratorDefV2[] = isProductionEnvironment
   ? []
-  : [
-      minecraftWitherGeneratorDef,
-      minecraftSpiderGeneratorDef,
-      minecraftDioramaGeneratorDef,
-    ];
+  : [minecraftWitherGeneratorDef, minecraftSpiderGeneratorDef];
 
 // Generator API coverage boards (one per API method group) are the Testing
 // entries. They replace the former, broad visual-regression board with
