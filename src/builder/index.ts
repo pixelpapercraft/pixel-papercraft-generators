@@ -58,6 +58,14 @@ export type { Texture } from "@genroot/builder/engine/texture";
 export type { TexturePlugin } from "@genroot/builder/engine/engine";
 export type { Color } from "@genroot/builder/engine/canvasWithContext";
 
+// Sprite-sheet data for generated texture packs (e.g. `makeTextures` output):
+// the tile/frame shape a version registry pairs up and looks frames up from.
+export {
+  type TextureData,
+  type TextureFrame,
+  tilesToTextureFrames,
+} from "@genroot/builder/engine/textureData";
+
 // The geometry and drawing vocabulary `RenderContext`'s methods speak.
 export type {
   Point,

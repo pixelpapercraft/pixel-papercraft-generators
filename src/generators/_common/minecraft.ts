@@ -200,7 +200,7 @@ export function translateFace(face: Face, position: [number, number]): Face {
   };
 }
 
-type Dest = {
+export type Dest = {
   front: Face;
   back: Face;
   top: Face;
@@ -275,7 +275,14 @@ function makeDest([w, h, d]: Dimensions, orientation: Orientation): Dest {
   }
 }
 
-function adjustDimensionsForCenter(
+// Exported for `cuboidFolds`/`cuboidTabs`: `center` never touches a resolved
+// face's `.rectangle` (see `rotateFace`/`flipFace` above — they only ever
+// change rotation/flip metadata), so the six face *positions* a fold/tab
+// line needs to trace depend only on this dimension swap plus `orientation`,
+// never on `center`'s own relabeling step. Reusing this exact function
+// keeps that fact a single source of truth instead of two formulas that
+// could silently drift apart.
+export function adjustDimensionsForCenter(
   [w, h, d]: Dimensions,
   center: Center
 ): Dimensions {
@@ -525,6 +532,61 @@ export type DrawCuboidOptions = {
   plugin: TexturePlugin | null;
 };
 
+// The single source of truth for where a `Minecraft.drawCuboid` call
+// actually places each of a cuboid's 6 faces, options defaults and all —
+// exported so `cuboidTabs`/`cuboidFolds` can read real face positions
+// directly instead of re-deriving them (re-derivation has twice drifted
+// from what `setLayout`/`rotateLocalFace` actually produce, e.g. missing
+// the position shift a rotated face picks up, or the full face relabelling
+// `center: "Top"`/`"Bottom"` performs).
+export function resolveCuboidFaces(
+  position: Position,
+  dimensions: Dimensions,
+  options: Partial<DrawCuboidOptions> = {}
+): Dest {
+  const optionsWithDefaults: DrawCuboidOptions = {
+    orientation: options.orientation ?? "West",
+    center: options.center ?? "Front",
+    flip: options.flip ?? "None",
+    rotate: options.rotate ?? 0,
+    blend: options.blend ?? { kind: "None" },
+    plugin: options.plugin ?? null,
+  };
+  return translateDest(setLayout(dimensions, optionsWithDefaults), position);
+}
+
+// A `Face`'s `rectangle` is where `drawTexture` is told to draw from — it is
+// NOT the on-page visual bounding box once `rotate` is non-zero.
+// `drawTexture`'s Corner-style rotation rotates the draw around `rectangle`'s
+// own top-left corner, and `rotateLocalFace` (applied to every face when
+// resolving a cuboid's layout) pre-shifts that stored corner specifically to
+// compensate, so the rotated draw lands back at the face's real net
+// position. That means `rectangle` is the anchor for the rotation
+// transform, not the visual position — callers that need where a face is
+// actually rendered (as opposed to callers just handing `rectangle`/`rotate`
+// straight to `drawTexture`, which already applies the transform correctly)
+// must undo that shift themselves. Verified empirically against real
+// rendered pixels (a throwaway probe: a distinctively-coloured texture drawn
+// at each of the 4 `RotationDegrees` values, then measuring exactly where
+// the pixels landed) and cross-checked algebraically: applying this to
+// `rotateLocalFace`'s own output reproduces the pre-shift input rectangle
+// for every rotation.
+export function resolveFaceVisualRectangle(face: Face): Rectangle {
+  const [x, y, w, h] = face.rectangle;
+  switch (face.rotate) {
+    case 0:
+      return [x, y, w, h];
+    case 90:
+      return [x - h, y, h, w];
+    case 180:
+      return [x - w, y - h, w, h];
+    case 270:
+      return [x, y - w, h, w];
+    default:
+      return face.rotate satisfies never;
+  }
+}
+
 export class Minecraft {
   constructor(private generator: MinecraftDrawSurface) {}
 
@@ -544,19 +606,7 @@ export class Minecraft {
     dimensions: Dimensions,
     options: Partial<DrawCuboidOptions> = {}
   ) {
-    const optionsWithDefaults: DrawCuboidOptions = {
-      orientation: options.orientation ?? "West",
-      center: options.center ?? "Front",
-      flip: options.flip ?? "None",
-      rotate: options.rotate ?? 0,
-      blend: options.blend ?? { kind: "None" },
-      plugin: options.plugin ?? null,
-    };
-
-    const dest = translateDest(
-      setLayout(dimensions, optionsWithDefaults),
-      position
-    );
+    const dest = resolveCuboidFaces(position, dimensions, options);
     this.drawFaceTexture(textureId, source.front, dest.front);
     this.drawFaceTexture(textureId, source.back, dest.back);
     this.drawFaceTexture(textureId, source.top, dest.top);

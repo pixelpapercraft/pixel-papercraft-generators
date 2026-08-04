@@ -88,3 +88,48 @@ export async function readPixelRow(
     { x, y, width }
   );
 }
+
+// Reads a vertical run of `height` pixels starting at (x, y), returning one
+// Rgba per pixel. The column counterpart to `readPixelRow`, for contracts
+// about vertical dashed/patterned lines.
+export async function readPixelColumn(
+  image: Locator,
+  x: number,
+  y: number,
+  height: number
+): Promise<Rgba[]> {
+  return image.evaluate(
+    async (
+      img: HTMLImageElement,
+      { x, y, height }: { x: number; y: number; height: number }
+    ) => {
+      if (!img.complete || img.naturalWidth === 0) {
+        await img.decode();
+      }
+
+      const canvas = document.createElement("canvas");
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+
+      const context = canvas.getContext("2d");
+      if (!context) {
+        throw new Error("Failed to get 2d context for pixel read");
+      }
+
+      context.drawImage(img, 0, 0);
+      const data = context.getImageData(x, y, 1, height).data;
+
+      const pixels: { r: number; g: number; b: number; a: number }[] = [];
+      for (let i = 0; i < height; i++) {
+        pixels.push({
+          r: data[i * 4] ?? 0,
+          g: data[i * 4 + 1] ?? 0,
+          b: data[i * 4 + 2] ?? 0,
+          a: data[i * 4 + 3] ?? 0,
+        });
+      }
+      return pixels;
+    },
+    { x, y, height }
+  );
+}

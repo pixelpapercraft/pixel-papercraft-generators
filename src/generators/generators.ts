@@ -28,6 +28,7 @@ import { generator as minecraftPigGeneratorDef } from "@genroot/generators/minec
 import { generator as minecraftPigCharacterGeneratorDef } from "@genroot/generators/minecraftPigCharacter/minecraftPigCharacterGenerator";
 import { generator as minecraftSquidCharacterGeneratorDef } from "@genroot/generators/minecraftSquidCharacter/minecraftSquidCharacterGenerator";
 import { generator as minecraftSpiderGeneratorDef } from "@genroot/generators/minecraftSpider/minecraftSpiderGenerator";
+import { generator as minecraftBannerAndShieldGeneratorDef } from "@genroot/generators/minecraftBannerAndShield/minecraftBannerAndShieldGenerator";
 import { generator as minecraftUltimateBendableGeneratorDef } from "@genroot/generators/minecraftUltimateBendable/minecraftUltimateBendableGenerator";
 import { generator as minecraftVillagerGeneratorDef } from "@genroot/generators/minecraftVillager/minecraftVillagerGenerator";
 import { generator as minecraftVillagerCharacterGeneratorDef } from "@genroot/generators/minecraftVillagerCharacter/minecraftVillagerCharacterGenerator";
@@ -38,6 +39,9 @@ import { generator as testApiDrawingPrimitivesGenerator } from "@genroot/generat
 import { generator as testApiDrawingTexturesGenerator } from "@genroot/generators/testApiDrawingTextures/testApiDrawingTexturesGenerator";
 import { generator as testApiPixelQueriesGenerator } from "@genroot/generators/testApiPixelQueries/testApiPixelQueriesGenerator";
 import { generator as testApiSkinControlGenerator } from "@genroot/generators/testApiSkinControl/testApiSkinControlGenerator";
+import { generator as testApiTintSelectorGenerator } from "@genroot/generators/testApiTintSelector/testApiTintSelectorGenerator";
+import { generator as testApiCuboidTabsGenerator } from "@genroot/generators/testApiCuboidTabs/testApiCuboidTabsGenerator";
+import { generator as testApiCuboidFoldsGenerator } from "@genroot/generators/testApiCuboidFolds/testApiCuboidFoldsGenerator";
 
 const isProductionEnvironment: boolean = process.env.NODE_ENV === "production";
 
@@ -95,7 +99,11 @@ export const other: GeneratorDefV2[] = [amogusBendableGeneratorDef];
 // versions can be reached by URL and exercised by the reused v1 test suites.
 export const dev: GeneratorDefV2[] = isProductionEnvironment
   ? []
-  : [minecraftWitherGeneratorDef, minecraftSpiderGeneratorDef];
+  : [
+      minecraftWitherGeneratorDef,
+      minecraftSpiderGeneratorDef,
+      minecraftBannerAndShieldGeneratorDef,
+    ];
 
 // Generator API coverage boards (one per API method group) are the Testing
 // entries. They replace the former, broad visual-regression board with
@@ -113,6 +121,9 @@ export const testApiCoverage: GeneratorDefV2[] = [
   testApiDrawingTexturesGenerator,
   testApiPixelQueriesGenerator,
   testApiSkinControlGenerator,
+  testApiTintSelectorGenerator,
+  testApiCuboidTabsGenerator,
+  testApiCuboidFoldsGenerator,
 ];
 
 export const test: GeneratorDefV2[] = isProductionEnvironment

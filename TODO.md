@@ -8,6 +8,25 @@
 
 ## Follow-up Tasks
 
+- Write Playwright API tests for `_common/cuboidTabs.ts`, mirroring the
+  `test-api-cuboid-folds` board/spec added for `cuboidFolds.ts`
+  (`src/generators/testApiCuboidFolds/`,
+  `tests/generators/testApiCuboidFoldsGenerator/`). `cuboidTabs.ts` already
+  has a diagnostic board, `testApiCuboidTabs`
+  (`src/generators/testApiCuboidTabs/`), but it has no Playwright spec — its
+  only coverage is the geometry-only vitest unit test
+  (`src/generators/_common/cuboidTabs.test.ts`), which never rasterizes a
+  real canvas. When writing it: derive expected pixel coordinates from
+  `drawCuboidTabs`'s formulas, then confirm them against the board's actual
+  rendered output before trusting them — the folds spec found its
+  hand-derived coordinates were off by one on two of a rectangle's four
+  edges (`drawRectangleFolds`'s bottom/left) because `drawLine`'s
+  crispness offset (`renderers/drawLine.ts`) shifts a leftward-horizontal or
+  upward-vertical 1px line one row/column earlier than its nominal endpoint;
+  the same offset function applies to every `ctx.drawLine`/`drawFoldLine`/
+  `drawTab` call, so tab edges are equally likely to need this correction
+  depending on which direction each edge is drawn.
+
 - Migrate `_common/minecraft.ts` (tab-size) and `_common/plugins/glint.ts`
   (opacity/x-offset/y-offset) off `Model`'s deprecated number-variable
   storage (`setNumberVariable`/`getNumberVariable`, reached through

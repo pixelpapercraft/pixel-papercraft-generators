@@ -28,6 +28,7 @@ Read and follow rules from any category whose "Read when" keywords match your cu
 | Category   | Read when                                                                                         | File                                            |
 | ---------- | ------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
 | TypeScript | `.ts`, `.tsx`, type, interface, switch, `any`, `as`, `satisfies`, zod, vitest `expect`, test mock | [typescript.md](agent-docs/rules/typescript.md) |
+| Comments   | comment, `//`, `/**`                                                                              | [comments.md](agent-docs/rules/comments.md)     |
 
 ## Change Scope
 

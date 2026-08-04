@@ -3,8 +3,15 @@ import { makeFakeEngine } from "@genroot/builder/engine/engine.fake";
 import { Model } from "@genroot/builder/engine/model";
 import { Values } from "@genroot/builder/engine/modelValues";
 import { RenderContextAdapter } from "@genroot/builder/renderContextAdapter";
+import { type Rectangle } from "./cuboid";
 import { makeCuboid } from "./cuboid";
-import { Minecraft } from "./minecraft";
+import {
+  Minecraft,
+  resolveFaceVisualRectangle,
+  rotateLocalFace,
+  type Face,
+  type RotationDegrees,
+} from "./minecraft";
 
 describe("Minecraft", () => {
   describe("drawCuboid", () => {
@@ -116,4 +123,61 @@ describe("Minecraft", () => {
       ]);
     });
   });
+});
+
+describe("resolveFaceVisualRectangle", () => {
+  const rectangle: Rectangle = [100, 50, 80, 20];
+
+  function makeTestFace(rotate: RotationDegrees): Face {
+    return {
+      rectangle,
+      flip: "None",
+      rotate,
+      blend: { kind: "None" },
+      plugin: null,
+    };
+  }
+
+  it("returns the stored rectangle unchanged for rotate=0", () => {
+    expect(resolveFaceVisualRectangle(makeTestFace(0))).toEqual<Rectangle>([
+      100, 50, 80, 20,
+    ]);
+  });
+
+  it("shifts by (-height, 0) and swaps width/height for rotate=90", () => {
+    expect(resolveFaceVisualRectangle(makeTestFace(90))).toEqual<Rectangle>([
+      80, 50, 20, 80,
+    ]);
+  });
+
+  it("shifts by (-width, -height) for rotate=180", () => {
+    expect(resolveFaceVisualRectangle(makeTestFace(180))).toEqual<Rectangle>([
+      20, 30, 80, 20,
+    ]);
+  });
+
+  it("shifts by (0, -width) and swaps width/height for rotate=270", () => {
+    expect(resolveFaceVisualRectangle(makeTestFace(270))).toEqual<Rectangle>([
+      100, -30, 20, 80,
+    ]);
+  });
+
+  // `rotateLocalFace` pre-shifts a face's stored rectangle so that
+  // `drawTexture`'s corner-pivot rotation lands the visual render back at
+  // the face's real net position — so undoing that shift with
+  // `resolveFaceVisualRectangle` must always reproduce the exact rectangle
+  // `rotateLocalFace` started from, for every rotation. This is the
+  // algebraic proof that the two functions are exact inverses of each
+  // other, independent of the direct value assertions above.
+  const rotations: RotationDegrees[] = [0, 90, 180, 270];
+  it.each(rotations)(
+    "round-trips through rotateLocalFace for rotate=%i",
+    (rotate) => {
+      const original = makeTestFace(rotate);
+
+      const shifted = rotateLocalFace(original);
+
+      expect(resolveFaceVisualRectangle(shifted)).toEqual<Rectangle>(rectangle);
+    }
+  );
 });
