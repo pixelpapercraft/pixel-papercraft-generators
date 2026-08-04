@@ -420,3 +420,34 @@ test("minecraft banner and shield's Clone Pattern 2 to 1 button copies Template 
     .not.toEqual(stampedColor);
   await expect.poll(() => readPixel(pageImage, 146, 180)).toEqual(stampedColor);
 });
+
+test("minecraft banner and shield's Clear Patterns button resets both templates' pattern stacks to the default", async ({
+  page,
+}) => {
+  await page.goto("/generator/minecraft-banner-and-shield");
+
+  await page.getByLabel("Template 2 Shield Pattern").selectOption("Banner");
+
+  const pageImage = outputPage(page);
+  const defaultTemplate1Color = await readPixel(pageImage, 146, 180);
+  const defaultTemplate2Color = await readPixel(pageImage, 90, 521);
+
+  await page.getByTitle("base").click();
+  await page.getByTestId("region-Template1").click();
+  await page.getByTestId("region-Template2").click();
+  await expect
+    .poll(() => readPixel(pageImage, 146, 180))
+    .not.toEqual(defaultTemplate1Color);
+  await expect
+    .poll(() => readPixel(pageImage, 90, 521))
+    .not.toEqual(defaultTemplate2Color);
+
+  await page.getByText("Clear Patterns", { exact: true }).click();
+
+  await expect
+    .poll(() => readPixel(pageImage, 146, 180))
+    .toEqual(defaultTemplate1Color);
+  await expect
+    .poll(() => readPixel(pageImage, 90, 521))
+    .toEqual(defaultTemplate2Color);
+});

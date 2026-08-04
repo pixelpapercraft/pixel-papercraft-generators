@@ -453,6 +453,11 @@ function Component(): JSX.Element {
     setTemplate1Patterns(template2Patterns);
   };
 
+  const clearPatterns = () => {
+    setTemplate1Patterns(defaultPatternStack());
+    setTemplate2Patterns(defaultPatternStack());
+  };
+
   const onRegionClick: RegionClickHandler = ({ regionId }) => {
     if (regionId === template1RegionId) {
       setTemplate1Patterns((current) =>
@@ -638,6 +643,11 @@ function Component(): JSX.Element {
               <GeneratorUI.ButtonControl
                 label="Clone Pattern 2 to 1"
                 onClick={clonePattern2To1}
+                color="Blue"
+              />
+              <GeneratorUI.ButtonControl
+                label="Clear Patterns"
+                onClick={clearPatterns}
                 color="Blue"
               />
             </div>
