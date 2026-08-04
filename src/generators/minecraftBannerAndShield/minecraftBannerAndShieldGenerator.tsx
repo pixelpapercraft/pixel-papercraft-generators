@@ -445,6 +445,14 @@ function Component(): JSX.Element {
     }
   };
 
+  const clonePattern1To2 = () => {
+    setTemplate2Patterns(template1Patterns);
+  };
+
+  const clonePattern2To1 = () => {
+    setTemplate1Patterns(template2Patterns);
+  };
+
   const onRegionClick: RegionClickHandler = ({ regionId }) => {
     if (regionId === template1RegionId) {
       setTemplate1Patterns((current) =>
@@ -619,6 +627,19 @@ function Component(): JSX.Element {
                   }
                 />
               )}
+            </div>
+
+            <div className="flex gap-4">
+              <GeneratorUI.ButtonControl
+                label="Clone Pattern 1 to 2"
+                onClick={clonePattern1To2}
+                color="Blue"
+              />
+              <GeneratorUI.ButtonControl
+                label="Clone Pattern 2 to 1"
+                onClick={clonePattern2To1}
+                color="Blue"
+              />
             </div>
 
             <GeneratorUI.BooleanControl

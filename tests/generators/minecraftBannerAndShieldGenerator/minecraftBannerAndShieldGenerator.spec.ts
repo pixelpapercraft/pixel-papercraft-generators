@@ -362,3 +362,61 @@ test("minecraft banner and shield supports the same type in both slots independe
     .poll(() => readPixel(pageImage, 146, 180))
     .toEqual(template1Color);
 });
+
+test("minecraft banner and shield's Clone Pattern 1 to 2 button copies Template 1's pattern stack onto Template 2", async ({
+  page,
+}) => {
+  await page.goto("/generator/minecraft-banner-and-shield");
+
+  // Template 2 defaults to a bare shield with no clickable region — attach
+  // a banner first so its plate can be stamped and read.
+  await page.getByLabel("Template 2 Shield Pattern").selectOption("Banner");
+
+  const pageImage = outputPage(page);
+  const defaultColor = await readPixel(pageImage, 90, 521);
+
+  await page.getByTitle("base").click();
+  await page.getByTestId("region-Template1").click();
+  const stampedColor = await readPixel(pageImage, 146, 180);
+  expect(stampedColor).not.toEqual(defaultColor);
+
+  await page.getByText("Clone Pattern 1 to 2", { exact: true }).click();
+  await expect.poll(() => readPixel(pageImage, 90, 521)).toEqual(stampedColor);
+
+  // The clone is a snapshot, not a live link: erasing Template 1's stamp
+  // afterwards doesn't retroactively change Template 2's cloned copy.
+  await page.getByLabel("Erase texture").click();
+  await page.getByTestId("region-Template1").click();
+  await expect
+    .poll(() => readPixel(pageImage, 146, 180))
+    .not.toEqual(stampedColor);
+  await expect.poll(() => readPixel(pageImage, 90, 521)).toEqual(stampedColor);
+});
+
+test("minecraft banner and shield's Clone Pattern 2 to 1 button copies Template 2's pattern stack onto Template 1", async ({
+  page,
+}) => {
+  await page.goto("/generator/minecraft-banner-and-shield");
+
+  await page.getByLabel("Template 2 Shield Pattern").selectOption("Banner");
+
+  const pageImage = outputPage(page);
+  const defaultColor = await readPixel(pageImage, 146, 180);
+
+  await page.getByTitle("base").click();
+  await page.getByTestId("region-Template2").click();
+  const stampedColor = await readPixel(pageImage, 90, 521);
+  expect(stampedColor).not.toEqual(defaultColor);
+
+  await page.getByText("Clone Pattern 2 to 1", { exact: true }).click();
+  await expect.poll(() => readPixel(pageImage, 146, 180)).toEqual(stampedColor);
+
+  // The clone is a snapshot, not a live link: erasing Template 2's stamp
+  // afterwards doesn't retroactively change Template 1's cloned copy.
+  await page.getByLabel("Erase texture").click();
+  await page.getByTestId("region-Template2").click();
+  await expect
+    .poll(() => readPixel(pageImage, 90, 521))
+    .not.toEqual(stampedColor);
+  await expect.poll(() => readPixel(pageImage, 146, 180)).toEqual(stampedColor);
+});
