@@ -79,16 +79,26 @@ const id = "minecraft-banner-and-shield";
 const name = "Minecraft Banner and Shield";
 
 const instructions: InstructionsDef = `
-Component-by-component rebuild in progress. The banner flag base, pole, and
-crossbar are rendered with fold and tab guides, and clicking the flag
-arms/stamps the selected pattern. The shield plate, handle, and inner
-lining render their base geometry, fold/tab guides, and a join marker
-showing where they glue together; a shield starts bare with no banner
-attached, matching the real game — enable "Shield Pattern" to attach a
-banner, which arms clicking the plate to stamp the selected pattern onto
-the plate only (the handle and lining are never patterned, matching real
-Minecraft shields). The Shield can also be given an enchanted glint
-overlay.
+## How to use the Minecraft Banner and Shield Generator
+
+### Choosing textures
+* Pick a "Texture Version" — the built-in Minecraft texture pack, Vanilla Tweaks' HD Shields, or "Custom" to upload your own.
+* With "Custom" selected, each texture has its own dedicated upload slot (Banner Base, Shield Base, Shield Base (No Pattern), Custom Banner Patterns, Custom Shield Patterns) — the slot a file is dropped into decides its role, not the filename.
+
+### Adding patterns
+* Click a pattern in the texture picker to arm it, then pick a dye color with the Tint selector.
+* Click the banner or shield on the page to stamp the armed pattern onto it. Only the shield's front plate can be patterned — the handle and inner lining are never dyed, matching real Minecraft shields.
+* Click the picker's erase button to arm erase, then click the banner or shield again to remove the last pattern placed on it. The very first layer can't be erased away — a banner or shield always keeps at least its base color.
+
+### Templates
+* Two independent templates can be placed on the page: Template 1 in the top half, Template 2 in the bottom half. Set each one's "Template # Type" to None, Banner, or Shield.
+* A shield starts bare, matching the real game — set its "Template # Shield Pattern" to "Banner" to attach one before stamping a pattern onto it.
+* Switching a template's type, or a shield between bare and banner-attached, keeps whatever pattern was already stamped on it.
+* "Clone Pattern 1 to 2" / "Clone Pattern 2 to 1" copy one template's pattern onto the other, attaching a banner automatically if the target is a bare shield. "Clear Patterns" resets both templates back to their default pattern.
+
+### Folds and glint
+* "Show Folds" toggles the fold and tab guide lines used when assembling the printed model.
+* Shields can be given an enchanted glint effect via "Show Glint", with its own texture version, opacity, and X/Y offset controls.
 `;
 
 const shieldHandleJoinImageId = "ShieldHandleJoin";
