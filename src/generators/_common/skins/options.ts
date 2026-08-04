@@ -1,8 +1,25 @@
-import type {
-  MinecraftSkinOptionPreset,
-  MinecraftSkinOptionTexture,
-} from "@genroot/builder/engine/modelControls";
 import { defaultSkinNames, getSkinUrl } from "./index";
+
+export type MinecraftSkinOptionPreset = {
+  kind: "preset";
+  id: string;
+  label: string;
+  urls: {
+    wide: string;
+    slim: string;
+  };
+};
+
+export type MinecraftSkinOptionTexture = {
+  kind: "texture";
+  id: string;
+  label: string;
+  textureId: string;
+};
+
+export type MinecraftSkinOption =
+  | MinecraftSkinOptionPreset
+  | MinecraftSkinOptionTexture;
 
 export function makeDefaultMinecraftSkinPresetOptions(): MinecraftSkinOptionPreset[] {
   return defaultSkinNames.map(

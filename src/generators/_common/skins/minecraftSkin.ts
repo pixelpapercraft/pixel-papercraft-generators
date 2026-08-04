@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { makeImageFromUrl } from "./image";
+import { makeImageFromUrl } from "@genroot/builder/engine/image";
 import { convertToStandardSkin } from "./minecraftSkinConverter";
 
 // https://github.com/Electroid/mojang-api

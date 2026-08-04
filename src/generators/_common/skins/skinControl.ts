@@ -5,17 +5,13 @@
 // belongs with the generators — the same reasoning that already puts
 // `_common/tintSelector` and `_common/plugins/glint` here.
 //
-// Re-exports rather than a move. `builder/engine/engine.ts` and
-// `builder/engine/modelControls.ts` still import these same modules out of
-// `src/builder`, and relocating the files while they do would invert the
-// dependency: the builder framework would import from generator content. When
-// `builder/ui` and `builder/engine` retire, the implementations move here and
-// these re-exports become the definitions — at which point no generator has to
-// change again.
-export { MinecraftSkinControl } from "@genroot/builder/ui/controls/minecraftSkinControl";
+// Stable named entry point rather than having every generator import the
+// sibling files directly, so generator authors have one place to import
+// from regardless of how the implementation is split up internally.
+export { MinecraftSkinControl } from "./minecraftSkinControl";
 export {
   getDefaultMinecraftSkinInputValue,
   type MinecraftSkinInputValue,
   type MinecraftModelType,
   type MinecraftSkinSelection,
-} from "@genroot/builder/engine/minecraftSkinInputValue";
+} from "./minecraftSkinInputValue";

@@ -63,10 +63,15 @@ export type RenderContext = {
   // `<GeneratorRenderer>`'s `onRegionClick` carrying this `regionId`. See the
   // "Region events" section of the v2 plan.
   defineRegion(region: Region, regionId: string): void;
-  // Matches `Engine`'s own number-variable storage. Needed so shared
-  // rendering helpers like `Minecraft` (tab-size state) can drive through
-  // either a v1 `Engine` or this v2 `RenderContext`.
+  /**
+   * @deprecated Model-tracked variable state predates V2 generators and
+   * should not gain new callers. Still used by `_common/minecraft.ts`
+   * (tab-size) and `_common/plugins/glint.ts` (opacity/offsets), which
+   * should migrate to React state — tracked in TODO.md, not part of this
+   * change.
+   */
   getNumberVariable(id: string): number | null;
+  /** @deprecated See `getNumberVariable`. */
   setNumberVariable(id: string, value: number): void;
 };
 

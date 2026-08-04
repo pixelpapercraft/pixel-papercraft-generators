@@ -1,52 +1,28 @@
 import { type ImageWithCanvas } from "./imageWithCanvas";
 import { type Texture } from "./texture";
 import { type Page, makePage } from "./modelPage";
-import { makeUUID } from "./uuid";
-import {
-  type Control,
-  type AtlasInputControlProps,
-  type MinecraftSkinInputControl,
-  type MinecraftSkinInputControlProps,
-  type TextureInputControlProps,
-  type Region,
-} from "./modelControls";
-import { type Variable } from "./variables";
 import { type Values } from "./modelValues";
+import { type Region } from "./renderers/types";
+
+export type RegionControl = {
+  kind: "Region";
+  pageId: string;
+  region: Region;
+  onClick: () => void;
+  id?: string;
+};
 
 export class Model {
-  controls: Control[];
+  regionControls: RegionControl[];
   pages: Page[];
   currentPage: Page | null;
   values: Values;
 
   constructor(values: Values) {
-    this.controls = [];
+    this.regionControls = [];
     this.pages = [];
     this.currentPage = null;
     this.values = values;
-  }
-
-  addControl(control: Control) {
-    this.controls.push(control);
-  }
-
-  addTextControl(text: string) {
-    this.addControl({
-      kind: "Text",
-      id: makeUUID(),
-      text,
-    });
-  }
-
-  addCustomInputControl(
-    id: string,
-    render: (onChange: (value: string) => void) => React.ReactNode
-  ) {
-    this.addControl({
-      kind: "CustomInput",
-      id,
-      render,
-    });
   }
 
   addRegionControl(
@@ -55,97 +31,12 @@ export class Model {
     onClick: () => void,
     id?: string
   ) {
-    this.addControl({
+    this.regionControls.push({
       kind: "Region",
       pageId,
       region,
       onClick,
       id,
-    });
-  }
-
-  addTextureControl(id: string, props: TextureInputControlProps) {
-    this.addControl({
-      kind: "TextureInput",
-      id,
-      props,
-    });
-  }
-
-  addAtlasControl(id: string, props: AtlasInputControlProps) {
-    this.addControl({
-      kind: "AtlasInput",
-      id,
-      props,
-    });
-  }
-
-  addMinecraftSkinControl(id: string, props: MinecraftSkinInputControlProps) {
-    this.addControl({
-      kind: "MinecraftSkinInput",
-      id,
-      props,
-    });
-  }
-
-  addBooleanInputControl(id: string, initialValue: boolean) {
-    this.addControl({
-      kind: "BooleanInput",
-      id,
-      initialValue,
-    });
-    const value = this.getBooleanVariable(id);
-    if (value === null) {
-      this.setBooleanVariable(id, initialValue);
-    }
-  }
-
-  addSelectInputControl(id: string, options: string[]) {
-    this.addControl({
-      kind: "SelectInput",
-      id,
-      options,
-    });
-    const value = this.getStringVariable(id);
-    const firstOption = options.at(0);
-    if (value === null && firstOption) {
-      this.setStringVariable(id, firstOption);
-    }
-  }
-
-  addRangeControl(
-    id: string,
-    min: number,
-    max: number,
-    value: number,
-    step: number,
-    showValue?: boolean
-  ) {
-    this.addControl({
-      kind: "Range",
-      id,
-      min,
-      max,
-      value,
-      step,
-      showValue,
-    });
-    const currentValue = this.getNumberVariable(id);
-    if (currentValue === null) {
-      this.setNumberVariable(id, value);
-    }
-  }
-
-  addButtonControl(
-    id: string,
-    onClick: () => void,
-    color?: "Gray" | "Blue" | "Red" | "Green"
-  ) {
-    this.addControl({
-      kind: "Button",
-      id,
-      color,
-      onClick,
     });
   }
 
@@ -155,14 +46,6 @@ export class Model {
 
   findPage(id: string): Page | null {
     return this.pages.find((curr) => curr.id === id) || null;
-  }
-
-  getMinecraftSkinControl(id: string): MinecraftSkinInputControl | null {
-    const control = this.controls.find(
-      (candidate): candidate is MinecraftSkinInputControl =>
-        candidate.kind === "MinecraftSkinInput" && candidate.id === id
-    );
-    return control ?? null;
   }
 
   addImage(id: string, image: ImageWithCanvas) {
@@ -189,36 +72,20 @@ export class Model {
     this.values.removeTexture(id);
   }
 
-  setVariable(id: string, variable: Variable) {
-    this.values.setVariable(id, variable);
-  }
-
-  setStringVariable(id: string, value: string): void {
-    this.values.setStringVariable(id, value);
-  }
-
-  getStringVariable(id: string): string | null {
-    return this.values.getStringVariable(id);
-  }
-
-  cleatAllVariables(): void {
-    this.values.clearAllVariables();
-  }
-
+  /**
+   * @deprecated Model-tracked variable state is a leftover from the pre-V2
+   * control system. Generator authors should hold this kind of state in
+   * React state instead. Not removed because `_common/minecraft.ts` (tab
+   * size) and `_common/plugins/glint.ts` (glint opacity/offsets) still
+   * depend on it; migrating those is tracked separately in TODO.md.
+   */
   setNumberVariable(id: string, value: number): void {
     this.values.setNumberVariable(id, value);
   }
 
+  /** @deprecated See `setNumberVariable`. */
   getNumberVariable(id: string): number | null {
     return this.values.getNumberVariable(id);
-  }
-
-  setBooleanVariable(id: string, value: boolean): void {
-    this.values.setBooleanVariable(id, value);
-  }
-
-  getBooleanVariable(id: string): boolean | null {
-    return this.values.getBooleanVariable(id);
   }
 
   setCurrentPage(page: Page) {
