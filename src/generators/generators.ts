@@ -28,7 +28,6 @@ import { generator as minecraftPigGeneratorDef } from "@genroot/generators/minec
 import { generator as minecraftPigCharacterGeneratorDef } from "@genroot/generators/minecraftPigCharacter/minecraftPigCharacterGenerator";
 import { generator as minecraftSquidCharacterGeneratorDef } from "@genroot/generators/minecraftSquidCharacter/minecraftSquidCharacterGenerator";
 import { generator as minecraftSpiderGeneratorDef } from "@genroot/generators/minecraftSpider/minecraftSpiderGenerator";
-import { generator as minecraftDioramaGeneratorDef } from "@genroot/generators/minecraftDiorama/minecraftDioramaGenerator";
 import { generator as minecraftBannerAndShieldGeneratorDef } from "@genroot/generators/minecraftBannerAndShield/minecraftBannerAndShieldGenerator";
 import { generator as minecraftUltimateBendableGeneratorDef } from "@genroot/generators/minecraftUltimateBendable/minecraftUltimateBendableGenerator";
 import { generator as minecraftVillagerGeneratorDef } from "@genroot/generators/minecraftVillager/minecraftVillagerGenerator";
@@ -103,7 +102,6 @@ export const dev: GeneratorDefV2[] = isProductionEnvironment
   : [
       minecraftWitherGeneratorDef,
       minecraftSpiderGeneratorDef,
-      minecraftDioramaGeneratorDef,
       minecraftBannerAndShieldGeneratorDef,
     ];
 
