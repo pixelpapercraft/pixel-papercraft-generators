@@ -1,5 +1,5 @@
-import { makeImage } from "./image";
-import { makeCanvas } from "./canvas";
+import { makeImage } from "@genroot/builder/engine/image";
+import { makeCanvas } from "@genroot/builder/engine/canvas";
 
 function hasValidSourceDimensions(width: number, height: number) {
   return width % 64 === 0 && width === height * 2;

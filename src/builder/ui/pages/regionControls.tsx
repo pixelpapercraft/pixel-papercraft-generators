@@ -1,14 +1,8 @@
 import type { CSSProperties } from "react";
 import { type Model } from "@genroot/builder/engine/model";
-import {
-  type Control,
-  type RegionControl,
-} from "@genroot/builder/engine/modelControls";
 import { A4 } from "@genroot/builder/engine/modelPage";
+import { type Region } from "@genroot/builder/engine/renderers/types";
 import { px, pageBorderWidth } from "./utils";
-
-/** [x, y, w, h] */
-type Region = [number, number, number, number];
 
 function scaleNumber(value: number, scale: number): number {
   return Math.round(value * scale);
@@ -35,14 +29,8 @@ export function RegionControls({
   containerWidth: number;
   onClick: (callback: () => void) => void;
 }) {
-  const regionControls = model.controls.reduce(
-    (acc: RegionControl[], control: Control) => {
-      if (control.kind === "Region" && control.pageId === currentPageId) {
-        acc.push(control);
-      }
-      return acc;
-    },
-    []
+  const regionControls = model.regionControls.filter(
+    (control) => control.pageId === currentPageId
   );
 
   if (regionControls.length === 0) {
