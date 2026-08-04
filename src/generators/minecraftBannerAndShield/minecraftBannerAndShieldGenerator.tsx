@@ -447,10 +447,18 @@ function Component(): JSX.Element {
 
   const clonePattern1To2 = () => {
     setTemplate2Patterns(template1Patterns);
+    // A bare shield (no banner attached) never renders its pattern stack, so
+    // the clone would otherwise appear to do nothing.
+    if (template2Type === "Shield" && !shieldHasBanner2) {
+      setShieldHasBanner2(true);
+    }
   };
 
   const clonePattern2To1 = () => {
     setTemplate1Patterns(template2Patterns);
+    if (template1Type === "Shield" && !shieldHasBanner1) {
+      setShieldHasBanner1(true);
+    }
   };
 
   const clearPatterns = () => {

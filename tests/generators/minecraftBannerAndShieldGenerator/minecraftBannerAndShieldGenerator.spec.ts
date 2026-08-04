@@ -421,6 +421,59 @@ test("minecraft banner and shield's Clone Pattern 2 to 1 button copies Template 
   await expect.poll(() => readPixel(pageImage, 146, 180)).toEqual(stampedColor);
 });
 
+test("minecraft banner and shield's Clone Pattern 1 to 2 button attaches a banner to a bare Template 2 shield, so the cloned pattern is actually visible", async ({
+  page,
+}) => {
+  await page.goto("/generator/minecraft-banner-and-shield");
+
+  // Template 2 defaults to a bare shield (Shield Pattern "None") — a bare
+  // shield never renders its pattern stack, so cloning onto it would
+  // otherwise silently do nothing visible.
+  await expect(page.getByLabel("Template 2 Shield Pattern")).toHaveValue(
+    "None"
+  );
+
+  const pageImage = outputPage(page);
+
+  await page.getByTitle("base").click();
+  await page.getByTestId("region-Template1").click();
+  const stampedColor = await readPixel(pageImage, 146, 180);
+
+  await page.getByText("Clone Pattern 1 to 2", { exact: true }).click();
+
+  await expect(page.getByLabel("Template 2 Shield Pattern")).toHaveValue(
+    "Banner"
+  );
+  await expect.poll(() => readPixel(pageImage, 90, 521)).toEqual(stampedColor);
+});
+
+test("minecraft banner and shield's Clone Pattern 2 to 1 button attaches a banner to a bare Template 1 shield, so the cloned pattern is actually visible", async ({
+  page,
+}) => {
+  await page.goto("/generator/minecraft-banner-and-shield");
+
+  // Make Template 1 a bare shield (Shield Pattern "None") and Template 2 a
+  // banner to stamp from.
+  await page.getByLabel("Template 1 Type").selectOption("Shield");
+  await expect(page.getByLabel("Template 1 Shield Pattern")).toHaveValue(
+    "None"
+  );
+  await page.getByLabel("Template 2 Type").selectOption("Banner");
+
+  const pageImage = outputPage(page);
+
+  await page.getByTitle("base").click();
+  await page.getByTestId("region-Template2").click();
+  const stampedColor = await readPixel(pageImage, 146, 601);
+
+  await page.getByText("Clone Pattern 2 to 1", { exact: true }).click();
+
+  await expect(page.getByLabel("Template 1 Shield Pattern")).toHaveValue(
+    "Banner"
+  );
+  await expect.poll(() => readPixel(pageImage, 90, 100)).toEqual(stampedColor);
+});
+
 test("minecraft banner and shield's Clear Patterns button resets both templates' pattern stacks to the default", async ({
   page,
 }) => {
