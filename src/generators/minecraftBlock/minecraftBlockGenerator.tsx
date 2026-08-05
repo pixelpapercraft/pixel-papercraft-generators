@@ -17,15 +17,16 @@ import {
   type ThumbnailDef,
 } from "@genroot/builder";
 import {
+  makeCustomTextureVersion,
+  makeTextureVersionRegistry,
   parseAtlas,
-  updateCustomTextureAtlas,
-  updateCustomTextureUrl,
-} from "@genroot/generators/_common/textures/customTextureVersion";
+} from "@genroot/generators/_common/textures/customTextureVersionV2";
 import {
-  allTextureDefs,
-  versionIdsBlocksFirst,
+  blockTextureVersions,
+  itemTextureVersions,
 } from "@genroot/generators/_common/textures/textureVersions";
-import { TexturePicker } from "@genroot/generators/_common/block/texturePicker";
+import { TexturePickerV2 } from "@genroot/generators/_common/textures/texturePickerV2";
+import customPlaceholderImage from "@genroot/generators/_common/textures/texture_custom.png";
 import { type BlockRenderContext } from "./blockRenderContext";
 import { drawBlock } from "./shapes/block";
 import { drawCake } from "./shapes/cake";
@@ -112,7 +113,26 @@ const images: ImageDef[] = [
   image("Folds-Shelf", foldsShelfImage),
   image("Tabs-Shelf", tabsShelfImage),
 ];
-const textures: TextureDef[] = allTextureDefs;
+// One dedicated slot for this generator, not the shared v1 singleton — a
+// second generator's own makeCustomTextureVersion() slot never collides
+// with this one.
+const customVersion = makeCustomTextureVersion({
+  id: "custom",
+  label: "Custom",
+  placeholderUrl: customPlaceholderImage.src,
+  standardWidth: 16,
+  standardHeight: 16,
+});
+
+// Same source order v1's versionIdsBlocksFirst used: custom, then items,
+// then blocks, reversed to blocks-first, each newest-version-first.
+const registry = makeTextureVersionRegistry(
+  [customVersion, ...itemTextureVersions, ...blockTextureVersions]
+    .slice()
+    .reverse()
+);
+
+const textures: TextureDef[] = registry.allTextureDefs;
 const blockTypes = [
   "Block",
   "Slab",
@@ -219,7 +239,7 @@ const options = (values: string[]) =>
 
 function Component(): JSX.Element {
   const [versionId, setVersionId] = React.useState(
-    versionIdsBlocksFirst[0] ?? ""
+    registry.versionIds[0] ?? ""
   );
   const [selectedTexture, setSelectedTexture] =
     React.useState<SelectedTexture | null>(null);
@@ -288,11 +308,13 @@ function Component(): JSX.Element {
     if (!texture) return;
     const url = texture.imageWithCanvas.image.src;
     const atlas = parseAtlas(framesJson);
-    if (atlas && atlas.frames.length > 0) updateCustomTextureAtlas(url, atlas);
-    else updateCustomTextureUrl(url);
+    customVersion.updateAtlas(
+      url,
+      atlas && atlas.frames.length > 0 ? atlas : null
+    );
   };
   const clear = () => {
-    const defaultVersionId = versionIdsBlocksFirst[0] ?? "";
+    const defaultVersionId = registry.versionIds[0] ?? "";
     setVersionId(defaultVersionId);
     setSelectedTexture((current) =>
       current?.textureDefId === defaultVersionId ? current : null
@@ -306,6 +328,7 @@ function Component(): JSX.Element {
     setSnowOffsets([false, false]);
     setCakeBites(["0", "0"]);
   };
+  const textureVersion = registry.findVersion(versionId);
   return (
     <div>
       <GeneratorUI.MediaHero video={null} thumbnail={thumbnail} />
@@ -317,7 +340,7 @@ function Component(): JSX.Element {
           <div className="w-full bg-gray-100 p-8 space-y-4">
             <GeneratorUI.SelectControl
               label="Version"
-              options={options(versionIdsBlocksFirst)}
+              options={options(registry.versionIds)}
               value={versionId}
               onValueChange={(value) => {
                 setVersionId(value);
@@ -337,9 +360,9 @@ function Component(): JSX.Element {
                 onChange={onAtlasChange}
               />
             ) : null}
-            {versionId ? (
-              <TexturePicker
-                versionId={versionId}
+            {textureVersion ? (
+              <TexturePickerV2
+                textureVersion={textureVersion}
                 blend={selectedTexture?.blend ?? null}
                 onTextureSelected={(texture) =>
                   setSelectedTexture({
