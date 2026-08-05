@@ -29,15 +29,15 @@ import {
 } from "@genroot/generators/_common/plugins/glint";
 import { GlintControlV2 } from "@genroot/generators/_common/plugins/glintControlV2";
 import {
+  makeCustomTextureVersion,
+  makeTextureVersionRegistry,
   parseAtlas,
-  updateCustomTextureAtlas,
-  updateCustomTextureUrl,
-} from "@genroot/generators/_common/textures/customTextureVersion";
+} from "@genroot/generators/_common/textures/customTextureVersionV2";
 import {
-  allTextureDefs,
-  versionIdsItemsFirst as versionIds,
-  findVersion,
+  blockTextureVersions,
+  itemTextureVersions,
 } from "@genroot/generators/_common/textures/textureVersions";
+import customPlaceholderImage from "@genroot/generators/_common/textures/texture_custom.png";
 import {
   type Rectangle,
   getItemDimensions,
@@ -84,8 +84,27 @@ const images: ImageDef[] = [
   { id: "Title", url: titleImage.src },
 ];
 
+// One dedicated slot for this generator, not the shared v1 singleton — a
+// second generator's own makeCustomTextureVersion() slot never collides
+// with this one.
+const customVersion = makeCustomTextureVersion({
+  id: "custom",
+  label: "Custom",
+  placeholderUrl: customPlaceholderImage.src,
+  standardWidth: 16,
+  standardHeight: 16,
+});
+
+// Same source order v1's versionIdsItemsFirst/findVersion used: items
+// first, then blocks, then custom last, each newest-version-first.
+const registry = makeTextureVersionRegistry(
+  [customVersion, ...blockTextureVersions, ...itemTextureVersions]
+    .slice()
+    .reverse()
+);
+
 const textures: TextureDef[] = [
-  ...allTextureDefs,
+  ...registry.allTextureDefs,
   ...itemGlintTextureDefs,
   {
     id: "CenterFold",
@@ -474,7 +493,9 @@ const minecraftItemGenerator: Generator<MinecraftItemProps> = {
 };
 
 function Component(): JSX.Element {
-  const [versionId, setVersionId] = React.useState(versionIds[0] ?? "");
+  const [versionId, setVersionId] = React.useState(
+    registry.versionIds[0] ?? ""
+  );
   const [selectedItemSize, setSelectedItemSize] = React.useState(sizeMedium);
   const [customScalePercent, setCustomScalePercent] = React.useState(400);
   const [selectedTexture, setSelectedTexture] =
@@ -497,7 +518,7 @@ function Component(): JSX.Element {
   const [glintXOffset, setGlintXOffset] = React.useState(0);
   const [glintYOffset, setGlintYOffset] = React.useState(0);
 
-  const textureVersion = findVersion(versionId);
+  const textureVersion = registry.findVersion(versionId);
   const selectedItemScale =
     selectedItemSize === sizeCustom
       ? customScalePercent / 100
@@ -540,11 +561,10 @@ function Component(): JSX.Element {
 
     const textureUrl = texture.imageWithCanvas.image.src;
     const atlas = parseAtlas(framesJson);
-    if (atlas && atlas.frames.length > 0) {
-      updateCustomTextureAtlas(textureUrl, atlas);
-    } else {
-      updateCustomTextureUrl(textureUrl);
-    }
+    customVersion.updateAtlas(
+      textureUrl,
+      atlas && atlas.frames.length > 0 ? atlas : null
+    );
   };
 
   const addItem = () => {
@@ -652,7 +672,7 @@ function Component(): JSX.Element {
           <div className="w-full bg-gray-100 p-8 space-y-4">
             <GeneratorUI.SelectControl
               label="Version"
-              options={versionIds.map((version) => ({
+              options={registry.versionIds.map((version) => ({
                 id: version,
                 label: version,
               }))}
