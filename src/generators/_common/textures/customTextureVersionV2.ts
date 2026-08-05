@@ -55,3 +55,52 @@ export function makeCustomTextureVersion(
 
   return { textureDef, frames, updateAtlas };
 }
+
+export type VersionEntry = {
+  textureDef: TextureDef;
+  frames: TextureFrame[];
+};
+
+export type TextureVersionRegistry = {
+  allTextureDefs: TextureDef[];
+  versionIds: string[];
+  findVersion: (versionId: string) => VersionEntry | null;
+};
+
+/**
+ * Pure composition over an already-ordered list of version entries — no
+ * module state. A `makeCustomTextureVersion()` slot satisfies `VersionEntry`
+ * structurally, so it drops straight into the array alongside static
+ * versions.
+ */
+export function makeTextureVersionRegistry(
+  versions: VersionEntry[]
+): TextureVersionRegistry {
+  return {
+    allTextureDefs: versions.map((version) => version.textureDef),
+    versionIds: versions.map((version) => version.textureDef.id),
+    findVersion: (versionId) =>
+      versions.find((version) => version.textureDef.id === versionId) ?? null,
+  };
+}
+
+export function parseAtlas(framesJson: string | null): Atlas | null {
+  if (!framesJson) {
+    return null;
+  }
+
+  try {
+    const atlas = JSON.parse(framesJson) as Atlas;
+    if (
+      typeof atlas.atlasWidth !== "number" ||
+      typeof atlas.atlasHeight !== "number" ||
+      !Array.isArray(atlas.frames)
+    ) {
+      return null;
+    }
+
+    return atlas;
+  } catch {
+    return null;
+  }
+}

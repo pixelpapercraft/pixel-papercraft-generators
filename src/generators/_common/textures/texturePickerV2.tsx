@@ -2,20 +2,22 @@ import { TexturePicker as BuilderTexturePicker } from "@genroot/builder/ui/textu
 import { type SelectedTexture } from "@genroot/builder/ui/texturePicker/selectedTexture";
 import { TintSelector } from "@genroot/generators/_common/tintSelector/tintSelector";
 import { defaultTintChoiceGroups } from "@genroot/generators/_common/tintSelector/tints";
-import { findVersion } from "@genroot/generators/_common/textures/textureVersions";
+import { type VersionEntry } from "./customTextureVersionV2";
 
-export function TexturePicker({
-  versionId,
+// Takes an already-resolved version entry rather than a `versionId`, so
+// this component never needs to look one up itself — the caller can source
+// it from any `TextureVersionRegistry` instance.
+export function TexturePickerV2({
+  textureVersion,
   onBlendSelected,
   onTextureSelected,
   blend,
 }: {
-  versionId: string;
+  textureVersion: VersionEntry | null;
   onTextureSelected: (texture: SelectedTexture) => void;
   onBlendSelected: (blend: string | null) => void;
   blend?: string | null;
 }): JSX.Element | null {
-  const textureVersion = findVersion(versionId);
   if (!textureVersion) {
     return null;
   }
