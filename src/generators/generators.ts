@@ -29,6 +29,7 @@ import { generator as minecraftPigCharacterGeneratorDef } from "@genroot/generat
 import { generator as minecraftSquidCharacterGeneratorDef } from "@genroot/generators/minecraftSquidCharacter/minecraftSquidCharacterGenerator";
 import { generator as minecraftSpiderGeneratorDef } from "@genroot/generators/minecraftSpider/minecraftSpiderGenerator";
 import { generator as minecraftBannerAndShieldGeneratorDef } from "@genroot/generators/minecraftBannerAndShield/minecraftBannerAndShieldGenerator";
+import { generator as minecraftDioramaGeneratorDef } from "@genroot/generators/minecraftDiorama/minecraftDioramaGenerator";
 import { generator as minecraftUltimateBendableGeneratorDef } from "@genroot/generators/minecraftUltimateBendable/minecraftUltimateBendableGenerator";
 import { generator as minecraftVillagerGeneratorDef } from "@genroot/generators/minecraftVillager/minecraftVillagerGenerator";
 import { generator as minecraftVillagerCharacterGeneratorDef } from "@genroot/generators/minecraftVillagerCharacter/minecraftVillagerCharacterGenerator";
@@ -103,6 +104,7 @@ export const dev: GeneratorDefV2[] = isProductionEnvironment
       minecraftWitherGeneratorDef,
       minecraftSpiderGeneratorDef,
       minecraftBannerAndShieldGeneratorDef,
+      minecraftDioramaGeneratorDef,
     ];
 
 // Generator API coverage boards (one per API method group) are the Testing
