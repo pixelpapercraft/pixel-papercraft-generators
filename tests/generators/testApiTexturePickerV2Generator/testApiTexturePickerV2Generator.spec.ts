@@ -4,9 +4,7 @@ import { expect, test, type Page } from "@playwright/test";
 import { readPixel } from "../_shared/pixelColor";
 import { renderImageAtNaturalSize } from "../_shared/screenshot";
 
-// Coverage for makeTextureVersionRegistry + TexturePickerV2 — the
-// singleton-free successors to _common/textures/textureVersions.ts's
-// findVersion + _common/block/texturePicker.tsx's TexturePicker. Proves the
+// Coverage for makeTextureVersionRegistry + TexturePickerV2. Proves the
 // registry composition and the picker resolve real selections through to a
 // render, for both static versions and a makeCustomTextureVersion() slot.
 

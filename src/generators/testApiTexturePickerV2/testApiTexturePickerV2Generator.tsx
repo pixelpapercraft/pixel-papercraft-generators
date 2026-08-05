@@ -77,9 +77,9 @@ const betaVersion: VersionEntry = {
   ],
 };
 
-// One dedicated slot owned by this generator module — not a shared
-// singleton, so a second board or generator using its own
-// `makeCustomTextureVersion()` call never collides with this one.
+// One dedicated slot owned by this generator module — each
+// `makeCustomTextureVersion()` call returns an independent instance, so a
+// second board or generator's own call never collides with this one.
 const customVersion = makeCustomTextureVersion({
   id: "custom",
   label: "Custom",

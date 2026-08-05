@@ -84,9 +84,9 @@ const images: ImageDef[] = [
   { id: "Title", url: titleImage.src },
 ];
 
-// One dedicated slot for this generator, not the shared v1 singleton — a
-// second generator's own makeCustomTextureVersion() slot never collides
-// with this one.
+// One dedicated slot for this generator — each makeCustomTextureVersion()
+// call returns an independent instance, so a second generator's own slot
+// never collides with this one.
 const customVersion = makeCustomTextureVersion({
   id: "custom",
   label: "Custom",
@@ -95,8 +95,8 @@ const customVersion = makeCustomTextureVersion({
   standardHeight: 16,
 });
 
-// Same source order v1's versionIdsItemsFirst/findVersion used: items
-// first, then blocks, then custom last, each newest-version-first.
+// Reversing [custom, ...blocks, ...items] orders the dropdown items-first,
+// each group newest-version-first, with custom last.
 const registry = makeTextureVersionRegistry(
   [customVersion, ...blockTextureVersions, ...itemTextureVersions]
     .slice()

@@ -4,12 +4,9 @@ import { TintSelector } from "@genroot/generators/_common/tintSelector/tintSelec
 import { defaultTintChoiceGroups } from "@genroot/generators/_common/tintSelector/tints";
 import { type VersionEntry } from "./customTextureVersionV2";
 
-// Same picker as `_common/block/texturePicker.tsx`, except the caller
-// resolves the version entry (e.g. via a `TextureVersionRegistry`'s
-// `findVersion`) and passes it in directly, instead of this component
-// resolving a `versionId` through a module-level import. That's what lets a
-// generator adopt an instance-based registry without this component ever
-// reaching for shared state itself.
+// Takes an already-resolved version entry rather than a `versionId`, so
+// this component never needs to look one up itself — the caller can source
+// it from any `TextureVersionRegistry` instance.
 export function TexturePickerV2({
   textureVersion,
   onBlendSelected,

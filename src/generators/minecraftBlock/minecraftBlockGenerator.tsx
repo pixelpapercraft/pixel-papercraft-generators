@@ -113,9 +113,9 @@ const images: ImageDef[] = [
   image("Folds-Shelf", foldsShelfImage),
   image("Tabs-Shelf", tabsShelfImage),
 ];
-// One dedicated slot for this generator, not the shared v1 singleton — a
-// second generator's own makeCustomTextureVersion() slot never collides
-// with this one.
+// One dedicated slot for this generator — each makeCustomTextureVersion()
+// call returns an independent instance, so a second generator's own slot
+// never collides with this one.
 const customVersion = makeCustomTextureVersion({
   id: "custom",
   label: "Custom",
@@ -124,8 +124,8 @@ const customVersion = makeCustomTextureVersion({
   standardHeight: 16,
 });
 
-// Same source order v1's versionIdsBlocksFirst used: custom, then items,
-// then blocks, reversed to blocks-first, each newest-version-first.
+// Reversing [custom, ...items, ...blocks] orders the dropdown blocks-first,
+// each group newest-version-first, with custom last.
 const registry = makeTextureVersionRegistry(
   [customVersion, ...itemTextureVersions, ...blockTextureVersions]
     .slice()
