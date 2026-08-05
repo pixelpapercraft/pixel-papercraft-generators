@@ -6,6 +6,10 @@ export const blockPresets: BlockPreset[] = ["Full Blocks", "Quarter Blocks"];
 
 export const defaultPreset: BlockPreset = "Full Blocks";
 
+export function isBlockPreset(value: string): value is BlockPreset {
+  return value === "Full Blocks" || value === "Quarter Blocks";
+}
+
 export type TabType = "None" | "Regular" | "Left" | "Middle" | "Right";
 
 const tabCycle: TabType[] = ["None", "Regular", "Left", "Middle", "Right"];

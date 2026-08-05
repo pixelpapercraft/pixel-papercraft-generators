@@ -1,16 +1,38 @@
 "use client";
 
+import React from "react";
 import {
   GeneratorRenderer,
   GeneratorUI,
+  rotationToDegrees,
+  type Blend,
   type GeneratorDefV2,
   type Generator,
   type ImageDef,
   type InstructionsDef,
+  type RegionClickHandler,
   type RenderContext,
+  type SelectedTexture,
   type TextureDef,
   type ThumbnailDef,
 } from "@genroot/builder";
+import { makeTextureVersionRegistry } from "@genroot/generators/_common/textures/customTextureVersionV2";
+import {
+  blockTextureVersions,
+  itemTextureVersions,
+} from "@genroot/generators/_common/textures/textureVersions";
+import { TexturePickerV2 } from "@genroot/generators/_common/textures/texturePickerV2";
+
+import {
+  addFaceTexture,
+  blockPresets,
+  eraseFaceTexture,
+  isBlockPreset,
+  makeEmptyDioramaDocument,
+  setPreset,
+  type DioramaDocument,
+} from "./dioramaDocument";
+import { makeFaceRegions } from "./layout";
 
 import thumbnailImage from "./thumbnail/v3-thumbnail-256.png";
 import backgroundImage from "./images/Background.png";
@@ -21,8 +43,20 @@ const id = "minecraft-diorama";
 
 const name = "Minecraft Diorama";
 
+const gridOriginX = 42;
+const gridOriginY = 41;
+const gridAreaWidth = 512;
+const gridAreaHeight = 768;
+
 const instructions: InstructionsDef = `
-Skeleton for the Minecraft Diorama generator rebuild. No content yet.
+## How to use the Minecraft Diorama Generator?
+* Select a block texture, then click a face on the grid to place it.
+* Multiple textures can be stacked on the same face by clicking again.
+* Select the eraser in the texture picker, then click a face to remove its most recently placed texture.
+* Use the "Block Preset" dropdown to switch between whole blocks and quarter blocks for finer layouts.
+
+This is still an early, dev-only build: tabs, folds, source/destination
+editing, splitting, and multi-page layouts are not built yet.
 `;
 
 const thumbnail: ThumbnailDef = { url: thumbnailImage.src };
@@ -33,19 +67,56 @@ const images: ImageDef[] = [
   { id: "Title Portrait", url: titlePortraitImage.src },
 ];
 
-const textures: TextureDef[] = [];
+// Reversing [...items, ...blocks] orders the dropdown blocks-first, each
+// group newest-version-first.
+const registry = makeTextureVersionRegistry(
+  [...itemTextureVersions, ...blockTextureVersions].slice().reverse()
+);
 
-// No controls or props yet — the render function just proves the page
-// lifecycle works so the skeleton is exercisable before any real content
-// lands. Title Landscape is registered but unused: the V2 render API only
-// creates portrait pages until landscape gets its own builder capability.
-type DioramaProps = Record<string, never>;
+const textures: TextureDef[] = registry.allTextureDefs;
 
-const noProps: DioramaProps = {};
+type DioramaProps = {
+  document: DioramaDocument;
+};
 
-const render = (ctx: RenderContext): void => {
+function drawFaceTexture(
+  ctx: RenderContext,
+  texture: SelectedTexture,
+  destination: [number, number, number, number]
+): void {
+  if (texture.textureDefId === "") {
+    return;
+  }
+
+  const blend: Blend | undefined = texture.blend
+    ? { kind: "MultiplyHex", hex: texture.blend }
+    : undefined;
+
+  ctx.drawTexture(texture.textureDefId, texture.frame.rectangle, destination, {
+    rotate: rotationToDegrees(texture.rotation),
+    flip: texture.flip,
+    blend,
+  });
+}
+
+const render = (ctx: RenderContext, props: DioramaProps): void => {
   ctx.fillBackgroundColorWithWhite();
   ctx.drawImage("Background", [0, 0]);
+
+  const faceRegions = makeFaceRegions({
+    originX: gridOriginX,
+    originY: gridOriginY,
+    pageWidth: gridAreaWidth,
+    pageHeight: gridAreaHeight,
+    preset: props.document.preset,
+  });
+
+  faceRegions.forEach(({ id: faceId, region }) => {
+    ctx.defineRegion(region, faceId);
+    const stack = props.document.faceTextures[faceId] ?? [];
+    stack.forEach((texture) => drawFaceTexture(ctx, texture, region));
+  });
+
   ctx.drawImage("Title Portrait", [0, 0]);
 };
 
@@ -57,7 +128,35 @@ const minecraftDioramaGenerator: Generator<DioramaProps> = {
   render,
 };
 
+const presetOptions = blockPresets.map((preset) => ({
+  id: preset,
+  label: preset,
+}));
+
 function Component(): JSX.Element {
+  const [document, setDocument] = React.useState<DioramaDocument>(
+    makeEmptyDioramaDocument()
+  );
+  const [versionId, setVersionId] = React.useState(
+    registry.versionIds[0] ?? ""
+  );
+  const [selectedTexture, setSelectedTexture] =
+    React.useState<SelectedTexture | null>(null);
+  const textureVersion = registry.findVersion(versionId);
+
+  const onRegionClick: RegionClickHandler = ({ regionId }) => {
+    if (!selectedTexture) {
+      return;
+    }
+    setDocument((current) =>
+      selectedTexture.textureDefId === ""
+        ? eraseFaceTexture(current, regionId)
+        : addFaceTexture(current, regionId, selectedTexture)
+    );
+  };
+
+  const props: DioramaProps = { document };
+
   return (
     <div>
       <GeneratorUI.MediaHero video={null} thumbnail={thumbnail} />
@@ -69,13 +168,56 @@ function Component(): JSX.Element {
         >
           <div className="w-full bg-gray-100 p-8 space-y-4">
             <GeneratorUI.Instructions markdown={instructions} />
+            <GeneratorUI.SelectControl
+              label="Block Preset"
+              options={presetOptions}
+              value={document.preset}
+              onValueChange={(value) => {
+                if (!isBlockPreset(value)) {
+                  return;
+                }
+                setDocument((current) => setPreset(current, value));
+              }}
+            />
+            <GeneratorUI.SelectControl
+              label="Version"
+              options={registry.versionIds.map((id) => ({ id, label: id }))}
+              value={versionId}
+              onValueChange={(value) => {
+                setVersionId(value);
+                setSelectedTexture((current) =>
+                  current?.textureDefId === value ? current : null
+                );
+              }}
+            />
+            {textureVersion ? (
+              <TexturePickerV2
+                textureVersion={textureVersion}
+                blend={selectedTexture?.blend ?? null}
+                onTextureSelected={(texture) =>
+                  setSelectedTexture({
+                    ...texture,
+                    blend:
+                      texture.textureDefId === ""
+                        ? null
+                        : selectedTexture?.blend ?? null,
+                  })
+                }
+                onBlendSelected={(blend) =>
+                  setSelectedTexture((current) =>
+                    current ? { ...current, blend } : null
+                  )
+                }
+              />
+            ) : null}
           </div>
         </div>
 
         <div className="flex-1 min-w-0">
           <GeneratorRenderer
             generator={minecraftDioramaGenerator}
-            props={noProps}
+            props={props}
+            onRegionClick={onRegionClick}
           />
         </div>
       </div>
