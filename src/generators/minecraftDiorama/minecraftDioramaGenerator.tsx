@@ -21,7 +21,7 @@ import {
   blockTextureVersions,
   itemTextureVersions,
 } from "@genroot/generators/_common/textures/textureVersions";
-import { TexturePickerV2 } from "@genroot/generators/_common/textures/texturePickerV2";
+import { TexturePickerV3 } from "@genroot/generators/_common/textures/texturePickerV3";
 
 import {
   addFaceTexture,
@@ -142,6 +142,7 @@ function Component(): JSX.Element {
   );
   const [selectedTexture, setSelectedTexture] =
     React.useState<SelectedTexture | null>(null);
+  const [blend, setBlend] = React.useState<string | null>(null);
   const textureVersion = registry.findVersion(versionId);
 
   const onRegionClick: RegionClickHandler = ({ regionId }) => {
@@ -151,7 +152,7 @@ function Component(): JSX.Element {
     setDocument((current) =>
       selectedTexture.textureDefId === ""
         ? eraseFaceTexture(current, regionId)
-        : addFaceTexture(current, regionId, selectedTexture)
+        : addFaceTexture(current, regionId, { ...selectedTexture, blend })
     );
   };
 
@@ -191,23 +192,11 @@ function Component(): JSX.Element {
               }}
             />
             {textureVersion ? (
-              <TexturePickerV2
+              <TexturePickerV3
                 textureVersion={textureVersion}
-                blend={selectedTexture?.blend ?? null}
-                onTextureSelected={(texture) =>
-                  setSelectedTexture({
-                    ...texture,
-                    blend:
-                      texture.textureDefId === ""
-                        ? null
-                        : selectedTexture?.blend ?? null,
-                  })
-                }
-                onBlendSelected={(blend) =>
-                  setSelectedTexture((current) =>
-                    current ? { ...current, blend } : null
-                  )
-                }
+                blend={blend}
+                onTextureSelected={setSelectedTexture}
+                onBlendSelected={setBlend}
               />
             ) : null}
           </div>
