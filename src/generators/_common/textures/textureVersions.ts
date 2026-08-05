@@ -5,7 +5,6 @@ import {
   tilesToTextureFrames,
 } from "@genroot/builder/engine/textureData";
 
-import { customTextureVersion } from "./customTextureVersion";
 import * as Texture_1_7_10_Blocks from "./texture_minecraft_1_7_10_blocks";
 import * as Texture_1_7_10_Items from "./texture_minecraft_1_7_10_items";
 import * as Texture_1_13_2_Blocks from "./texture_minecraft_1_13_2_blocks";
@@ -60,35 +59,3 @@ export const itemTextureVersions: TextureVersion[] = itemDefinitions.map(
     return { textureDef, frames };
   }
 );
-
-export const allTextureDefs = [
-  ...blockTextureVersions,
-  ...itemTextureVersions,
-  customTextureVersion,
-].map(({ textureDef }) => textureDef);
-
-export const versionIdsBlocksFirst = [
-  customTextureVersion,
-  ...itemTextureVersions,
-  ...blockTextureVersions,
-]
-  .map(({ textureDef }) => textureDef.id)
-  .reverse();
-
-export const versionIdsItemsFirst = [
-  customTextureVersion,
-  ...blockTextureVersions,
-  ...itemTextureVersions,
-]
-  .map(({ textureDef }) => textureDef.id)
-  .reverse();
-
-export function findVersion(versionId: string): TextureVersion | null {
-  return (
-    [
-      ...blockTextureVersions,
-      ...itemTextureVersions,
-      customTextureVersion,
-    ].find(({ textureDef }) => textureDef.id === versionId) ?? null
-  );
-}
