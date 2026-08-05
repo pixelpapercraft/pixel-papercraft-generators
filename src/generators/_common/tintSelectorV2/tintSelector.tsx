@@ -42,17 +42,19 @@ export function TintSelector({
   onChange,
   label,
   swatchGroups,
+  includeNoTint = true,
 }: {
   value: string | null;
   onChange: (hex: string | null) => void;
   label: string;
   swatchGroups: TintSwatchGroup[];
+  includeNoTint?: boolean;
 }) {
   const labelId = React.useId();
 
   const tintSwatches = flattenTintSwatchGroups(swatchGroups);
   const categoryChoices = [
-    noneChoice,
+    ...(includeNoTint ? [noneChoice] : []),
     ...swatchGroups.map(makeGroupOption),
     customChoice,
   ];

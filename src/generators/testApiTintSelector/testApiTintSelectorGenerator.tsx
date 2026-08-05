@@ -27,6 +27,9 @@ its only other current exercise is temporary throwaway wiring in the Banner
 & Shield skeleton generator. Mounts the control on its own with a single dye
 swatch group and draws whatever color it resolves to, so a pixel read
 confirms the selection reached the render pass.
+
+A second control below it sets \`includeNoTint={false}\`, for generators
+(Armor, Horse, Cat) whose tint must always have a value.
 `;
 
 const images: ImageDef[] = [];
@@ -35,6 +38,7 @@ const textures: TextureDef[] = [];
 
 type TintSelectorProps = {
   tint: string | null;
+  requiredTint: string;
 };
 
 const render = (ctx: RenderContext, props: TintSelectorProps): void => {
@@ -43,6 +47,7 @@ const render = (ctx: RenderContext, props: TintSelectorProps): void => {
   if (props.tint) {
     ctx.fillRectangle([20, 20, 64, 64], props.tint);
   }
+  ctx.fillRectangle([100, 20, 64, 64], props.requiredTint);
 };
 
 const testApiTintSelectorGenerator: Generator<TintSelectorProps> = {
@@ -53,10 +58,14 @@ const testApiTintSelectorGenerator: Generator<TintSelectorProps> = {
   render,
 };
 
+const defaultRequiredTint = getFirstSwatchColor(dyeTintGroup) ?? "#1D1D21";
+
 function Component(): JSX.Element {
   const [tint, setTint] = React.useState<string | null>(
     getFirstSwatchColor(dyeTintGroup)
   );
+  const [requiredTint, setRequiredTint] =
+    React.useState<string>(defaultRequiredTint);
 
   return (
     <div className="lg:flex gap-8">
@@ -73,13 +82,21 @@ function Component(): JSX.Element {
             swatchGroups={[dyeTintGroup]}
             onChange={setTint}
           />
+
+          <TintSelector
+            value={requiredTint}
+            label="Required Tint"
+            swatchGroups={[dyeTintGroup]}
+            includeNoTint={false}
+            onChange={(hex) => setRequiredTint(hex ?? defaultRequiredTint)}
+          />
         </div>
       </div>
 
       <div className="flex-1 min-w-0">
         <GeneratorRenderer
           generator={testApiTintSelectorGenerator}
-          props={{ tint }}
+          props={{ tint, requiredTint }}
         />
       </div>
     </div>
