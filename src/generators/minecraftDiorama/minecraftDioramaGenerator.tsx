@@ -59,21 +59,25 @@ const minecraftDioramaGenerator: Generator<DioramaProps> = {
 
 function Component(): JSX.Element {
   return (
-    <div className="lg:flex gap-8">
-      <div
-        className="flex-1 min-w-0 mb-8 lg:mb-0"
-        data-testid="generator-sidebar"
-      >
-        <div className="w-full bg-gray-100 p-8 space-y-4">
-          <GeneratorUI.Instructions markdown={instructions} />
-        </div>
-      </div>
+    <div>
+      <GeneratorUI.MediaHero video={null} thumbnail={thumbnail} />
 
-      <div className="flex-1 min-w-0">
-        <GeneratorRenderer
-          generator={minecraftDioramaGenerator}
-          props={noProps}
-        />
+      <div className="lg:flex gap-8">
+        <div
+          className="flex-1 min-w-0 mb-8 lg:mb-0"
+          data-testid="generator-sidebar"
+        >
+          <div className="w-full bg-gray-100 p-8 space-y-4">
+            <GeneratorUI.Instructions markdown={instructions} />
+          </div>
+        </div>
+
+        <div className="flex-1 min-w-0">
+          <GeneratorRenderer
+            generator={minecraftDioramaGenerator}
+            props={noProps}
+          />
+        </div>
       </div>
     </div>
   );
