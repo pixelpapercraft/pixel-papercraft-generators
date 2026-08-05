@@ -9,7 +9,13 @@ import {
   type InstructionsDef,
   type RenderContext,
   type TextureDef,
+  type ThumbnailDef,
 } from "@genroot/builder";
+
+import thumbnailImage from "./thumbnail/v3-thumbnail-256.png";
+import backgroundImage from "./images/Background.png";
+import titleLandscapeImage from "./images/TitleLandscape.png";
+import titlePortraitImage from "./images/TitlePortrait.png";
 
 const id = "minecraft-diorama";
 
@@ -19,19 +25,28 @@ const instructions: InstructionsDef = `
 Skeleton for the Minecraft Diorama generator rebuild. No content yet.
 `;
 
-const images: ImageDef[] = [];
+const thumbnail: ThumbnailDef = { url: thumbnailImage.src };
+
+const images: ImageDef[] = [
+  { id: "Background", url: backgroundImage.src },
+  { id: "Title Landscape", url: titleLandscapeImage.src },
+  { id: "Title Portrait", url: titlePortraitImage.src },
+];
 
 const textures: TextureDef[] = [];
 
 // No controls or props yet — the render function just proves the page
 // lifecycle works so the skeleton is exercisable before any real content
-// lands.
+// lands. Title Landscape is registered but unused: the V2 render API only
+// creates portrait pages until landscape gets its own builder capability.
 type DioramaProps = Record<string, never>;
 
 const noProps: DioramaProps = {};
 
 const render = (ctx: RenderContext): void => {
   ctx.fillBackgroundColorWithWhite();
+  ctx.drawImage("Background", [0, 0]);
+  ctx.drawImage("Title Portrait", [0, 0]);
 };
 
 const minecraftDioramaGenerator: Generator<DioramaProps> = {
@@ -67,6 +82,6 @@ function Component(): JSX.Element {
 export const generator: GeneratorDefV2 = {
   id,
   name,
-  thumbnail: null,
+  thumbnail,
   Component,
 };
