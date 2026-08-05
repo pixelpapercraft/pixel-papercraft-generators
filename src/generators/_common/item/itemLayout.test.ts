@@ -1,7 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { type TextureFrame } from "@genroot/builder/engine/textureData";
 import { type SelectedTexture } from "@genroot/builder/ui/texturePicker/selectedTexture";
-import { findVersion } from "@genroot/generators/_common/textures/textureVersions";
+import {
+  blockTextureVersions,
+  itemTextureVersions,
+} from "@genroot/generators/_common/textures/textureVersions";
 import {
   getFrameLogicalCrop,
   getFrameSourceCrop,
@@ -29,7 +32,10 @@ function makeSelectedTexture(
 }
 
 function getTextureFrame(versionId: string, frameId: string): TextureFrame {
-  const frame = findVersion(versionId)?.frames.find(({ id }) => id === frameId);
+  const version = [...blockTextureVersions, ...itemTextureVersions].find(
+    ({ textureDef }) => textureDef.id === versionId
+  );
+  const frame = version?.frames.find(({ id }) => id === frameId);
   if (!frame) {
     throw new Error(`Missing texture frame ${versionId}:${frameId}`);
   }
