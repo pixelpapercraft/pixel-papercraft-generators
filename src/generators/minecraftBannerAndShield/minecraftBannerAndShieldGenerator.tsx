@@ -45,7 +45,7 @@ import {
   updateCustomShieldBaseNoPatternTexture,
   updateCustomShieldBaseTexture,
 } from "./textures/customBannerShieldTextureVersion";
-import { parseAtlas } from "../_common/textures/customTextureVersion";
+import { parseAtlas } from "../_common/textures/customTextureVersionV2";
 import {
   bannerFlagFrontRegion,
   drawBannerCrossbar,
