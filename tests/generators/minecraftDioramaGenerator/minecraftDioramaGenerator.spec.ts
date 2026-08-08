@@ -415,6 +415,75 @@ test("Destination edit mode's row header resizes only that row's height", async 
   );
 });
 
+// Transform edit mode rotates/flips an already-placed face's texture, on top
+// of any rotation/flip already baked into the texture at placement time (see
+// `applyFaceTransform`'s unit coverage for the exact composition math).
+// `furnace_front` is fine-grained/non-uniform, so an exact post-rotation RGB
+// isn't a stable thing to hardcode (a real rotation shifts which sub-pixel
+// texel lands on a given screen pixel, and this codebase has already hit
+// CI-only ±1-pixel drift from probes like that — see
+// `project_generator-pixel-probe-stability`). Instead this proves the
+// transform took visible effect (the probe pixel changes) and, more
+// strongly, that resetting back to the identity transform (Rot0/None)
+// restores the *exact* original pixel — a stable, non-fragile round-trip
+// check confirmed against the real render before trusting it.
+test("Transform edit mode rotates and flips a face's texture, reversibly", async ({
+  page,
+}) => {
+  await page.goto("/generator/minecraft-diorama");
+  const pageImage = page.getByTestId("generator-page-image").first();
+  const probe: [number, number] = [58, 57];
+
+  await page.getByTitle("furnace front", { exact: true }).click();
+  await page.getByTestId("region-BlockFace0 0").click();
+  const baseline = await readPixel(pageImage, ...probe);
+
+  await page.getByLabel("Edit Mode").selectOption("Transform");
+  await page.getByLabel("Face Rotation").selectOption("Rot90");
+  await page.getByTestId("region-BlockFace0 0").click();
+  expect(await readPixel(pageImage, ...probe)).not.toEqual(baseline);
+
+  await page.getByLabel("Face Rotation").selectOption("Rot0");
+  await page.getByTestId("region-BlockFace0 0").click();
+  expect(await readPixel(pageImage, ...probe)).toEqual(baseline);
+
+  await page.getByLabel("Face Flip").selectOption("Horizontal");
+  await page.getByTestId("region-BlockFace0 0").click();
+  expect(await readPixel(pageImage, ...probe)).not.toEqual(baseline);
+
+  await page.getByLabel("Face Flip").selectOption("None");
+  await page.getByTestId("region-BlockFace0 0").click();
+  expect(await readPixel(pageImage, ...probe)).toEqual(baseline);
+});
+
+// The band above a column bulk-applies the current rotation/flip to every
+// face in that column, mirroring Source/Destination's own column bands.
+test("Transform edit mode's column header applies the transform to every face in that column", async ({
+  page,
+}) => {
+  await page.goto("/generator/minecraft-diorama");
+  const pageImage = page.getByTestId("generator-page-image").first();
+  const topProbe: [number, number] = [58, 57];
+  const bottomProbe: [number, number] = [58, 185];
+
+  await page.getByTitle("furnace front", { exact: true }).click();
+  await page.getByTestId("region-BlockFace0 0").click();
+  await page.getByTestId("region-BlockFace0 1").click();
+  const topBaseline = await readPixel(pageImage, ...topProbe);
+  const bottomBaseline = await readPixel(pageImage, ...bottomProbe);
+
+  await page.getByLabel("Edit Mode").selectOption("Transform");
+  await page.getByLabel("Face Rotation").selectOption("Rot90");
+  await page.getByTestId("region-TransformColumn0").click();
+
+  const topAfter = await readPixel(pageImage, ...topProbe);
+  const bottomAfter = await readPixel(pageImage, ...bottomProbe);
+  expect(topAfter).not.toEqual(topBaseline);
+  expect(bottomAfter).not.toEqual(bottomBaseline);
+  // Both faces in the column received the identical transform.
+  expect(topAfter).toEqual(bottomAfter);
+});
+
 // Multi-page's row accounting can no longer assume a constant rows-per-page
 // once a row is resized — page 1 fits fewer rows than usual, so page 2 must
 // start at a later world row than a naive pageIndex * rowsPerPage would give.

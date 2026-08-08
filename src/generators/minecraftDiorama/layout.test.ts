@@ -6,6 +6,8 @@ import {
   getFaceId,
   getSourceColumnId,
   getSourceRowId,
+  getTransformColumnId,
+  getTransformRowId,
   makeEmptyDioramaDocument,
   setColumnWidth,
   setRowHeight,
@@ -23,6 +25,8 @@ import {
   makeFaceRegions,
   makeSourceColumnHeaderRegions,
   makeSourceRowHeaderRegions,
+  makeTransformColumnHeaderRegions,
+  makeTransformRowHeaderRegions,
   type EdgeRegion,
   type FaceRegion,
   type HeaderRegion,
@@ -585,6 +589,85 @@ describe("makeDestinationColumnHeaderRegions / makeDestinationRowHeaderRegions",
     });
     expect(rowRegions[0]).toEqual<HeaderRegion>({
       id: getDestinationRowId(0),
+      region: [10 - 32, 20, 32, 256],
+    });
+  });
+});
+
+describe("makeTransformColumnHeaderRegions / makeTransformRowHeaderRegions", () => {
+  it("use the same placement as the Source/Destination header bands, but a distinct id namespace", () => {
+    const document = fullBlocks();
+    const columnRegions = makeTransformColumnHeaderRegions({
+      originX: 10,
+      originY: 20,
+      pageWidth: a4PortraitPageWidth,
+      pageHeight: a4PortraitPageHeight,
+      document,
+    });
+    const rowRegions = makeTransformRowHeaderRegions({
+      originX: 10,
+      originY: 20,
+      pageWidth: a4PortraitPageWidth,
+      pageHeight: a4PortraitPageHeight,
+      document,
+    });
+
+    expect(columnRegions[0]).toEqual<HeaderRegion>({
+      id: getTransformColumnId(0),
+      region: [10, 20 - 32, 128, 32],
+    });
+    expect(rowRegions[0]).toEqual<HeaderRegion>({
+      id: getTransformRowId(0),
+      region: [10 - 32, 20, 32, 128],
+    });
+  });
+
+  it("never collides with the Source/Destination header bands' own ids", () => {
+    const options = {
+      originX: 10,
+      originY: 20,
+      pageWidth: a4PortraitPageWidth,
+      pageHeight: a4PortraitPageHeight,
+      document: fullBlocks(),
+    };
+    const otherIds = [
+      ...makeSourceColumnHeaderRegions(options),
+      ...makeSourceRowHeaderRegions(options),
+      ...makeDestinationColumnHeaderRegions(options),
+      ...makeDestinationRowHeaderRegions(options),
+    ].map(({ id }) => id);
+    const transformIds = [
+      ...makeTransformColumnHeaderRegions(options),
+      ...makeTransformRowHeaderRegions(options),
+    ].map(({ id }) => id);
+
+    const allIds = new Set([...otherIds, ...transformIds]);
+    expect(allIds.size).toBe(otherIds.length + transformIds.length);
+  });
+
+  it("keeps each band's own thickness fixed even when the column/row it targets is resized", () => {
+    const document = setRowHeight(setColumnWidth(fullBlocks(), 0, 32), 0, 32);
+    const columnRegions = makeTransformColumnHeaderRegions({
+      originX: 10,
+      originY: 20,
+      pageWidth: a4PortraitPageWidth,
+      pageHeight: a4PortraitPageHeight,
+      document,
+    });
+    const rowRegions = makeTransformRowHeaderRegions({
+      originX: 10,
+      originY: 20,
+      pageWidth: a4PortraitPageWidth,
+      pageHeight: a4PortraitPageHeight,
+      document,
+    });
+
+    expect(columnRegions[0]).toEqual<HeaderRegion>({
+      id: getTransformColumnId(0),
+      region: [10, 20 - 32, 256, 32],
+    });
+    expect(rowRegions[0]).toEqual<HeaderRegion>({
+      id: getTransformRowId(0),
       region: [10 - 32, 20, 32, 256],
     });
   });

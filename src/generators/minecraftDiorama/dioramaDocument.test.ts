@@ -2,8 +2,10 @@ import { describe, expect, it } from "vitest";
 import type { SelectedTexture } from "@genroot/builder";
 import {
   addFaceTexture,
+  applyFaceTransform,
   clampSourceRegion,
   cycleTab,
+  defaultFaceTransform,
   eraseFaceTexture,
   fullSourceRegion,
   getColumnWidth,
@@ -13,23 +15,32 @@ import {
   getEdgeId,
   getFaceId,
   getFaceSource,
+  getFaceTransform,
   getRowHeight,
   getSourceColumnId,
   getSourceRowId,
+  getTransformColumnId,
+  getTransformRowId,
   getWorldUnitsForPreset,
+  isDefaultTransform,
   makeEmptyDioramaDocument,
   parseDestinationColumnId,
   parseDestinationRowId,
   parseFaceId,
   parseSourceColumnId,
   parseSourceRowId,
+  parseTransformColumnId,
+  parseTransformRowId,
   setColumnWidth,
   setFaceSource,
   setFaceSourceForFaces,
+  setFaceTransform,
+  setFaceTransformForFaces,
   setPreset,
   setRowHeight,
   toggleFold,
   type DioramaDocument,
+  type FaceTransform,
   type Region,
 } from "./dioramaDocument";
 
@@ -57,6 +68,7 @@ describe("makeEmptyDioramaDocument", () => {
       sources: {},
       destinationColumns: {},
       destinationRows: {},
+      transforms: {},
       tabs: {},
       folds: {},
     });
@@ -70,6 +82,7 @@ describe("makeEmptyDioramaDocument", () => {
         sources: {},
         destinationColumns: {},
         destinationRows: {},
+        transforms: {},
         tabs: {},
         folds: {},
       }
@@ -391,5 +404,169 @@ describe("getDestinationColumnId / getDestinationRowId round-trip", () => {
     expect(parseDestinationRowId(getDestinationColumnId(0))).toBeNull();
     expect(parseDestinationColumnId(getSourceColumnId(0))).toBeNull();
     expect(parseDestinationColumnId(getFaceId(0, 0))).toBeNull();
+  });
+});
+
+describe("getTransformColumnId / getTransformRowId round-trip", () => {
+  it("parses a column id back to its column number", () => {
+    expect(parseTransformColumnId(getTransformColumnId(3))).toBe(3);
+  });
+
+  it("parses a row id back to its row number", () => {
+    expect(parseTransformRowId(getTransformRowId(-2))).toBe(-2);
+  });
+
+  it("returns null for ids from another namespace", () => {
+    expect(parseTransformColumnId(getTransformRowId(0))).toBeNull();
+    expect(parseTransformRowId(getTransformColumnId(0))).toBeNull();
+    expect(parseTransformColumnId(getDestinationColumnId(0))).toBeNull();
+    expect(parseTransformColumnId(getFaceId(0, 0))).toBeNull();
+  });
+});
+
+describe("isDefaultTransform", () => {
+  it("is true only for Rot0/None", () => {
+    expect(isDefaultTransform(defaultFaceTransform)).toBe(true);
+    expect(isDefaultTransform({ rotation: "Rot90", flip: "None" })).toBe(false);
+    expect(isDefaultTransform({ rotation: "Rot0", flip: "Horizontal" })).toBe(
+      false
+    );
+  });
+});
+
+describe("getFaceTransform", () => {
+  it("falls back to the default (identity) transform when none is set", () => {
+    const document = makeEmptyDioramaDocument();
+    expect(getFaceTransform(document, getFaceId(0, 0))).toEqual(
+      defaultFaceTransform
+    );
+  });
+
+  it("returns the explicit transform once one has been set", () => {
+    const faceId = getFaceId(0, 0);
+    const transform: FaceTransform = { rotation: "Rot90", flip: "Horizontal" };
+    const document = setFaceTransform(
+      makeEmptyDioramaDocument(),
+      faceId,
+      transform
+    );
+    expect(getFaceTransform(document, faceId)).toEqual(transform);
+  });
+});
+
+describe("setFaceTransform / setFaceTransformForFaces", () => {
+  it("sets a transform for a single face without touching others", () => {
+    const transform: FaceTransform = { rotation: "Rot180", flip: "None" };
+    const document = setFaceTransform(
+      makeEmptyDioramaDocument(),
+      getFaceId(0, 0),
+      transform
+    );
+    expect(document.transforms).toEqual<DioramaDocument["transforms"]>({
+      "BlockFace0 0": transform,
+    });
+  });
+
+  it("removes the override when set back to the default transform", () => {
+    const faceId = getFaceId(0, 0);
+    const rotated = setFaceTransform(makeEmptyDioramaDocument(), faceId, {
+      rotation: "Rot90",
+      flip: "None",
+    });
+    expect(rotated.transforms).toEqual({
+      [faceId]: { rotation: "Rot90", flip: "None" },
+    });
+
+    const reset = setFaceTransform(rotated, faceId, defaultFaceTransform);
+    expect(reset.transforms).toEqual({});
+  });
+
+  it("sets the same transform across every given face", () => {
+    const faceIds = [getFaceId(0, 0), getFaceId(1, 0), getFaceId(2, 1)];
+    const transform: FaceTransform = { rotation: "Rot270", flip: "Vertical" };
+    const document = setFaceTransformForFaces(
+      makeEmptyDioramaDocument(),
+      faceIds,
+      transform
+    );
+    faceIds.forEach((faceId) => {
+      expect(document.transforms[faceId]).toEqual(transform);
+    });
+  });
+});
+
+describe("applyFaceTransform", () => {
+  function makeTexture(
+    overrides: Partial<SelectedTexture> = {}
+  ): SelectedTexture {
+    return {
+      textureDefId: "stone",
+      frame: {
+        id: "frame",
+        label: "frame",
+        rectangle: [0, 0, 16, 16],
+        crop: [0, 0, 16, 16],
+      },
+      rotation: "Rot0",
+      flip: "None",
+      blend: null,
+      ...overrides,
+    };
+  }
+
+  it("returns the same texture unchanged for the default (identity) transform", () => {
+    const texture = makeTexture({ rotation: "Rot90", flip: "Horizontal" });
+    expect(applyFaceTransform(texture, defaultFaceTransform)).toBe(texture);
+  });
+
+  it("adds a pure rotation directly to an unflipped, unrotated texture", () => {
+    const texture = makeTexture();
+    const result = applyFaceTransform(texture, {
+      rotation: "Rot90",
+      flip: "None",
+    });
+    expect(result.rotation).toBe("Rot90");
+    expect(result.flip).toBe("None");
+  });
+
+  it("applies a pure flip directly to an unflipped, unrotated texture", () => {
+    const texture = makeTexture();
+    const result = applyFaceTransform(texture, {
+      rotation: "Rot0",
+      flip: "Horizontal",
+    });
+    expect(result.rotation).toBe("Rot0");
+    expect(result.flip).toBe("Horizontal");
+  });
+
+  it("cancels out when the same flip is applied twice", () => {
+    const texture = makeTexture({ rotation: "Rot0", flip: "Horizontal" });
+    const result = applyFaceTransform(texture, {
+      rotation: "Rot0",
+      flip: "Horizontal",
+    });
+    expect(result).toEqual({ ...texture, rotation: "Rot0", flip: "None" });
+  });
+
+  it("composes a horizontal flip followed by a vertical flip into a pure 180-degree rotation", () => {
+    // Flipping about both axes in turn is geometrically the same as a
+    // half-turn: nothing ends up mirrored, everything ends up upside down.
+    const texture = makeTexture({ rotation: "Rot0", flip: "Horizontal" });
+    const result = applyFaceTransform(texture, {
+      rotation: "Rot0",
+      flip: "Vertical",
+    });
+    expect(result).toEqual({ ...texture, rotation: "Rot180", flip: "None" });
+  });
+
+  it("adds rotation on top of an already-rotated texture, wrapping at 360", () => {
+    const texture = makeTexture({ rotation: "Rot180", flip: "None" });
+    const result = applyFaceTransform(texture, {
+      rotation: "Rot270",
+      flip: "None",
+    });
+    // Rot180 + Rot270 = 450 degrees = 90 degrees.
+    expect(result.rotation).toBe("Rot90");
+    expect(result.flip).toBe("None");
   });
 });

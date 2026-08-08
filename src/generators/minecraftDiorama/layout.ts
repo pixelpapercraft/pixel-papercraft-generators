@@ -7,6 +7,8 @@ import {
   getRowHeight,
   getSourceColumnId,
   getSourceRowId,
+  getTransformColumnId,
+  getTransformRowId,
   getWorldUnitsForPreset,
   type BlockPreset,
   type DioramaDocument,
@@ -579,6 +581,101 @@ export function makeDestinationRowHeaderRegions({
     const height = rowHeights[row] ?? pixelsPerMinecraftUnit;
     regions.push({
       id: getDestinationRowId(row + rowOffset),
+      region: [
+        originX - thickness,
+        originY + (rowOffsetsPx[row] ?? 0),
+        thickness,
+        height,
+      ],
+    });
+  }
+
+  return regions;
+}
+
+// Same shape and placement as `makeSourceColumnHeaderRegions`, a distinct id
+// namespace for Transform edit mode's own column bulk-apply band. Thickness
+// is fixed to the preset's default cell size for the same reason as the
+// Source/Destination bands: it must not track anything the click itself
+// changes.
+export function makeTransformColumnHeaderRegions({
+  originX,
+  originY,
+  pageWidth,
+  pageHeight,
+  document,
+  columnOffset = 0,
+}: {
+  originX: number;
+  originY: number;
+  pageWidth: number;
+  pageHeight: number;
+  document: DioramaDocument;
+  columnOffset?: number;
+}): HeaderRegion[] {
+  const { columns } = getGridDimensions({
+    pageWidth,
+    pageHeight,
+    document,
+    columnOffset,
+  });
+  const columnWidths = makeColumnWidths({
+    document,
+    columns,
+    columnOffset,
+  });
+  const columnOffsetsPx = makeOffsets(columnWidths);
+  const thickness = getEdgeThickness(getFaceCellSize(document.preset));
+  const regions: HeaderRegion[] = [];
+
+  for (let column = 0; column < columns; column += 1) {
+    const width = columnWidths[column] ?? pixelsPerMinecraftUnit;
+    regions.push({
+      id: getTransformColumnId(column + columnOffset),
+      region: [
+        originX + (columnOffsetsPx[column] ?? 0),
+        originY - thickness,
+        width,
+        thickness,
+      ],
+    });
+  }
+
+  return regions;
+}
+
+// Same shape and placement as `makeSourceRowHeaderRegions`, a distinct id
+// namespace for Transform edit mode's own row bulk-apply band.
+export function makeTransformRowHeaderRegions({
+  originX,
+  originY,
+  pageWidth,
+  pageHeight,
+  document,
+  rowOffset = 0,
+}: {
+  originX: number;
+  originY: number;
+  pageWidth: number;
+  pageHeight: number;
+  document: DioramaDocument;
+  rowOffset?: number;
+}): HeaderRegion[] {
+  const { rows } = getGridDimensions({
+    pageWidth,
+    pageHeight,
+    document,
+    rowOffset,
+  });
+  const rowHeights = makeRowHeights({ document, rows, rowOffset });
+  const rowOffsetsPx = makeOffsets(rowHeights);
+  const thickness = getEdgeThickness(getFaceCellSize(document.preset));
+  const regions: HeaderRegion[] = [];
+
+  for (let row = 0; row < rows; row += 1) {
+    const height = rowHeights[row] ?? pixelsPerMinecraftUnit;
+    regions.push({
+      id: getTransformRowId(row + rowOffset),
       region: [
         originX - thickness,
         originY + (rowOffsetsPx[row] ?? 0),

@@ -25,14 +25,20 @@ import { TexturePickerV3 } from "@genroot/generators/_common/textures/texturePic
 
 import {
   addFaceTexture,
+  applyFaceTransform,
   blockPresets,
   cycleTab,
+  defaultFaceTransform,
   eraseFaceTexture,
+  flips,
   fullSourceRegion,
   getFaceId,
   getFaceSource,
+  getFaceTransform,
   getWorldUnitsForPreset,
   isBlockPreset,
+  isFlip,
+  isRotation,
   isTabShape,
   makeEmptyDioramaDocument,
   parseDestinationColumnId,
@@ -40,13 +46,19 @@ import {
   parseFaceId,
   parseSourceColumnId,
   parseSourceRowId,
+  parseTransformColumnId,
+  parseTransformRowId,
+  rotations,
   setColumnWidth,
   setFaceSource,
   setFaceSourceForFaces,
+  setFaceTransform,
+  setFaceTransformForFaces,
   setPreset,
   setRowHeight,
   toggleFold,
   type DioramaDocument,
+  type FaceTransform,
   type Region,
 } from "./dioramaDocument";
 import {
@@ -60,6 +72,8 @@ import {
   makeFaceRegions,
   makeSourceColumnHeaderRegions,
   makeSourceRowHeaderRegions,
+  makeTransformColumnHeaderRegions,
+  makeTransformRowHeaderRegions,
 } from "./layout";
 
 import thumbnailImage from "./thumbnail/v3-thumbnail-256.png";
@@ -83,11 +97,11 @@ const instructions: InstructionsDef = `
 * In "Folds" edit mode: click an edge to toggle its fold line.
 * In "Source" edit mode: set the Source X/Y/Width/Height sliders to the region of the texture's 16x16 grid you want to show, then click a face to crop it to that region. Click the band above a column or to the left of a row to apply the same crop to every face in it (a column applies across every page).
 * In "Destination" edit mode: set the Destination Width/Height sliders, then click a face to resize both its column and row, or click the band above a column / to the left of a row to resize just that column's width or that row's height.
+* In "Transform" edit mode: set the Face Rotation/Flip selects, then click a face to rotate/flip it (on top of any rotation/flip already set on its texture in the picker), or click the band above a column / to the left of a row to apply the same transform to every face in it.
 * Turn on "Show Edit Regions" to see the clickable edges for the current edit mode.
 * Use "+ Add Page" / "- Remove Page" to extend the grid downward across additional print sheets.
 
-This is still an early, dev-only build: face rotation/flip and splitting are
-not built yet.
+This is still an early, dev-only build: splitting is not built yet.
 `;
 
 const thumbnail: ThumbnailDef = { url: thumbnailImage.src };
@@ -106,7 +120,13 @@ const registry = makeTextureVersionRegistry(
 
 const textures: TextureDef[] = registry.allTextureDefs;
 
-type EditMode = "Blocks" | "Tabs" | "Folds" | "Source" | "Destination";
+type EditMode =
+  | "Blocks"
+  | "Tabs"
+  | "Folds"
+  | "Source"
+  | "Destination"
+  | "Transform";
 
 const editModes: EditMode[] = [
   "Blocks",
@@ -114,6 +134,7 @@ const editModes: EditMode[] = [
   "Folds",
   "Source",
   "Destination",
+  "Transform",
 ];
 
 function isEditMode(value: string): value is EditMode {
@@ -203,7 +224,8 @@ const render = (ctx: RenderContext, props: DioramaProps): void => {
       if (
         props.editMode === "Blocks" ||
         props.editMode === "Source" ||
-        props.editMode === "Destination"
+        props.editMode === "Destination" ||
+        props.editMode === "Transform"
       ) {
         ctx.defineRegion(region, faceId);
         if (props.showEditRegions) {
@@ -211,8 +233,16 @@ const render = (ctx: RenderContext, props: DioramaProps): void => {
         }
       }
       const source = getFaceSource(props.document, faceId);
+      const transform = getFaceTransform(props.document, faceId);
       const stack = props.document.faceTextures[faceId] ?? [];
-      stack.forEach((texture) => drawFaceTexture(ctx, texture, source, region));
+      stack.forEach((texture) =>
+        drawFaceTexture(
+          ctx,
+          applyFaceTransform(texture, transform),
+          source,
+          region
+        )
+      );
     });
 
     if (props.editMode === "Source") {
@@ -268,6 +298,39 @@ const render = (ctx: RenderContext, props: DioramaProps): void => {
       }
 
       makeDestinationRowHeaderRegions({
+        originX: gridOriginX,
+        originY: gridOriginY,
+        pageWidth: gridAreaWidth,
+        pageHeight: gridAreaHeight,
+        document: props.document,
+        rowOffset,
+      }).forEach(({ id: headerId, region }) => {
+        ctx.defineRegion(region, headerId);
+        if (props.showEditRegions) {
+          ctx.drawRectangle(region, editRegionOutlineOptions);
+        }
+      });
+    }
+
+    if (props.editMode === "Transform") {
+      // Column bands bulk-apply across the whole document, same reasoning as
+      // Source's own column header above.
+      if (pageIndex === 0) {
+        makeTransformColumnHeaderRegions({
+          originX: gridOriginX,
+          originY: gridOriginY,
+          pageWidth: gridAreaWidth,
+          pageHeight: gridAreaHeight,
+          document: props.document,
+        }).forEach(({ id: headerId, region }) => {
+          ctx.defineRegion(region, headerId);
+          if (props.showEditRegions) {
+            ctx.drawRectangle(region, editRegionOutlineOptions);
+          }
+        });
+      }
+
+      makeTransformRowHeaderRegions({
         originX: gridOriginX,
         originY: gridOriginY,
         pageWidth: gridAreaWidth,
@@ -343,6 +406,13 @@ const presetOptions = blockPresets.map((preset) => ({
   label: preset,
 }));
 
+const rotationOptions = rotations.map((rotation) => ({
+  id: rotation,
+  label: `${rotationToDegrees(rotation)}°`,
+}));
+
+const flipOptions = flips.map((flip) => ({ id: flip, label: flip }));
+
 function Component(): JSX.Element {
   const [document, setDocument] = React.useState<DioramaDocument>(
     makeEmptyDioramaDocument()
@@ -363,6 +433,8 @@ function Component(): JSX.Element {
   );
   const [currentDestinationHeight, setCurrentDestinationHeight] =
     React.useState(getWorldUnitsForPreset("Full Blocks"));
+  const [currentTransform, setCurrentTransform] =
+    React.useState<FaceTransform>(defaultFaceTransform);
   const textureVersion = registry.findVersion(versionId);
 
   const onRegionClick: RegionClickHandler = ({ regionId }) => {
@@ -439,6 +511,46 @@ function Component(): JSX.Element {
           )
         );
       }
+      return;
+    }
+    if (editMode === "Transform") {
+      const { columns } = getGridDimensions({
+        pageWidth: gridAreaWidth,
+        pageHeight: gridAreaHeight,
+        document,
+      });
+
+      const column = parseTransformColumnId(regionId);
+      if (column !== null) {
+        const totalRows = getTotalRowsAcrossPages({
+          pageWidth: gridAreaWidth,
+          pageHeight: gridAreaHeight,
+          document,
+          pageCount,
+        });
+        const faceIds = Array.from({ length: totalRows }, (_, row) =>
+          getFaceId(column, row)
+        );
+        setDocument((current) =>
+          setFaceTransformForFaces(current, faceIds, currentTransform)
+        );
+        return;
+      }
+
+      const row = parseTransformRowId(regionId);
+      if (row !== null) {
+        const faceIds = Array.from({ length: columns }, (_, column) =>
+          getFaceId(column, row)
+        );
+        setDocument((current) =>
+          setFaceTransformForFaces(current, faceIds, currentTransform)
+        );
+        return;
+      }
+
+      setDocument((current) =>
+        setFaceTransform(current, regionId, currentTransform)
+      );
       return;
     }
     if (!selectedTexture) {
@@ -613,6 +725,36 @@ function Component(): JSX.Element {
                   showValue
                   value={currentDestinationHeight}
                   onValueChange={setCurrentDestinationHeight}
+                />
+              </>
+            ) : null}
+            {editMode === "Transform" ? (
+              <>
+                <GeneratorUI.SelectControl
+                  label="Face Rotation"
+                  options={rotationOptions}
+                  value={currentTransform.rotation}
+                  onValueChange={(value) => {
+                    if (isRotation(value)) {
+                      setCurrentTransform((current) => ({
+                        ...current,
+                        rotation: value,
+                      }));
+                    }
+                  }}
+                />
+                <GeneratorUI.SelectControl
+                  label="Face Flip"
+                  options={flipOptions}
+                  value={currentTransform.flip}
+                  onValueChange={(value) => {
+                    if (isFlip(value)) {
+                      setCurrentTransform((current) => ({
+                        ...current,
+                        flip: value,
+                      }));
+                    }
+                  }}
                 />
               </>
             ) : null}

@@ -1,4 +1,10 @@
-import type { SelectedTexture, TabShape } from "@genroot/builder";
+import {
+  makeNextFlip,
+  type Flip,
+  type Rotation,
+  type SelectedTexture,
+  type TabShape,
+} from "@genroot/builder";
 
 export type BlockPreset = "Full Blocks" | "Quarter Blocks";
 
@@ -28,12 +34,39 @@ export type EdgeId = string;
 // standard block texture's own 16x16 frame), not page pixels.
 export type Region = [number, number, number, number];
 
+export type FaceTransform = {
+  rotation: Rotation;
+  flip: Flip;
+};
+
+export const defaultFaceTransform: FaceTransform = {
+  rotation: "Rot0",
+  flip: "None",
+};
+
+export const rotations: Rotation[] = ["Rot0", "Rot90", "Rot180", "Rot270"];
+
+export const flips: Flip[] = ["None", "Horizontal", "Vertical"];
+
+export function isRotation(value: string): value is Rotation {
+  return (rotations as string[]).includes(value);
+}
+
+export function isFlip(value: string): value is Flip {
+  return (flips as string[]).includes(value);
+}
+
+export function isDefaultTransform(transform: FaceTransform): boolean {
+  return transform.rotation === "Rot0" && transform.flip === "None";
+}
+
 export type DioramaDocument = {
   preset: BlockPreset;
   faceTextures: Record<FaceId, SelectedTexture[]>;
   sources: Record<FaceId, Region>;
   destinationColumns: Record<number, number>;
   destinationRows: Record<number, number>;
+  transforms: Record<FaceId, FaceTransform>;
   tabs: Record<EdgeId, TabType>;
   folds: Record<EdgeId, true>;
 };
@@ -47,6 +80,7 @@ export function makeEmptyDioramaDocument(
     sources: {},
     destinationColumns: {},
     destinationRows: {},
+    transforms: {},
     tabs: {},
     folds: {},
   };
@@ -125,6 +159,29 @@ export function parseDestinationColumnId(id: string): number | null {
 
 export function parseDestinationRowId(id: string): number | null {
   const match = destinationRowIdPattern.exec(id);
+  return match ? parseInt(match[1] ?? "0", 10) : null;
+}
+
+// Transform column/row headers are their own id namespace too, same reasons
+// as Destination's above.
+export function getTransformColumnId(column: number): string {
+  return `TransformColumn${column}`;
+}
+
+export function getTransformRowId(row: number): string {
+  return `TransformRow${row}`;
+}
+
+const transformColumnIdPattern = /^TransformColumn(-?\d+)$/;
+const transformRowIdPattern = /^TransformRow(-?\d+)$/;
+
+export function parseTransformColumnId(id: string): number | null {
+  const match = transformColumnIdPattern.exec(id);
+  return match ? parseInt(match[1] ?? "0", 10) : null;
+}
+
+export function parseTransformRowId(id: string): number | null {
+  const match = transformRowIdPattern.exec(id);
   return match ? parseInt(match[1] ?? "0", 10) : null;
 }
 
@@ -347,4 +404,74 @@ export function toggleFold(
   }
 
   return { ...document, folds };
+}
+
+export function getFaceTransform(
+  document: DioramaDocument,
+  faceId: FaceId
+): FaceTransform {
+  return document.transforms[faceId] ?? defaultFaceTransform;
+}
+
+// A default transform is removed rather than stored explicitly, matching
+// `setColumnWidth`/`setRowHeight`'s own minimal-document convention.
+export function setFaceTransform(
+  document: DioramaDocument,
+  faceId: FaceId,
+  transform: FaceTransform
+): DioramaDocument {
+  const transforms = { ...document.transforms };
+  if (isDefaultTransform(transform)) {
+    delete transforms[faceId];
+  } else {
+    transforms[faceId] = transform;
+  }
+  return { ...document, transforms };
+}
+
+export function setFaceTransformForFaces(
+  document: DioramaDocument,
+  faceIds: FaceId[],
+  transform: FaceTransform
+): DioramaDocument {
+  const transforms = { ...document.transforms };
+  faceIds.forEach((faceId) => {
+    if (isDefaultTransform(transform)) {
+      delete transforms[faceId];
+    } else {
+      transforms[faceId] = transform;
+    }
+  });
+  return { ...document, transforms };
+}
+
+function addRotations(base: Rotation, extra: Rotation): Rotation {
+  const baseIndex = rotations.indexOf(base);
+  const extraIndex = rotations.indexOf(extra);
+  return rotations[(baseIndex + extraIndex) % rotations.length] ?? "Rot0";
+}
+
+// Composes a face's own Transform mode adjustment onto a texture's own
+// rotation/flip (set independently, at placement time, in the texture
+// picker). The face's rotation adds directly — a pure additional rotation
+// composes by simple addition regardless of any existing flip. The face's
+// flip is then applied as a further flip on top of the now-rotated result,
+// reusing the same `makeNextFlip` the texture picker's own flip button goes
+// through — proven correct by that function's own matrix-model test
+// (`flip.test.ts`) for exactly this "apply one more flip on top of an
+// existing rotation+flip state" composition.
+export function applyFaceTransform(
+  texture: SelectedTexture,
+  transform: FaceTransform
+): SelectedTexture {
+  if (isDefaultTransform(transform)) {
+    return texture;
+  }
+  const rotatedRotation = addRotations(texture.rotation, transform.rotation);
+  const [flip, rotation] = makeNextFlip(
+    texture.flip,
+    transform.flip,
+    rotatedRotation
+  );
+  return { ...texture, rotation, flip };
 }
