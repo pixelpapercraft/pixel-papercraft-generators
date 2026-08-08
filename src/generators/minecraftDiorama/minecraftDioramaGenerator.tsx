@@ -37,6 +37,7 @@ import {
 } from "./dioramaDocument";
 import {
   getEdgeBoundaryLine,
+  getGridDimensions,
   makeBoundaryEdgeRegions,
   makeEdgeRegions,
   makeFaceRegions,
@@ -62,9 +63,10 @@ const instructions: InstructionsDef = `
 * In "Tabs" edit mode: click an edge to cycle its tab.
 * In "Folds" edit mode: click an edge to toggle its fold line.
 * Turn on "Show Edit Regions" to see the clickable edges for the current edit mode.
+* Use "+ Add Page" / "- Remove Page" to extend the grid downward across additional print sheets.
 
-This is still an early, dev-only build: source/destination editing, splitting,
-and multi-page layouts are not built yet.
+This is still an early, dev-only build: source/destination editing and
+splitting are not built yet.
 `;
 
 const thumbnail: ThumbnailDef = { url: thumbnailImage.src };
@@ -104,6 +106,7 @@ type DioramaProps = {
   document: DioramaDocument;
   editMode: EditMode;
   showEditRegions: boolean;
+  pageCount: number;
 };
 
 function drawFaceTexture(
@@ -127,69 +130,87 @@ function drawFaceTexture(
 }
 
 const render = (ctx: RenderContext, props: DioramaProps): void => {
-  ctx.fillBackgroundColorWithWhite();
-  ctx.drawImage("Background", [0, 0]);
-
-  const faceRegions = makeFaceRegions({
-    originX: gridOriginX,
-    originY: gridOriginY,
+  const { rows: rowsPerPage } = getGridDimensions({
     pageWidth: gridAreaWidth,
     pageHeight: gridAreaHeight,
     preset: props.document.preset,
   });
 
-  faceRegions.forEach(({ id: faceId, region }) => {
-    if (props.editMode === "Blocks") {
-      ctx.defineRegion(region, faceId);
-      if (props.showEditRegions) {
-        ctx.drawRectangle(region, editRegionOutlineOptions);
+  for (let pageIndex = 0; pageIndex < props.pageCount; pageIndex += 1) {
+    ctx.usePage(`Page ${pageIndex + 1}`);
+    ctx.fillBackgroundColorWithWhite();
+    ctx.drawImage("Background", [0, 0]);
+
+    // Each page is its own printable sheet holding the next block of rows —
+    // the grid continues downward across pages rather than sharing one
+    // canvas, so every face/edge id still encodes a unique, page-independent
+    // row via this offset.
+    const rowOffset = pageIndex * rowsPerPage;
+
+    const faceRegions = makeFaceRegions({
+      originX: gridOriginX,
+      originY: gridOriginY,
+      pageWidth: gridAreaWidth,
+      pageHeight: gridAreaHeight,
+      preset: props.document.preset,
+      rowOffset,
+    });
+
+    faceRegions.forEach(({ id: faceId, region }) => {
+      if (props.editMode === "Blocks") {
+        ctx.defineRegion(region, faceId);
+        if (props.showEditRegions) {
+          ctx.drawRectangle(region, editRegionOutlineOptions);
+        }
       }
-    }
-    const stack = props.document.faceTextures[faceId] ?? [];
-    stack.forEach((texture) => drawFaceTexture(ctx, texture, region));
-  });
+      const stack = props.document.faceTextures[faceId] ?? [];
+      stack.forEach((texture) => drawFaceTexture(ctx, texture, region));
+    });
 
-  const edgeRegions = makeEdgeRegions({
-    originX: gridOriginX,
-    originY: gridOriginY,
-    pageWidth: gridAreaWidth,
-    pageHeight: gridAreaHeight,
-    preset: props.document.preset,
-  });
+    const edgeRegions = makeEdgeRegions({
+      originX: gridOriginX,
+      originY: gridOriginY,
+      pageWidth: gridAreaWidth,
+      pageHeight: gridAreaHeight,
+      preset: props.document.preset,
+      rowOffset,
+    });
 
-  const boundaryEdgeRegions = makeBoundaryEdgeRegions({
-    originX: gridOriginX,
-    originY: gridOriginY,
-    pageWidth: gridAreaWidth,
-    pageHeight: gridAreaHeight,
-    preset: props.document.preset,
-  });
+    const boundaryEdgeRegions = makeBoundaryEdgeRegions({
+      originX: gridOriginX,
+      originY: gridOriginY,
+      pageWidth: gridAreaWidth,
+      pageHeight: gridAreaHeight,
+      preset: props.document.preset,
+      rowOffset,
+    });
 
-  [...edgeRegions, ...boundaryEdgeRegions].forEach(
-    ({ id: edgeId, region, orientation }) => {
-      if (props.editMode === "Tabs" || props.editMode === "Folds") {
-        ctx.defineRegion(region, edgeId);
+    [...edgeRegions, ...boundaryEdgeRegions].forEach(
+      ({ id: edgeId, region, orientation }) => {
+        if (props.editMode === "Tabs" || props.editMode === "Folds") {
+          ctx.defineRegion(region, edgeId);
+        }
+
+        const tabShape = props.document.tabs[edgeId];
+        if (isTabShape(tabShape)) {
+          ctx.drawTab(region, orientation, { tabShape });
+        }
+
+        if (props.document.folds[edgeId]) {
+          ctx.drawFoldLine(...getEdgeBoundaryLine(orientation, region));
+        }
+
+        if (
+          props.showEditRegions &&
+          (props.editMode === "Tabs" || props.editMode === "Folds")
+        ) {
+          ctx.drawRectangle(region, editRegionOutlineOptions);
+        }
       }
+    );
 
-      const tabShape = props.document.tabs[edgeId];
-      if (isTabShape(tabShape)) {
-        ctx.drawTab(region, orientation, { tabShape });
-      }
-
-      if (props.document.folds[edgeId]) {
-        ctx.drawFoldLine(...getEdgeBoundaryLine(orientation, region));
-      }
-
-      if (
-        props.showEditRegions &&
-        (props.editMode === "Tabs" || props.editMode === "Folds")
-      ) {
-        ctx.drawRectangle(region, editRegionOutlineOptions);
-      }
-    }
-  );
-
-  ctx.drawImage("Title Portrait", [0, 0]);
+    ctx.drawImage("Title Portrait", [0, 0]);
+  }
 };
 
 const minecraftDioramaGenerator: Generator<DioramaProps> = {
@@ -217,6 +238,7 @@ function Component(): JSX.Element {
   const [blend, setBlend] = React.useState<string | null>(null);
   const [editMode, setEditMode] = React.useState<EditMode>("Blocks");
   const [showEditRegions, setShowEditRegions] = React.useState(true);
+  const [pageCount, setPageCount] = React.useState(1);
   const textureVersion = registry.findVersion(versionId);
 
   const onRegionClick: RegionClickHandler = ({ regionId }) => {
@@ -238,7 +260,12 @@ function Component(): JSX.Element {
     );
   };
 
-  const props: DioramaProps = { document, editMode, showEditRegions };
+  const props: DioramaProps = {
+    document,
+    editMode,
+    showEditRegions,
+    pageCount,
+  };
 
   return (
     <div>
@@ -265,6 +292,19 @@ function Component(): JSX.Element {
               label="Show Edit Regions"
               checked={showEditRegions}
               onCheckedChange={setShowEditRegions}
+            />
+            <GeneratorUI.TextControl>
+              Pages: {pageCount}
+            </GeneratorUI.TextControl>
+            <GeneratorUI.ButtonControl
+              label="+ Add Page"
+              color="Green"
+              onClick={() => setPageCount((count) => count + 1)}
+            />
+            <GeneratorUI.ButtonControl
+              label="- Remove Page"
+              color="Red"
+              onClick={() => setPageCount((count) => Math.max(1, count - 1))}
             />
             {editMode === "Blocks" ? (
               <>

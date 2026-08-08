@@ -106,6 +106,62 @@ test("Tabs edit mode cycles through distinct tabShape renders", async ({
   expect(await readPixel(pageImage, ...flatBottom)).toEqual(white);
 });
 
+// "+ Add Page"/"- Remove Page" extend the grid downward across additional
+// printable sheets rather than growing one page — each new page is its own
+// A4 canvas, matching the multi-page pattern other generators (e.g. Mutant
+// Character) already use for fixed page counts.
+test("Add Page and Remove Page change the printable page count", async ({
+  page,
+}) => {
+  await page.goto("/generator/minecraft-diorama");
+
+  const pageImages = page.getByTestId("generator-page-image");
+  await expect(pageImages).toHaveCount(1);
+
+  await page.getByText("+ Add Page", { exact: true }).click();
+  await expect(pageImages).toHaveCount(2);
+
+  await page.getByText("+ Add Page", { exact: true }).click();
+  await expect(pageImages).toHaveCount(3);
+
+  await page.getByText("- Remove Page", { exact: true }).click();
+  await expect(pageImages).toHaveCount(2);
+});
+
+// There is deliberately no upper bound on page count (unlike the reference's
+// fixed "1 / 512" limit) — only a floor of 1, since a diorama needs at least
+// one printable sheet.
+test("Remove Page never drops the page count below one", async ({ page }) => {
+  await page.goto("/generator/minecraft-diorama");
+
+  const pageImages = page.getByTestId("generator-page-image");
+  await expect(pageImages).toHaveCount(1);
+
+  await page.getByText("- Remove Page", { exact: true }).click();
+  await expect(pageImages).toHaveCount(1);
+  await page.getByText("- Remove Page", { exact: true }).click();
+  await expect(pageImages).toHaveCount(1);
+});
+
+// Face ids already encode a row offset per page (`layout.ts`'s `rowOffset`),
+// so a second page's grid is independently addressable and clickable from
+// the first's rather than sharing region ids.
+test("a second page's grid is independently clickable from the first", async ({
+  page,
+}) => {
+  await page.goto("/generator/minecraft-diorama");
+  await page.getByText("+ Add Page", { exact: true }).click();
+
+  await page.getByTitle("grass block top", { exact: true }).click();
+  await page.getByTestId("region-BlockFace0 6").click();
+
+  const firstPageImage = page.getByTestId("generator-page-image").nth(0);
+  const secondPageImage = page.getByTestId("generator-page-image").nth(1);
+
+  expect(await readPixel(firstPageImage, 106, 105)).toEqual(white);
+  expect(await readPixel(secondPageImage, 106, 105)).toEqual(grassBlockTopGray);
+});
+
 // Folds edit mode toggles an edge's fold-crease line independently of any
 // tab on that same edge. `Show Edit Regions` is switched off first because
 // its edit-region outline is drawn on top of this exact boundary line (both
