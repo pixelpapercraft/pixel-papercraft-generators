@@ -6,19 +6,28 @@ import {
   cycleTab,
   eraseFaceTexture,
   fullSourceRegion,
+  getColumnWidth,
   getDefaultSourceForFace,
+  getDestinationColumnId,
+  getDestinationRowId,
   getEdgeId,
   getFaceId,
   getFaceSource,
+  getRowHeight,
   getSourceColumnId,
   getSourceRowId,
+  getWorldUnitsForPreset,
   makeEmptyDioramaDocument,
+  parseDestinationColumnId,
+  parseDestinationRowId,
   parseFaceId,
   parseSourceColumnId,
   parseSourceRowId,
+  setColumnWidth,
   setFaceSource,
   setFaceSourceForFaces,
   setPreset,
+  setRowHeight,
   toggleFold,
   type DioramaDocument,
   type Region,
@@ -46,6 +55,8 @@ describe("makeEmptyDioramaDocument", () => {
       preset: "Full Blocks",
       faceTextures: {},
       sources: {},
+      destinationColumns: {},
+      destinationRows: {},
       tabs: {},
       folds: {},
     });
@@ -57,6 +68,8 @@ describe("makeEmptyDioramaDocument", () => {
         preset: "Quarter Blocks",
         faceTextures: {},
         sources: {},
+        destinationColumns: {},
+        destinationRows: {},
         tabs: {},
         folds: {},
       }
@@ -309,5 +322,74 @@ describe("getSourceColumnId / getSourceRowId round-trip", () => {
     expect(parseSourceColumnId(getSourceRowId(0))).toBeNull();
     expect(parseSourceRowId(getSourceColumnId(0))).toBeNull();
     expect(parseSourceColumnId(getFaceId(0, 0))).toBeNull();
+  });
+});
+
+describe("getWorldUnitsForPreset", () => {
+  it("is 16 for Full Blocks and 8 for Quarter Blocks", () => {
+    expect(getWorldUnitsForPreset("Full Blocks")).toBe(16);
+    expect(getWorldUnitsForPreset("Quarter Blocks")).toBe(8);
+  });
+});
+
+describe("getColumnWidth / getRowHeight", () => {
+  it("falls back to the preset default when no override is set", () => {
+    const document = makeEmptyDioramaDocument("Full Blocks");
+    expect(getColumnWidth(document, 0)).toBe(16);
+    expect(getRowHeight(document, 0)).toBe(16);
+  });
+
+  it("uses the Quarter Blocks default when that preset is active", () => {
+    const document = makeEmptyDioramaDocument("Quarter Blocks");
+    expect(getColumnWidth(document, 0)).toBe(8);
+    expect(getRowHeight(document, 0)).toBe(8);
+  });
+
+  it("returns an explicit override once one is set", () => {
+    const document = setColumnWidth(makeEmptyDioramaDocument(), 2, 24);
+    expect(getColumnWidth(document, 2)).toBe(24);
+    expect(getColumnWidth(document, 0)).toBe(16);
+  });
+});
+
+describe("setColumnWidth / setRowHeight", () => {
+  it("rounds to the nearest whole Minecraft unit", () => {
+    const document = setColumnWidth(makeEmptyDioramaDocument(), 0, 10.6);
+    expect(getColumnWidth(document, 0)).toBe(11);
+  });
+
+  it("floors at a minimum of 1 unit", () => {
+    const document = setRowHeight(makeEmptyDioramaDocument(), 0, -5);
+    expect(getRowHeight(document, 0)).toBe(1);
+  });
+
+  it("removes the override when set back to the preset default", () => {
+    const resized = setColumnWidth(makeEmptyDioramaDocument(), 0, 24);
+    expect(resized.destinationColumns).toEqual({ 0: 24 });
+
+    const reset = setColumnWidth(resized, 0, 16);
+    expect(reset.destinationColumns).toEqual({});
+  });
+
+  it("leaves other columns/rows untouched", () => {
+    const document = setColumnWidth(makeEmptyDioramaDocument(), 0, 24);
+    expect(getColumnWidth(document, 1)).toBe(16);
+  });
+});
+
+describe("getDestinationColumnId / getDestinationRowId round-trip", () => {
+  it("parses a column id back to its column number", () => {
+    expect(parseDestinationColumnId(getDestinationColumnId(3))).toBe(3);
+  });
+
+  it("parses a row id back to its row number", () => {
+    expect(parseDestinationRowId(getDestinationRowId(-2))).toBe(-2);
+  });
+
+  it("returns null for ids from another namespace", () => {
+    expect(parseDestinationColumnId(getDestinationRowId(0))).toBeNull();
+    expect(parseDestinationRowId(getDestinationColumnId(0))).toBeNull();
+    expect(parseDestinationColumnId(getSourceColumnId(0))).toBeNull();
+    expect(parseDestinationColumnId(getFaceId(0, 0))).toBeNull();
   });
 });

@@ -31,14 +31,20 @@ import {
   fullSourceRegion,
   getFaceId,
   getFaceSource,
+  getWorldUnitsForPreset,
   isBlockPreset,
   isTabShape,
   makeEmptyDioramaDocument,
+  parseDestinationColumnId,
+  parseDestinationRowId,
+  parseFaceId,
   parseSourceColumnId,
   parseSourceRowId,
+  setColumnWidth,
   setFaceSource,
   setFaceSourceForFaces,
   setPreset,
+  setRowHeight,
   toggleFold,
   type DioramaDocument,
   type Region,
@@ -46,7 +52,10 @@ import {
 import {
   getEdgeBoundaryLine,
   getGridDimensions,
+  getTotalRowsAcrossPages,
   makeBoundaryEdgeRegions,
+  makeDestinationColumnHeaderRegions,
+  makeDestinationRowHeaderRegions,
   makeEdgeRegions,
   makeFaceRegions,
   makeSourceColumnHeaderRegions,
@@ -73,11 +82,12 @@ const instructions: InstructionsDef = `
 * In "Tabs" edit mode: click an edge to cycle its tab.
 * In "Folds" edit mode: click an edge to toggle its fold line.
 * In "Source" edit mode: set the Source X/Y/Width/Height sliders to the region of the texture's 16x16 grid you want to show, then click a face to crop it to that region. Click the band above a column or to the left of a row to apply the same crop to every face in it (a column applies across every page).
+* In "Destination" edit mode: set the Destination Width/Height sliders, then click a face to resize both its column and row, or click the band above a column / to the left of a row to resize just that column's width or that row's height.
 * Turn on "Show Edit Regions" to see the clickable edges for the current edit mode.
 * Use "+ Add Page" / "- Remove Page" to extend the grid downward across additional print sheets.
 
-This is still an early, dev-only build: destination sizing, face
-rotation/flip, and splitting are not built yet.
+This is still an early, dev-only build: face rotation/flip and splitting are
+not built yet.
 `;
 
 const thumbnail: ThumbnailDef = { url: thumbnailImage.src };
@@ -96,9 +106,15 @@ const registry = makeTextureVersionRegistry(
 
 const textures: TextureDef[] = registry.allTextureDefs;
 
-type EditMode = "Blocks" | "Tabs" | "Folds" | "Source";
+type EditMode = "Blocks" | "Tabs" | "Folds" | "Source" | "Destination";
 
-const editModes: EditMode[] = ["Blocks", "Tabs", "Folds", "Source"];
+const editModes: EditMode[] = [
+  "Blocks",
+  "Tabs",
+  "Folds",
+  "Source",
+  "Destination",
+];
 
 function isEditMode(value: string): value is EditMode {
   return editModes.includes(value as EditMode);
@@ -157,34 +173,38 @@ function drawFaceTexture(
 }
 
 const render = (ctx: RenderContext, props: DioramaProps): void => {
-  const { rows: rowsPerPage } = getGridDimensions({
-    pageWidth: gridAreaWidth,
-    pageHeight: gridAreaHeight,
-    preset: props.document.preset,
-  });
+  // Each page fits as many rows as its own row heights allow, starting from
+  // wherever the previous page left off — no longer a constant rowsPerPage,
+  // since a resized row changes how many rows fit on the page it's on.
+  let rowOffset = 0;
 
   for (let pageIndex = 0; pageIndex < props.pageCount; pageIndex += 1) {
     ctx.usePage(`Page ${pageIndex + 1}`);
     ctx.fillBackgroundColorWithWhite();
     ctx.drawImage("Background", [0, 0]);
 
-    // Each page is its own printable sheet holding the next block of rows —
-    // the grid continues downward across pages rather than sharing one
-    // canvas, so every face/edge id still encodes a unique, page-independent
-    // row via this offset.
-    const rowOffset = pageIndex * rowsPerPage;
+    const { rows: rowsThisPage } = getGridDimensions({
+      pageWidth: gridAreaWidth,
+      pageHeight: gridAreaHeight,
+      document: props.document,
+      rowOffset,
+    });
 
     const faceRegions = makeFaceRegions({
       originX: gridOriginX,
       originY: gridOriginY,
       pageWidth: gridAreaWidth,
       pageHeight: gridAreaHeight,
-      preset: props.document.preset,
+      document: props.document,
       rowOffset,
     });
 
     faceRegions.forEach(({ id: faceId, region }) => {
-      if (props.editMode === "Blocks" || props.editMode === "Source") {
+      if (
+        props.editMode === "Blocks" ||
+        props.editMode === "Source" ||
+        props.editMode === "Destination"
+      ) {
         ctx.defineRegion(region, faceId);
         if (props.showEditRegions) {
           ctx.drawRectangle(region, editRegionOutlineOptions);
@@ -204,7 +224,7 @@ const render = (ctx: RenderContext, props: DioramaProps): void => {
           originY: gridOriginY,
           pageWidth: gridAreaWidth,
           pageHeight: gridAreaHeight,
-          preset: props.document.preset,
+          document: props.document,
         }).forEach(({ id: headerId, region }) => {
           ctx.defineRegion(region, headerId);
           if (props.showEditRegions) {
@@ -218,7 +238,41 @@ const render = (ctx: RenderContext, props: DioramaProps): void => {
         originY: gridOriginY,
         pageWidth: gridAreaWidth,
         pageHeight: gridAreaHeight,
-        preset: props.document.preset,
+        document: props.document,
+        rowOffset,
+      }).forEach(({ id: headerId, region }) => {
+        ctx.defineRegion(region, headerId);
+        if (props.showEditRegions) {
+          ctx.drawRectangle(region, editRegionOutlineOptions);
+        }
+      });
+    }
+
+    if (props.editMode === "Destination") {
+      // Column width is shared by every page, so its bulk-apply band only
+      // needs to appear once, on the first page — same reasoning as Source's
+      // own column header above.
+      if (pageIndex === 0) {
+        makeDestinationColumnHeaderRegions({
+          originX: gridOriginX,
+          originY: gridOriginY,
+          pageWidth: gridAreaWidth,
+          pageHeight: gridAreaHeight,
+          document: props.document,
+        }).forEach(({ id: headerId, region }) => {
+          ctx.defineRegion(region, headerId);
+          if (props.showEditRegions) {
+            ctx.drawRectangle(region, editRegionOutlineOptions);
+          }
+        });
+      }
+
+      makeDestinationRowHeaderRegions({
+        originX: gridOriginX,
+        originY: gridOriginY,
+        pageWidth: gridAreaWidth,
+        pageHeight: gridAreaHeight,
+        document: props.document,
         rowOffset,
       }).forEach(({ id: headerId, region }) => {
         ctx.defineRegion(region, headerId);
@@ -233,7 +287,7 @@ const render = (ctx: RenderContext, props: DioramaProps): void => {
       originY: gridOriginY,
       pageWidth: gridAreaWidth,
       pageHeight: gridAreaHeight,
-      preset: props.document.preset,
+      document: props.document,
       rowOffset,
     });
 
@@ -242,7 +296,7 @@ const render = (ctx: RenderContext, props: DioramaProps): void => {
       originY: gridOriginY,
       pageWidth: gridAreaWidth,
       pageHeight: gridAreaHeight,
-      preset: props.document.preset,
+      document: props.document,
       rowOffset,
     });
 
@@ -271,6 +325,8 @@ const render = (ctx: RenderContext, props: DioramaProps): void => {
     );
 
     ctx.drawImage("Title Portrait", [0, 0]);
+
+    rowOffset += rowsThisPage;
   }
 };
 
@@ -302,6 +358,11 @@ function Component(): JSX.Element {
   const [pageCount, setPageCount] = React.useState(1);
   const [currentSource, setCurrentSource] =
     React.useState<Region>(fullSourceRegion);
+  const [currentDestinationWidth, setCurrentDestinationWidth] = React.useState(
+    getWorldUnitsForPreset("Full Blocks")
+  );
+  const [currentDestinationHeight, setCurrentDestinationHeight] =
+    React.useState(getWorldUnitsForPreset("Full Blocks"));
   const textureVersion = registry.findVersion(versionId);
 
   const onRegionClick: RegionClickHandler = ({ regionId }) => {
@@ -314,17 +375,22 @@ function Component(): JSX.Element {
       return;
     }
     if (editMode === "Source") {
-      const { columns, rows: rowsPerPage } = getGridDimensions({
+      const { columns } = getGridDimensions({
         pageWidth: gridAreaWidth,
         pageHeight: gridAreaHeight,
-        preset: document.preset,
+        document,
       });
 
       const column = parseSourceColumnId(regionId);
       if (column !== null) {
-        const faceIds = Array.from(
-          { length: pageCount * rowsPerPage },
-          (_, row) => getFaceId(column, row)
+        const totalRows = getTotalRowsAcrossPages({
+          pageWidth: gridAreaWidth,
+          pageHeight: gridAreaHeight,
+          document,
+          pageCount,
+        });
+        const faceIds = Array.from({ length: totalRows }, (_, row) =>
+          getFaceId(column, row)
         );
         setDocument((current) =>
           setFaceSourceForFaces(current, faceIds, currentSource)
@@ -344,6 +410,35 @@ function Component(): JSX.Element {
       }
 
       setDocument((current) => setFaceSource(current, regionId, currentSource));
+      return;
+    }
+    if (editMode === "Destination") {
+      const column = parseDestinationColumnId(regionId);
+      if (column !== null) {
+        setDocument((current) =>
+          setColumnWidth(current, column, currentDestinationWidth)
+        );
+        return;
+      }
+
+      const row = parseDestinationRowId(regionId);
+      if (row !== null) {
+        setDocument((current) =>
+          setRowHeight(current, row, currentDestinationHeight)
+        );
+        return;
+      }
+
+      const face = parseFaceId(regionId);
+      if (face) {
+        setDocument((current) =>
+          setRowHeight(
+            setColumnWidth(current, face.column, currentDestinationWidth),
+            face.row,
+            currentDestinationHeight
+          )
+        );
+      }
       return;
     }
     if (!selectedTexture) {
@@ -496,6 +591,28 @@ function Component(): JSX.Element {
                   onValueChange={(value) =>
                     setCurrentSource(([x, y, width]) => [x, y, width, value])
                   }
+                />
+              </>
+            ) : null}
+            {editMode === "Destination" ? (
+              <>
+                <GeneratorUI.RangeControl
+                  label="Destination Width"
+                  min={1}
+                  max={32}
+                  step={1}
+                  showValue
+                  value={currentDestinationWidth}
+                  onValueChange={setCurrentDestinationWidth}
+                />
+                <GeneratorUI.RangeControl
+                  label="Destination Height"
+                  min={1}
+                  max={32}
+                  step={1}
+                  showValue
+                  value={currentDestinationHeight}
+                  onValueChange={setCurrentDestinationHeight}
                 />
               </>
             ) : null}

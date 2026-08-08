@@ -21,6 +21,16 @@ const furnaceTopLeftQuadrant: Rgba = { r: 119, g: 119, b: 119, a: 255 };
 const furnaceTopRightQuadrant: Rgba = { r: 133, g: 133, b: 133, a: 255 };
 const furnaceBottomLeftQuadrant: Rgba = { r: 168, g: 168, b: 168, a: 255 };
 const furnaceBottomRightQuadrant: Rgba = { r: 168, g: 168, b: 168, a: 255 };
+// The full (uncropped) texture's own pixel value at unit (14, 14), near its
+// bottom-right corner — distinct from `furnaceBottomRightQuadrant` above,
+// which is that same corner's color once *cropped* to an 8x8 quadrant (a
+// different sub-image, so a different sampled color).
+const furnaceUncroppedNearBottomRight: Rgba = {
+  r: 157,
+  g: 157,
+  b: 157,
+  a: 255,
+};
 
 test("minecraft diorama renders the background and title", async ({ page }) => {
   await page.goto("/generator/minecraft-diorama");
@@ -321,5 +331,115 @@ test("Quarter Blocks preset defaults each face to its own quadrant of the textur
   );
   expect(await readPixel(pageImage, 122, 121)).toEqual(
     furnaceBottomRightQuadrant
+  );
+});
+
+// Destination edit mode resizes a column's width and/or a row's height
+// instead of every cell sharing one fixed size. Clicking a face resizes
+// *both* its column and row at once — unlike Source's per-face crop, width/
+// height are never per-face, only per-column/per-row, since adjacent cells
+// must stay edge-to-edge in the printed grid.
+test("Destination edit mode resizes both a face's column and row when clicked", async ({
+  page,
+}) => {
+  await page.goto("/generator/minecraft-diorama");
+  const pageImage = page.getByTestId("generator-page-image").first();
+
+  await page.getByTitle("furnace front", { exact: true }).click();
+  await page.getByTestId("region-BlockFace0 0").click();
+
+  await page.getByLabel("Edit Mode").selectOption("Destination");
+  await page.getByLabel("Destination Width").fill("24");
+  await page.getByLabel("Destination Height").fill("24");
+  await page.getByTestId("region-BlockFace0 0").click();
+
+  // Resized to 24 units (192px) each way, 12px/unit instead of the default
+  // 8px/unit — unit (2, 2) of the texture now lands at grid-origin + 2*12.
+  expect(await readPixel(pageImage, 42 + 2 * 12, 41 + 2 * 12)).toEqual(
+    furnaceTopLeftQuadrant
+  );
+});
+
+// The band above a column resizes only that column's width, leaving every
+// row's height (including the clicked column's own faces) at its default.
+test("Destination edit mode's column header resizes only that column's width", async ({
+  page,
+}) => {
+  await page.goto("/generator/minecraft-diorama");
+  const pageImage = page.getByTestId("generator-page-image").first();
+
+  await page.getByTitle("furnace front", { exact: true }).click();
+  await page.getByTestId("region-BlockFace0 0").click();
+  await page.getByTestId("region-BlockFace0 1").click();
+
+  await page.getByLabel("Edit Mode").selectOption("Destination");
+  await page.getByLabel("Destination Width").fill("24");
+  await page.getByLabel("Destination Height").fill("24");
+  await page.getByTestId("region-DestinationColumn0").click();
+
+  // Column 0 is now 192px wide (12px/unit) but every row stays the default
+  // 128px tall (8px/unit) — face (0,1) starts right after row 0's unchanged
+  // 128px height.
+  expect(await readPixel(pageImage, 42 + 2 * 12, 41 + 2 * 8)).toEqual(
+    furnaceTopLeftQuadrant
+  );
+  expect(await readPixel(pageImage, 42 + 2 * 12, 41 + 128 + 2 * 8)).toEqual(
+    furnaceTopLeftQuadrant
+  );
+});
+
+// The band left of a row resizes only that row's height, leaving every
+// column's width at its default — and, unlike a column header, that applies
+// to the whole row regardless of which face was ever clicked.
+test("Destination edit mode's row header resizes only that row's height", async ({
+  page,
+}) => {
+  await page.goto("/generator/minecraft-diorama");
+  const pageImage = page.getByTestId("generator-page-image").first();
+
+  await page.getByTitle("furnace front", { exact: true }).click();
+  await page.getByTestId("region-BlockFace1 0").click();
+
+  await page.getByLabel("Edit Mode").selectOption("Destination");
+  await page.getByLabel("Destination Width").fill("24");
+  await page.getByLabel("Destination Height").fill("24");
+  await page.getByTestId("region-DestinationRow0").click();
+
+  // Row 0 is now 192px tall (12px/unit) for every column, but column 1 stays
+  // the default 128px wide (8px/unit) since only the row was targeted.
+  // Sampling deep into what would be row 1 under the old 128px height (here,
+  // still inside the resized row 0) proves the resize is real, not just a
+  // coincidentally-matching top-left-quadrant color.
+  expect(await readPixel(pageImage, 42 + 128 + 14 * 8, 41 + 14 * 12)).toEqual(
+    furnaceUncroppedNearBottomRight
+  );
+});
+
+// Multi-page's row accounting can no longer assume a constant rows-per-page
+// once a row is resized — page 1 fits fewer rows than usual, so page 2 must
+// start at a later world row than a naive pageIndex * rowsPerPage would give.
+test("multi-page accounts for a resized row when placing later pages", async ({
+  page,
+}) => {
+  await page.goto("/generator/minecraft-diorama");
+
+  await page.getByLabel("Edit Mode").selectOption("Destination");
+  await page.getByLabel("Destination Height").fill("24");
+  await page.getByTestId("region-DestinationRow0").click();
+  await page.getByText("+ Add Page", { exact: true }).click();
+
+  await page.getByLabel("Edit Mode").selectOption("Blocks");
+  await page.getByTitle("furnace front", { exact: true }).click();
+  // Row 0 at 192px leaves room for only 4 more default 128px rows in the
+  // 768px page (192 + 4*128 = 704; a 6th row would need 832), so page 1
+  // holds rows 0-4 (5 rows) and world row 5 is page 2's own first row.
+  await page.getByTestId("region-BlockFace0 5").click();
+
+  const firstPageImage = page.getByTestId("generator-page-image").nth(0);
+  const secondPageImage = page.getByTestId("generator-page-image").nth(1);
+
+  expect(await readPixel(firstPageImage, 58, 761)).toEqual(white);
+  expect(await readPixel(secondPageImage, 58, 57)).toEqual(
+    furnaceTopLeftQuadrant
   );
 });

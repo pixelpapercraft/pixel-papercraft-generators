@@ -32,6 +32,8 @@ export type DioramaDocument = {
   preset: BlockPreset;
   faceTextures: Record<FaceId, SelectedTexture[]>;
   sources: Record<FaceId, Region>;
+  destinationColumns: Record<number, number>;
+  destinationRows: Record<number, number>;
   tabs: Record<EdgeId, TabType>;
   folds: Record<EdgeId, true>;
 };
@@ -43,6 +45,8 @@ export function makeEmptyDioramaDocument(
     preset,
     faceTextures: {},
     sources: {},
+    destinationColumns: {},
+    destinationRows: {},
     tabs: {},
     folds: {},
   };
@@ -97,6 +101,30 @@ export function parseSourceColumnId(id: string): number | null {
 
 export function parseSourceRowId(id: string): number | null {
   const match = sourceRowIdPattern.exec(id);
+  return match ? parseInt(match[1] ?? "0", 10) : null;
+}
+
+// Destination column/row headers are their own id namespace, distinct from
+// Source's, even though both are bulk-apply bands — keeping them separate
+// avoids ever needing to reason about which edit mode a shared id belongs to.
+export function getDestinationColumnId(column: number): string {
+  return `DestinationColumn${column}`;
+}
+
+export function getDestinationRowId(row: number): string {
+  return `DestinationRow${row}`;
+}
+
+const destinationColumnIdPattern = /^DestinationColumn(-?\d+)$/;
+const destinationRowIdPattern = /^DestinationRow(-?\d+)$/;
+
+export function parseDestinationColumnId(id: string): number | null {
+  const match = destinationColumnIdPattern.exec(id);
+  return match ? parseInt(match[1] ?? "0", 10) : null;
+}
+
+export function parseDestinationRowId(id: string): number | null {
+  const match = destinationRowIdPattern.exec(id);
   return match ? parseInt(match[1] ?? "0", 10) : null;
 }
 
@@ -226,6 +254,68 @@ export function setFaceSourceForFaces(
     sources[faceId] = clamped;
   });
   return { ...document, sources };
+}
+
+// The size (in Minecraft units) of a column/row that hasn't been resized —
+// 16 units for a Full Blocks cell, 8 for Quarter Blocks, matching
+// `layout.ts`'s `getFaceCellSize`'s own worldUnits mapping.
+export function getWorldUnitsForPreset(preset: BlockPreset): number {
+  return preset === "Quarter Blocks" ? 8 : 16;
+}
+
+const minimumDestinationSize = 1;
+
+function clampDestinationSize(value: number): number {
+  return Math.max(minimumDestinationSize, Math.round(value));
+}
+
+export function getColumnWidth(
+  document: DioramaDocument,
+  column: number
+): number {
+  return (
+    document.destinationColumns[column] ??
+    getWorldUnitsForPreset(document.preset)
+  );
+}
+
+export function getRowHeight(document: DioramaDocument, row: number): number {
+  return (
+    document.destinationRows[row] ?? getWorldUnitsForPreset(document.preset)
+  );
+}
+
+// Setting a column/row back to its preset default removes the override
+// rather than storing it explicitly, keeping the document minimal — matches
+// the `pr-34-original` reference's own `setDestinationValue`.
+export function setColumnWidth(
+  document: DioramaDocument,
+  column: number,
+  width: number
+): DioramaDocument {
+  const destinationColumns = { ...document.destinationColumns };
+  const clamped = clampDestinationSize(width);
+  if (clamped === getWorldUnitsForPreset(document.preset)) {
+    delete destinationColumns[column];
+  } else {
+    destinationColumns[column] = clamped;
+  }
+  return { ...document, destinationColumns };
+}
+
+export function setRowHeight(
+  document: DioramaDocument,
+  row: number,
+  height: number
+): DioramaDocument {
+  const destinationRows = { ...document.destinationRows };
+  const clamped = clampDestinationSize(height);
+  if (clamped === getWorldUnitsForPreset(document.preset)) {
+    delete destinationRows[row];
+  } else {
+    destinationRows[row] = clamped;
+  }
+  return { ...document, destinationRows };
 }
 
 export function cycleTab(
