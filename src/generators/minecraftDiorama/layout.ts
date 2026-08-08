@@ -406,8 +406,11 @@ export type HeaderRegion = {
 // of the document's world grid, so this isn't scoped to a single page the
 // way `makeSourceRowHeaderRegions` is). Callers render this only once, on
 // the first page, to avoid one redundant band per page. Each band's own
-// thickness matches its own column's width, its only dimension available
-// here.
+// thickness is fixed to the preset's default cell size, not the column's own
+// (possibly resized) width — a column header band's thickness must not
+// depend on the very dimension a Destination-mode click through it changes,
+// or growing a column's width would also grow its own header band's
+// thickness as an unwanted side effect.
 export function makeSourceColumnHeaderRegions({
   originX,
   originY,
@@ -435,11 +438,11 @@ export function makeSourceColumnHeaderRegions({
     columnOffset,
   });
   const columnOffsetsPx = makeOffsets(columnWidths);
+  const thickness = getEdgeThickness(getFaceCellSize(document.preset));
   const regions: HeaderRegion[] = [];
 
   for (let column = 0; column < columns; column += 1) {
     const width = columnWidths[column] ?? pixelsPerMinecraftUnit;
-    const thickness = getEdgeThickness(width);
     regions.push({
       id: getSourceColumnId(column + columnOffset),
       region: [
@@ -458,7 +461,9 @@ export function makeSourceColumnHeaderRegions({
 // source crop to every face in that row. Unlike columns, a row is already
 // scoped to one page (rows continue onto the next page as new row numbers,
 // per `rowOffset`), so this is rendered on every page for that page's own
-// rows.
+// rows. Thickness is fixed to the preset's default cell size for the same
+// reason as `makeSourceColumnHeaderRegions`' own thickness — it must not
+// track the row's own (possibly resized) height.
 export function makeSourceRowHeaderRegions({
   originX,
   originY,
@@ -482,11 +487,11 @@ export function makeSourceRowHeaderRegions({
   });
   const rowHeights = makeRowHeights({ document, rows, rowOffset });
   const rowOffsetsPx = makeOffsets(rowHeights);
+  const thickness = getEdgeThickness(getFaceCellSize(document.preset));
   const regions: HeaderRegion[] = [];
 
   for (let row = 0; row < rows; row += 1) {
     const height = rowHeights[row] ?? pixelsPerMinecraftUnit;
-    const thickness = getEdgeThickness(height);
     regions.push({
       id: getSourceRowId(row + rowOffset),
       region: [
@@ -503,6 +508,10 @@ export function makeSourceRowHeaderRegions({
 
 // Same shape and placement as `makeSourceColumnHeaderRegions`, a distinct id
 // namespace for Destination edit mode's own column-width bulk-apply band.
+// Thickness is fixed to the preset's default cell size for the same reason:
+// this band's own thickness must not track the column width it exists to
+// edit, or resizing a column wider would also grow its own header band
+// taller as an unwanted side effect.
 export function makeDestinationColumnHeaderRegions({
   originX,
   originY,
@@ -530,11 +539,11 @@ export function makeDestinationColumnHeaderRegions({
     columnOffset,
   });
   const columnOffsetsPx = makeOffsets(columnWidths);
+  const thickness = getEdgeThickness(getFaceCellSize(document.preset));
   const regions: HeaderRegion[] = [];
 
   for (let column = 0; column < columns; column += 1) {
     const width = columnWidths[column] ?? pixelsPerMinecraftUnit;
-    const thickness = getEdgeThickness(width);
     regions.push({
       id: getDestinationColumnId(column + columnOffset),
       region: [
@@ -551,6 +560,10 @@ export function makeDestinationColumnHeaderRegions({
 
 // Same shape and placement as `makeSourceRowHeaderRegions`, a distinct id
 // namespace for Destination edit mode's own row-height bulk-apply band.
+// Thickness is fixed to the preset's default cell size for the same reason:
+// this band's own thickness must not track the row height it exists to
+// edit, or resizing a row taller would also grow its own header band wider
+// as an unwanted side effect.
 export function makeDestinationRowHeaderRegions({
   originX,
   originY,
@@ -574,11 +587,11 @@ export function makeDestinationRowHeaderRegions({
   });
   const rowHeights = makeRowHeights({ document, rows, rowOffset });
   const rowOffsetsPx = makeOffsets(rowHeights);
+  const thickness = getEdgeThickness(getFaceCellSize(document.preset));
   const regions: HeaderRegion[] = [];
 
   for (let row = 0; row < rows; row += 1) {
     const height = rowHeights[row] ?? pixelsPerMinecraftUnit;
-    const thickness = getEdgeThickness(height);
     regions.push({
       id: getDestinationRowId(row + rowOffset),
       region: [

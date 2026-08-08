@@ -430,6 +430,27 @@ describe("makeSourceColumnHeaderRegions", () => {
       region: [0, -32, 128, 32],
     });
   });
+
+  it("keeps its own thickness fixed even when the column it targets is resized wider", () => {
+    // A widened column 0 changes the band's *width* (tracking the column),
+    // but must not also change its *thickness* (region[3]) — the thickness
+    // must stay the preset default (32), not derive from the column's own
+    // resized width, or a Destination-mode width click would grow this
+    // band's own height as an unwanted side effect.
+    const document = setColumnWidth(fullBlocks(), 0, 32);
+    const regions = makeSourceColumnHeaderRegions({
+      originX: 10,
+      originY: 20,
+      pageWidth: a4PortraitPageWidth,
+      pageHeight: a4PortraitPageHeight,
+      document,
+    });
+
+    expect(regions[0]).toEqual<HeaderRegion>({
+      id: getSourceColumnId(0),
+      region: [10, 20 - 32, 256, 32],
+    });
+  });
 });
 
 describe("makeSourceRowHeaderRegions", () => {
@@ -466,6 +487,22 @@ describe("makeSourceRowHeaderRegions", () => {
     expect(regions[0]).toEqual<HeaderRegion>({
       id: getSourceRowId(6),
       region: [-32, 0, 32, 128],
+    });
+  });
+
+  it("keeps its own thickness fixed even when the row it targets is resized taller", () => {
+    const document = setRowHeight(fullBlocks(), 0, 32);
+    const regions = makeSourceRowHeaderRegions({
+      originX: 10,
+      originY: 20,
+      pageWidth: a4PortraitPageWidth,
+      pageHeight: a4PortraitPageHeight,
+      document,
+    });
+
+    expect(regions[0]).toEqual<HeaderRegion>({
+      id: getSourceRowId(0),
+      region: [10 - 32, 20, 32, 256],
     });
   });
 });
@@ -517,6 +554,36 @@ describe("makeDestinationColumnHeaderRegions / makeDestinationRowHeaderRegions",
 
     const allIds = new Set([...sourceIds, ...destinationIds]);
     expect(allIds.size).toBe(sourceIds.length + destinationIds.length);
+  });
+
+  it("keeps each band's own thickness fixed even when the column/row it targets is resized — this is the exact control a Destination-mode click drives", () => {
+    // Resizing column 0 wider must not also grow its own header band's
+    // thickness (region[3] stays 32, not width/4); same for row 0's height
+    // and its row header's thickness (region[2]).
+    const document = setRowHeight(setColumnWidth(fullBlocks(), 0, 32), 0, 32);
+    const columnRegions = makeDestinationColumnHeaderRegions({
+      originX: 10,
+      originY: 20,
+      pageWidth: a4PortraitPageWidth,
+      pageHeight: a4PortraitPageHeight,
+      document,
+    });
+    const rowRegions = makeDestinationRowHeaderRegions({
+      originX: 10,
+      originY: 20,
+      pageWidth: a4PortraitPageWidth,
+      pageHeight: a4PortraitPageHeight,
+      document,
+    });
+
+    expect(columnRegions[0]).toEqual<HeaderRegion>({
+      id: getDestinationColumnId(0),
+      region: [10, 20 - 32, 256, 32],
+    });
+    expect(rowRegions[0]).toEqual<HeaderRegion>({
+      id: getDestinationRowId(0),
+      region: [10 - 32, 20, 32, 256],
+    });
   });
 });
 
