@@ -8,6 +8,15 @@
 
 ## Follow-up Tasks
 
+- Add `tabType` (Regular/Left/Middle/Right) shape support to
+  `src/builder/engine/renderers/drawTab.ts` — Diorama's Tabs edit mode
+  cycles through all four non-`None` values but they currently all render
+  as the same full-width trapezoid, so only the first and last clicks in
+  the cycle look different. Framework-only change (other generators consume
+  `drawTab` too), planned as its own PR off `main`, separate from
+  `diorama-rebuild`. Full plan: the vault's
+  `docs/2026-08-08-drawtab-type-support-plan.md`.
+
 - Diorama: the bottom exterior boundary tab flap (`layout.ts`'s
   `makeBoundaryEdgeRegions`) visually overlaps the "Minecraft Diorama
   Generator" footer credit text drawn by the "Title Portrait" image. The
