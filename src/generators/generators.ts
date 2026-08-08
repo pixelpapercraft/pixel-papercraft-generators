@@ -42,6 +42,7 @@ import { generator as testApiSkinControlGenerator } from "@genroot/generators/te
 import { generator as testApiTintSelectorGenerator } from "@genroot/generators/testApiTintSelector/testApiTintSelectorGenerator";
 import { generator as testApiCuboidTabsGenerator } from "@genroot/generators/testApiCuboidTabs/testApiCuboidTabsGenerator";
 import { generator as testApiCuboidFoldsGenerator } from "@genroot/generators/testApiCuboidFolds/testApiCuboidFoldsGenerator";
+import { generator as testApiDrawTabGenerator } from "@genroot/generators/testApiDrawTab/testApiDrawTabGenerator";
 import { generator as testApiTexturePickerV2Generator } from "@genroot/generators/testApiTexturePickerV2/testApiTexturePickerV2Generator";
 
 const isProductionEnvironment: boolean = process.env.NODE_ENV === "production";
@@ -125,6 +126,7 @@ export const testApiCoverage: GeneratorDefV2[] = [
   testApiTintSelectorGenerator,
   testApiCuboidTabsGenerator,
   testApiCuboidFoldsGenerator,
+  testApiDrawTabGenerator,
   testApiTexturePickerV2Generator,
 ];
 

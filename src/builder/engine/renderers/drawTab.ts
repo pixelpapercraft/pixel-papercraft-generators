@@ -3,6 +3,19 @@ import { drawLine, drawFoldLine } from "./drawLine";
 import { CanvasWithContext } from "../canvasWithContext";
 
 export type TabOrientation = "North" | "South" | "East" | "West";
+export type TabShape = "Full" | "Left" | "Middle" | "Right";
+
+export type DrawTabOptions = {
+  showFoldLine?: boolean;
+  tabAngle?: number;
+  tabShape?: TabShape;
+};
+
+type ResolvedDrawTabOptions = {
+  showFoldLine: boolean;
+  tabAngle: number;
+  tabShape: TabShape;
+};
 
 function translatePoint([x, y]: Point, dx: number, dy: number): Point {
   return [x + dx, y + dy];
@@ -15,8 +28,7 @@ function toRadians(degrees: number): number {
 function drawTabNorth(
   page: CanvasWithContext,
   rectangle: Rectangle,
-  showFoldLine: boolean,
-  tabAngle: number
+  options: ResolvedDrawTabOptions
 ) {
   //
   //    p2 ______ p3
@@ -25,6 +37,7 @@ function drawTabNorth(
   // p1 +--|----|--+ p4
   //
 
+  const { showFoldLine, tabAngle, tabShape } = options;
   const [x, y, w, h] = rectangle;
 
   const tabAngleRad = toRadians(tabAngle);
@@ -43,15 +56,36 @@ function drawTabNorth(
   let p2: Point = [0 + inset, h - tabHeight];
   let p3: Point = [w - inset, h - tabHeight];
   let p4: Point = [w, h];
+  let fullOuterLeft: Point = [0, h - tabHeight];
+  let fullOuterRight: Point = [w, h - tabHeight];
 
   p1 = translatePoint(p1, x, y);
   p2 = translatePoint(p2, x, y);
   p3 = translatePoint(p3, x, y);
   p4 = translatePoint(p4, x, y);
+  fullOuterLeft = translatePoint(fullOuterLeft, x, y);
+  fullOuterRight = translatePoint(fullOuterRight, x, y);
 
-  drawLine(page, p2, p1);
-  drawLine(page, p2, p3);
-  drawLine(page, p4, p3);
+  switch (tabShape) {
+    case "Full":
+      drawLine(page, p2, p1);
+      drawLine(page, p2, p3);
+      drawLine(page, p4, p3);
+      break;
+    case "Left":
+      drawLine(page, p2, p1);
+      drawLine(page, fullOuterRight, p2);
+      break;
+    case "Middle":
+      drawLine(page, fullOuterRight, fullOuterLeft);
+      break;
+    case "Right":
+      drawLine(page, p3, fullOuterLeft);
+      drawLine(page, p4, p3);
+      break;
+    default:
+      return tabShape satisfies never;
+  }
 
   if (showFoldLine) {
     drawFoldLine(page, p4, p1);
@@ -61,8 +95,7 @@ function drawTabNorth(
 function drawTabEast(
   page: CanvasWithContext,
   rectangle: Rectangle,
-  showFoldLine: boolean,
-  tabAngle: number
+  options: ResolvedDrawTabOptions
 ) {
   //
   //  p1
@@ -77,6 +110,7 @@ function drawTabEast(
   //  p4
   //
 
+  const { showFoldLine, tabAngle, tabShape } = options;
   const [x, y, w, h] = rectangle;
 
   const tabAngleRad = toRadians(tabAngle);
@@ -94,15 +128,36 @@ function drawTabEast(
   let p2: Point = [tabHeight, 0 + inset];
   let p3: Point = [tabHeight, h - inset];
   let p4: Point = [0, h];
+  let fullOuterTop: Point = [tabHeight, 0];
+  let fullOuterBottom: Point = [tabHeight, h];
 
   p1 = translatePoint(p1, x, y);
   p2 = translatePoint(p2, x, y);
   p3 = translatePoint(p3, x, y);
   p4 = translatePoint(p4, x, y);
+  fullOuterTop = translatePoint(fullOuterTop, x, y);
+  fullOuterBottom = translatePoint(fullOuterBottom, x, y);
 
-  drawLine(page, p1, p2);
-  drawLine(page, p3, p2);
-  drawLine(page, p3, p4);
+  switch (tabShape) {
+    case "Full":
+      drawLine(page, p1, p2);
+      drawLine(page, p3, p2);
+      drawLine(page, p3, p4);
+      break;
+    case "Left":
+      drawLine(page, p1, p2);
+      drawLine(page, fullOuterBottom, p2);
+      break;
+    case "Middle":
+      drawLine(page, fullOuterBottom, fullOuterTop);
+      break;
+    case "Right":
+      drawLine(page, p3, fullOuterTop);
+      drawLine(page, p3, p4);
+      break;
+    default:
+      return tabShape satisfies never;
+  }
 
   if (showFoldLine) {
     drawFoldLine(page, p1, p4);
@@ -112,8 +167,7 @@ function drawTabEast(
 function drawTabSouth(
   page: CanvasWithContext,
   rectangle: Rectangle,
-  showFoldLine: boolean,
-  tabAngle: number
+  options: ResolvedDrawTabOptions
 ) {
   // p4 +----------+ p1
   //     \         /
@@ -121,6 +175,7 @@ function drawTabSouth(
   //    p3 +----+ p2
   //
 
+  const { showFoldLine, tabAngle, tabShape } = options;
   const [x, y, w, h] = rectangle;
 
   const tabAngleRad = toRadians(tabAngle);
@@ -138,15 +193,36 @@ function drawTabSouth(
   let p2: Point = [w - inset, tabHeight];
   let p3: Point = [inset, tabHeight];
   let p4: Point = [0, 0];
+  let fullOuterRight: Point = [w, tabHeight];
+  let fullOuterLeft: Point = [0, tabHeight];
 
   p1 = translatePoint(p1, x, y);
   p2 = translatePoint(p2, x, y);
   p3 = translatePoint(p3, x, y);
   p4 = translatePoint(p4, x, y);
+  fullOuterRight = translatePoint(fullOuterRight, x, y);
+  fullOuterLeft = translatePoint(fullOuterLeft, x, y);
 
-  drawLine(page, p2, p1);
-  drawLine(page, p2, p3);
-  drawLine(page, p4, p3);
+  switch (tabShape) {
+    case "Full":
+      drawLine(page, p2, p1);
+      drawLine(page, p2, p3);
+      drawLine(page, p4, p3);
+      break;
+    case "Left":
+      drawLine(page, p4, p3);
+      drawLine(page, fullOuterRight, p3);
+      break;
+    case "Middle":
+      drawLine(page, fullOuterRight, fullOuterLeft);
+      break;
+    case "Right":
+      drawLine(page, p2, p1);
+      drawLine(page, fullOuterLeft, p2);
+      break;
+    default:
+      return tabShape satisfies never;
+  }
 
   if (showFoldLine) {
     drawFoldLine(page, p4, p1);
@@ -156,8 +232,7 @@ function drawTabSouth(
 function drawTabWest(
   page: CanvasWithContext,
   rectangle: Rectangle,
-  showFoldLine: boolean,
-  tabAngle: number
+  options: ResolvedDrawTabOptions
 ) {
   //
   // p4
@@ -170,6 +245,7 @@ function drawTabWest(
   //  p1
   //
 
+  const { showFoldLine, tabAngle, tabShape } = options;
   const [x, y, w, h] = rectangle;
 
   const tabAngleRad = toRadians(tabAngle);
@@ -187,22 +263,43 @@ function drawTabWest(
   let p2: Point = [w - tabHeight, h - inset];
   let p3: Point = [w - tabHeight, inset];
   let p4: Point = [w, 0];
+  let fullOuterBottom: Point = [w - tabHeight, h];
+  let fullOuterTop: Point = [w - tabHeight, 0];
 
   p1 = translatePoint(p1, x, y);
   p2 = translatePoint(p2, x, y);
   p3 = translatePoint(p3, x, y);
   p4 = translatePoint(p4, x, y);
+  fullOuterBottom = translatePoint(fullOuterBottom, x, y);
+  fullOuterTop = translatePoint(fullOuterTop, x, y);
 
-  drawLine(page, p1, p2);
-  drawLine(page, p3, p2);
-  drawLine(page, p3, p4);
+  switch (tabShape) {
+    case "Full":
+      drawLine(page, p1, p2);
+      drawLine(page, p3, p2);
+      drawLine(page, p3, p4);
+      break;
+    case "Left":
+      drawLine(page, p4, p3);
+      drawLine(page, fullOuterBottom, p3);
+      break;
+    case "Middle":
+      drawLine(page, fullOuterBottom, fullOuterTop);
+      break;
+    case "Right":
+      drawLine(page, p2, p1);
+      drawLine(page, fullOuterTop, p2);
+      break;
+    default:
+      return tabShape satisfies never;
+  }
 
   if (showFoldLine) {
     drawFoldLine(page, p1, p4);
   }
 }
 
-// Normal
+// Full
 //
 //        p3   p4
 //    +---+-----+---+        ---
@@ -227,25 +324,37 @@ function drawTabWest(
 //     +----+----+      ---   ---
 //     p1        p4
 //
+// `tabShape` shapes the outer edge: `Full` tapers both corners in to the
+// full trapezoid above; `Left`/`Right` taper only the corner named (p2/p1
+// for North's Left, p3/p4 for North's Right, and each orientation's
+// equivalent pair) and run flat, full-width to the other; `Middle` tapers
+// neither corner and draws only the flat outer edge.
 export function drawTab(
   page: CanvasWithContext,
   rectangle: Rectangle,
   orientation: TabOrientation,
-  showFoldLine: boolean = true,
-  tabAngle: number = 45
-) {
+  options: DrawTabOptions = {}
+): void {
+  const resolved: ResolvedDrawTabOptions = {
+    showFoldLine: options.showFoldLine ?? true,
+    tabAngle: options.tabAngle ?? 45,
+    tabShape: options.tabShape ?? "Full",
+  };
+
   switch (orientation) {
     case "North":
-      drawTabNorth(page, rectangle, showFoldLine, tabAngle);
+      drawTabNorth(page, rectangle, resolved);
       break;
     case "East":
-      drawTabEast(page, rectangle, showFoldLine, tabAngle);
+      drawTabEast(page, rectangle, resolved);
       break;
     case "South":
-      drawTabSouth(page, rectangle, showFoldLine, tabAngle);
+      drawTabSouth(page, rectangle, resolved);
       break;
     case "West":
-      drawTabWest(page, rectangle, showFoldLine, tabAngle);
+      drawTabWest(page, rectangle, resolved);
       break;
+    default:
+      return orientation satisfies never;
   }
 }

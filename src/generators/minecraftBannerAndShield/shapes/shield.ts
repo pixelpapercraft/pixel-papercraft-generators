@@ -315,7 +315,7 @@ export function drawShieldHandleInnerLiningGuides(
       // unlike drawCuboidTabs's explicit `options.showFoldLine ?? false` —
       // pass false here to match that convention and keep the tab's own
       // base line out of the always-visible cut-outline.
-      ctx.drawTab(region, orientation, false);
+      ctx.drawTab(region, orientation, { showFoldLine: false });
     });
   }
 }

@@ -10,7 +10,10 @@ import {
 import { type DrawTextureOptions } from "@genroot/builder/engine/renderers/drawTexture";
 import { type DrawRectangeOptions } from "@genroot/builder/engine/renderers/drawRectangle";
 import { type LineProps } from "@genroot/builder/engine/renderers/drawLine";
-import { type TabOrientation } from "@genroot/builder/engine/renderers/drawTab";
+import {
+  type DrawTabOptions,
+  type TabOrientation,
+} from "@genroot/builder/engine/renderers/drawTab";
 import { type Texture } from "@genroot/builder/engine/texture";
 import { type RegionClickHandler, type RenderContext } from "./generator";
 
@@ -88,10 +91,9 @@ export class RenderContextAdapter implements RenderContext {
   drawTab(
     rectangle: Rectangle,
     orientation: TabOrientation,
-    showFoldLine?: boolean,
-    tabAngle?: number
+    options?: DrawTabOptions
   ): void {
-    this.gen.drawTab(rectangle, orientation, showFoldLine, tabAngle);
+    this.gen.drawTab(rectangle, orientation, options);
   }
 
   drawText(text: string, position: Position, size: number): void {

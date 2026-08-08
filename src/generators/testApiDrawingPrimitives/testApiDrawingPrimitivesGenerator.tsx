@@ -103,7 +103,7 @@ const render = (ctx: RenderContext): void => {
   // edges are still drawn (top edge row 50); only the grey fold at row 60 is
   // gone — a negative assertion distinguishing the flag.
   ctx.usePage("DrawTabNoFold");
-  ctx.drawTab([50, 50, 40, 10], "North", false);
+  ctx.drawTab([50, 50, 40, 10], "North", { showFoldLine: false });
 
   // --- Page 7: drawText (38) -----------------------------------------------
   // fillText at the given baseline in `${size}px sans-serif`, current fillStyle

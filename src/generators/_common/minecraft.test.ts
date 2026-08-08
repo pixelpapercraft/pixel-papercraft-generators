@@ -93,12 +93,10 @@ describe("Minecraft", () => {
 
       minecraft.drawFaceTab([10, 20, 30, 40], "East");
 
-      expect(drawTab).toHaveBeenCalledWith(
-        [40, 20, 24, 40],
-        "East",
-        true,
-        undefined
-      );
+      expect(drawTab).toHaveBeenCalledWith([40, 20, 24, 40], "East", {
+        showFoldLine: true,
+        tabAngle: undefined,
+      });
     });
 
     it("draws a tab for every requested side", () => {
