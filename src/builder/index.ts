@@ -79,6 +79,11 @@ export type {
   DrawTextureOptions,
   Blend,
 } from "@genroot/builder/engine/renderers/drawTexture";
+export type {
+  DrawTabOptions,
+  TabOrientation,
+  TabShape,
+} from "@genroot/builder/engine/renderers/drawTab";
 
 // Page sizes.
 export { A4 } from "@genroot/builder/engine/modelPage";

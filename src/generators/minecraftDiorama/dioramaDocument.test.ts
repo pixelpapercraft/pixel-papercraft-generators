@@ -134,10 +134,10 @@ describe("addFaceTexture / eraseFaceTexture", () => {
 });
 
 describe("cycleTab", () => {
-  it("cycles None -> Regular -> Left -> Middle -> Right -> None", () => {
+  it("cycles None -> Full -> Left -> Middle -> Right -> None", () => {
     const edgeId = getEdgeId("North", 0, 0);
     const expected: DioramaDocument["tabs"][string][] = [
-      "Regular",
+      "Full",
       "Left",
       "Middle",
       "Right",

@@ -1,4 +1,4 @@
-import type { SelectedTexture } from "@genroot/builder";
+import type { SelectedTexture, TabShape } from "@genroot/builder";
 
 export type BlockPreset = "Full Blocks" | "Quarter Blocks";
 
@@ -10,9 +10,13 @@ export function isBlockPreset(value: string): value is BlockPreset {
   return value === "Full Blocks" || value === "Quarter Blocks";
 }
 
-export type TabType = "None" | "Regular" | "Left" | "Middle" | "Right";
+export type TabType = "None" | TabShape;
 
-const tabCycle: TabType[] = ["None", "Regular", "Left", "Middle", "Right"];
+const tabCycle: TabType[] = ["None", "Full", "Left", "Middle", "Right"];
+
+export function isTabShape(tabType: TabType | undefined): tabType is TabShape {
+  return tabType !== undefined && tabType !== "None";
+}
 
 export type EdgeDirection = "North" | "South" | "East" | "West";
 

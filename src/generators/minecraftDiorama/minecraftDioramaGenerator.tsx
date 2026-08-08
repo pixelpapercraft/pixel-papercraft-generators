@@ -29,6 +29,7 @@ import {
   cycleTab,
   eraseFaceTexture,
   isBlockPreset,
+  isTabShape,
   makeEmptyDioramaDocument,
   setPreset,
   toggleFold,
@@ -170,8 +171,9 @@ const render = (ctx: RenderContext, props: DioramaProps): void => {
         ctx.defineRegion(region, edgeId);
       }
 
-      if (props.document.tabs[edgeId]) {
-        ctx.drawTab(region, orientation);
+      const tabShape = props.document.tabs[edgeId];
+      if (isTabShape(tabShape)) {
+        ctx.drawTab(region, orientation, { tabShape });
       }
 
       if (props.document.folds[edgeId]) {
