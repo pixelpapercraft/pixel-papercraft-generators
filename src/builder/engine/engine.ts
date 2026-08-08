@@ -11,7 +11,11 @@ import {
   drawRectangle,
 } from "./renderers/drawRectangle";
 import { type LineProps, drawLine } from "./renderers/drawLine";
-import { type TabOrientation, drawTab } from "./renderers/drawTab";
+import {
+  type DrawTabOptions,
+  type TabOrientation,
+  drawTab,
+} from "./renderers/drawTab";
 import { drawText } from "./renderers/drawText";
 import { fillBackgroundColor } from "./renderers/fillBackgroundColor";
 import { type Page } from "./modelPage";
@@ -130,17 +134,10 @@ export class Engine {
   drawTab(
     rectangle: Rectangle,
     orientation: TabOrientation,
-    showFoldLine?: boolean,
-    tabAngle?: number
+    options?: DrawTabOptions
   ): void {
     const currentPage = this.getCurrentPage();
-    drawTab(
-      currentPage.canvasWithContext,
-      rectangle,
-      orientation,
-      showFoldLine,
-      tabAngle
-    );
+    drawTab(currentPage.canvasWithContext, rectangle, orientation, options);
   }
 
   drawText(text: string, position: Position, size: number): void {

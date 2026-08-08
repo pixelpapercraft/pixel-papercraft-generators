@@ -218,11 +218,9 @@ export function drawCuboidTabs(
       adjustedDimensions[2],
       tabThickness ?? options.tabThickness
     );
-    ctx.drawTab(
-      region,
-      orientation,
-      options.showFoldLine ?? false,
-      options.tabAngle ?? 45
-    );
+    ctx.drawTab(region, orientation, {
+      showFoldLine: options.showFoldLine ?? false,
+      tabAngle: options.tabAngle ?? 45,
+    });
   });
 }
