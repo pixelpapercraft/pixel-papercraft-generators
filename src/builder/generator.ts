@@ -14,8 +14,8 @@ import { type DrawTextureOptions } from "@genroot/builder/engine/renderers/drawT
 import { type DrawRectangeOptions } from "@genroot/builder/engine/renderers/drawRectangle";
 import { type LineProps } from "@genroot/builder/engine/renderers/drawLine";
 import {
+  type DrawTabOptions,
   type TabOrientation,
-  type TabType,
 } from "@genroot/builder/engine/renderers/drawTab";
 import { type Texture } from "@genroot/builder/engine/texture";
 
@@ -52,9 +52,7 @@ export type RenderContext = {
   drawTab(
     rectangle: Rectangle,
     orientation: TabOrientation,
-    showFoldLine?: boolean,
-    tabAngle?: number,
-    tabType?: TabType
+    options?: DrawTabOptions
   ): void;
   drawText(text: string, position: Position, size: number): void;
   getImagePixelColor(id: string, position: [number, number]): Color | null;

@@ -4,7 +4,10 @@ import {
   type TexturePlugin,
   type DrawTextureOptions,
 } from "@genroot/builder/engine/renderers/drawTexture";
-import { type TabOrientation } from "@genroot/builder/engine/renderers/drawTab";
+import {
+  type DrawTabOptions,
+  type TabOrientation,
+} from "@genroot/builder/engine/renderers/drawTab";
 import { type Region } from "@genroot/builder/engine/renderers/types";
 import {
   type Cuboid,
@@ -31,8 +34,7 @@ export type MinecraftDrawSurface = {
   drawTab(
     rectangle: Rectangle,
     orientation: TabOrientation,
-    showFoldLine?: boolean,
-    tabAngle?: number
+    options?: DrawTabOptions
   ): void;
   getNumberVariable(id: string): number | null;
   setNumberVariable(id: string, value: number): void;
@@ -640,7 +642,7 @@ export class Minecraft {
           : side === "South"
             ? [x, y + h, w, size]
             : [x - size, y, size, h];
-    this.generator.drawTab(tabRect, side, showFoldLine, tabAngle);
+    this.generator.drawTab(tabRect, side, { showFoldLine, tabAngle });
   }
 
   drawFaceTabs(

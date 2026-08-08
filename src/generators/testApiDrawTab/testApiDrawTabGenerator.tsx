@@ -19,11 +19,11 @@ const name = "Test API: Draw Tab";
 const instructions: InstructionsDef = `
 Diagnostic board for the \`drawTab\` primitive
 (\`builder/engine/renderers/drawTab.ts\`), at the \`ctx.drawTab\` level rather
-than through \`_common/cuboidTabs.ts\`. Draws every \`tabType\`
-(\`Regular\`/\`Left\`/\`Middle\`/\`Right\`) side by side for the selected
+than through \`_common/cuboidTabs.ts\`. Draws every \`tabShape\`
+(\`Full\`/\`Left\`/\`Middle\`/\`Right\`) side by side for the selected
 \`orientation\`, each over its own light-blue reference rectangle at a fixed
 size and position so every tab's outer edge lands at known, assertable
-coordinates. \`Regular\` tapers both outer corners to a flat-top trapezoid;
+coordinates. \`Full\` tapers both outer corners to a flat-top trapezoid;
 \`Left\`/\`Right\` taper only the named corner and run flat, full-width to the
 other; \`Middle\` tapers neither and draws only the flat outer edge — see
 \`drawTab\`'s own comment for which corner each orientation's \`Left\`/\`Right\`
@@ -39,7 +39,7 @@ between rows.
 const images: ImageDef[] = [];
 const textures: TextureDef[] = [];
 
-const tabTypes = ["Regular", "Left", "Middle", "Right"] as const;
+const tabShapes = ["Full", "Left", "Middle", "Right"] as const;
 
 const orientations = ["North", "South", "East", "West"] as const;
 type BoardOrientation = (typeof orientations)[number];
@@ -79,13 +79,13 @@ const render = (ctx: RenderContext, props: DrawTabProps): void => {
 
   const [w, h] = rectangleFor(props.orientation);
 
-  tabTypes.forEach((tabType, index) => {
+  tabShapes.forEach((tabShape, index) => {
     const cellOrigin: [number, number] = [
       gridOrigin[0] + index * cellWidth,
       gridOrigin[1],
     ];
 
-    ctx.drawText(`tabType="${tabType}"`, cellOrigin, 12);
+    ctx.drawText(`tabShape="${tabShape}"`, cellOrigin, 12);
 
     const rectangle: [number, number, number, number] = [
       cellOrigin[0],
@@ -95,7 +95,11 @@ const render = (ctx: RenderContext, props: DrawTabProps): void => {
     ];
 
     ctx.fillRectangle(rectangle, "#dbeafe");
-    ctx.drawTab(rectangle, props.orientation, true, 45, tabType);
+    ctx.drawTab(rectangle, props.orientation, {
+      showFoldLine: true,
+      tabAngle: 45,
+      tabShape,
+    });
   });
 };
 

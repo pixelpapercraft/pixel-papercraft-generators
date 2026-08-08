@@ -77,34 +77,22 @@ describe("cuboidTabs", () => {
     drawCuboidTabs(ctx, [10, 20], [30, 40, 50]);
 
     expect(drawTab).toHaveBeenCalledTimes(7);
-    expect(drawTab).toHaveBeenNthCalledWith(
-      1,
-      [10, 57.5, 50, 12.5],
-      "North",
-      false,
-      45
-    );
-    expect(drawTab).toHaveBeenNthCalledWith(
-      2,
-      [10, 110, 50, 12.5],
-      "South",
-      false,
-      45
-    );
-    expect(drawTab).toHaveBeenNthCalledWith(
-      3,
-      [-2.5, 70, 12.5, 40],
-      "West",
-      false,
-      45
-    );
-    expect(drawTab).toHaveBeenNthCalledWith(
-      6,
-      [140, 57.5, 30, 12.5],
-      "North",
-      false,
-      45
-    );
+    expect(drawTab).toHaveBeenNthCalledWith(1, [10, 57.5, 50, 12.5], "North", {
+      showFoldLine: false,
+      tabAngle: 45,
+    });
+    expect(drawTab).toHaveBeenNthCalledWith(2, [10, 110, 50, 12.5], "South", {
+      showFoldLine: false,
+      tabAngle: 45,
+    });
+    expect(drawTab).toHaveBeenNthCalledWith(3, [-2.5, 70, 12.5, 40], "West", {
+      showFoldLine: false,
+      tabAngle: 45,
+    });
+    expect(drawTab).toHaveBeenNthCalledWith(6, [140, 57.5, 30, 12.5], "North", {
+      showFoldLine: false,
+      tabAngle: 45,
+    });
   });
 
   it("keeps small cuboid tabs proportional to their face", () => {
@@ -112,20 +100,14 @@ describe("cuboidTabs", () => {
 
     drawCuboidTabs(ctx, [10, 20], [4, 8, 4]);
 
-    expect(drawTab).toHaveBeenNthCalledWith(
-      1,
-      [10, 23, 4, 1],
-      "North",
-      false,
-      45
-    );
-    expect(drawTab).toHaveBeenNthCalledWith(
-      3,
-      [9, 24, 1, 8],
-      "West",
-      false,
-      45
-    );
+    expect(drawTab).toHaveBeenNthCalledWith(1, [10, 23, 4, 1], "North", {
+      showFoldLine: false,
+      tabAngle: 45,
+    });
+    expect(drawTab).toHaveBeenNthCalledWith(3, [9, 24, 1, 8], "West", {
+      showFoldLine: false,
+      tabAngle: 45,
+    });
   });
 
   it("matches tab thickness when a larger base size is provided", () => {
@@ -135,27 +117,18 @@ describe("cuboidTabs", () => {
       baseDimensions: [128, 128, 128],
     });
 
-    expect(drawTab).toHaveBeenNthCalledWith(
-      1,
-      [10, 45, 50, 25],
-      "North",
-      false,
-      45
-    );
-    expect(drawTab).toHaveBeenNthCalledWith(
-      3,
-      [-15, 70, 25, 40],
-      "West",
-      false,
-      45
-    );
-    expect(drawTab).toHaveBeenNthCalledWith(
-      6,
-      [140, 45, 30, 25],
-      "North",
-      false,
-      45
-    );
+    expect(drawTab).toHaveBeenNthCalledWith(1, [10, 45, 50, 25], "North", {
+      showFoldLine: false,
+      tabAngle: 45,
+    });
+    expect(drawTab).toHaveBeenNthCalledWith(3, [-15, 70, 25, 40], "West", {
+      showFoldLine: false,
+      tabAngle: 45,
+    });
+    expect(drawTab).toHaveBeenNthCalledWith(6, [140, 45, 30, 25], "North", {
+      showFoldLine: false,
+      tabAngle: 45,
+    });
   });
 
   it("uniformTabBaseDimensions makes back's Left/Right tab thickness match right/left's", () => {
@@ -197,7 +170,10 @@ describe("cuboidTabs", () => {
     });
 
     expect(drawTab).toHaveBeenCalledTimes(1);
-    expect(drawTab).toHaveBeenCalledWith([170, 70, 7.5, 40], "East", true, 60);
+    expect(drawTab).toHaveBeenCalledWith([170, 70, 7.5, 40], "East", {
+      showFoldLine: true,
+      tabAngle: 60,
+    });
   });
 
   it("attaches right/left/back tabs to the real faces for a Right-centered cuboid", () => {
@@ -292,20 +268,14 @@ describe("cuboidTabs", () => {
     drawCuboidTabs(ctx, [10, 20], [30, 40, 50], { orientation: "East" });
 
     expect(drawTab).toHaveBeenCalledTimes(7);
-    expect(drawTab).toHaveBeenNthCalledWith(
-      6,
-      [10, 57.5, 30, 12.5],
-      "North",
-      false,
-      45
-    );
-    expect(drawTab).toHaveBeenNthCalledWith(
-      7,
-      [10, 110, 30, 12.5],
-      "South",
-      false,
-      45
-    );
+    expect(drawTab).toHaveBeenNthCalledWith(6, [10, 57.5, 30, 12.5], "North", {
+      showFoldLine: false,
+      tabAngle: 45,
+    });
+    expect(drawTab).toHaveBeenNthCalledWith(7, [10, 110, 30, 12.5], "South", {
+      showFoldLine: false,
+      tabAngle: 45,
+    });
   });
 
   it("attaches all 7 tabs to their real faces for North orientation with Bottom center (the banner crossbar's exact configuration)", () => {

@@ -117,9 +117,13 @@ describe("drawTab geometry", () => {
     // p1=baseLeft [0,4], p2=outerLeft [4,0], p3=outerRight [16,0],
     // p4=baseRight [20,4], fullOuterLeft [0,0], fullOuterRight [20,0].
 
-    it("Regular tapers both corners to a flat top", () => {
+    it("Full tapers both corners to a flat top", () => {
       const { page, strokes } = makeFakeCanvasWithContext();
-      drawTab(page, rectangle, "North", false, 45, "Regular");
+      drawTab(page, rectangle, "North", {
+        showFoldLine: false,
+        tabAngle: 45,
+        tabShape: "Full",
+      });
       expect(strokes).toHaveLength(3);
       expectLine(strokes, 0, [4, 0], [0, 4]);
       expectLine(strokes, 1, [4, 0], [16, 0]);
@@ -128,7 +132,11 @@ describe("drawTab geometry", () => {
 
     it("Left tapers only the left corner, flush to the right edge", () => {
       const { page, strokes } = makeFakeCanvasWithContext();
-      drawTab(page, rectangle, "North", false, 45, "Left");
+      drawTab(page, rectangle, "North", {
+        showFoldLine: false,
+        tabAngle: 45,
+        tabShape: "Left",
+      });
       expect(strokes).toHaveLength(2);
       expectLine(strokes, 0, [4, 0], [0, 4]);
       expectLine(strokes, 1, [20, 0], [4, 0]);
@@ -136,14 +144,22 @@ describe("drawTab geometry", () => {
 
     it("Middle draws a flat top with no taper", () => {
       const { page, strokes } = makeFakeCanvasWithContext();
-      drawTab(page, rectangle, "North", false, 45, "Middle");
+      drawTab(page, rectangle, "North", {
+        showFoldLine: false,
+        tabAngle: 45,
+        tabShape: "Middle",
+      });
       expect(strokes).toHaveLength(1);
       expectLine(strokes, 0, [20, 0], [0, 0]);
     });
 
     it("Right tapers only the right corner, flush to the left edge", () => {
       const { page, strokes } = makeFakeCanvasWithContext();
-      drawTab(page, rectangle, "North", false, 45, "Right");
+      drawTab(page, rectangle, "North", {
+        showFoldLine: false,
+        tabAngle: 45,
+        tabShape: "Right",
+      });
       expect(strokes).toHaveLength(2);
       expectLine(strokes, 0, [16, 0], [0, 0]);
       expectLine(strokes, 1, [20, 4], [16, 0]);
@@ -155,9 +171,13 @@ describe("drawTab geometry", () => {
     // p1=baseTop [0,0], p2=outerTop [4,4], p3=outerBottom [4,16],
     // p4=baseBottom [0,20], fullOuterTop [4,0], fullOuterBottom [4,20].
 
-    it("Regular tapers both corners to a flat outer edge", () => {
+    it("Full tapers both corners to a flat outer edge", () => {
       const { page, strokes } = makeFakeCanvasWithContext();
-      drawTab(page, rectangle, "East", false, 45, "Regular");
+      drawTab(page, rectangle, "East", {
+        showFoldLine: false,
+        tabAngle: 45,
+        tabShape: "Full",
+      });
       expect(strokes).toHaveLength(3);
       expectLine(strokes, 0, [0, 0], [4, 4]);
       expectLine(strokes, 1, [4, 16], [4, 4]);
@@ -166,7 +186,11 @@ describe("drawTab geometry", () => {
 
     it("Left tapers only the top corner, flush to the bottom edge", () => {
       const { page, strokes } = makeFakeCanvasWithContext();
-      drawTab(page, rectangle, "East", false, 45, "Left");
+      drawTab(page, rectangle, "East", {
+        showFoldLine: false,
+        tabAngle: 45,
+        tabShape: "Left",
+      });
       expect(strokes).toHaveLength(2);
       expectLine(strokes, 0, [0, 0], [4, 4]);
       expectLine(strokes, 1, [4, 20], [4, 4]);
@@ -174,14 +198,22 @@ describe("drawTab geometry", () => {
 
     it("Middle draws a flat outer edge with no taper", () => {
       const { page, strokes } = makeFakeCanvasWithContext();
-      drawTab(page, rectangle, "East", false, 45, "Middle");
+      drawTab(page, rectangle, "East", {
+        showFoldLine: false,
+        tabAngle: 45,
+        tabShape: "Middle",
+      });
       expect(strokes).toHaveLength(1);
       expectLine(strokes, 0, [4, 20], [4, 0]);
     });
 
     it("Right tapers only the bottom corner, flush to the top edge", () => {
       const { page, strokes } = makeFakeCanvasWithContext();
-      drawTab(page, rectangle, "East", false, 45, "Right");
+      drawTab(page, rectangle, "East", {
+        showFoldLine: false,
+        tabAngle: 45,
+        tabShape: "Right",
+      });
       expect(strokes).toHaveLength(2);
       expectLine(strokes, 0, [4, 16], [4, 0]);
       expectLine(strokes, 1, [4, 16], [0, 20]);
@@ -193,9 +225,13 @@ describe("drawTab geometry", () => {
     // p1=baseRight [20,0], p2=outerRight [16,4], p3=outerLeft [4,4],
     // p4=baseLeft [0,0], fullOuterRight [20,4], fullOuterLeft [0,4].
 
-    it("Regular tapers both corners to a flat bottom", () => {
+    it("Full tapers both corners to a flat bottom", () => {
       const { page, strokes } = makeFakeCanvasWithContext();
-      drawTab(page, rectangle, "South", false, 45, "Regular");
+      drawTab(page, rectangle, "South", {
+        showFoldLine: false,
+        tabAngle: 45,
+        tabShape: "Full",
+      });
       expect(strokes).toHaveLength(3);
       expectLine(strokes, 0, [16, 4], [20, 0]);
       expectLine(strokes, 1, [16, 4], [4, 4]);
@@ -204,7 +240,11 @@ describe("drawTab geometry", () => {
 
     it("Left tapers only the left corner, flush to the right edge", () => {
       const { page, strokes } = makeFakeCanvasWithContext();
-      drawTab(page, rectangle, "South", false, 45, "Left");
+      drawTab(page, rectangle, "South", {
+        showFoldLine: false,
+        tabAngle: 45,
+        tabShape: "Left",
+      });
       expect(strokes).toHaveLength(2);
       expectLine(strokes, 0, [0, 0], [4, 4]);
       expectLine(strokes, 1, [20, 4], [4, 4]);
@@ -212,14 +252,22 @@ describe("drawTab geometry", () => {
 
     it("Middle draws a flat bottom with no taper", () => {
       const { page, strokes } = makeFakeCanvasWithContext();
-      drawTab(page, rectangle, "South", false, 45, "Middle");
+      drawTab(page, rectangle, "South", {
+        showFoldLine: false,
+        tabAngle: 45,
+        tabShape: "Middle",
+      });
       expect(strokes).toHaveLength(1);
       expectLine(strokes, 0, [20, 4], [0, 4]);
     });
 
     it("Right tapers only the right corner, flush to the left edge", () => {
       const { page, strokes } = makeFakeCanvasWithContext();
-      drawTab(page, rectangle, "South", false, 45, "Right");
+      drawTab(page, rectangle, "South", {
+        showFoldLine: false,
+        tabAngle: 45,
+        tabShape: "Right",
+      });
       expect(strokes).toHaveLength(2);
       expectLine(strokes, 0, [16, 4], [20, 0]);
       expectLine(strokes, 1, [0, 4], [16, 4]);
@@ -231,9 +279,13 @@ describe("drawTab geometry", () => {
     // p1=baseBottom [4,20], p2=outerBottom [0,16], p3=outerTop [0,4],
     // p4=baseTop [4,0], fullOuterBottom [0,20], fullOuterTop [0,0].
 
-    it("Regular tapers both corners to a flat outer edge", () => {
+    it("Full tapers both corners to a flat outer edge", () => {
       const { page, strokes } = makeFakeCanvasWithContext();
-      drawTab(page, rectangle, "West", false, 45, "Regular");
+      drawTab(page, rectangle, "West", {
+        showFoldLine: false,
+        tabAngle: 45,
+        tabShape: "Full",
+      });
       expect(strokes).toHaveLength(3);
       expectLine(strokes, 0, [4, 20], [0, 16]);
       expectLine(strokes, 1, [0, 4], [0, 16]);
@@ -242,7 +294,11 @@ describe("drawTab geometry", () => {
 
     it("Left tapers only the top corner, flush to the bottom edge", () => {
       const { page, strokes } = makeFakeCanvasWithContext();
-      drawTab(page, rectangle, "West", false, 45, "Left");
+      drawTab(page, rectangle, "West", {
+        showFoldLine: false,
+        tabAngle: 45,
+        tabShape: "Left",
+      });
       expect(strokes).toHaveLength(2);
       expectLine(strokes, 0, [4, 0], [0, 4]);
       expectLine(strokes, 1, [0, 20], [0, 4]);
@@ -250,14 +306,22 @@ describe("drawTab geometry", () => {
 
     it("Middle draws a flat outer edge with no taper", () => {
       const { page, strokes } = makeFakeCanvasWithContext();
-      drawTab(page, rectangle, "West", false, 45, "Middle");
+      drawTab(page, rectangle, "West", {
+        showFoldLine: false,
+        tabAngle: 45,
+        tabShape: "Middle",
+      });
       expect(strokes).toHaveLength(1);
       expectLine(strokes, 0, [0, 20], [0, 0]);
     });
 
     it("Right tapers only the bottom corner, flush to the top edge", () => {
       const { page, strokes } = makeFakeCanvasWithContext();
-      drawTab(page, rectangle, "West", false, 45, "Right");
+      drawTab(page, rectangle, "West", {
+        showFoldLine: false,
+        tabAngle: 45,
+        tabShape: "Right",
+      });
       expect(strokes).toHaveLength(2);
       expectLine(strokes, 0, [0, 16], [4, 20]);
       expectLine(strokes, 1, [0, 0], [0, 16]);
@@ -267,13 +331,21 @@ describe("drawTab geometry", () => {
   describe("fold line", () => {
     it("is suppressed when showFoldLine is false", () => {
       const { page, strokes } = makeFakeCanvasWithContext();
-      drawTab(page, wideRectangle, "North", false, 45, "Middle");
+      drawTab(page, wideRectangle, "North", {
+        showFoldLine: false,
+        tabAngle: 45,
+        tabShape: "Middle",
+      });
       expect(strokes).toHaveLength(1);
     });
 
     it("draws one extra dashed grey line across the tab's base when enabled", () => {
       const { page, strokes } = makeFakeCanvasWithContext();
-      drawTab(page, wideRectangle, "North", true, 45, "Middle");
+      drawTab(page, wideRectangle, "North", {
+        showFoldLine: true,
+        tabAngle: 45,
+        tabShape: "Middle",
+      });
       expect(strokes).toHaveLength(2);
       const foldLine = strokes[1];
       expect(foldLine).toBeDefined();
@@ -287,12 +359,16 @@ describe("drawTab geometry", () => {
   });
 
   describe("default parameters", () => {
-    it("omitting tabType renders identically to explicit Regular", () => {
+    it("omitting options renders identically to explicit defaults", () => {
       const withDefault = makeFakeCanvasWithContext();
       drawTab(withDefault.page, wideRectangle, "North");
 
       const withExplicit = makeFakeCanvasWithContext();
-      drawTab(withExplicit.page, wideRectangle, "North", true, 45, "Regular");
+      drawTab(withExplicit.page, wideRectangle, "North", {
+        showFoldLine: true,
+        tabAngle: 45,
+        tabShape: "Full",
+      });
 
       expect(withDefault.strokes).toEqual<typeof withDefault.strokes>(
         withExplicit.strokes
@@ -302,19 +378,23 @@ describe("drawTab geometry", () => {
 
   describe("width-limited overflow", () => {
     // A rectangle much shorter than it is tall forces North's `inset` past
-    // `maxInset` (`w/2`), exercising the capped branch alongside `tabType`.
+    // `maxInset` (`w/2`), exercising the capped branch alongside `tabShape`.
     // Capping always sets `inset = maxInset = w/2`, so `w - inset` lands on
     // the same value — `p2`/`p3` coincide exactly (a pre-existing gap in
-    // V2's uncapped-crispness formula, not something this PR's `tabType`
+    // V2's uncapped-crispness formula, not something this PR's `tabShape`
     // support changes or fixes; see the plan's deferred `getTabGeometry`
     // `w2`/`h2` question).
     const rectangle: Rectangle = [0, 0, 4, 20];
     // p1=baseLeft [0,20], p2=p3=outer (degenerate) [2,18], p4=baseRight
     // [4,20], fullOuterLeft [0,18], fullOuterRight [4,18].
 
-    it("Regular", () => {
+    it("Full", () => {
       const { page, strokes } = makeFakeCanvasWithContext();
-      drawTab(page, rectangle, "North", false, 45, "Regular");
+      drawTab(page, rectangle, "North", {
+        showFoldLine: false,
+        tabAngle: 45,
+        tabShape: "Full",
+      });
       expect(strokes).toHaveLength(3);
       expectLine(strokes, 0, [2, 18], [0, 20]);
       expectLine(strokes, 1, [2, 18], [2, 18]);
@@ -323,7 +403,11 @@ describe("drawTab geometry", () => {
 
     it("Left", () => {
       const { page, strokes } = makeFakeCanvasWithContext();
-      drawTab(page, rectangle, "North", false, 45, "Left");
+      drawTab(page, rectangle, "North", {
+        showFoldLine: false,
+        tabAngle: 45,
+        tabShape: "Left",
+      });
       expect(strokes).toHaveLength(2);
       expectLine(strokes, 0, [2, 18], [0, 20]);
       expectLine(strokes, 1, [4, 18], [2, 18]);
@@ -331,14 +415,22 @@ describe("drawTab geometry", () => {
 
     it("Middle", () => {
       const { page, strokes } = makeFakeCanvasWithContext();
-      drawTab(page, rectangle, "North", false, 45, "Middle");
+      drawTab(page, rectangle, "North", {
+        showFoldLine: false,
+        tabAngle: 45,
+        tabShape: "Middle",
+      });
       expect(strokes).toHaveLength(1);
       expectLine(strokes, 0, [4, 18], [0, 18]);
     });
 
     it("Right", () => {
       const { page, strokes } = makeFakeCanvasWithContext();
-      drawTab(page, rectangle, "North", false, 45, "Right");
+      drawTab(page, rectangle, "North", {
+        showFoldLine: false,
+        tabAngle: 45,
+        tabShape: "Right",
+      });
       expect(strokes).toHaveLength(2);
       expectLine(strokes, 0, [2, 18], [0, 18]);
       expectLine(strokes, 1, [4, 20], [2, 18]);
