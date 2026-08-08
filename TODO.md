@@ -8,6 +8,18 @@
 
 ## Follow-up Tasks
 
+- Diorama: the bottom exterior boundary tab flap (`layout.ts`'s
+  `makeBoundaryEdgeRegions`) visually overlaps the "Minecraft Diorama
+  Generator" footer credit text drawn by the "Title Portrait" image. The
+  bottom margin (page height 842 - originY 41 - gridAreaHeight 768 = 33px)
+  is only 1px wider than the flap thickness (32px), and the footer text sits
+  in that same band — confirmed by clicking the flap and screenshotting the
+  rendered tab against the footer. Top/left/right flaps have no such
+  conflict (larger margins). Deliberately left as-is (Kevan's call,
+  2026-08-08) rather than shrinking just the bottom flap or reordering the
+  Title draw — revisit once more of the page layout (multi-page, "Fit Pages
+  to Design") is settled.
+
 - Write Playwright API tests for `_common/cuboidTabs.ts`, mirroring the
   `test-api-cuboid-folds` board/spec added for `cuboidFolds.ts`
   (`src/generators/testApiCuboidFolds/`,

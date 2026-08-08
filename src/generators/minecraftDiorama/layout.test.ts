@@ -1,9 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { getFaceId } from "./dioramaDocument";
+import { getEdgeId, getFaceId } from "./dioramaDocument";
 import {
+  getEdgeBoundaryLine,
   getFaceCellSize,
   getGridDimensions,
+  makeBoundaryEdgeRegions,
+  makeEdgeRegions,
   makeFaceRegions,
+  type EdgeRegion,
   type FaceRegion,
 } from "./layout";
 
@@ -98,5 +102,157 @@ describe("makeFaceRegions", () => {
       id: getFaceId(4, 6),
       region: [0, 0, 128, 128],
     });
+  });
+});
+
+describe("makeEdgeRegions", () => {
+  it("gives North/South strips the orientation whose drawTab fold lands on the true face-boundary edge, not the strip's own compass name", () => {
+    const regions = makeEdgeRegions({
+      originX: 10,
+      originY: 20,
+      pageWidth: a4PortraitPageWidth,
+      pageHeight: a4PortraitPageHeight,
+      preset: "Full Blocks",
+    });
+
+    expect(regions).toContainEqual<EdgeRegion>({
+      id: getEdgeId("North", 0, 0),
+      orientation: "South",
+      region: [10, 20, 128, 32],
+    });
+    expect(regions).toContainEqual<EdgeRegion>({
+      id: getEdgeId("South", 0, 0),
+      orientation: "North",
+      region: [10, 20 + 128 - 32, 128, 32],
+    });
+  });
+
+  it("leaves East/West strips as an identity orientation mapping", () => {
+    const regions = makeEdgeRegions({
+      originX: 10,
+      originY: 20,
+      pageWidth: a4PortraitPageWidth,
+      pageHeight: a4PortraitPageHeight,
+      preset: "Full Blocks",
+    });
+
+    expect(regions).toContainEqual<EdgeRegion>({
+      id: getEdgeId("East", 0, 0),
+      orientation: "East",
+      region: [10, 20, 32, 128],
+    });
+    expect(regions).toContainEqual<EdgeRegion>({
+      id: getEdgeId("West", 0, 0),
+      orientation: "West",
+      region: [10 + 128 - 32, 20, 32, 128],
+    });
+  });
+});
+
+describe("getEdgeBoundaryLine", () => {
+  const region: [number, number, number, number] = [10, 20, 100, 40];
+
+  it("puts North's fold at the bottom of the region, matching drawTab.ts's drawTabNorth", () => {
+    expect(getEdgeBoundaryLine("North", region)).toEqual([
+      [10, 60],
+      [110, 60],
+    ]);
+  });
+
+  it("puts South's fold at the top of the region, matching drawTab.ts's drawTabSouth", () => {
+    expect(getEdgeBoundaryLine("South", region)).toEqual([
+      [10, 20],
+      [110, 20],
+    ]);
+  });
+
+  it("leaves East/West unchanged (left/right lines)", () => {
+    expect(getEdgeBoundaryLine("East", region)).toEqual([
+      [10, 20],
+      [10, 60],
+    ]);
+    expect(getEdgeBoundaryLine("West", region)).toEqual([
+      [110, 20],
+      [110, 60],
+    ]);
+  });
+});
+
+describe("makeBoundaryEdgeRegions", () => {
+  it("produces 2 * (columns + rows) regions", () => {
+    const regions = makeBoundaryEdgeRegions({
+      originX: 10,
+      originY: 20,
+      pageWidth: a4PortraitPageWidth,
+      pageHeight: a4PortraitPageHeight,
+      preset: "Full Blocks",
+    });
+    expect(regions).toHaveLength(2 * (4 + 6));
+  });
+
+  it("positions a flap in the page margin just outside the grid on each side", () => {
+    const regions = makeBoundaryEdgeRegions({
+      originX: 10,
+      originY: 20,
+      pageWidth: a4PortraitPageWidth,
+      pageHeight: a4PortraitPageHeight,
+      preset: "Full Blocks",
+    });
+
+    expect(regions).toContainEqual<EdgeRegion>({
+      id: getEdgeId("North", 0, -1),
+      orientation: "North",
+      region: [10, 20 - 32, 128, 32],
+    });
+    expect(regions).toContainEqual<EdgeRegion>({
+      id: getEdgeId("South", 0, 6),
+      orientation: "South",
+      region: [10, 20 + 6 * 128, 128, 32],
+    });
+    expect(regions).toContainEqual<EdgeRegion>({
+      id: getEdgeId("West", -1, 0),
+      orientation: "West",
+      region: [10 - 32, 20, 32, 128],
+    });
+    expect(regions).toContainEqual<EdgeRegion>({
+      id: getEdgeId("East", 4, 0),
+      orientation: "East",
+      region: [10 + 4 * 128, 20, 32, 128],
+    });
+  });
+
+  it("offsets ids by columnOffset/rowOffset without moving pixel regions", () => {
+    const regions = makeBoundaryEdgeRegions({
+      originX: 0,
+      originY: 0,
+      pageWidth: a4PortraitPageWidth,
+      pageHeight: a4PortraitPageHeight,
+      preset: "Full Blocks",
+      columnOffset: 4,
+      rowOffset: 6,
+    });
+
+    expect(regions).toContainEqual<EdgeRegion>({
+      id: getEdgeId("North", 4, 5),
+      orientation: "North",
+      region: [0, -32, 128, 32],
+    });
+  });
+
+  it("never collides with makeEdgeRegions' own per-face edge ids", () => {
+    const options = {
+      originX: 10,
+      originY: 20,
+      pageWidth: a4PortraitPageWidth,
+      pageHeight: a4PortraitPageHeight,
+      preset: "Full Blocks" as const,
+    };
+    const faceEdgeIds = makeEdgeRegions(options).map(({ id }) => id);
+    const boundaryEdgeIds = makeBoundaryEdgeRegions(options).map(
+      ({ id }) => id
+    );
+    const allIds = new Set([...faceEdgeIds, ...boundaryEdgeIds]);
+
+    expect(allIds.size).toBe(faceEdgeIds.length + boundaryEdgeIds.length);
   });
 });

@@ -128,14 +128,23 @@ export function makeEdgeRegions({
       const faceRow = row + rowOffset;
 
       regions.push(
+        // North/South's drawTab orientation is swapped relative to the
+        // strip's own position: drawTab's "North" puts its fold at the
+        // bottom of the rectangle it's given, "South" puts it at the top.
+        // The fold needs to land on each strip's true face-boundary edge
+        // (touching the neighboring face, not the strip's own face
+        // interior) — matching the reference's own rotation-derived
+        // orientation (rotation 2 on the North-id region, rotation 0 on the
+        // South-id region), confirmed by pixel-sampling both apps' rendered
+        // tabs. East/West need no such swap.
         {
           id: getEdgeId("North", faceColumn, faceRow),
-          orientation: "North",
+          orientation: "South",
           region: [x, y, cellSize, thickness],
         },
         {
           id: getEdgeId("South", faceColumn, faceRow),
-          orientation: "South",
+          orientation: "North",
           region: [x, y + cellSize - thickness, cellSize, thickness],
         },
         {
@@ -155,8 +164,83 @@ export function makeEdgeRegions({
   return regions;
 }
 
-// The line where a face's edge strip meets its own interior — the physical
-// crease `drawFoldLine`/the edit-mode dashed guide gets drawn along.
+// Tab flaps along the whole grid's four outer edges, positioned in the page
+// margin outside the grid rather than inset inside a boundary face's own
+// cell (contrast with `makeEdgeRegions`, which stays inset — used for fold
+// creases between adjacent faces). The virtual column/row baked into each id
+// (rowOffset - 1, rowOffset + rows, columnOffset - 1, columnOffset +
+// columns) always falls outside the real grid's own coordinate range, so
+// these ids can never collide with a real face's own edge ids.
+export function makeBoundaryEdgeRegions({
+  originX,
+  originY,
+  pageWidth,
+  pageHeight,
+  preset,
+  columnOffset = 0,
+  rowOffset = 0,
+}: {
+  originX: number;
+  originY: number;
+  pageWidth: number;
+  pageHeight: number;
+  preset: BlockPreset;
+  columnOffset?: number;
+  rowOffset?: number;
+}): EdgeRegion[] {
+  const cellSize = getFaceCellSize(preset);
+  const thickness = getEdgeThickness(cellSize);
+  const { columns, rows } = getGridDimensions({
+    pageWidth,
+    pageHeight,
+    preset,
+  });
+  const regions: EdgeRegion[] = [];
+
+  for (let column = 0; column < columns; column += 1) {
+    const faceColumn = column + columnOffset;
+    const x = originX + column * cellSize;
+
+    regions.push(
+      {
+        id: getEdgeId("North", faceColumn, rowOffset - 1),
+        orientation: "North",
+        region: [x, originY - thickness, cellSize, thickness],
+      },
+      {
+        id: getEdgeId("South", faceColumn, rowOffset + rows),
+        orientation: "South",
+        region: [x, originY + rows * cellSize, cellSize, thickness],
+      }
+    );
+  }
+
+  for (let row = 0; row < rows; row += 1) {
+    const faceRow = row + rowOffset;
+    const y = originY + row * cellSize;
+
+    regions.push(
+      {
+        id: getEdgeId("West", columnOffset - 1, faceRow),
+        orientation: "West",
+        region: [originX - thickness, y, thickness, cellSize],
+      },
+      {
+        id: getEdgeId("East", columnOffset + columns, faceRow),
+        orientation: "East",
+        region: [originX + columns * cellSize, y, thickness, cellSize],
+      }
+    );
+  }
+
+  return regions;
+}
+
+// The line where drawTab's own fold sits for a given orientation — matches
+// drawTab.ts's actual fold-line placement (North's fold is at the bottom of
+// its rectangle, South's is at the top), not the orientation label's
+// compass name, so this stays correct regardless of which physical strip a
+// given orientation is used to render.
 export function getEdgeBoundaryLine(
   orientation: EdgeDirection,
   [x, y, width, height]: [number, number, number, number]
@@ -164,13 +248,13 @@ export function getEdgeBoundaryLine(
   switch (orientation) {
     case "North":
       return [
-        [x, y],
-        [x + width, y],
+        [x, y + height],
+        [x + width, y + height],
       ];
     case "South":
       return [
-        [x, y + height],
-        [x + width, y + height],
+        [x, y],
+        [x + width, y],
       ];
     case "East":
       return [

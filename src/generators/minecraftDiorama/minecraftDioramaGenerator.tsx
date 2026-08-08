@@ -36,6 +36,7 @@ import {
 } from "./dioramaDocument";
 import {
   getEdgeBoundaryLine,
+  makeBoundaryEdgeRegions,
   makeEdgeRegions,
   makeFaceRegions,
 } from "./layout";
@@ -155,26 +156,36 @@ const render = (ctx: RenderContext, props: DioramaProps): void => {
     preset: props.document.preset,
   });
 
-  edgeRegions.forEach(({ id: edgeId, region, orientation }) => {
-    if (props.editMode === "Tabs" || props.editMode === "Folds") {
-      ctx.defineRegion(region, edgeId);
-    }
-
-    if (props.document.tabs[edgeId]) {
-      ctx.drawTab(region, orientation);
-    }
-
-    if (props.document.folds[edgeId]) {
-      ctx.drawFoldLine(...getEdgeBoundaryLine(orientation, region));
-    }
-
-    if (
-      props.showEditRegions &&
-      (props.editMode === "Tabs" || props.editMode === "Folds")
-    ) {
-      ctx.drawRectangle(region, editRegionOutlineOptions);
-    }
+  const boundaryEdgeRegions = makeBoundaryEdgeRegions({
+    originX: gridOriginX,
+    originY: gridOriginY,
+    pageWidth: gridAreaWidth,
+    pageHeight: gridAreaHeight,
+    preset: props.document.preset,
   });
+
+  [...edgeRegions, ...boundaryEdgeRegions].forEach(
+    ({ id: edgeId, region, orientation }) => {
+      if (props.editMode === "Tabs" || props.editMode === "Folds") {
+        ctx.defineRegion(region, edgeId);
+      }
+
+      if (props.document.tabs[edgeId]) {
+        ctx.drawTab(region, orientation);
+      }
+
+      if (props.document.folds[edgeId]) {
+        ctx.drawFoldLine(...getEdgeBoundaryLine(orientation, region));
+      }
+
+      if (
+        props.showEditRegions &&
+        (props.editMode === "Tabs" || props.editMode === "Folds")
+      ) {
+        ctx.drawRectangle(region, editRegionOutlineOptions);
+      }
+    }
+  );
 
   ctx.drawImage("Title Portrait", [0, 0]);
 };
