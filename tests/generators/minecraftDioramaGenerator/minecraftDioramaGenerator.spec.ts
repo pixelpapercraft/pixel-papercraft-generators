@@ -11,6 +11,17 @@ const black: Rgba = { r: 0, g: 0, b: 0, a: 255 };
 const nearBlackDiagonal: Rgba = { r: 3, g: 3, b: 3, a: 255 };
 const foldGray: Rgba = { r: 123, g: 123, b: 123, a: 255 };
 
+// "furnace front" is non-uniform (a dark furnace-mouth patch off-center in a
+// lighter frame), so sampling one quadrant proves a crop actually happened
+// instead of just re-showing the same (uniform) texture. These 4 colors are
+// its own pixel values at Minecraft-texture-unit (2, 2) within each of its 4
+// 8x8 quadrants — confirmed against the real rendered output before trusting
+// them, same as the tab/fold probes above.
+const furnaceTopLeftQuadrant: Rgba = { r: 119, g: 119, b: 119, a: 255 };
+const furnaceTopRightQuadrant: Rgba = { r: 133, g: 133, b: 133, a: 255 };
+const furnaceBottomLeftQuadrant: Rgba = { r: 168, g: 168, b: 168, a: 255 };
+const furnaceBottomRightQuadrant: Rgba = { r: 168, g: 168, b: 168, a: 255 };
+
 test("minecraft diorama renders the background and title", async ({ page }) => {
   await page.goto("/generator/minecraft-diorama");
 
@@ -184,4 +195,131 @@ test("Folds edit mode toggles the fold-crease line", async ({ page }) => {
 
   await region.click();
   expect(await readPixel(pageImage, ...dashPixel)).toEqual(white);
+});
+
+// Source edit mode crops a face's texture to a sub-region of its 16x16 grid
+// instead of always showing the whole thing. The crop is set via 4 range
+// sliders (`.fill()` works directly on a `type="range"` input in Playwright),
+// then clicking a face applies it. Sampling Minecraft-texture-unit (2, 2)
+// within the crop keeps the probe away from any quadrant boundary, matching
+// the `getFaceSource`/`clampSourceRegion` unit tests' own reasoning.
+test("Source edit mode crops a face to the selected source region", async ({
+  page,
+}) => {
+  await page.goto("/generator/minecraft-diorama");
+  const pageImage = page.getByTestId("generator-page-image").first();
+
+  await page.getByTitle("furnace front", { exact: true }).click();
+  await page.getByTestId("region-BlockFace0 0").click();
+  // Baseline: the uncropped face shows its top-left quadrant color here.
+  expect(await readPixel(pageImage, 58, 57)).toEqual(furnaceTopLeftQuadrant);
+
+  await page.getByLabel("Edit Mode").selectOption("Source");
+  await page.getByLabel("Source X").fill("0");
+  await page.getByLabel("Source Y").fill("8");
+  await page.getByLabel("Source Width").fill("8");
+  await page.getByLabel("Source Height").fill("8");
+  await page.getByTestId("region-BlockFace0 0").click();
+
+  // Cropped to the bottom-left quadrant [0, 8, 8, 8] and magnified to fill
+  // the same 128x128 cell, unit (2, 2) of the crop is source unit (2, 10).
+  expect(await readPixel(pageImage, 42 + 2 * 16, 41 + 2 * 16)).toEqual(
+    furnaceBottomLeftQuadrant
+  );
+});
+
+// The band above a column / left of a row bulk-applies the current source
+// crop to every face in it, rather than requiring one click per face.
+test("Source edit mode's row header applies the crop to every face in that row", async ({
+  page,
+}) => {
+  await page.goto("/generator/minecraft-diorama");
+  const pageImage = page.getByTestId("generator-page-image").first();
+
+  await page.getByTitle("furnace front", { exact: true }).click();
+  await page.getByTestId("region-BlockFace0 0").click();
+  await page.getByTestId("region-BlockFace1 0").click();
+
+  await page.getByLabel("Edit Mode").selectOption("Source");
+  await page.getByLabel("Source X").fill("0");
+  await page.getByLabel("Source Y").fill("0");
+  await page.getByLabel("Source Width").fill("8");
+  await page.getByLabel("Source Height").fill("8");
+  await page.getByTestId("region-SourceRow0").click();
+
+  // Cropped to the top-left quadrant [0, 0, 8, 8], unit (2, 2) of the crop is
+  // also source unit (2, 2) — both faces should now show the same quadrant.
+  expect(await readPixel(pageImage, 42 + 2 * 16, 41 + 2 * 16)).toEqual(
+    furnaceTopLeftQuadrant
+  );
+  expect(await readPixel(pageImage, 170 + 2 * 16, 41 + 2 * 16)).toEqual(
+    furnaceTopLeftQuadrant
+  );
+});
+
+// A column header bulk-applies across the *whole document*, not just the
+// current page — a column is one continuous vertical strip of the world
+// grid, so it only needs to render (and be clicked) once, on the first page.
+test("Source edit mode's column header applies the crop across every page", async ({
+  page,
+}) => {
+  await page.goto("/generator/minecraft-diorama");
+  await page.getByText("+ Add Page", { exact: true }).click();
+  const firstPageImage = page.getByTestId("generator-page-image").nth(0);
+  const secondPageImage = page.getByTestId("generator-page-image").nth(1);
+
+  await page.getByTitle("furnace front", { exact: true }).click();
+  await page.getByTestId("region-BlockFace0 0").click();
+  // Full Blocks fits 6 rows per page, so the second page's local row 0 is
+  // world row 6.
+  await page.getByTestId("region-BlockFace0 6").click();
+
+  await page.getByLabel("Edit Mode").selectOption("Source");
+  await page.getByLabel("Source X").fill("0");
+  await page.getByLabel("Source Y").fill("8");
+  await page.getByLabel("Source Width").fill("8");
+  await page.getByLabel("Source Height").fill("8");
+
+  const columnHeader = page.getByTestId("region-SourceColumn0");
+  await expect(columnHeader).toHaveCount(1);
+  await columnHeader.click();
+
+  const probe: [number, number] = [42 + 2 * 16, 41 + 2 * 16];
+  expect(await readPixel(firstPageImage, ...probe)).toEqual(
+    furnaceBottomLeftQuadrant
+  );
+  expect(await readPixel(secondPageImage, ...probe)).toEqual(
+    furnaceBottomLeftQuadrant
+  );
+});
+
+// Regression coverage for the `todo.md` "Quarter Blocks doesn't crop yet"
+// gap: with no explicit source set, each of the 4 adjacent quarter cells
+// should default to its own 8x8 quadrant of the texture (by column/row
+// parity) at full pixel density — not all 4 repeating the same whole texture
+// shrunk into a smaller cell.
+test("Quarter Blocks preset defaults each face to its own quadrant of the texture", async ({
+  page,
+}) => {
+  await page.goto("/generator/minecraft-diorama");
+  const pageImage = page.getByTestId("generator-page-image").first();
+
+  await page.getByLabel("Block Preset").selectOption("Quarter Blocks");
+  await page.getByTitle("furnace front", { exact: true }).click();
+  await page.getByTestId("region-BlockFace0 0").click();
+  await page.getByTestId("region-BlockFace1 0").click();
+  await page.getByTestId("region-BlockFace0 1").click();
+  await page.getByTestId("region-BlockFace1 1").click();
+
+  // Each 64x64 quarter cell renders its own quadrant at the same 8px/unit
+  // density as a Full Blocks cell (128 / 16 = 64 / 8), so unit (2, 2) within
+  // each cell reads the same color the uncropped Full Blocks probes above do.
+  expect(await readPixel(pageImage, 58, 57)).toEqual(furnaceTopLeftQuadrant);
+  expect(await readPixel(pageImage, 122, 57)).toEqual(furnaceTopRightQuadrant);
+  expect(await readPixel(pageImage, 58, 121)).toEqual(
+    furnaceBottomLeftQuadrant
+  );
+  expect(await readPixel(pageImage, 122, 121)).toEqual(
+    furnaceBottomRightQuadrant
+  );
 });

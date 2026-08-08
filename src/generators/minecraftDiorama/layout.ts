@@ -1,6 +1,8 @@
 import {
   getEdgeId,
   getFaceId,
+  getSourceColumnId,
+  getSourceRowId,
   type BlockPreset,
   type EdgeDirection,
   type EdgeId,
@@ -231,6 +233,92 @@ export function makeBoundaryEdgeRegions({
         region: [originX + columns * cellSize, y, thickness, cellSize],
       }
     );
+  }
+
+  return regions;
+}
+
+export type SourceHeaderRegion = {
+  id: string;
+  region: [number, number, number, number];
+};
+
+// A thin click band above each column, in the page margin just above the
+// grid's top row — bulk-applies the current source crop to every face in
+// that column, across every page (a column is one continuous vertical strip
+// of the document's world grid, so this isn't scoped to a single page the
+// way `makeSourceRowHeaderRegions` is). Callers render this only once, on
+// the first page, to avoid one redundant band per page.
+export function makeSourceColumnHeaderRegions({
+  originX,
+  originY,
+  pageWidth,
+  pageHeight,
+  preset,
+  columnOffset = 0,
+}: {
+  originX: number;
+  originY: number;
+  pageWidth: number;
+  pageHeight: number;
+  preset: BlockPreset;
+  columnOffset?: number;
+}): SourceHeaderRegion[] {
+  const cellSize = getFaceCellSize(preset);
+  const thickness = getEdgeThickness(cellSize);
+  const { columns } = getGridDimensions({ pageWidth, pageHeight, preset });
+  const regions: SourceHeaderRegion[] = [];
+
+  for (let column = 0; column < columns; column += 1) {
+    regions.push({
+      id: getSourceColumnId(column + columnOffset),
+      region: [
+        originX + column * cellSize,
+        originY - thickness,
+        cellSize,
+        thickness,
+      ],
+    });
+  }
+
+  return regions;
+}
+
+// A thin click band to the left of each row, bulk-applying the current
+// source crop to every face in that row. Unlike columns, a row is already
+// scoped to one page (rows continue onto the next page as new row numbers,
+// per `rowOffset`), so this is rendered on every page for that page's own
+// rows.
+export function makeSourceRowHeaderRegions({
+  originX,
+  originY,
+  pageWidth,
+  pageHeight,
+  preset,
+  rowOffset = 0,
+}: {
+  originX: number;
+  originY: number;
+  pageWidth: number;
+  pageHeight: number;
+  preset: BlockPreset;
+  rowOffset?: number;
+}): SourceHeaderRegion[] {
+  const cellSize = getFaceCellSize(preset);
+  const thickness = getEdgeThickness(cellSize);
+  const { rows } = getGridDimensions({ pageWidth, pageHeight, preset });
+  const regions: SourceHeaderRegion[] = [];
+
+  for (let row = 0; row < rows; row += 1) {
+    regions.push({
+      id: getSourceRowId(row + rowOffset),
+      region: [
+        originX - thickness,
+        originY + row * cellSize,
+        thickness,
+        cellSize,
+      ],
+    });
   }
 
   return regions;

@@ -24,9 +24,14 @@ export type FaceId = string;
 
 export type EdgeId = string;
 
+// [x, y, width, height] in Minecraft texture-pixel units (0-16, matching a
+// standard block texture's own 16x16 frame), not page pixels.
+export type Region = [number, number, number, number];
+
 export type DioramaDocument = {
   preset: BlockPreset;
   faceTextures: Record<FaceId, SelectedTexture[]>;
+  sources: Record<FaceId, Region>;
   tabs: Record<EdgeId, TabType>;
   folds: Record<EdgeId, true>;
 };
@@ -37,6 +42,7 @@ export function makeEmptyDioramaDocument(
   const document: DioramaDocument = {
     preset,
     faceTextures: {},
+    sources: {},
     tabs: {},
     folds: {},
   };
@@ -53,6 +59,45 @@ export function getEdgeId(
   row: number
 ): EdgeId {
   return `${direction}${column} ${row}`;
+}
+
+const faceIdPattern = /^BlockFace(-?\d+) (-?\d+)$/;
+
+export function parseFaceId(
+  faceId: FaceId
+): { column: number; row: number } | null {
+  const match = faceIdPattern.exec(faceId);
+  if (!match) {
+    return null;
+  }
+  return {
+    column: parseInt(match[1] ?? "0", 10),
+    row: parseInt(match[2] ?? "0", 10),
+  };
+}
+
+// A source column/row header is a bulk-apply control, not a face — its id
+// deliberately falls outside `faceIdPattern`/edge id shapes so it can never
+// collide with a real face or edge id.
+export function getSourceColumnId(column: number): string {
+  return `SourceColumn${column}`;
+}
+
+export function getSourceRowId(row: number): string {
+  return `SourceRow${row}`;
+}
+
+const sourceColumnIdPattern = /^SourceColumn(-?\d+)$/;
+const sourceRowIdPattern = /^SourceRow(-?\d+)$/;
+
+export function parseSourceColumnId(id: string): number | null {
+  const match = sourceColumnIdPattern.exec(id);
+  return match ? parseInt(match[1] ?? "0", 10) : null;
+}
+
+export function parseSourceRowId(id: string): number | null {
+  const match = sourceRowIdPattern.exec(id);
+  return match ? parseInt(match[1] ?? "0", 10) : null;
 }
 
 export function setPreset(
@@ -95,6 +140,92 @@ export function eraseFaceTexture(
   }
 
   return { ...document, faceTextures };
+}
+
+export const fullSourceRegion: Region = [0, 0, 16, 16];
+
+const sourceGridSize = 16;
+const minimumSourceSize = 0.5;
+
+function roundToHalf(value: number): number {
+  return Math.round(value * 2) / 2;
+}
+
+export function clampSourceRegion([x, y, width, height]: Region): Region {
+  const clampedX = Math.max(
+    0,
+    Math.min(roundToHalf(x), sourceGridSize - minimumSourceSize)
+  );
+  const clampedY = Math.max(
+    0,
+    Math.min(roundToHalf(y), sourceGridSize - minimumSourceSize)
+  );
+
+  return [
+    clampedX,
+    clampedY,
+    Math.max(
+      minimumSourceSize,
+      Math.min(roundToHalf(width), sourceGridSize - clampedX)
+    ),
+    Math.max(
+      minimumSourceSize,
+      Math.min(roundToHalf(height), sourceGridSize - clampedY)
+    ),
+  ];
+}
+
+// Quarter Blocks has no explicit source until a face is edited, so each of
+// the four cells sharing one source texture defaults to its own quadrant —
+// (column parity, row parity) picks one of the 4 8x8 quadrants — rather than
+// all four repeating the same full 16x16 texture shrunk to a quarter-size
+// cell. Matches the `pr-34-original` reference's `getDefaultSourceForFace`,
+// confirmed by Kevan as intentional reference behavior (see todo.md).
+export function getDefaultSourceForFace(
+  document: DioramaDocument,
+  faceId: FaceId
+): Region {
+  if (document.preset !== "Quarter Blocks") {
+    return fullSourceRegion;
+  }
+
+  const position = parseFaceId(faceId);
+  if (!position) {
+    return fullSourceRegion;
+  }
+
+  return [(position.column % 2) * 8, (position.row % 2) * 8, 8, 8];
+}
+
+export function getFaceSource(
+  document: DioramaDocument,
+  faceId: FaceId
+): Region {
+  return document.sources[faceId] ?? getDefaultSourceForFace(document, faceId);
+}
+
+export function setFaceSource(
+  document: DioramaDocument,
+  faceId: FaceId,
+  source: Region
+): DioramaDocument {
+  return {
+    ...document,
+    sources: { ...document.sources, [faceId]: clampSourceRegion(source) },
+  };
+}
+
+export function setFaceSourceForFaces(
+  document: DioramaDocument,
+  faceIds: FaceId[],
+  source: Region
+): DioramaDocument {
+  const clamped = clampSourceRegion(source);
+  const sources = { ...document.sources };
+  faceIds.forEach((faceId) => {
+    sources[faceId] = clamped;
+  });
+  return { ...document, sources };
 }
 
 export function cycleTab(

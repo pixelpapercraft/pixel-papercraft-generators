@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { getEdgeId, getFaceId } from "./dioramaDocument";
+import {
+  getEdgeId,
+  getFaceId,
+  getSourceColumnId,
+  getSourceRowId,
+} from "./dioramaDocument";
 import {
   getEdgeBoundaryLine,
   getFaceCellSize,
@@ -7,8 +12,11 @@ import {
   makeBoundaryEdgeRegions,
   makeEdgeRegions,
   makeFaceRegions,
+  makeSourceColumnHeaderRegions,
+  makeSourceRowHeaderRegions,
   type EdgeRegion,
   type FaceRegion,
+  type SourceHeaderRegion,
 } from "./layout";
 
 const a4PortraitPageWidth = 595;
@@ -254,5 +262,81 @@ describe("makeBoundaryEdgeRegions", () => {
     const allIds = new Set([...faceEdgeIds, ...boundaryEdgeIds]);
 
     expect(allIds.size).toBe(faceEdgeIds.length + boundaryEdgeIds.length);
+  });
+});
+
+describe("makeSourceColumnHeaderRegions", () => {
+  it("produces one band per column, positioned in the margin above the grid", () => {
+    const regions = makeSourceColumnHeaderRegions({
+      originX: 10,
+      originY: 20,
+      pageWidth: a4PortraitPageWidth,
+      pageHeight: a4PortraitPageHeight,
+      preset: "Full Blocks",
+    });
+
+    expect(regions).toHaveLength(4);
+    expect(regions[0]).toEqual<SourceHeaderRegion>({
+      id: getSourceColumnId(0),
+      region: [10, 20 - 32, 128, 32],
+    });
+    expect(regions[1]).toEqual<SourceHeaderRegion>({
+      id: getSourceColumnId(1),
+      region: [10 + 128, 20 - 32, 128, 32],
+    });
+  });
+
+  it("offsets ids by columnOffset without moving pixel regions", () => {
+    const regions = makeSourceColumnHeaderRegions({
+      originX: 0,
+      originY: 0,
+      pageWidth: a4PortraitPageWidth,
+      pageHeight: a4PortraitPageHeight,
+      preset: "Full Blocks",
+      columnOffset: 4,
+    });
+
+    expect(regions[0]).toEqual<SourceHeaderRegion>({
+      id: getSourceColumnId(4),
+      region: [0, -32, 128, 32],
+    });
+  });
+});
+
+describe("makeSourceRowHeaderRegions", () => {
+  it("produces one band per row, positioned in the margin left of the grid", () => {
+    const regions = makeSourceRowHeaderRegions({
+      originX: 10,
+      originY: 20,
+      pageWidth: a4PortraitPageWidth,
+      pageHeight: a4PortraitPageHeight,
+      preset: "Full Blocks",
+    });
+
+    expect(regions).toHaveLength(6);
+    expect(regions[0]).toEqual<SourceHeaderRegion>({
+      id: getSourceRowId(0),
+      region: [10 - 32, 20, 32, 128],
+    });
+    expect(regions[1]).toEqual<SourceHeaderRegion>({
+      id: getSourceRowId(1),
+      region: [10 - 32, 20 + 128, 32, 128],
+    });
+  });
+
+  it("offsets ids by rowOffset without moving pixel regions", () => {
+    const regions = makeSourceRowHeaderRegions({
+      originX: 0,
+      originY: 0,
+      pageWidth: a4PortraitPageWidth,
+      pageHeight: a4PortraitPageHeight,
+      preset: "Full Blocks",
+      rowOffset: 6,
+    });
+
+    expect(regions[0]).toEqual<SourceHeaderRegion>({
+      id: getSourceRowId(6),
+      region: [-32, 0, 32, 128],
+    });
   });
 });

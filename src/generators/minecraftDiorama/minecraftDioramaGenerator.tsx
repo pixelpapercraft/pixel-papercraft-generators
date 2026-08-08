@@ -28,12 +28,20 @@ import {
   blockPresets,
   cycleTab,
   eraseFaceTexture,
+  fullSourceRegion,
+  getFaceId,
+  getFaceSource,
   isBlockPreset,
   isTabShape,
   makeEmptyDioramaDocument,
+  parseSourceColumnId,
+  parseSourceRowId,
+  setFaceSource,
+  setFaceSourceForFaces,
   setPreset,
   toggleFold,
   type DioramaDocument,
+  type Region,
 } from "./dioramaDocument";
 import {
   getEdgeBoundaryLine,
@@ -41,6 +49,8 @@ import {
   makeBoundaryEdgeRegions,
   makeEdgeRegions,
   makeFaceRegions,
+  makeSourceColumnHeaderRegions,
+  makeSourceRowHeaderRegions,
 } from "./layout";
 
 import thumbnailImage from "./thumbnail/v3-thumbnail-256.png";
@@ -62,11 +72,12 @@ const instructions: InstructionsDef = `
 * In "Blocks" edit mode: select a block texture, then click a face on the grid to place it. Multiple textures can be stacked on the same face by clicking again. Select the eraser in the texture picker, then click a face to remove its most recently placed texture. Use the "Block Preset" dropdown to switch between whole blocks and quarter blocks for finer layouts.
 * In "Tabs" edit mode: click an edge to cycle its tab.
 * In "Folds" edit mode: click an edge to toggle its fold line.
+* In "Source" edit mode: set the Source X/Y/Width/Height sliders to the region of the texture's 16x16 grid you want to show, then click a face to crop it to that region. Click the band above a column or to the left of a row to apply the same crop to every face in it (a column applies across every page).
 * Turn on "Show Edit Regions" to see the clickable edges for the current edit mode.
 * Use "+ Add Page" / "- Remove Page" to extend the grid downward across additional print sheets.
 
-This is still an early, dev-only build: source/destination editing and
-splitting are not built yet.
+This is still an early, dev-only build: destination sizing, face
+rotation/flip, and splitting are not built yet.
 `;
 
 const thumbnail: ThumbnailDef = { url: thumbnailImage.src };
@@ -85,9 +96,9 @@ const registry = makeTextureVersionRegistry(
 
 const textures: TextureDef[] = registry.allTextureDefs;
 
-type EditMode = "Blocks" | "Tabs" | "Folds";
+type EditMode = "Blocks" | "Tabs" | "Folds" | "Source";
 
-const editModes: EditMode[] = ["Blocks", "Tabs", "Folds"];
+const editModes: EditMode[] = ["Blocks", "Tabs", "Folds", "Source"];
 
 function isEditMode(value: string): value is EditMode {
   return editModes.includes(value as EditMode);
@@ -112,6 +123,7 @@ type DioramaProps = {
 function drawFaceTexture(
   ctx: RenderContext,
   texture: SelectedTexture,
+  source: Region,
   destination: [number, number, number, number]
 ): void {
   if (texture.textureDefId === "") {
@@ -122,7 +134,22 @@ function drawFaceTexture(
     ? { kind: "MultiplyHex", hex: texture.blend }
     : undefined;
 
-  ctx.drawTexture(texture.textureDefId, texture.frame.rectangle, destination, {
+  // The face's own source crop (0-16 units) maps onto the texture's actual
+  // frame rectangle by the frame's own scale — almost always 1:1 since block
+  // textures are 16x16, but this stays correct for a differently-sized
+  // custom atlas frame too.
+  const [frameX, frameY, frameWidth, frameHeight] = texture.frame.rectangle;
+  const scaleX = frameWidth / 16;
+  const scaleY = frameHeight / 16;
+  const [sourceX, sourceY, sourceWidth, sourceHeight] = source;
+  const croppedSource: [number, number, number, number] = [
+    frameX + sourceX * scaleX,
+    frameY + sourceY * scaleY,
+    sourceWidth * scaleX,
+    sourceHeight * scaleY,
+  ];
+
+  ctx.drawTexture(texture.textureDefId, croppedSource, destination, {
     rotate: rotationToDegrees(texture.rotation),
     flip: texture.flip,
     blend,
@@ -157,15 +184,49 @@ const render = (ctx: RenderContext, props: DioramaProps): void => {
     });
 
     faceRegions.forEach(({ id: faceId, region }) => {
-      if (props.editMode === "Blocks") {
+      if (props.editMode === "Blocks" || props.editMode === "Source") {
         ctx.defineRegion(region, faceId);
         if (props.showEditRegions) {
           ctx.drawRectangle(region, editRegionOutlineOptions);
         }
       }
+      const source = getFaceSource(props.document, faceId);
       const stack = props.document.faceTextures[faceId] ?? [];
-      stack.forEach((texture) => drawFaceTexture(ctx, texture, region));
+      stack.forEach((texture) => drawFaceTexture(ctx, texture, source, region));
     });
+
+    if (props.editMode === "Source") {
+      // Column bands bulk-apply across the whole document, so they only need
+      // to appear once, on the first page, rather than once per page.
+      if (pageIndex === 0) {
+        makeSourceColumnHeaderRegions({
+          originX: gridOriginX,
+          originY: gridOriginY,
+          pageWidth: gridAreaWidth,
+          pageHeight: gridAreaHeight,
+          preset: props.document.preset,
+        }).forEach(({ id: headerId, region }) => {
+          ctx.defineRegion(region, headerId);
+          if (props.showEditRegions) {
+            ctx.drawRectangle(region, editRegionOutlineOptions);
+          }
+        });
+      }
+
+      makeSourceRowHeaderRegions({
+        originX: gridOriginX,
+        originY: gridOriginY,
+        pageWidth: gridAreaWidth,
+        pageHeight: gridAreaHeight,
+        preset: props.document.preset,
+        rowOffset,
+      }).forEach(({ id: headerId, region }) => {
+        ctx.defineRegion(region, headerId);
+        if (props.showEditRegions) {
+          ctx.drawRectangle(region, editRegionOutlineOptions);
+        }
+      });
+    }
 
     const edgeRegions = makeEdgeRegions({
       originX: gridOriginX,
@@ -239,6 +300,8 @@ function Component(): JSX.Element {
   const [editMode, setEditMode] = React.useState<EditMode>("Blocks");
   const [showEditRegions, setShowEditRegions] = React.useState(true);
   const [pageCount, setPageCount] = React.useState(1);
+  const [currentSource, setCurrentSource] =
+    React.useState<Region>(fullSourceRegion);
   const textureVersion = registry.findVersion(versionId);
 
   const onRegionClick: RegionClickHandler = ({ regionId }) => {
@@ -248,6 +311,39 @@ function Component(): JSX.Element {
     }
     if (editMode === "Folds") {
       setDocument((current) => toggleFold(current, regionId));
+      return;
+    }
+    if (editMode === "Source") {
+      const { columns, rows: rowsPerPage } = getGridDimensions({
+        pageWidth: gridAreaWidth,
+        pageHeight: gridAreaHeight,
+        preset: document.preset,
+      });
+
+      const column = parseSourceColumnId(regionId);
+      if (column !== null) {
+        const faceIds = Array.from(
+          { length: pageCount * rowsPerPage },
+          (_, row) => getFaceId(column, row)
+        );
+        setDocument((current) =>
+          setFaceSourceForFaces(current, faceIds, currentSource)
+        );
+        return;
+      }
+
+      const row = parseSourceRowId(regionId);
+      if (row !== null) {
+        const faceIds = Array.from({ length: columns }, (_, column) =>
+          getFaceId(column, row)
+        );
+        setDocument((current) =>
+          setFaceSourceForFaces(current, faceIds, currentSource)
+        );
+        return;
+      }
+
+      setDocument((current) => setFaceSource(current, regionId, currentSource));
       return;
     }
     if (!selectedTexture) {
@@ -338,6 +434,69 @@ function Component(): JSX.Element {
                     onBlendSelected={setBlend}
                   />
                 ) : null}
+              </>
+            ) : null}
+            {editMode === "Source" ? (
+              <>
+                <GeneratorUI.RangeControl
+                  label="Source X"
+                  min={0}
+                  max={16}
+                  step={0.5}
+                  showValue
+                  value={currentSource[0]}
+                  onValueChange={(value) =>
+                    setCurrentSource(([, y, width, height]) => [
+                      value,
+                      y,
+                      width,
+                      height,
+                    ])
+                  }
+                />
+                <GeneratorUI.RangeControl
+                  label="Source Y"
+                  min={0}
+                  max={16}
+                  step={0.5}
+                  showValue
+                  value={currentSource[1]}
+                  onValueChange={(value) =>
+                    setCurrentSource(([x, , width, height]) => [
+                      x,
+                      value,
+                      width,
+                      height,
+                    ])
+                  }
+                />
+                <GeneratorUI.RangeControl
+                  label="Source Width"
+                  min={0.5}
+                  max={16}
+                  step={0.5}
+                  showValue
+                  value={currentSource[2]}
+                  onValueChange={(value) =>
+                    setCurrentSource(([x, y, , height]) => [
+                      x,
+                      y,
+                      value,
+                      height,
+                    ])
+                  }
+                />
+                <GeneratorUI.RangeControl
+                  label="Source Height"
+                  min={0.5}
+                  max={16}
+                  step={0.5}
+                  showValue
+                  value={currentSource[3]}
+                  onValueChange={(value) =>
+                    setCurrentSource(([x, y, width]) => [x, y, width, value])
+                  }
+                />
               </>
             ) : null}
           </div>
