@@ -10,7 +10,10 @@ import {
 import { type DrawTextureOptions } from "@genroot/builder/engine/renderers/drawTexture";
 import { type DrawRectangeOptions } from "@genroot/builder/engine/renderers/drawRectangle";
 import { type LineProps } from "@genroot/builder/engine/renderers/drawLine";
-import { type TabOrientation } from "@genroot/builder/engine/renderers/drawTab";
+import {
+  type TabOrientation,
+  type TabType,
+} from "@genroot/builder/engine/renderers/drawTab";
 import { type Texture } from "@genroot/builder/engine/texture";
 import { type RegionClickHandler, type RenderContext } from "./generator";
 
@@ -89,9 +92,18 @@ export class RenderContextAdapter implements RenderContext {
     rectangle: Rectangle,
     orientation: TabOrientation,
     showFoldLine?: boolean,
-    tabAngle?: number
+    tabAngle?: number,
+    tabType?: TabType
   ): void {
-    this.gen.drawTab(rectangle, orientation, showFoldLine, tabAngle);
+    // Forwarding `tabType` unconditionally would pass a literal `undefined`
+    // as a 5th positional argument even when a caller omits it, changing
+    // the observable call arity for anything that asserts on `Engine.drawTab`
+    // call args (e.g. `cuboidTabs.test.ts`'s spy).
+    if (tabType === undefined) {
+      this.gen.drawTab(rectangle, orientation, showFoldLine, tabAngle);
+      return;
+    }
+    this.gen.drawTab(rectangle, orientation, showFoldLine, tabAngle, tabType);
   }
 
   drawText(text: string, position: Position, size: number): void {

@@ -13,7 +13,10 @@ import {
 import { type DrawTextureOptions } from "@genroot/builder/engine/renderers/drawTexture";
 import { type DrawRectangeOptions } from "@genroot/builder/engine/renderers/drawRectangle";
 import { type LineProps } from "@genroot/builder/engine/renderers/drawLine";
-import { type TabOrientation } from "@genroot/builder/engine/renderers/drawTab";
+import {
+  type TabOrientation,
+  type TabType,
+} from "@genroot/builder/engine/renderers/drawTab";
 import { type Texture } from "@genroot/builder/engine/texture";
 
 // The render surface an author's `render` function draws through: drawing
@@ -50,7 +53,8 @@ export type RenderContext = {
     rectangle: Rectangle,
     orientation: TabOrientation,
     showFoldLine?: boolean,
-    tabAngle?: number
+    tabAngle?: number,
+    tabType?: TabType
   ): void;
   drawText(text: string, position: Position, size: number): void;
   getImagePixelColor(id: string, position: [number, number]): Color | null;
