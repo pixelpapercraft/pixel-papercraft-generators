@@ -205,9 +205,12 @@ export function getEdgeThickness(size: number): number {
 // reference's per-face `EdgeId` convention that `dioramaDocument.ts`'s
 // `getEdgeId` already follows. Two adjacent faces' facing edges (e.g. one
 // face's South and the next row's North) sit right on the same boundary
-// line but stay independently addressable. A face's own North/South
-// thickness scales with its row height, East/West with its column width —
-// so a resized column/row's tabs/folds resize with it.
+// line but stay independently addressable. Thickness (a tab/fold's own
+// protrusion depth) is fixed to the preset's default cell size, not the
+// face's own (possibly resized) column width/row height — a resized column/
+// row must still make the *span* of its own edges longer (below), but its
+// tab/fold depth shouldn't also grow, mirroring the same fix applied to the
+// Source/Destination header bands' own thickness.
 export function makeEdgeRegions({
   originX,
   originY,
@@ -240,6 +243,7 @@ export function makeEdgeRegions({
   const rowHeights = makeRowHeights({ document, rows, rowOffset });
   const columnOffsetsPx = makeOffsets(columnWidths);
   const rowOffsetsPx = makeOffsets(rowHeights);
+  const thickness = getEdgeThickness(getFaceCellSize(document.preset));
   const regions: EdgeRegion[] = [];
 
   for (let column = 0; column < columns; column += 1) {
@@ -248,8 +252,6 @@ export function makeEdgeRegions({
       const y = originY + (rowOffsetsPx[row] ?? 0);
       const width = columnWidths[column] ?? pixelsPerMinecraftUnit;
       const height = rowHeights[row] ?? pixelsPerMinecraftUnit;
-      const horizontalThickness = getEdgeThickness(height);
-      const verticalThickness = getEdgeThickness(width);
       const faceColumn = column + columnOffset;
       const faceRow = row + rowOffset;
 
@@ -266,27 +268,22 @@ export function makeEdgeRegions({
         {
           id: getEdgeId("North", faceColumn, faceRow),
           orientation: "South",
-          region: [x, y, width, horizontalThickness],
+          region: [x, y, width, thickness],
         },
         {
           id: getEdgeId("South", faceColumn, faceRow),
           orientation: "North",
-          region: [
-            x,
-            y + height - horizontalThickness,
-            width,
-            horizontalThickness,
-          ],
+          region: [x, y + height - thickness, width, thickness],
         },
         {
           id: getEdgeId("East", faceColumn, faceRow),
           orientation: "East",
-          region: [x, y, verticalThickness, height],
+          region: [x, y, thickness, height],
         },
         {
           id: getEdgeId("West", faceColumn, faceRow),
           orientation: "West",
-          region: [x + width - verticalThickness, y, verticalThickness, height],
+          region: [x + width - thickness, y, thickness, height],
         }
       );
     }
@@ -301,11 +298,10 @@ export function makeEdgeRegions({
 // creases between adjacent faces). The virtual column/row baked into each id
 // (rowOffset - 1, rowOffset + rows, columnOffset - 1, columnOffset +
 // columns) always falls outside the real grid's own coordinate range, so
-// these ids can never collide with a real face's own edge ids. There's no
-// row/column beyond the boundary to derive a thickness from, so each flap
-// reuses the thickness of the nearest real row/column (row 0's height for
-// the North flap, the last row's for South, and likewise for column 0/the
-// last column on West/East).
+// these ids can never collide with a real face's own edge ids. Thickness is
+// fixed to the preset's default cell size, same as `makeEdgeRegions` — not
+// tied to row 0's/the last row's/column 0's/the last column's own (possibly
+// resized) size.
 export function makeBoundaryEdgeRegions({
   originX,
   originY,
@@ -340,18 +336,7 @@ export function makeBoundaryEdgeRegions({
   const rowOffsetsPx = makeOffsets(rowHeights);
   const totalWidth = getTotalSize(columnWidths);
   const totalHeight = getTotalSize(rowHeights);
-  const topThickness = getEdgeThickness(
-    rowHeights[0] ?? pixelsPerMinecraftUnit
-  );
-  const bottomThickness = getEdgeThickness(
-    rowHeights[rows - 1] ?? pixelsPerMinecraftUnit
-  );
-  const leftThickness = getEdgeThickness(
-    columnWidths[0] ?? pixelsPerMinecraftUnit
-  );
-  const rightThickness = getEdgeThickness(
-    columnWidths[columns - 1] ?? pixelsPerMinecraftUnit
-  );
+  const thickness = getEdgeThickness(getFaceCellSize(document.preset));
   const regions: EdgeRegion[] = [];
 
   for (let column = 0; column < columns; column += 1) {
@@ -363,12 +348,12 @@ export function makeBoundaryEdgeRegions({
       {
         id: getEdgeId("North", faceColumn, rowOffset - 1),
         orientation: "North",
-        region: [x, originY - topThickness, width, topThickness],
+        region: [x, originY - thickness, width, thickness],
       },
       {
         id: getEdgeId("South", faceColumn, rowOffset + rows),
         orientation: "South",
-        region: [x, originY + totalHeight, width, bottomThickness],
+        region: [x, originY + totalHeight, width, thickness],
       }
     );
   }
@@ -382,12 +367,12 @@ export function makeBoundaryEdgeRegions({
       {
         id: getEdgeId("West", columnOffset - 1, faceRow),
         orientation: "West",
-        region: [originX - leftThickness, y, leftThickness, height],
+        region: [originX - thickness, y, thickness, height],
       },
       {
         id: getEdgeId("East", columnOffset + columns, faceRow),
         orientation: "East",
-        region: [originX + totalWidth, y, rightThickness, height],
+        region: [originX + totalWidth, y, thickness, height],
       }
     );
   }

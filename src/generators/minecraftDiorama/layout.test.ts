@@ -237,7 +237,7 @@ describe("makeEdgeRegions", () => {
     });
   });
 
-  it("scales North/South thickness with the face's row height and East/West thickness with its column width", () => {
+  it("keeps thickness fixed at the preset default even when the face is resized, while the span still tracks the resize", () => {
     const document = setRowHeight(setColumnWidth(fullBlocks(), 0, 32), 0, 32);
     const regions = makeEdgeRegions({
       originX: 0,
@@ -247,17 +247,19 @@ describe("makeEdgeRegions", () => {
       document,
     });
 
-    // Face (0,0) is now 256x256 (32 units * 8px); its North thickness scales
-    // with its own 256px height (256/4 = 64), not the default 32.
+    // Face (0,0) is now 256x256 (32 units * 8px). North's thickness (its
+    // own short dimension) stays the preset default of 32, not 256/4 = 64 —
+    // but its span (the long dimension, matching the face's own width)
+    // still tracks the resize. Same for East's thickness/span, swapped.
     expect(regions).toContainEqual<EdgeRegion>({
       id: getEdgeId("North", 0, 0),
       orientation: "South",
-      region: [0, 0, 256, 64],
+      region: [0, 0, 256, 32],
     });
     expect(regions).toContainEqual<EdgeRegion>({
       id: getEdgeId("East", 0, 0),
       orientation: "East",
-      region: [0, 0, 64, 256],
+      region: [0, 0, 32, 256],
     });
   });
 });
@@ -369,7 +371,7 @@ describe("makeBoundaryEdgeRegions", () => {
     expect(allIds.size).toBe(faceEdgeIds.length + boundaryEdgeIds.length);
   });
 
-  it("reuses row 0's/column 0's own thickness for the North/West flaps when they're resized, since there's no row/column beyond the edge to derive it from", () => {
+  it("keeps flap thickness fixed at the preset default even when row 0/column 0 is resized, while the flap's own span still tracks the resize", () => {
     const document = setRowHeight(setColumnWidth(fullBlocks(), 0, 32), 0, 32);
     const regions = makeBoundaryEdgeRegions({
       originX: 0,
@@ -379,17 +381,18 @@ describe("makeBoundaryEdgeRegions", () => {
       document,
     });
 
-    // Row 0 is now 256px tall, so its North flap's thickness is 256/4 = 64.
+    // Row 0 is now 256px tall — the North flap's span (width, matching
+    // column 0) tracks that, but its thickness stays the preset default 32.
     expect(regions).toContainEqual<EdgeRegion>({
       id: getEdgeId("North", 0, -1),
       orientation: "North",
-      region: [0, -64, 256, 64],
+      region: [0, -32, 256, 32],
     });
-    // Column 0 is now 256px wide, so its West flap's thickness is 64 too.
+    // Column 0 is now 256px wide — same relationship, swapped, for West.
     expect(regions).toContainEqual<EdgeRegion>({
       id: getEdgeId("West", -1, 0),
       orientation: "West",
-      region: [-64, 0, 64, 256],
+      region: [-32, 0, 32, 256],
     });
   });
 });

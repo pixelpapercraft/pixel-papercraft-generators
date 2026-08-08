@@ -443,3 +443,50 @@ test("multi-page accounts for a resized row when placing later pages", async ({
     furnaceTopLeftQuadrant
   );
 });
+
+// Tabs/Folds edge regions have two independent dimensions: their thickness
+// (a tab/fold's own protrusion depth) and their span (how far they stretch
+// along the face's boundary). Resizing a face in Destination mode must grow
+// the span — a taller row needs a taller East/West edge to stay clickable
+// along its whole height — but must NOT also grow the thickness, which
+// should stay the preset default regardless of face size. Found via manual
+// testing: a Destination-mode resize was doubling both. Uses relative
+// bounding-box comparisons rather than hardcoded pixel values, since exact
+// on-screen coordinates depend on viewport/DPI scaling.
+test("Destination-mode resize grows Tabs/Folds edge span but not their thickness", async ({
+  page,
+}) => {
+  await page.goto("/generator/minecraft-diorama");
+  await page.getByLabel("Edit Mode").selectOption("Tabs");
+
+  const northBefore = await page.getByTestId("region-North0 0").boundingBox();
+  const westBefore = await page.getByTestId("region-West0 0").boundingBox();
+  if (!northBefore || !westBefore) {
+    throw new Error("Edge regions were not measurable before resize");
+  }
+
+  await page.getByLabel("Edit Mode").selectOption("Destination");
+  await page.getByLabel("Destination Width").fill("32");
+  await page.getByLabel("Destination Height").fill("32");
+  await page.getByTestId("region-DestinationColumn0").click();
+  await page.getByTestId("region-DestinationRow0").click();
+
+  await page.getByLabel("Edit Mode").selectOption("Tabs");
+  const northAfter = await page.getByTestId("region-North0 0").boundingBox();
+  const westAfter = await page.getByTestId("region-West0 0").boundingBox();
+  if (!northAfter || !westAfter) {
+    throw new Error("Edge regions were not measurable after resize");
+  }
+
+  // North's span (width, tracking column 0's new width) roughly doubles;
+  // its thickness (height) stays within a couple of pixels of its old size
+  // (a small tolerance for sub-pixel viewport scaling, not the ~doubling a
+  // regression would produce).
+  expect(northAfter.width).toBeGreaterThan(northBefore.width * 1.8);
+  expect(Math.abs(northAfter.height - northBefore.height)).toBeLessThan(3);
+
+  // West's span (height, tracking row 0's new height) roughly doubles; its
+  // thickness (width) stays put, same tolerance.
+  expect(westAfter.height).toBeGreaterThan(westBefore.height * 1.8);
+  expect(Math.abs(westAfter.width - westBefore.width)).toBeLessThan(3);
+});
