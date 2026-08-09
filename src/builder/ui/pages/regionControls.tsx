@@ -1,6 +1,5 @@
 import type { CSSProperties } from "react";
 import { type Model } from "@genroot/builder/engine/model";
-import { A4 } from "@genroot/builder/engine/modelPage";
 import { type Region } from "@genroot/builder/engine/renderers/types";
 import { px, pageBorderWidth } from "./utils";
 
@@ -8,8 +7,12 @@ function scaleNumber(value: number, scale: number): number {
   return Math.round(value * scale);
 }
 
-function scaleRegion([x, y, w, h]: Region, actualWidth: number): Region {
-  const scale = actualWidth / A4.px.width;
+function scaleRegion(
+  [x, y, w, h]: Region,
+  actualWidth: number,
+  nativeWidth: number
+): Region {
+  const scale = actualWidth / nativeWidth;
   return [
     scaleNumber(x, scale),
     scaleNumber(y, scale),
@@ -22,11 +25,13 @@ export function RegionControls({
   model,
   currentPageId,
   containerWidth,
+  nativeWidth,
   onClick,
 }: {
   model: Model;
   currentPageId: string;
   containerWidth: number;
+  nativeWidth: number;
   onClick: (callback: () => void) => void;
 }) {
   const regionControls = model.regionControls.filter(
@@ -40,7 +45,11 @@ export function RegionControls({
   return (
     <div>
       {regionControls.map((regionControl, i) => {
-        const [x, y, w, h] = scaleRegion(regionControl.region, containerWidth);
+        const [x, y, w, h] = scaleRegion(
+          regionControl.region,
+          containerWidth,
+          nativeWidth
+        );
         const style: CSSProperties = {
           top: px(y + pageBorderWidth),
           left: px(x + pageBorderWidth),

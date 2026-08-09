@@ -3,7 +3,6 @@
 import React from "react";
 import { type GeneratorDef } from "@genroot/builder/engine/generatorDef";
 import { type Model } from "@genroot/builder/engine/model";
-import { A4 } from "@genroot/builder/engine/modelPage";
 
 import { RegionControls } from "./regionControls";
 import { SaveAsPDFButton } from "./saveAsPDFButton";
@@ -29,6 +28,7 @@ export function Pages({
   return (
     <div>
       {model.pages.map((page, pageIndex) => {
+        const { width: pageWidth, height: pageHeight } = page.canvasWithContext;
         const dataUrl = page.canvasWithContext.canvas.toDataURL("image/png");
 
         const fileName =
@@ -44,10 +44,13 @@ export function Pages({
 
             <div
               className="mb-6 flex items-center justify-between gap-3"
-              style={{ maxWidth: px(A4.px.width) }}
+              style={{ maxWidth: px(pageWidth) }}
             >
               <div className="flex items-center gap-3">
-                <PrintImageButton dataUrl={dataUrl} />
+                <PrintImageButton
+                  dataUrl={dataUrl}
+                  size={{ width: pageWidth, height: pageHeight }}
+                />
                 {pageIndex === 0 ? (
                   <SaveAsPDFButton generatorDef={generatorDef} model={model} />
                 ) : null}
@@ -60,7 +63,7 @@ export function Pages({
             {/* Important: The following div uses absolute positioning for the regions. */}
             <div
               className="relative"
-              style={{ maxWidth: px(A4.px.width + pageBorderWidth * 2) }}
+              style={{ maxWidth: px(pageWidth + pageBorderWidth * 2) }}
             >
               <img
                 ref={containerElRef}
@@ -73,6 +76,7 @@ export function Pages({
               {containerWidth ? (
                 <RegionControls
                   containerWidth={containerWidth}
+                  nativeWidth={pageWidth}
                   model={model}
                   currentPageId={page.id}
                   onClick={(callback) => {

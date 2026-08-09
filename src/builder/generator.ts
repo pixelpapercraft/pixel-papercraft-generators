@@ -18,6 +18,7 @@ import {
   type TabOrientation,
 } from "@genroot/builder/engine/renderers/drawTab";
 import { type Texture } from "@genroot/builder/engine/texture";
+import { type PageSize } from "@genroot/builder/engine/modelPage";
 
 // The render surface an author's `render` function draws through: drawing
 // and page methods (matching `Engine`'s own signatures verbatim, none of
@@ -28,7 +29,7 @@ import { type Texture } from "@genroot/builder/engine/texture";
 // `onRegionClick` rather than a closure attached at define-time. Deliberately
 // not `Pick<Generator, …>` — see the generator-v2 prototype plan.
 export type RenderContext = {
-  usePage(id: string): void;
+  usePage(id: string, size?: PageSize): void;
   fillBackgroundColorWithWhite(): void;
   fillRectangle(rectangle: Rectangle, color: string): void;
   drawRectangle(rectangle: Rectangle, options?: DrawRectangeOptions): void;
