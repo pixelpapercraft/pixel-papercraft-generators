@@ -595,29 +595,32 @@ test("Split edit mode splits a face into 4 independently-editable, correctly-cro
 
 // Clicking an already-split face again, with the sliders still at its
 // existing split size, unsplits it — taking part A's (top-left's) texture
-// and source as the merged face's own, per `unsplitFace`'s documented
-// intent.
-test("Split mode unsplits a face back to one region, restoring part A's crop", async ({
+// and source as the merged face's own, un-quartering that source crop back
+// to full scale (`unquarterSource`, the inverse of the quartering `splitFace`
+// applies) so an untouched split+unsplit round-trips to the exact original
+// crop instead of stretching A's small quadrant across the whole face.
+test("Split mode unsplits a face back to one region, restoring the original crop exactly", async ({
   page,
 }) => {
   await page.goto("/generator/minecraft-diorama");
   const pageImage = page.getByTestId("generator-page-image").first();
+  const probe: [number, number] = [42 + 2 * 16, 41 + 2 * 16];
 
   await page.getByTitle("furnace front", { exact: true }).click();
   await page.getByTestId("region-BlockFace0 0").click();
+  const baseline = await readPixel(pageImage, ...probe);
 
   await page.getByLabel("Edit Mode").selectOption("Split");
   await page.getByTestId("region-BlockFace0 0").click(); // split
+  // Splitting quarters the source using the same fractions as the visual
+  // split, so it doesn't change what's shown yet.
+  expect(await readPixel(pageImage, ...probe)).toEqual(baseline);
+
   await page.getByTestId("region-BlockFace0 0A").click(); // same size -> unsplit
 
   await expect(page.getByTestId("region-BlockFace0 0")).toHaveCount(1);
   await expect(page.getByTestId("region-BlockFace0 0A")).toHaveCount(0);
-
-  // Part A's own crop was the top-left 8x8 quadrant — now the whole
-  // (merged) face's own crop, magnified to fill the full 128x128 cell.
-  expect(await readPixel(pageImage, 42 + 2 * 16, 41 + 2 * 16)).toEqual(
-    furnaceTopLeftQuadrant
-  );
+  expect(await readPixel(pageImage, ...probe)).toEqual(baseline);
 });
 
 // Clicking an already-split face with the sliders set to a *different* size
@@ -720,4 +723,25 @@ test("a split face at the page's top boundary renders 2 North boundary tab regio
   await expect(page.getByTestId("region-North0 -1")).toHaveCount(0);
   await expect(page.getByTestId("region-North0 -1A")).toHaveCount(1);
   await expect(page.getByTestId("region-North0 -1B")).toHaveCount(1);
+});
+
+// A split face's parts each get a Tabs-mode click region on all 4 of their
+// own sides, including the 2 they share with a sibling part — matching the
+// reference's own behavior (which our own app initially diverged from and
+// then matched back after testing showed the divergence, not the
+// reference, was the odd one out: a full ring of tabs on a part's own 4
+// sides folds inward to an X centered on that part, plausibly a deliberate
+// way to frame a cut-out hole rather than a rendering bug).
+test("a split face's parts each get Tabs-mode click regions on all 4 of their own sides", async ({
+  page,
+}) => {
+  await page.goto("/generator/minecraft-diorama");
+
+  await page.getByLabel("Edit Mode").selectOption("Split");
+  await page.getByTestId("region-BlockFace0 0").click();
+
+  await page.getByLabel("Edit Mode").selectOption("Tabs");
+  for (const direction of ["North", "South", "East", "West"]) {
+    await expect(page.getByTestId(`region-${direction}0 0A`)).toHaveCount(1);
+  }
 });

@@ -243,17 +243,16 @@ const render = (ctx: RenderContext, props: DioramaProps): void => {
     });
 
     blockFaceRegions.forEach(({ id: faceId, region }) => {
-      if (
+      const isEditableInThisMode =
         props.editMode === "Blocks" ||
         props.editMode === "Source" ||
         props.editMode === "Transform" ||
-        props.editMode === "Split"
-      ) {
+        props.editMode === "Split";
+
+      if (isEditableInThisMode) {
         ctx.defineRegion(region, faceId);
-        if (props.showEditRegions) {
-          ctx.drawRectangle(region, editRegionOutlineOptions);
-        }
       }
+
       const source = getFaceSource(props.document, faceId);
       const transform = getFaceTransform(props.document, faceId);
       const stack = props.document.faceTextures[faceId] ?? [];
@@ -265,6 +264,13 @@ const render = (ctx: RenderContext, props: DioramaProps): void => {
           region
         )
       );
+
+      // Drawn after the texture stack, not before, so the dashed outline
+      // (and a split face's internal part boundaries) stays on top instead
+      // of being painted over.
+      if (isEditableInThisMode && props.showEditRegions) {
+        ctx.drawRectangle(region, editRegionOutlineOptions);
+      }
     });
 
     if (props.editMode === "Destination") {
@@ -449,9 +455,9 @@ const render = (ctx: RenderContext, props: DioramaProps): void => {
     });
 
     [...edgeRegions, ...boundaryEdgeRegions].forEach(
-      ({ id: edgeId, region, orientation }) => {
+      ({ id: edgeId, region, controlRegion, orientation }) => {
         if (props.editMode === "Tabs" || props.editMode === "Folds") {
-          ctx.defineRegion(region, edgeId);
+          ctx.defineRegion(controlRegion, edgeId);
         }
 
         const tabShape = props.document.tabs[edgeId];
@@ -467,7 +473,7 @@ const render = (ctx: RenderContext, props: DioramaProps): void => {
           props.showEditRegions &&
           (props.editMode === "Tabs" || props.editMode === "Folds")
         ) {
-          ctx.drawRectangle(region, editRegionOutlineOptions);
+          ctx.drawRectangle(controlRegion, editRegionOutlineOptions);
         }
       }
     );

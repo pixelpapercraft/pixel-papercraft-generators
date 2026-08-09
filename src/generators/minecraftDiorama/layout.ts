@@ -31,6 +31,12 @@ export type FaceRegion = {
 export type EdgeRegion = {
   id: EdgeId;
   region: [number, number, number, number];
+  // The clickable/hoverable area for this edge — usually identical to
+  // `region`, but shrunk for a split part's own edges (see
+  // `makeEdgeRegions`), where `region`'s own thickness is fixed to the
+  // whole (unsplit) cell size and so can cover most or all of a much
+  // smaller part, leaving neighboring edges unclickable.
+  controlRegion: [number, number, number, number];
   orientation: EdgeDirection;
 };
 
@@ -328,16 +334,31 @@ export function makeEdgeRegions({
       // North-id region, rotation 0 on the South-id region), confirmed by
       // pixel-sampling both apps' rendered tabs. East/West need no such
       // swap. A split face gets this same quad once per part, over that
-      // part's own sub-rectangle, rather than once over the whole face.
+      // part's own sub-rectangle, rather than once over the whole face —
+      // matching the reference's own tab availability on all 4 of a part's
+      // sides, including its 2 internal seams shared with a sibling part
+      // (confirmed by driving the reference directly: 4 seam tabs fold
+      // inward to a shared X at the part's own center, a deliberate-looking
+      // pattern for framing a cut-out hole rather than a rendering bug).
       if (split) {
         const parts = makeSplitPartRegions([x, y, width, height], split);
         splitParts.forEach((part) => {
           const [partX, partY, partWidth, partHeight] = parts[part];
+          // The click/hover area uses a thickness derived from this part's
+          // own (much smaller) size rather than the fixed whole-cell
+          // `thickness` used for drawing — otherwise a part's own
+          // perpendicular edges (e.g. North and East) can fully overlap
+          // each other, permanently hiding whichever renders first in the
+          // DOM. Matches the reference's own separate, smaller click
+          // region for split parts.
+          const controlThicknessX = getEdgeThickness(partWidth);
+          const controlThicknessY = getEdgeThickness(partHeight);
           regions.push(
             {
               id: getEdgeId("North", faceColumn, faceRow, part),
               orientation: "South",
               region: [partX, partY, partWidth, thickness],
+              controlRegion: [partX, partY, partWidth, controlThicknessY],
             },
             {
               id: getEdgeId("South", faceColumn, faceRow, part),
@@ -348,11 +369,18 @@ export function makeEdgeRegions({
                 partWidth,
                 thickness,
               ],
+              controlRegion: [
+                partX,
+                partY + partHeight - controlThicknessY,
+                partWidth,
+                controlThicknessY,
+              ],
             },
             {
               id: getEdgeId("East", faceColumn, faceRow, part),
               orientation: "East",
               region: [partX, partY, thickness, partHeight],
+              controlRegion: [partX, partY, controlThicknessX, partHeight],
             },
             {
               id: getEdgeId("West", faceColumn, faceRow, part),
@@ -361,6 +389,12 @@ export function makeEdgeRegions({
                 partX + partWidth - thickness,
                 partY,
                 thickness,
+                partHeight,
+              ],
+              controlRegion: [
+                partX + partWidth - controlThicknessX,
+                partY,
+                controlThicknessX,
                 partHeight,
               ],
             }
@@ -374,21 +408,25 @@ export function makeEdgeRegions({
           id: getEdgeId("North", faceColumn, faceRow),
           orientation: "South",
           region: [x, y, width, thickness],
+          controlRegion: [x, y, width, thickness],
         },
         {
           id: getEdgeId("South", faceColumn, faceRow),
           orientation: "North",
           region: [x, y + height - thickness, width, thickness],
+          controlRegion: [x, y + height - thickness, width, thickness],
         },
         {
           id: getEdgeId("East", faceColumn, faceRow),
           orientation: "East",
           region: [x, y, thickness, height],
+          controlRegion: [x, y, thickness, height],
         },
         {
           id: getEdgeId("West", faceColumn, faceRow),
           orientation: "West",
           region: [x + width - thickness, y, thickness, height],
+          controlRegion: [x + width - thickness, y, thickness, height],
         }
       );
     }
@@ -458,23 +496,44 @@ export function makeBoundaryEdgeRegions({
     const topSplit = document.splits[getFaceId(faceColumn, rowOffset)];
     if (topSplit) {
       const { A, B } = makeSplitPartRegions([x, 0, width, 0], topSplit);
+      const regionA: EdgeRegion["region"] = [
+        A[0],
+        originY - thickness,
+        A[2],
+        thickness,
+      ];
+      const regionB: EdgeRegion["region"] = [
+        B[0],
+        originY - thickness,
+        B[2],
+        thickness,
+      ];
       regions.push(
         {
           id: getEdgeId("North", faceColumn, rowOffset - 1, "A"),
           orientation: "North",
-          region: [A[0], originY - thickness, A[2], thickness],
+          region: regionA,
+          controlRegion: regionA,
         },
         {
           id: getEdgeId("North", faceColumn, rowOffset - 1, "B"),
           orientation: "North",
-          region: [B[0], originY - thickness, B[2], thickness],
+          region: regionB,
+          controlRegion: regionB,
         }
       );
     } else {
+      const region: EdgeRegion["region"] = [
+        x,
+        originY - thickness,
+        width,
+        thickness,
+      ];
       regions.push({
         id: getEdgeId("North", faceColumn, rowOffset - 1),
         orientation: "North",
-        region: [x, originY - thickness, width, thickness],
+        region,
+        controlRegion: region,
       });
     }
 
@@ -482,23 +541,44 @@ export function makeBoundaryEdgeRegions({
       document.splits[getFaceId(faceColumn, rowOffset + rows - 1)];
     if (bottomSplit) {
       const { C, D } = makeSplitPartRegions([x, 0, width, 0], bottomSplit);
+      const regionC: EdgeRegion["region"] = [
+        C[0],
+        originY + totalHeight,
+        C[2],
+        thickness,
+      ];
+      const regionD: EdgeRegion["region"] = [
+        D[0],
+        originY + totalHeight,
+        D[2],
+        thickness,
+      ];
       regions.push(
         {
           id: getEdgeId("South", faceColumn, rowOffset + rows, "C"),
           orientation: "South",
-          region: [C[0], originY + totalHeight, C[2], thickness],
+          region: regionC,
+          controlRegion: regionC,
         },
         {
           id: getEdgeId("South", faceColumn, rowOffset + rows, "D"),
           orientation: "South",
-          region: [D[0], originY + totalHeight, D[2], thickness],
+          region: regionD,
+          controlRegion: regionD,
         }
       );
     } else {
+      const region: EdgeRegion["region"] = [
+        x,
+        originY + totalHeight,
+        width,
+        thickness,
+      ];
       regions.push({
         id: getEdgeId("South", faceColumn, rowOffset + rows),
         orientation: "South",
-        region: [x, originY + totalHeight, width, thickness],
+        region,
+        controlRegion: region,
       });
     }
   }
@@ -511,23 +591,44 @@ export function makeBoundaryEdgeRegions({
     const leftSplit = document.splits[getFaceId(columnOffset, faceRow)];
     if (leftSplit) {
       const { A, C } = makeSplitPartRegions([0, y, 0, height], leftSplit);
+      const regionA: EdgeRegion["region"] = [
+        originX - thickness,
+        A[1],
+        thickness,
+        A[3],
+      ];
+      const regionC: EdgeRegion["region"] = [
+        originX - thickness,
+        C[1],
+        thickness,
+        C[3],
+      ];
       regions.push(
         {
           id: getEdgeId("West", columnOffset - 1, faceRow, "A"),
           orientation: "West",
-          region: [originX - thickness, A[1], thickness, A[3]],
+          region: regionA,
+          controlRegion: regionA,
         },
         {
           id: getEdgeId("West", columnOffset - 1, faceRow, "C"),
           orientation: "West",
-          region: [originX - thickness, C[1], thickness, C[3]],
+          region: regionC,
+          controlRegion: regionC,
         }
       );
     } else {
+      const region: EdgeRegion["region"] = [
+        originX - thickness,
+        y,
+        thickness,
+        height,
+      ];
       regions.push({
         id: getEdgeId("West", columnOffset - 1, faceRow),
         orientation: "West",
-        region: [originX - thickness, y, thickness, height],
+        region,
+        controlRegion: region,
       });
     }
 
@@ -535,23 +636,44 @@ export function makeBoundaryEdgeRegions({
       document.splits[getFaceId(columnOffset + columns - 1, faceRow)];
     if (rightSplit) {
       const { B, D } = makeSplitPartRegions([0, y, 0, height], rightSplit);
+      const regionB: EdgeRegion["region"] = [
+        originX + totalWidth,
+        B[1],
+        thickness,
+        B[3],
+      ];
+      const regionD: EdgeRegion["region"] = [
+        originX + totalWidth,
+        D[1],
+        thickness,
+        D[3],
+      ];
       regions.push(
         {
           id: getEdgeId("East", columnOffset + columns, faceRow, "B"),
           orientation: "East",
-          region: [originX + totalWidth, B[1], thickness, B[3]],
+          region: regionB,
+          controlRegion: regionB,
         },
         {
           id: getEdgeId("East", columnOffset + columns, faceRow, "D"),
           orientation: "East",
-          region: [originX + totalWidth, D[1], thickness, D[3]],
+          region: regionD,
+          controlRegion: regionD,
         }
       );
     } else {
+      const region: EdgeRegion["region"] = [
+        originX + totalWidth,
+        y,
+        thickness,
+        height,
+      ];
       regions.push({
         id: getEdgeId("East", columnOffset + columns, faceRow),
         orientation: "East",
-        region: [originX + totalWidth, y, thickness, height],
+        region,
+        controlRegion: region,
       });
     }
   }

@@ -768,20 +768,21 @@ describe("splitFace", () => {
   it("seeds each part's two true outer edges from the base's matching direction", () => {
     let withEdges = makeEmptyDioramaDocument();
     withEdges = cycleTab(withEdges, getEdgeId("North", 2, 3)); // -> "Full"
-    withEdges = toggleFold(withEdges, getEdgeId("West", 2, 3));
+    withEdges = toggleFold(withEdges, getEdgeId("East", 2, 3));
     const document = splitFace(withEdges, baseFaceId, split);
 
     // North belongs to the top row: A and B.
     expect(document.tabs[getEdgeId("North", 2, 3, "A")]).toBe("Full");
     expect(document.tabs[getEdgeId("North", 2, 3, "B")]).toBe("Full");
-    // West belongs to the left column: A and C.
-    expect(document.folds[getEdgeId("West", 2, 3, "A")]).toBe(true);
-    expect(document.folds[getEdgeId("West", 2, 3, "C")]).toBe(true);
-    // South/East were never set on the base, so B/D's South and A/C's East
-    // stay unset — this also proves East does NOT inherit from A/C (the
-    // reference's buggy pairing), since West was the only edge seeded.
+    // East renders on a region's *left* side (`makeEdgeRegions`' own
+    // established convention), so it belongs to the left column: A and C.
+    expect(document.folds[getEdgeId("East", 2, 3, "A")]).toBe(true);
+    expect(document.folds[getEdgeId("East", 2, 3, "C")]).toBe(true);
+    // South/West were never set on the base, so C/D's South and B/D's West
+    // stay unset — this also proves West does NOT inherit from B/D (the
+    // reference's buggy pairing), since East was the only edge seeded.
     expect(document.tabs[getEdgeId("South", 2, 3, "C")]).toBeUndefined();
-    expect(document.tabs[getEdgeId("East", 2, 3, "B")]).toBeUndefined();
+    expect(document.tabs[getEdgeId("West", 2, 3, "B")]).toBeUndefined();
   });
 
   it("leaves every internal seam edge unset", () => {
@@ -796,17 +797,17 @@ describe("splitFace", () => {
     withEdges = toggleFold(withEdges, getEdgeId("West", 2, 3));
     const document = splitFace(withEdges, baseFaceId, split);
 
-    // Internal seams: A.East/B.West (A|B), A.South/C.North (A|C),
-    // B.South/D.North (B|D), C.East/D.West (C|D).
+    // Internal seams: A.South/A.West (A|C, A|B), B.South/B.East (B|D, A|B),
+    // C.North/C.West (A|C, C|D), D.North/D.East (B|D, C|D).
     const internalEdges: [string, "East" | "South" | "West" | "North"][] = [
-      ["A", "East"],
-      ["B", "West"],
       ["A", "South"],
-      ["C", "North"],
+      ["A", "West"],
       ["B", "South"],
+      ["B", "East"],
+      ["C", "North"],
+      ["C", "West"],
       ["D", "North"],
-      ["C", "East"],
-      ["D", "West"],
+      ["D", "East"],
     ];
     internalEdges.forEach(([part, direction]) => {
       const edgeId = getEdgeId(direction, 2, 3, part as never);
@@ -853,7 +854,7 @@ describe("unsplitFace", () => {
     expect(unsplitFace(document, baseFaceId)).toBe(document);
   });
 
-  it("restores the base from part A's current texture/source/transform", () => {
+  it("restores the base from part A's current texture/source/transform, un-quartering the source back to full scale", () => {
     const split = splitFace(
       makeEmptyDioramaDocument(),
       baseFaceId,
@@ -875,9 +876,28 @@ describe("unsplitFace", () => {
     const merged = unsplitFace(edited, baseFaceId);
 
     expect(merged.faceTextures[baseFaceId]).toEqual([aTexture]);
-    expect(merged.sources[baseFaceId]).toEqual([1, 2, 3, 4]);
+    // defaultSplitSize is a 50/50 split, so A's crop scales back up 2x on
+    // each axis (the inverse of the quartering `splitFace` applied) rather
+    // than staying at its small, part-sized scale.
+    expect(merged.sources[baseFaceId]).toEqual([1, 2, 6, 8]);
     expect(merged.transforms[baseFaceId]).toEqual(transform);
     expect(getFaceSplit(merged, baseFaceId)).toBeNull();
+  });
+
+  it("round-trips an untouched split back to its exact original source", () => {
+    const original = setFaceSource(
+      makeEmptyDioramaDocument(),
+      baseFaceId,
+      [2, 2, 12, 10]
+    );
+    const split = splitFace(original, baseFaceId, {
+      width: 6,
+      height: 10,
+    });
+
+    const merged = unsplitFace(split, baseFaceId);
+
+    expect(merged.sources[baseFaceId]).toEqual([2, 2, 12, 10]);
   });
 
   it("clears all 4 parts' texture/source/transform and all 16 edge slots", () => {
@@ -927,8 +947,8 @@ describe("unsplitFace", () => {
         ...withEdges.tabs,
         [getEdgeId("North", 2, 3, "A")]: "Full",
         [getEdgeId("South", 2, 3, "C")]: "Left",
-        [getEdgeId("West", 2, 3, "A")]: "Middle",
-        [getEdgeId("East", 2, 3, "B")]: "Right",
+        [getEdgeId("West", 2, 3, "B")]: "Middle",
+        [getEdgeId("East", 2, 3, "A")]: "Right",
       },
     };
 

@@ -223,11 +223,13 @@ describe("makeEdgeRegions", () => {
       id: getEdgeId("North", 0, 0),
       orientation: "South",
       region: [10, 20, 128, 32],
+      controlRegion: [10, 20, 128, 32],
     });
     expect(regions).toContainEqual<EdgeRegion>({
       id: getEdgeId("South", 0, 0),
       orientation: "North",
       region: [10, 20 + 128 - 32, 128, 32],
+      controlRegion: [10, 20 + 128 - 32, 128, 32],
     });
   });
 
@@ -244,11 +246,13 @@ describe("makeEdgeRegions", () => {
       id: getEdgeId("East", 0, 0),
       orientation: "East",
       region: [10, 20, 32, 128],
+      controlRegion: [10, 20, 32, 128],
     });
     expect(regions).toContainEqual<EdgeRegion>({
       id: getEdgeId("West", 0, 0),
       orientation: "West",
       region: [10 + 128 - 32, 20, 32, 128],
+      controlRegion: [10 + 128 - 32, 20, 32, 128],
     });
   });
 
@@ -270,11 +274,13 @@ describe("makeEdgeRegions", () => {
       id: getEdgeId("North", 0, 0),
       orientation: "South",
       region: [0, 0, 256, 32],
+      controlRegion: [0, 0, 256, 32],
     });
     expect(regions).toContainEqual<EdgeRegion>({
       id: getEdgeId("East", 0, 0),
       orientation: "East",
       region: [0, 0, 32, 256],
+      controlRegion: [0, 0, 32, 256],
     });
   });
 });
@@ -333,21 +339,25 @@ describe("makeBoundaryEdgeRegions", () => {
       id: getEdgeId("North", 0, -1),
       orientation: "North",
       region: [10, 20 - 32, 128, 32],
+      controlRegion: [10, 20 - 32, 128, 32],
     });
     expect(regions).toContainEqual<EdgeRegion>({
       id: getEdgeId("South", 0, 6),
       orientation: "South",
       region: [10, 20 + 6 * 128, 128, 32],
+      controlRegion: [10, 20 + 6 * 128, 128, 32],
     });
     expect(regions).toContainEqual<EdgeRegion>({
       id: getEdgeId("West", -1, 0),
       orientation: "West",
       region: [10 - 32, 20, 32, 128],
+      controlRegion: [10 - 32, 20, 32, 128],
     });
     expect(regions).toContainEqual<EdgeRegion>({
       id: getEdgeId("East", 4, 0),
       orientation: "East",
       region: [10 + 4 * 128, 20, 32, 128],
+      controlRegion: [10 + 4 * 128, 20, 32, 128],
     });
   });
 
@@ -366,6 +376,7 @@ describe("makeBoundaryEdgeRegions", () => {
       id: getEdgeId("North", 4, 5),
       orientation: "North",
       region: [0, -32, 128, 32],
+      controlRegion: [0, -32, 128, 32],
     });
   });
 
@@ -402,12 +413,14 @@ describe("makeBoundaryEdgeRegions", () => {
       id: getEdgeId("North", 0, -1),
       orientation: "North",
       region: [0, -32, 256, 32],
+      controlRegion: [0, -32, 256, 32],
     });
     // Column 0 is now 256px wide — same relationship, swapped, for West.
     expect(regions).toContainEqual<EdgeRegion>({
       id: getEdgeId("West", -1, 0),
       orientation: "West",
       region: [-32, 0, 32, 256],
+      controlRegion: [-32, 0, 32, 256],
     });
   });
 });
@@ -784,6 +797,11 @@ describe("makeEdgeRegions with a split face", () => {
       document,
     });
 
+    // Every part gets a click region and a tab on all 4 of its own sides,
+    // including the 2 it shares with a sibling part — matching the
+    // reference's own behavior (4 such tabs fold inward to a shared X at
+    // the part's own center, a deliberate-looking pattern for framing a
+    // cut-out hole, not a rendering bug).
     const partEdgeIds = (["A", "B", "C", "D"] as const).flatMap((part) =>
       (["North", "South", "East", "West"] as const).map((direction) =>
         getEdgeId(direction, 0, 0, part)
@@ -807,22 +825,30 @@ describe("makeEdgeRegions with a split face", () => {
       document,
     });
 
-    // Part A occupies [10, 20, 64, 64].
+    // Part A occupies [10, 20, 64, 64]. Its own left side renders under the
+    // id "East" (not "West" — `makeEdgeRegions` renders "East" on a
+    // region's left side and "West" on its right, an established
+    // convention carried through per-part). `controlRegion`'s thickness is
+    // derived from the *part's* own 64px size (64/4 = 16), not the whole
+    // cell's fixed 32, so a part's own perpendicular edges don't overlap.
     expect(regions).toContainEqual<EdgeRegion>({
       id: getEdgeId("North", 0, 0, "A"),
       orientation: "South",
       region: [10, 20, 64, 32],
+      controlRegion: [10, 20, 64, 16],
     });
     expect(regions).toContainEqual<EdgeRegion>({
-      id: getEdgeId("West", 0, 0, "A"),
-      orientation: "West",
-      region: [42, 20, 32, 64],
+      id: getEdgeId("East", 0, 0, "A"),
+      orientation: "East",
+      region: [10, 20, 32, 64],
+      controlRegion: [10, 20, 16, 64],
     });
     // Part D occupies [74, 84, 64, 64].
     expect(regions).toContainEqual<EdgeRegion>({
       id: getEdgeId("South", 0, 0, "D"),
       orientation: "North",
       region: [74, 116, 64, 32],
+      controlRegion: [74, 132, 64, 16],
     });
   });
 });
@@ -845,11 +871,13 @@ describe("makeBoundaryEdgeRegions with a split face at the page boundary", () =>
       id: getEdgeId("North", 0, -1, "A"),
       orientation: "North",
       region: [10, -12, 64, 32],
+      controlRegion: [10, -12, 64, 32],
     });
     expect(regions).toContainEqual<EdgeRegion>({
       id: getEdgeId("North", 0, -1, "B"),
       orientation: "North",
       region: [74, -12, 64, 32],
+      controlRegion: [74, -12, 64, 32],
     });
   });
 
@@ -867,11 +895,13 @@ describe("makeBoundaryEdgeRegions with a split face at the page boundary", () =>
       id: getEdgeId("West", -1, 0, "A"),
       orientation: "West",
       region: [-22, 20, 32, 64],
+      controlRegion: [-22, 20, 32, 64],
     });
     expect(regions).toContainEqual<EdgeRegion>({
       id: getEdgeId("West", -1, 0, "C"),
       orientation: "West",
       region: [-22, 84, 32, 64],
+      controlRegion: [-22, 84, 32, 64],
     });
   });
 

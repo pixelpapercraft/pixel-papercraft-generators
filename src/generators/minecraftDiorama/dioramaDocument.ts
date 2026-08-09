@@ -579,29 +579,44 @@ function sanitizeSplitSize(split: SplitSize): SplitSize {
 
 const edgeDirections: EdgeDirection[] = ["North", "South", "East", "West"];
 
-// Which two parts truly own a base face's given outer edge once split —
-// corrects a direction-pairing bug found in the `pr-34-original` reference
-// (its own East/West copies went to the wrong column's parts). Verified
-// against that same reference's `makeSplitBlockRegions` geometry, which
-// places A/C on the left column and B/D on the right.
+// Which two parts truly own a base face's given outer edge once split — used
+// only to seed/inherit an existing tab or fold value onto the right part on
+// split (below) and to pick unsplit's fallback part (`primaryOuterEdgePart`);
+// `layout.ts` gives every part click regions and tabs on all 4 of its sides
+// regardless, matching the reference's own behavior.
+// North/South match their own compass name (A/B on top, C/D on bottom), but
+// East/West don't: `layout.ts`'s `makeEdgeRegions` renders the "East" id on
+// a region's *left* side and "West" on its *right* side (an established,
+// tested convention for the whole, unsplit face — see
+// `makeEdgeRegions`' own "leaves East/West strips as an identity orientation
+// mapping" test) — carried straight through per-part, so a left-column
+// part's (A/C) true outer left edge renders under the id "East", and a
+// right-column part's (B/D) true outer right edge renders under "West". A
+// prior version of this map paired West with A/C and East with B/D — i.e.
+// true compass semantics — which put the inherited tab/fold value on the
+// wrong (internal-seam) id instead of the real outer edge; confirmed by
+// driving the app directly (a "West"-id tab on part A renders pointing back
+// into A's own square, at the A/B seam, not on A's true left edge) before
+// correcting it here.
 const outerEdgeParts: Record<EdgeDirection, [SplitPart, SplitPart]> = {
   North: ["A", "B"],
   South: ["C", "D"],
-  West: ["A", "C"],
-  East: ["B", "D"],
+  West: ["B", "D"],
+  East: ["A", "C"],
 };
 
 // The single part each outer edge falls back to on unsplit, and the part
 // `unsplitFace` treats as the merged face's own restored identity for its
-// texture/source/transform. A is the natural primary for North/West (it's
-// already the merged identity); South/East pull from A's own vertical (C)
-// and horizontal (B) neighbor instead of A itself, since A doesn't touch
-// those two edges.
+// texture/source/transform. A is the natural primary for North/East (it's
+// already the merged identity, and per `outerEdgeParts` A is the one of the
+// two North owners and the one of the two East owners); South/West pull
+// from A's own vertical (C) and horizontal (B) neighbor instead of A
+// itself, since A doesn't touch those two edges.
 const primaryOuterEdgePart: Record<EdgeDirection, SplitPart> = {
   North: "A",
   South: "C",
-  West: "A",
-  East: "B",
+  West: "B",
+  East: "A",
 };
 
 export function getFaceSplit(
@@ -626,6 +641,23 @@ function quarterSource(
     C: [x, y + topHeight, leftWidth, bottomHeight],
     D: [x + leftWidth, y + topHeight, rightWidth, bottomHeight],
   };
+}
+
+// The inverse of `quarterSource`'s A quadrant: expands part A's own source
+// crop back out by the split fractions that produced it, so a face that's
+// split then immediately unsplit (untouched) round-trips to its exact prior
+// source instead of keeping A's small quadrant crop stretched across the
+// now-full-size face (which reads as a zoomed-in top-left corner).
+function unquarterSource(
+  [x, y, width, height]: Region,
+  split: SplitSize
+): Region {
+  return clampSourceRegion([
+    x,
+    y,
+    (width * sourceGridSize) / split.width,
+    (height * sourceGridSize) / split.height,
+  ]);
 }
 
 // Splits a face into 4 independently-editable parts (A/B/C/D). Seeds each
@@ -708,9 +740,12 @@ export function splitFace(
 
 // Merges a split face back into one, taking part A's texture/source/
 // transform as the merged face's own (matching the reference's intent —
-// A is the "identity" going forward once merged) and falling back to the
-// remaining outer-edge owner (per `primaryOuterEdgePart`) for any base edge
-// that has no explicit value of its own. All 4 parts' texture/source/
+// A is the "identity" going forward once merged), un-quartering A's source
+// crop back out to full-face scale (the inverse of `quarterSource`, so an
+// untouched split+unsplit round-trips to the original crop instead of
+// stretching A's small quadrant across the whole face), and falling back to
+// the remaining outer-edge owner (per `primaryOuterEdgePart`) for any base
+// edge that has no explicit value of its own. All 4 parts' texture/source/
 // transform and all 16 part-edge slots (4 directions x 4 parts) are cleared
 // afterward, so a later re-split reseeds cleanly from the (now restored)
 // base rather than resurrecting data from a much earlier split.
@@ -718,7 +753,8 @@ export function unsplitFace(
   document: DioramaDocument,
   baseFaceId: FaceId
 ): DioramaDocument {
-  if (!document.splits[baseFaceId]) {
+  const split = document.splits[baseFaceId];
+  if (!split) {
     return document;
   }
 
@@ -737,7 +773,7 @@ export function unsplitFace(
   const sources = { ...document.sources };
   const primarySource = sources[primaryFaceId];
   if (primarySource) {
-    sources[baseFaceId] = primarySource;
+    sources[baseFaceId] = unquarterSource(primarySource, split);
   } else {
     delete sources[baseFaceId];
   }
