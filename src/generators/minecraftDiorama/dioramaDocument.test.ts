@@ -6,8 +6,10 @@ import {
   clampSourceRegion,
   cycleTab,
   defaultFaceTransform,
+  defaultSplitSize,
   eraseFaceTexture,
   fullSourceRegion,
+  getBaseFaceId,
   getColumnWidth,
   getDefaultSourceForFace,
   getDestinationColumnId,
@@ -15,10 +17,17 @@ import {
   getEdgeId,
   getFaceId,
   getFaceSource,
+  getFaceSplit,
   getFaceTransform,
   getRowHeight,
   getSourceColumnId,
   getSourceRowId,
+  getSplitColumnId,
+  getSplitFaceId,
+  getSplitPageId,
+  getSplitPartFaceIds,
+  getSplitPartFromFaceId,
+  getSplitRowId,
   getTransformColumnId,
   getTransformRowId,
   getWorldUnitsForPreset,
@@ -29,8 +38,13 @@ import {
   parseFaceId,
   parseSourceColumnId,
   parseSourceRowId,
+  parseSplitColumnId,
+  parseSplitPageId,
+  parseSplitRowId,
   parseTransformColumnId,
   parseTransformRowId,
+  resizeSplitFace,
+  sanitizeSplitDimension,
   setColumnWidth,
   setFaceSource,
   setFaceSourceForFaces,
@@ -38,10 +52,15 @@ import {
   setFaceTransformForFaces,
   setPreset,
   setRowHeight,
+  splitFace,
   toggleFold,
+  toggleSplitFace,
+  toggleSplitForFaces,
+  unsplitFace,
   type DioramaDocument,
   type FaceTransform,
   type Region,
+  type SplitSize,
 } from "./dioramaDocument";
 
 function makeTexture(textureDefId: string): SelectedTexture {
@@ -71,6 +90,7 @@ describe("makeEmptyDioramaDocument", () => {
       transforms: {},
       tabs: {},
       folds: {},
+      splits: {},
     });
   });
 
@@ -85,6 +105,7 @@ describe("makeEmptyDioramaDocument", () => {
         transforms: {},
         tabs: {},
         folds: {},
+        splits: {},
       }
     );
   });
@@ -568,5 +589,436 @@ describe("applyFaceTransform", () => {
     // Rot180 + Rot270 = 450 degrees = 90 degrees.
     expect(result.rotation).toBe("Rot90");
     expect(result.flip).toBe("None");
+  });
+});
+
+describe("sanitizeSplitDimension", () => {
+  it("rounds to the nearest half unit", () => {
+    expect(sanitizeSplitDimension(4.24)).toBe(4);
+    expect(sanitizeSplitDimension(4.26)).toBe(4.5);
+  });
+
+  it("clamps into [0.5, 15.5]", () => {
+    expect(sanitizeSplitDimension(-3)).toBe(0.5);
+    expect(sanitizeSplitDimension(99)).toBe(15.5);
+  });
+});
+
+describe("getSplitFaceId / getBaseFaceId / getSplitPartFromFaceId", () => {
+  it("formats a split part id from its base and part", () => {
+    expect(getSplitFaceId(getFaceId(2, 3), "A")).toBe("BlockFace2 3A");
+  });
+
+  it("resolves a base face id unchanged", () => {
+    expect(getBaseFaceId(getFaceId(2, 3))).toBe("BlockFace2 3");
+  });
+
+  it("resolves a split part id back to its base", () => {
+    expect(getBaseFaceId("BlockFace2 3A")).toBe("BlockFace2 3");
+    expect(getBaseFaceId("BlockFace2 3D")).toBe("BlockFace2 3");
+  });
+
+  it("returns null for an id that is neither a base nor a split part id", () => {
+    expect(getBaseFaceId("not a face id")).toBeNull();
+    expect(getBaseFaceId("North2 3")).toBeNull();
+  });
+
+  it("recovers the part from a split face id, and null from a base id", () => {
+    expect(getSplitPartFromFaceId("BlockFace2 3A")).toBe("A");
+    expect(getSplitPartFromFaceId(getFaceId(2, 3))).toBeNull();
+  });
+
+  it("lists all 4 part ids for a base face", () => {
+    expect(getSplitPartFaceIds(getFaceId(0, 0))).toEqual([
+      "BlockFace0 0A",
+      "BlockFace0 0B",
+      "BlockFace0 0C",
+      "BlockFace0 0D",
+    ]);
+  });
+});
+
+describe("getEdgeId with a split part", () => {
+  it("appends the part letter", () => {
+    expect(getEdgeId("North", 2, 3, "A")).toBe("North2 3A");
+  });
+
+  it("matches the plain id when no part is given", () => {
+    expect(getEdgeId("North", 2, 3)).toBe("North2 3");
+  });
+});
+
+describe("getSplitColumnId / getSplitRowId / getSplitPageId round-trip", () => {
+  it("parses a column id back to its column number", () => {
+    expect(parseSplitColumnId(getSplitColumnId(3))).toBe(3);
+  });
+
+  it("parses a row id back to its row number", () => {
+    expect(parseSplitRowId(getSplitRowId(-2))).toBe(-2);
+  });
+
+  it("parses a page id back to its rowOffset", () => {
+    expect(parseSplitPageId(getSplitPageId(16))).toBe(16);
+  });
+
+  it("returns null for ids from another namespace", () => {
+    expect(parseSplitColumnId(getSplitRowId(0))).toBeNull();
+    expect(parseSplitRowId(getSplitColumnId(0))).toBeNull();
+    expect(parseSplitPageId(getSplitColumnId(0))).toBeNull();
+    expect(parseSplitColumnId(getTransformColumnId(0))).toBeNull();
+    expect(parseSplitColumnId(getFaceId(0, 0))).toBeNull();
+  });
+});
+
+describe("splitFace", () => {
+  const baseFaceId = getFaceId(2, 3);
+  const split: SplitSize = { width: 4, height: 12 };
+
+  it("records the split size, retrievable via getFaceSplit", () => {
+    const document = splitFace(makeEmptyDioramaDocument(), baseFaceId, split);
+    expect(getFaceSplit(document, baseFaceId)).toEqual(split);
+    expect(getFaceSplit(document, getFaceId(0, 0))).toBeNull();
+  });
+
+  it("copies the base's texture stack verbatim into all 4 parts", () => {
+    const texture = makeTexture("stone");
+    const withTexture = addFaceTexture(
+      makeEmptyDioramaDocument(),
+      baseFaceId,
+      texture
+    );
+    const document = splitFace(withTexture, baseFaceId, split);
+
+    getSplitPartFaceIds(baseFaceId).forEach((partFaceId) => {
+      expect(document.faceTextures[partFaceId]).toEqual([texture]);
+    });
+    // The base's own (now dormant) entry is left in place, not deleted.
+    expect(document.faceTextures[baseFaceId]).toEqual([texture]);
+  });
+
+  it("does not overwrite a part that already has its own texture", () => {
+    const baseTexture = makeTexture("stone");
+    const partTexture = makeTexture("dirt");
+    const partFaceId = getSplitFaceId(baseFaceId, "A");
+    const seeded = addFaceTexture(
+      addFaceTexture(makeEmptyDioramaDocument(), baseFaceId, baseTexture),
+      partFaceId,
+      partTexture
+    );
+    const document = splitFace(seeded, baseFaceId, split);
+    expect(document.faceTextures[partFaceId]).toEqual([partTexture]);
+  });
+
+  it("quarters the base's effective source across the 4 parts using the split fractions", () => {
+    const withSource = setFaceSource(
+      makeEmptyDioramaDocument(),
+      baseFaceId,
+      [0, 0, 16, 16]
+    );
+    const document = splitFace(withSource, baseFaceId, split);
+
+    // split = { width: 4, height: 12 } out of a 16-unit source -> left
+    // quarter is 1/4 wide, top is 3/4 tall.
+    expect(document.sources[getSplitFaceId(baseFaceId, "A")]).toEqual([
+      0, 0, 4, 12,
+    ]);
+    expect(document.sources[getSplitFaceId(baseFaceId, "B")]).toEqual([
+      4, 0, 12, 12,
+    ]);
+    expect(document.sources[getSplitFaceId(baseFaceId, "C")]).toEqual([
+      0, 12, 4, 4,
+    ]);
+    expect(document.sources[getSplitFaceId(baseFaceId, "D")]).toEqual([
+      4, 12, 12, 4,
+    ]);
+  });
+
+  it("does not overwrite a part that already has its own source", () => {
+    const partFaceId = getSplitFaceId(baseFaceId, "A");
+    const seeded = setFaceSource(
+      makeEmptyDioramaDocument(),
+      partFaceId,
+      [1, 1, 2, 2]
+    );
+    const document = splitFace(seeded, baseFaceId, split);
+    expect(document.sources[partFaceId]).toEqual([1, 1, 2, 2]);
+  });
+
+  it("copies a non-default base transform verbatim into missing parts only", () => {
+    const transform: FaceTransform = { rotation: "Rot90", flip: "Horizontal" };
+    const withTransform = setFaceTransform(
+      makeEmptyDioramaDocument(),
+      baseFaceId,
+      transform
+    );
+    const document = splitFace(withTransform, baseFaceId, split);
+
+    getSplitPartFaceIds(baseFaceId).forEach((partFaceId) => {
+      expect(document.transforms[partFaceId]).toEqual(transform);
+    });
+  });
+
+  it("leaves parts untouched when the base transform is the default", () => {
+    const document = splitFace(makeEmptyDioramaDocument(), baseFaceId, split);
+    getSplitPartFaceIds(baseFaceId).forEach((partFaceId) => {
+      expect(document.transforms[partFaceId]).toBeUndefined();
+    });
+  });
+
+  it("seeds each part's two true outer edges from the base's matching direction", () => {
+    let withEdges = makeEmptyDioramaDocument();
+    withEdges = cycleTab(withEdges, getEdgeId("North", 2, 3)); // -> "Full"
+    withEdges = toggleFold(withEdges, getEdgeId("West", 2, 3));
+    const document = splitFace(withEdges, baseFaceId, split);
+
+    // North belongs to the top row: A and B.
+    expect(document.tabs[getEdgeId("North", 2, 3, "A")]).toBe("Full");
+    expect(document.tabs[getEdgeId("North", 2, 3, "B")]).toBe("Full");
+    // West belongs to the left column: A and C.
+    expect(document.folds[getEdgeId("West", 2, 3, "A")]).toBe(true);
+    expect(document.folds[getEdgeId("West", 2, 3, "C")]).toBe(true);
+    // South/East were never set on the base, so B/D's South and A/C's East
+    // stay unset — this also proves East does NOT inherit from A/C (the
+    // reference's buggy pairing), since West was the only edge seeded.
+    expect(document.tabs[getEdgeId("South", 2, 3, "C")]).toBeUndefined();
+    expect(document.tabs[getEdgeId("East", 2, 3, "B")]).toBeUndefined();
+  });
+
+  it("leaves every internal seam edge unset", () => {
+    let withEdges = makeEmptyDioramaDocument();
+    withEdges = cycleTab(withEdges, getEdgeId("North", 2, 3));
+    withEdges = cycleTab(withEdges, getEdgeId("South", 2, 3));
+    withEdges = cycleTab(withEdges, getEdgeId("East", 2, 3));
+    withEdges = cycleTab(withEdges, getEdgeId("West", 2, 3));
+    withEdges = toggleFold(withEdges, getEdgeId("North", 2, 3));
+    withEdges = toggleFold(withEdges, getEdgeId("South", 2, 3));
+    withEdges = toggleFold(withEdges, getEdgeId("East", 2, 3));
+    withEdges = toggleFold(withEdges, getEdgeId("West", 2, 3));
+    const document = splitFace(withEdges, baseFaceId, split);
+
+    // Internal seams: A.East/B.West (A|B), A.South/C.North (A|C),
+    // B.South/D.North (B|D), C.East/D.West (C|D).
+    const internalEdges: [string, "East" | "South" | "West" | "North"][] = [
+      ["A", "East"],
+      ["B", "West"],
+      ["A", "South"],
+      ["C", "North"],
+      ["B", "South"],
+      ["D", "North"],
+      ["C", "East"],
+      ["D", "West"],
+    ];
+    internalEdges.forEach(([part, direction]) => {
+      const edgeId = getEdgeId(direction, 2, 3, part as never);
+      expect(document.tabs[edgeId]).toBeUndefined();
+      expect(document.folds[edgeId]).toBeUndefined();
+    });
+  });
+});
+
+describe("resizeSplitFace", () => {
+  const baseFaceId = getFaceId(2, 3);
+
+  it("updates only the split size, leaving part data untouched", () => {
+    const texture = makeTexture("stone");
+    const split = splitFace(
+      addFaceTexture(makeEmptyDioramaDocument(), baseFaceId, texture),
+      baseFaceId,
+      defaultSplitSize
+    );
+    const resized = resizeSplitFace(split, baseFaceId, { width: 2, height: 2 });
+
+    expect(getFaceSplit(resized, baseFaceId)).toEqual({
+      width: 2,
+      height: 2,
+    });
+    expect(resized.faceTextures[getSplitFaceId(baseFaceId, "A")]).toEqual([
+      texture,
+    ]);
+  });
+
+  it("is a no-op when the face isn't split", () => {
+    const document = makeEmptyDioramaDocument();
+    expect(resizeSplitFace(document, baseFaceId, defaultSplitSize)).toBe(
+      document
+    );
+  });
+});
+
+describe("unsplitFace", () => {
+  const baseFaceId = getFaceId(2, 3);
+
+  it("is a no-op when the face isn't split", () => {
+    const document = makeEmptyDioramaDocument();
+    expect(unsplitFace(document, baseFaceId)).toBe(document);
+  });
+
+  it("restores the base from part A's current texture/source/transform", () => {
+    const split = splitFace(
+      makeEmptyDioramaDocument(),
+      baseFaceId,
+      defaultSplitSize
+    );
+    const aFaceId = getSplitFaceId(baseFaceId, "A");
+    const aTexture = makeTexture("emerald");
+    const transform: FaceTransform = { rotation: "Rot270", flip: "Vertical" };
+    const edited = setFaceTransform(
+      setFaceSource(
+        addFaceTexture(split, aFaceId, aTexture),
+        aFaceId,
+        [1, 2, 3, 4]
+      ),
+      aFaceId,
+      transform
+    );
+
+    const merged = unsplitFace(edited, baseFaceId);
+
+    expect(merged.faceTextures[baseFaceId]).toEqual([aTexture]);
+    expect(merged.sources[baseFaceId]).toEqual([1, 2, 3, 4]);
+    expect(merged.transforms[baseFaceId]).toEqual(transform);
+    expect(getFaceSplit(merged, baseFaceId)).toBeNull();
+  });
+
+  it("clears all 4 parts' texture/source/transform and all 16 edge slots", () => {
+    const split = splitFace(
+      makeEmptyDioramaDocument(),
+      baseFaceId,
+      defaultSplitSize
+    );
+    const aFaceId = getSplitFaceId(baseFaceId, "A");
+    const bFaceId = getSplitFaceId(baseFaceId, "B");
+    const seeded = setFaceTransform(
+      setFaceSource(
+        addFaceTexture(split, aFaceId, makeTexture("emerald")),
+        bFaceId,
+        [0, 0, 4, 4]
+      ),
+      bFaceId,
+      { rotation: "Rot90", flip: "None" }
+    );
+    const merged = unsplitFace(seeded, baseFaceId);
+
+    getSplitPartFaceIds(baseFaceId).forEach((partFaceId) => {
+      expect(merged.faceTextures[partFaceId]).toBeUndefined();
+      expect(merged.sources[partFaceId]).toBeUndefined();
+      expect(merged.transforms[partFaceId]).toBeUndefined();
+    });
+    (["North", "South", "East", "West"] as const).forEach((direction) => {
+      (["A", "B", "C", "D"] as const).forEach((part) => {
+        const edgeId = getEdgeId(direction, 2, 3, part);
+        expect(merged.tabs[edgeId]).toBeUndefined();
+        expect(merged.folds[edgeId]).toBeUndefined();
+      });
+    });
+  });
+
+  it("falls back to the owning part's outer edge when the base has no explicit value", () => {
+    let withEdges = splitFace(
+      makeEmptyDioramaDocument(),
+      baseFaceId,
+      defaultSplitSize
+    );
+    // Directly seed the parts' own edges (bypassing splitFace's own
+    // base->part seeding) to isolate unsplit's fallback direction.
+    withEdges = {
+      ...withEdges,
+      tabs: {
+        ...withEdges.tabs,
+        [getEdgeId("North", 2, 3, "A")]: "Full",
+        [getEdgeId("South", 2, 3, "C")]: "Left",
+        [getEdgeId("West", 2, 3, "A")]: "Middle",
+        [getEdgeId("East", 2, 3, "B")]: "Right",
+      },
+    };
+
+    const merged = unsplitFace(withEdges, baseFaceId);
+
+    expect(merged.tabs[getEdgeId("North", 2, 3)]).toBe("Full");
+    expect(merged.tabs[getEdgeId("South", 2, 3)]).toBe("Left");
+    expect(merged.tabs[getEdgeId("West", 2, 3)]).toBe("Middle");
+    expect(merged.tabs[getEdgeId("East", 2, 3)]).toBe("Right");
+  });
+
+  it("keeps the base's own explicit edge over a part's value", () => {
+    let withEdges = splitFace(
+      makeEmptyDioramaDocument(),
+      baseFaceId,
+      defaultSplitSize
+    );
+    withEdges = cycleTab(withEdges, getEdgeId("North", 2, 3)); // base -> "Full"
+    withEdges = {
+      ...withEdges,
+      tabs: {
+        ...withEdges.tabs,
+        [getEdgeId("North", 2, 3, "A")]: "Right",
+      },
+    };
+
+    const merged = unsplitFace(withEdges, baseFaceId);
+    expect(merged.tabs[getEdgeId("North", 2, 3)]).toBe("Full");
+  });
+});
+
+describe("toggleSplitFace", () => {
+  const baseFaceId = getFaceId(2, 3);
+
+  it("splits an unsplit face", () => {
+    const document = toggleSplitFace(
+      makeEmptyDioramaDocument(),
+      baseFaceId,
+      defaultSplitSize
+    );
+    expect(getFaceSplit(document, baseFaceId)).toEqual(defaultSplitSize);
+  });
+
+  it("unsplits when the current split matches the existing size", () => {
+    const split = toggleSplitFace(
+      makeEmptyDioramaDocument(),
+      baseFaceId,
+      defaultSplitSize
+    );
+    const toggled = toggleSplitFace(split, baseFaceId, defaultSplitSize);
+    expect(getFaceSplit(toggled, baseFaceId)).toBeNull();
+  });
+
+  it("resizes when the current split differs from the existing size", () => {
+    const split = toggleSplitFace(
+      makeEmptyDioramaDocument(),
+      baseFaceId,
+      defaultSplitSize
+    );
+    const resized = toggleSplitFace(split, baseFaceId, {
+      width: 2,
+      height: 2,
+    });
+    expect(getFaceSplit(resized, baseFaceId)).toEqual({
+      width: 2,
+      height: 2,
+    });
+  });
+});
+
+describe("toggleSplitForFaces", () => {
+  it("splits every distinct base face exactly once, resolving part ids to their base", () => {
+    const baseFaceId = getFaceId(2, 3);
+    const otherFaceId = getFaceId(0, 0);
+    const document = toggleSplitForFaces(
+      makeEmptyDioramaDocument(),
+      [baseFaceId, getSplitFaceId(baseFaceId, "B"), otherFaceId],
+      defaultSplitSize
+    );
+
+    expect(getFaceSplit(document, baseFaceId)).toEqual(defaultSplitSize);
+    expect(getFaceSplit(document, otherFaceId)).toEqual(defaultSplitSize);
+  });
+
+  it("ignores ids that resolve to neither a base nor a split part", () => {
+    const document = toggleSplitForFaces(
+      makeEmptyDioramaDocument(),
+      ["not a face id"],
+      defaultSplitSize
+    );
+    expect(document.splits).toEqual({});
   });
 });

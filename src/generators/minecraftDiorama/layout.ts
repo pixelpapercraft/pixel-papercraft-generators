@@ -7,14 +7,20 @@ import {
   getRowHeight,
   getSourceColumnId,
   getSourceRowId,
+  getSplitColumnId,
+  getSplitFaceId,
+  getSplitPageId,
+  getSplitRowId,
   getTransformColumnId,
   getTransformRowId,
   getWorldUnitsForPreset,
+  splitParts,
   type BlockPreset,
   type DioramaDocument,
   type EdgeDirection,
   type EdgeId,
   type FaceId,
+  type SplitSize,
 } from "./dioramaDocument";
 
 export type FaceRegion = {
@@ -198,6 +204,61 @@ export function makeFaceRegions({
   return regions;
 }
 
+// The 4 sub-rectangles a split face's own region divides into — pure
+// geometry, mirroring the `pr-34-original` reference's `makeSplitBlockRegions`
+// math. `split.width`/`split.height` are always expressed out of a fixed
+// 16-unit grid (matching Source's own 0-16 convention), regardless of the
+// face's actual preset/resize, so the same fraction gives the correct split
+// point at any pixel size.
+const splitUnitGridSize = 16;
+
+export function makeSplitPartRegions(
+  [x, y, width, height]: [number, number, number, number],
+  split: SplitSize
+): Record<"A" | "B" | "C" | "D", [number, number, number, number]> {
+  const leftWidth = (width * split.width) / splitUnitGridSize;
+  const rightWidth = width - leftWidth;
+  const topHeight = (height * split.height) / splitUnitGridSize;
+  const bottomHeight = height - topHeight;
+
+  return {
+    A: [x, y, leftWidth, topHeight],
+    B: [x + leftWidth, y, rightWidth, topHeight],
+    C: [x, y + topHeight, leftWidth, bottomHeight],
+    D: [x + leftWidth, y + topHeight, rightWidth, bottomHeight],
+  };
+}
+
+// Same face-grid iteration as `makeFaceRegions`, but a face with a `splits`
+// entry contributes its 4 part sub-regions (own ids via `getSplitFaceId`)
+// instead of one whole-face region. Used for Blocks/Source/Transform/Split
+// mode and the texture-drawing loop, all of which must address a split
+// face's parts individually; `makeFaceRegions` itself is left untouched and
+// keeps serving Destination mode, which always resizes the whole column/row
+// regardless of split state.
+export function makeBlockFaceRegions(params: {
+  originX: number;
+  originY: number;
+  pageWidth: number;
+  pageHeight: number;
+  document: DioramaDocument;
+  columnOffset?: number;
+  rowOffset?: number;
+}): FaceRegion[] {
+  return makeFaceRegions(params).flatMap(({ id: baseFaceId, region }) => {
+    const split = params.document.splits[baseFaceId];
+    if (!split) {
+      return [{ id: baseFaceId, region }];
+    }
+
+    const parts = makeSplitPartRegions(region, split);
+    return splitParts.map((part) => ({
+      id: getSplitFaceId(baseFaceId, part),
+      region: parts[part],
+    }));
+  });
+}
+
 export function getEdgeThickness(size: number): number {
   return size / 4;
 }
@@ -256,17 +317,59 @@ export function makeEdgeRegions({
       const height = rowHeights[row] ?? pixelsPerMinecraftUnit;
       const faceColumn = column + columnOffset;
       const faceRow = row + rowOffset;
+      const split = document.splits[getFaceId(faceColumn, faceRow)];
+
+      // North/South's drawTab orientation is swapped relative to the
+      // strip's own position: drawTab's "North" puts its fold at the bottom
+      // of the rectangle it's given, "South" puts it at the top. The fold
+      // needs to land on each strip's true face-boundary edge (touching the
+      // neighboring face, not the strip's own face interior) — matching the
+      // reference's own rotation-derived orientation (rotation 2 on the
+      // North-id region, rotation 0 on the South-id region), confirmed by
+      // pixel-sampling both apps' rendered tabs. East/West need no such
+      // swap. A split face gets this same quad once per part, over that
+      // part's own sub-rectangle, rather than once over the whole face.
+      if (split) {
+        const parts = makeSplitPartRegions([x, y, width, height], split);
+        splitParts.forEach((part) => {
+          const [partX, partY, partWidth, partHeight] = parts[part];
+          regions.push(
+            {
+              id: getEdgeId("North", faceColumn, faceRow, part),
+              orientation: "South",
+              region: [partX, partY, partWidth, thickness],
+            },
+            {
+              id: getEdgeId("South", faceColumn, faceRow, part),
+              orientation: "North",
+              region: [
+                partX,
+                partY + partHeight - thickness,
+                partWidth,
+                thickness,
+              ],
+            },
+            {
+              id: getEdgeId("East", faceColumn, faceRow, part),
+              orientation: "East",
+              region: [partX, partY, thickness, partHeight],
+            },
+            {
+              id: getEdgeId("West", faceColumn, faceRow, part),
+              orientation: "West",
+              region: [
+                partX + partWidth - thickness,
+                partY,
+                thickness,
+                partHeight,
+              ],
+            }
+          );
+        });
+        continue;
+      }
 
       regions.push(
-        // North/South's drawTab orientation is swapped relative to the
-        // strip's own position: drawTab's "North" puts its fold at the
-        // bottom of the rectangle it's given, "South" puts it at the top.
-        // The fold needs to land on each strip's true face-boundary edge
-        // (touching the neighboring face, not the strip's own face
-        // interior) — matching the reference's own rotation-derived
-        // orientation (rotation 2 on the North-id region, rotation 0 on the
-        // South-id region), confirmed by pixel-sampling both apps' rendered
-        // tabs. East/West need no such swap.
         {
           id: getEdgeId("North", faceColumn, faceRow),
           orientation: "South",
@@ -341,23 +444,63 @@ export function makeBoundaryEdgeRegions({
   const thickness = getEdgeThickness(getFaceCellSize(document.preset));
   const regions: EdgeRegion[] = [];
 
+  // A boundary flap belongs to whichever real face sits at that edge of the
+  // page (row 0's North, the last row's South, column 0's West, the last
+  // column's East) — if that face is split, the flap divides into its 2
+  // owning parts (per the same North/South -> A+B/C+D, West/East -> A+C/B+D
+  // mapping `dioramaDocument.ts`'s split functions use) at the matching
+  // fractional width/height, instead of staying one full-width/height flap.
   for (let column = 0; column < columns; column += 1) {
     const faceColumn = column + columnOffset;
     const x = originX + (columnOffsetsPx[column] ?? 0);
     const width = columnWidths[column] ?? pixelsPerMinecraftUnit;
 
-    regions.push(
-      {
+    const topSplit = document.splits[getFaceId(faceColumn, rowOffset)];
+    if (topSplit) {
+      const { A, B } = makeSplitPartRegions([x, 0, width, 0], topSplit);
+      regions.push(
+        {
+          id: getEdgeId("North", faceColumn, rowOffset - 1, "A"),
+          orientation: "North",
+          region: [A[0], originY - thickness, A[2], thickness],
+        },
+        {
+          id: getEdgeId("North", faceColumn, rowOffset - 1, "B"),
+          orientation: "North",
+          region: [B[0], originY - thickness, B[2], thickness],
+        }
+      );
+    } else {
+      regions.push({
         id: getEdgeId("North", faceColumn, rowOffset - 1),
         orientation: "North",
         region: [x, originY - thickness, width, thickness],
-      },
-      {
+      });
+    }
+
+    const bottomSplit =
+      document.splits[getFaceId(faceColumn, rowOffset + rows - 1)];
+    if (bottomSplit) {
+      const { C, D } = makeSplitPartRegions([x, 0, width, 0], bottomSplit);
+      regions.push(
+        {
+          id: getEdgeId("South", faceColumn, rowOffset + rows, "C"),
+          orientation: "South",
+          region: [C[0], originY + totalHeight, C[2], thickness],
+        },
+        {
+          id: getEdgeId("South", faceColumn, rowOffset + rows, "D"),
+          orientation: "South",
+          region: [D[0], originY + totalHeight, D[2], thickness],
+        }
+      );
+    } else {
+      regions.push({
         id: getEdgeId("South", faceColumn, rowOffset + rows),
         orientation: "South",
         region: [x, originY + totalHeight, width, thickness],
-      }
-    );
+      });
+    }
   }
 
   for (let row = 0; row < rows; row += 1) {
@@ -365,18 +508,52 @@ export function makeBoundaryEdgeRegions({
     const y = originY + (rowOffsetsPx[row] ?? 0);
     const height = rowHeights[row] ?? pixelsPerMinecraftUnit;
 
-    regions.push(
-      {
+    const leftSplit = document.splits[getFaceId(columnOffset, faceRow)];
+    if (leftSplit) {
+      const { A, C } = makeSplitPartRegions([0, y, 0, height], leftSplit);
+      regions.push(
+        {
+          id: getEdgeId("West", columnOffset - 1, faceRow, "A"),
+          orientation: "West",
+          region: [originX - thickness, A[1], thickness, A[3]],
+        },
+        {
+          id: getEdgeId("West", columnOffset - 1, faceRow, "C"),
+          orientation: "West",
+          region: [originX - thickness, C[1], thickness, C[3]],
+        }
+      );
+    } else {
+      regions.push({
         id: getEdgeId("West", columnOffset - 1, faceRow),
         orientation: "West",
         region: [originX - thickness, y, thickness, height],
-      },
-      {
+      });
+    }
+
+    const rightSplit =
+      document.splits[getFaceId(columnOffset + columns - 1, faceRow)];
+    if (rightSplit) {
+      const { B, D } = makeSplitPartRegions([0, y, 0, height], rightSplit);
+      regions.push(
+        {
+          id: getEdgeId("East", columnOffset + columns, faceRow, "B"),
+          orientation: "East",
+          region: [originX + totalWidth, B[1], thickness, B[3]],
+        },
+        {
+          id: getEdgeId("East", columnOffset + columns, faceRow, "D"),
+          orientation: "East",
+          region: [originX + totalWidth, D[1], thickness, D[3]],
+        }
+      );
+    } else {
+      regions.push({
         id: getEdgeId("East", columnOffset + columns, faceRow),
         orientation: "East",
         region: [originX + totalWidth, y, thickness, height],
-      }
-    );
+      });
+    }
   }
 
   return regions;
@@ -686,6 +863,122 @@ export function makeTransformRowHeaderRegions({
   }
 
   return regions;
+}
+
+// Same shape and placement as `makeSourceColumnHeaderRegions`, a distinct id
+// namespace for Split edit mode's own column bulk-apply band.
+export function makeSplitColumnHeaderRegions({
+  originX,
+  originY,
+  pageWidth,
+  pageHeight,
+  document,
+  columnOffset = 0,
+}: {
+  originX: number;
+  originY: number;
+  pageWidth: number;
+  pageHeight: number;
+  document: DioramaDocument;
+  columnOffset?: number;
+}): HeaderRegion[] {
+  const { columns } = getGridDimensions({
+    pageWidth,
+    pageHeight,
+    document,
+    columnOffset,
+  });
+  const columnWidths = makeColumnWidths({
+    document,
+    columns,
+    columnOffset,
+  });
+  const columnOffsetsPx = makeOffsets(columnWidths);
+  const thickness = getEdgeThickness(getFaceCellSize(document.preset));
+  const regions: HeaderRegion[] = [];
+
+  for (let column = 0; column < columns; column += 1) {
+    const width = columnWidths[column] ?? pixelsPerMinecraftUnit;
+    regions.push({
+      id: getSplitColumnId(column + columnOffset),
+      region: [
+        originX + (columnOffsetsPx[column] ?? 0),
+        originY - thickness,
+        width,
+        thickness,
+      ],
+    });
+  }
+
+  return regions;
+}
+
+// Same shape and placement as `makeSourceRowHeaderRegions`, a distinct id
+// namespace for Split edit mode's own row bulk-apply band.
+export function makeSplitRowHeaderRegions({
+  originX,
+  originY,
+  pageWidth,
+  pageHeight,
+  document,
+  rowOffset = 0,
+}: {
+  originX: number;
+  originY: number;
+  pageWidth: number;
+  pageHeight: number;
+  document: DioramaDocument;
+  rowOffset?: number;
+}): HeaderRegion[] {
+  const { rows } = getGridDimensions({
+    pageWidth,
+    pageHeight,
+    document,
+    rowOffset,
+  });
+  const rowHeights = makeRowHeights({ document, rows, rowOffset });
+  const rowOffsetsPx = makeOffsets(rowHeights);
+  const thickness = getEdgeThickness(getFaceCellSize(document.preset));
+  const regions: HeaderRegion[] = [];
+
+  for (let row = 0; row < rows; row += 1) {
+    const height = rowHeights[row] ?? pixelsPerMinecraftUnit;
+    regions.push({
+      id: getSplitRowId(row + rowOffset),
+      region: [
+        originX - thickness,
+        originY + (rowOffsetsPx[row] ?? 0),
+        thickness,
+        height,
+      ],
+    });
+  }
+
+  return regions;
+}
+
+// A third bulk-apply tier unique to Split mode (matching the reference's own
+// `makeAllSplitRegions`): one small band in the page's top-left corner
+// margin, bulk-toggling every face on that page at once. Keyed by the
+// page's own rowOffset, same as a row id.
+export function makeSplitPageHeaderRegions({
+  originX,
+  originY,
+  document,
+  rowOffset = 0,
+}: {
+  originX: number;
+  originY: number;
+  document: DioramaDocument;
+  rowOffset?: number;
+}): HeaderRegion[] {
+  const thickness = getEdgeThickness(getFaceCellSize(document.preset));
+  return [
+    {
+      id: getSplitPageId(rowOffset),
+      region: [originX - thickness, originY - thickness, thickness, thickness],
+    },
+  ];
 }
 
 // Walks the same per-page row-fitting `getGridDimensions` uses, page by

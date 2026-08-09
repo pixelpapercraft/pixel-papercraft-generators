@@ -1,16 +1,22 @@
 import { describe, expect, it } from "vitest";
 import {
+  defaultSplitSize,
   getDestinationColumnId,
   getDestinationRowId,
   getEdgeId,
   getFaceId,
   getSourceColumnId,
   getSourceRowId,
+  getSplitColumnId,
+  getSplitFaceId,
+  getSplitPageId,
+  getSplitRowId,
   getTransformColumnId,
   getTransformRowId,
   makeEmptyDioramaDocument,
   setColumnWidth,
   setRowHeight,
+  splitFace,
   type DioramaDocument,
 } from "./dioramaDocument";
 import {
@@ -18,6 +24,7 @@ import {
   getFaceCellSize,
   getGridDimensions,
   getTotalRowsAcrossPages,
+  makeBlockFaceRegions,
   makeBoundaryEdgeRegions,
   makeDestinationColumnHeaderRegions,
   makeDestinationRowHeaderRegions,
@@ -25,6 +32,10 @@ import {
   makeFaceRegions,
   makeSourceColumnHeaderRegions,
   makeSourceRowHeaderRegions,
+  makeSplitColumnHeaderRegions,
+  makeSplitPageHeaderRegions,
+  makeSplitPartRegions,
+  makeSplitRowHeaderRegions,
   makeTransformColumnHeaderRegions,
   makeTransformRowHeaderRegions,
   type EdgeRegion,
@@ -699,5 +710,250 @@ describe("getTotalRowsAcrossPages", () => {
         pageCount: 2,
       })
     ).toBe(4 + 6);
+  });
+});
+
+describe("makeSplitPartRegions", () => {
+  it("divides a region into 4 parts using the split's width/height as fractions of 16", () => {
+    const parts = makeSplitPartRegions([0, 0, 128, 128], {
+      width: 4,
+      height: 12,
+    });
+    expect(parts.A).toEqual([0, 0, 32, 96]);
+    expect(parts.B).toEqual([32, 0, 96, 96]);
+    expect(parts.C).toEqual([0, 96, 32, 32]);
+    expect(parts.D).toEqual([32, 96, 96, 32]);
+  });
+
+  it("offsets from a non-zero origin, with an even default split", () => {
+    const parts = makeSplitPartRegions([10, 20, 128, 128], defaultSplitSize);
+    expect(parts.A).toEqual([10, 20, 64, 64]);
+    expect(parts.B).toEqual([74, 20, 64, 64]);
+    expect(parts.C).toEqual([10, 84, 64, 64]);
+    expect(parts.D).toEqual([74, 84, 64, 64]);
+  });
+});
+
+describe("makeBlockFaceRegions", () => {
+  it("matches makeFaceRegions exactly when nothing is split", () => {
+    const options = {
+      originX: 10,
+      originY: 20,
+      pageWidth: a4PortraitPageWidth,
+      pageHeight: a4PortraitPageHeight,
+      document: fullBlocks(),
+    };
+    expect(makeBlockFaceRegions(options)).toEqual(makeFaceRegions(options));
+  });
+
+  it("replaces a split face's single region with its 4 part regions, leaving the rest unchanged", () => {
+    const baseFaceId = getFaceId(0, 0);
+    const document = splitFace(fullBlocks(), baseFaceId, defaultSplitSize);
+    const regions = makeBlockFaceRegions({
+      originX: 10,
+      originY: 20,
+      pageWidth: a4PortraitPageWidth,
+      pageHeight: a4PortraitPageHeight,
+      document,
+    });
+
+    expect(regions.find(({ id }) => id === baseFaceId)).toBeUndefined();
+    expect(regions).toContainEqual<FaceRegion>({
+      id: getSplitFaceId(baseFaceId, "A"),
+      region: [10, 20, 64, 64],
+    });
+    expect(regions).toContainEqual<FaceRegion>({
+      id: getSplitFaceId(baseFaceId, "D"),
+      region: [74, 84, 64, 64],
+    });
+    // One face (4 regions) replaces one whole-face region (1), a net +3.
+    expect(regions).toHaveLength(4 * 6 + 3);
+  });
+});
+
+describe("makeEdgeRegions with a split face", () => {
+  const baseFaceId = getFaceId(0, 0);
+
+  it("produces 4 directions per part (16 total) instead of 4 for the whole face", () => {
+    const document = splitFace(fullBlocks(), baseFaceId, defaultSplitSize);
+    const regions = makeEdgeRegions({
+      originX: 10,
+      originY: 20,
+      pageWidth: a4PortraitPageWidth,
+      pageHeight: a4PortraitPageHeight,
+      document,
+    });
+
+    const partEdgeIds = (["A", "B", "C", "D"] as const).flatMap((part) =>
+      (["North", "South", "East", "West"] as const).map((direction) =>
+        getEdgeId(direction, 0, 0, part)
+      )
+    );
+    partEdgeIds.forEach((id) => {
+      expect(regions.some((region) => region.id === id)).toBe(true);
+    });
+    expect(
+      regions.find(({ id }) => id === getEdgeId("North", 0, 0))
+    ).toBeUndefined();
+  });
+
+  it("positions each part's own North/South/East/West at its own sub-rectangle, thickness unchanged", () => {
+    const document = splitFace(fullBlocks(), baseFaceId, defaultSplitSize);
+    const regions = makeEdgeRegions({
+      originX: 10,
+      originY: 20,
+      pageWidth: a4PortraitPageWidth,
+      pageHeight: a4PortraitPageHeight,
+      document,
+    });
+
+    // Part A occupies [10, 20, 64, 64].
+    expect(regions).toContainEqual<EdgeRegion>({
+      id: getEdgeId("North", 0, 0, "A"),
+      orientation: "South",
+      region: [10, 20, 64, 32],
+    });
+    expect(regions).toContainEqual<EdgeRegion>({
+      id: getEdgeId("West", 0, 0, "A"),
+      orientation: "West",
+      region: [42, 20, 32, 64],
+    });
+    // Part D occupies [74, 84, 64, 64].
+    expect(regions).toContainEqual<EdgeRegion>({
+      id: getEdgeId("South", 0, 0, "D"),
+      orientation: "North",
+      region: [74, 116, 64, 32],
+    });
+  });
+});
+
+describe("makeBoundaryEdgeRegions with a split face at the page boundary", () => {
+  it("splits the North boundary flap for a split face at row 0", () => {
+    const document = splitFace(fullBlocks(), getFaceId(0, 0), defaultSplitSize);
+    const regions = makeBoundaryEdgeRegions({
+      originX: 10,
+      originY: 20,
+      pageWidth: a4PortraitPageWidth,
+      pageHeight: a4PortraitPageHeight,
+      document,
+    });
+
+    expect(
+      regions.find(({ id }) => id === getEdgeId("North", 0, -1))
+    ).toBeUndefined();
+    expect(regions).toContainEqual<EdgeRegion>({
+      id: getEdgeId("North", 0, -1, "A"),
+      orientation: "North",
+      region: [10, -12, 64, 32],
+    });
+    expect(regions).toContainEqual<EdgeRegion>({
+      id: getEdgeId("North", 0, -1, "B"),
+      orientation: "North",
+      region: [74, -12, 64, 32],
+    });
+  });
+
+  it("splits the West boundary flap for a split face at column 0", () => {
+    const document = splitFace(fullBlocks(), getFaceId(0, 0), defaultSplitSize);
+    const regions = makeBoundaryEdgeRegions({
+      originX: 10,
+      originY: 20,
+      pageWidth: a4PortraitPageWidth,
+      pageHeight: a4PortraitPageHeight,
+      document,
+    });
+
+    expect(regions).toContainEqual<EdgeRegion>({
+      id: getEdgeId("West", -1, 0, "A"),
+      orientation: "West",
+      region: [-22, 20, 32, 64],
+    });
+    expect(regions).toContainEqual<EdgeRegion>({
+      id: getEdgeId("West", -1, 0, "C"),
+      orientation: "West",
+      region: [-22, 84, 32, 64],
+    });
+  });
+
+  it("leaves the South/East boundary flaps as single regions for a face not on those boundaries", () => {
+    // Face (0,0) is split but sits at neither the last row nor last column.
+    const document = splitFace(fullBlocks(), getFaceId(0, 0), defaultSplitSize);
+    const regions = makeBoundaryEdgeRegions({
+      originX: 10,
+      originY: 20,
+      pageWidth: a4PortraitPageWidth,
+      pageHeight: a4PortraitPageHeight,
+      document,
+    });
+
+    expect(
+      regions.find(({ id }) => id === getEdgeId("South", 0, 6))
+    ).toBeDefined();
+    expect(
+      regions.find(({ id }) => id === getEdgeId("East", 4, 0))
+    ).toBeDefined();
+  });
+});
+
+describe("makeSplitColumnHeaderRegions / makeSplitRowHeaderRegions / makeSplitPageHeaderRegions", () => {
+  it("use the same column/row placement as the other header bands, with distinct id namespaces", () => {
+    const document = fullBlocks();
+    const columnRegions = makeSplitColumnHeaderRegions({
+      originX: 10,
+      originY: 20,
+      pageWidth: a4PortraitPageWidth,
+      pageHeight: a4PortraitPageHeight,
+      document,
+    });
+    const rowRegions = makeSplitRowHeaderRegions({
+      originX: 10,
+      originY: 20,
+      pageWidth: a4PortraitPageWidth,
+      pageHeight: a4PortraitPageHeight,
+      document,
+    });
+    const pageRegions = makeSplitPageHeaderRegions({
+      originX: 10,
+      originY: 20,
+      document,
+    });
+
+    expect(columnRegions[0]).toEqual<HeaderRegion>({
+      id: getSplitColumnId(0),
+      region: [10, 20 - 32, 128, 32],
+    });
+    expect(rowRegions[0]).toEqual<HeaderRegion>({
+      id: getSplitRowId(0),
+      region: [10 - 32, 20, 32, 128],
+    });
+    expect(pageRegions).toEqual<HeaderRegion[]>([
+      { id: getSplitPageId(0), region: [10 - 32, 20 - 32, 32, 32] },
+    ]);
+  });
+
+  it("never collides with the other header bands' own ids", () => {
+    const options = {
+      originX: 10,
+      originY: 20,
+      pageWidth: a4PortraitPageWidth,
+      pageHeight: a4PortraitPageHeight,
+      document: fullBlocks(),
+    };
+    const otherIds = [
+      ...makeSourceColumnHeaderRegions(options),
+      ...makeSourceRowHeaderRegions(options),
+      ...makeDestinationColumnHeaderRegions(options),
+      ...makeDestinationRowHeaderRegions(options),
+      ...makeTransformColumnHeaderRegions(options),
+      ...makeTransformRowHeaderRegions(options),
+    ].map(({ id }) => id);
+    const splitIds = [
+      ...makeSplitColumnHeaderRegions(options),
+      ...makeSplitRowHeaderRegions(options),
+      ...makeSplitPageHeaderRegions(options),
+    ].map(({ id }) => id);
+
+    const allIds = new Set([...otherIds, ...splitIds]);
+    expect(allIds.size).toBe(otherIds.length + splitIds.length);
   });
 });

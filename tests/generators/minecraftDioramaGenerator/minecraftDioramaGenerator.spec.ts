@@ -559,3 +559,165 @@ test("Destination-mode resize grows Tabs/Folds edge span but not their thickness
   expect(westAfter.height).toBeGreaterThan(westBefore.height * 1.8);
   expect(Math.abs(westAfter.width - westBefore.width)).toBeLessThan(3);
 });
+
+// Splitting quarters the face's *source crop*, not the texture — each of
+// the 4 new parts keeps the same texture but shows a different quadrant of
+// it, reconstructing the original uncropped face exactly (rather than
+// blanking anything out). Default split (8/8, an even half/half) produces
+// parts at the exact same size/position as a Quarter Blocks cell at this
+// origin, so this reuses the Quarter Blocks defaulting test's own probe
+// coordinates and expected colors.
+test("Split edit mode splits a face into 4 independently-editable, correctly-cropped parts", async ({
+  page,
+}) => {
+  await page.goto("/generator/minecraft-diorama");
+  const pageImage = page.getByTestId("generator-page-image").first();
+
+  await page.getByTitle("furnace front", { exact: true }).click();
+  await page.getByTestId("region-BlockFace0 0").click();
+
+  await page.getByLabel("Edit Mode").selectOption("Split");
+  await page.getByTestId("region-BlockFace0 0").click();
+
+  await expect(page.getByTestId("region-BlockFace0 0")).toHaveCount(0);
+  await expect(page.getByTestId("region-BlockFace0 0A")).toHaveCount(1);
+  await expect(page.getByTestId("region-BlockFace0 0D")).toHaveCount(1);
+
+  expect(await readPixel(pageImage, 58, 57)).toEqual(furnaceTopLeftQuadrant);
+  expect(await readPixel(pageImage, 122, 57)).toEqual(furnaceTopRightQuadrant);
+  expect(await readPixel(pageImage, 58, 121)).toEqual(
+    furnaceBottomLeftQuadrant
+  );
+  expect(await readPixel(pageImage, 122, 121)).toEqual(
+    furnaceBottomRightQuadrant
+  );
+});
+
+// Clicking an already-split face again, with the sliders still at its
+// existing split size, unsplits it — taking part A's (top-left's) texture
+// and source as the merged face's own, per `unsplitFace`'s documented
+// intent.
+test("Split mode unsplits a face back to one region, restoring part A's crop", async ({
+  page,
+}) => {
+  await page.goto("/generator/minecraft-diorama");
+  const pageImage = page.getByTestId("generator-page-image").first();
+
+  await page.getByTitle("furnace front", { exact: true }).click();
+  await page.getByTestId("region-BlockFace0 0").click();
+
+  await page.getByLabel("Edit Mode").selectOption("Split");
+  await page.getByTestId("region-BlockFace0 0").click(); // split
+  await page.getByTestId("region-BlockFace0 0A").click(); // same size -> unsplit
+
+  await expect(page.getByTestId("region-BlockFace0 0")).toHaveCount(1);
+  await expect(page.getByTestId("region-BlockFace0 0A")).toHaveCount(0);
+
+  // Part A's own crop was the top-left 8x8 quadrant — now the whole
+  // (merged) face's own crop, magnified to fill the full 128x128 cell.
+  expect(await readPixel(pageImage, 42 + 2 * 16, 41 + 2 * 16)).toEqual(
+    furnaceTopLeftQuadrant
+  );
+});
+
+// Clicking an already-split face with the sliders set to a *different* size
+// resizes the split boundary instead of unsplitting — part content is left
+// untouched, only the boundary between parts moves.
+test("Split mode resizes an existing split's boundary without unsplitting", async ({
+  page,
+}) => {
+  await page.goto("/generator/minecraft-diorama");
+
+  await page.getByLabel("Edit Mode").selectOption("Split");
+  await page.getByTestId("region-BlockFace0 0").click(); // split at default 8/8
+
+  const partABefore = await page
+    .getByTestId("region-BlockFace0 0A")
+    .boundingBox();
+  if (!partABefore) {
+    throw new Error("Part A region was not measurable before resize");
+  }
+
+  await page.getByLabel("Split Width").fill("4");
+  await page.getByTestId("region-BlockFace0 0A").click(); // differing size -> resize
+
+  await expect(page.getByTestId("region-BlockFace0 0A")).toHaveCount(1);
+  const partAAfter = await page
+    .getByTestId("region-BlockFace0 0A")
+    .boundingBox();
+  if (!partAAfter) {
+    throw new Error("Part A region was not measurable after resize");
+  }
+  // Part A narrowed from 8/16 to 4/16 of the cell's width.
+  expect(partAAfter.width).toBeLessThan(partABefore.width * 0.7);
+});
+
+// The band above a column / left of a row / in the page corner bulk-toggle
+// split state across a whole column, row, or page — mirroring Source/
+// Destination/Transform's own column/row bands, plus a third page-scoped
+// tier unique to Split.
+test("Split mode's column header splits every face in that column, leaving other columns untouched", async ({
+  page,
+}) => {
+  await page.goto("/generator/minecraft-diorama");
+
+  await page.getByLabel("Edit Mode").selectOption("Split");
+  const columnHeader = page.getByTestId("region-SplitColumn0");
+  await expect(columnHeader).toHaveCount(1);
+  await columnHeader.click();
+
+  await expect(page.getByTestId("region-BlockFace0 0A")).toHaveCount(1);
+  await expect(page.getByTestId("region-BlockFace0 1A")).toHaveCount(1);
+  await expect(page.getByTestId("region-BlockFace1 0")).toHaveCount(1);
+});
+
+test("Split mode's row header splits every face in that row, leaving other rows untouched", async ({
+  page,
+}) => {
+  await page.goto("/generator/minecraft-diorama");
+
+  await page.getByLabel("Edit Mode").selectOption("Split");
+  const rowHeader = page.getByTestId("region-SplitRow0");
+  await expect(rowHeader).toHaveCount(1);
+  await rowHeader.click();
+
+  await expect(page.getByTestId("region-BlockFace0 0A")).toHaveCount(1);
+  await expect(page.getByTestId("region-BlockFace1 0A")).toHaveCount(1);
+  await expect(page.getByTestId("region-BlockFace0 1")).toHaveCount(1);
+});
+
+test("Split mode's page header splits every face on the current page", async ({
+  page,
+}) => {
+  await page.goto("/generator/minecraft-diorama");
+
+  await page.getByLabel("Edit Mode").selectOption("Split");
+  const pageHeader = page.getByTestId("region-SplitPage0");
+  await expect(pageHeader).toHaveCount(1);
+  await pageHeader.click();
+
+  const splitPartRegions = page.locator(
+    '[data-testid^="region-BlockFace"][data-testid$="A"]'
+  );
+  // 4 columns x 6 rows fit on one Full Blocks page.
+  await expect(splitPartRegions).toHaveCount(24);
+});
+
+// A split face's own outer edges divide into 2 parts each (per
+// `outerEdgeParts`' North/South/West/East -> A+B/C+D/A+C/B+D mapping) —
+// this holds for a page's *boundary* flap too, not just the interior edges
+// `makeEdgeRegions` covers, since a face at row 0 sits at the page's own
+// North boundary.
+test("a split face at the page's top boundary renders 2 North boundary tab regions instead of 1", async ({
+  page,
+}) => {
+  await page.goto("/generator/minecraft-diorama");
+
+  await page.getByLabel("Edit Mode").selectOption("Split");
+  await page.getByTestId("region-BlockFace0 0").click();
+
+  await page.getByLabel("Edit Mode").selectOption("Tabs");
+  await expect(page.getByTestId("region-North0 -1")).toHaveCount(0);
+  await expect(page.getByTestId("region-North0 -1A")).toHaveCount(1);
+  await expect(page.getByTestId("region-North0 -1B")).toHaveCount(1);
+});

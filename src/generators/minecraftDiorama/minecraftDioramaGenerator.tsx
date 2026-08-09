@@ -29,9 +29,11 @@ import {
   blockPresets,
   cycleTab,
   defaultFaceTransform,
+  defaultSplitSize,
   eraseFaceTexture,
   flips,
   fullSourceRegion,
+  getBaseFaceId,
   getFaceId,
   getFaceSource,
   getFaceTransform,
@@ -46,6 +48,9 @@ import {
   parseFaceId,
   parseSourceColumnId,
   parseSourceRowId,
+  parseSplitColumnId,
+  parseSplitPageId,
+  parseSplitRowId,
   parseTransformColumnId,
   parseTransformRowId,
   rotations,
@@ -57,14 +62,18 @@ import {
   setPreset,
   setRowHeight,
   toggleFold,
+  toggleSplitFace,
+  toggleSplitForFaces,
   type DioramaDocument,
   type FaceTransform,
   type Region,
+  type SplitSize,
 } from "./dioramaDocument";
 import {
   getEdgeBoundaryLine,
   getGridDimensions,
   getTotalRowsAcrossPages,
+  makeBlockFaceRegions,
   makeBoundaryEdgeRegions,
   makeDestinationColumnHeaderRegions,
   makeDestinationRowHeaderRegions,
@@ -72,6 +81,9 @@ import {
   makeFaceRegions,
   makeSourceColumnHeaderRegions,
   makeSourceRowHeaderRegions,
+  makeSplitColumnHeaderRegions,
+  makeSplitPageHeaderRegions,
+  makeSplitRowHeaderRegions,
   makeTransformColumnHeaderRegions,
   makeTransformRowHeaderRegions,
 } from "./layout";
@@ -98,10 +110,11 @@ const instructions: InstructionsDef = `
 * In "Source" edit mode: set the Source X/Y/Width/Height sliders to the region of the texture's 16x16 grid you want to show, then click a face to crop it to that region. Click the band above a column or to the left of a row to apply the same crop to every face in it (a column applies across every page).
 * In "Destination" edit mode: set the Destination Width/Height sliders, then click a face to resize both its column and row, or click the band above a column / to the left of a row to resize just that column's width or that row's height.
 * In "Transform" edit mode: set the Face Rotation/Flip selects, then click a face to rotate/flip it (on top of any rotation/flip already set on its texture in the picker), or click the band above a column / to the left of a row to apply the same transform to every face in it.
+* In "Split" edit mode: set the Split Width/Height sliders, then click a face to split it into 4 independently-editable parts. Click an already-split face again to unsplit it (if the sliders match its current split) or resize the split (if they differ). Click the band above a column / to the left of a row / in the corner to split or unsplit every face in that column, row, or page.
 * Turn on "Show Edit Regions" to see the clickable edges for the current edit mode.
 * Use "+ Add Page" / "- Remove Page" to extend the grid downward across additional print sheets.
 
-This is still an early, dev-only build: splitting is not built yet.
+This is still an early, dev-only build.
 `;
 
 const thumbnail: ThumbnailDef = { url: thumbnailImage.src };
@@ -126,7 +139,8 @@ type EditMode =
   | "Folds"
   | "Source"
   | "Destination"
-  | "Transform";
+  | "Transform"
+  | "Split";
 
 const editModes: EditMode[] = [
   "Blocks",
@@ -135,6 +149,7 @@ const editModes: EditMode[] = [
   "Source",
   "Destination",
   "Transform",
+  "Split",
 ];
 
 function isEditMode(value: string): value is EditMode {
@@ -211,7 +226,14 @@ const render = (ctx: RenderContext, props: DioramaProps): void => {
       rowOffset,
     });
 
-    const faceRegions = makeFaceRegions({
+    // Split-aware: a split face contributes its 4 part regions here instead
+    // of one whole-face region, so texture drawing (unconditional, below)
+    // always addresses a split face's parts individually, and so do
+    // Blocks/Source/Transform/Split's own click regions. Destination mode
+    // is the one exception — it always resizes the whole column/row
+    // regardless of split state, so it defines its click regions from the
+    // separate whole-face `makeFaceRegions` call further down instead.
+    const blockFaceRegions = makeBlockFaceRegions({
       originX: gridOriginX,
       originY: gridOriginY,
       pageWidth: gridAreaWidth,
@@ -220,12 +242,12 @@ const render = (ctx: RenderContext, props: DioramaProps): void => {
       rowOffset,
     });
 
-    faceRegions.forEach(({ id: faceId, region }) => {
+    blockFaceRegions.forEach(({ id: faceId, region }) => {
       if (
         props.editMode === "Blocks" ||
         props.editMode === "Source" ||
-        props.editMode === "Destination" ||
-        props.editMode === "Transform"
+        props.editMode === "Transform" ||
+        props.editMode === "Split"
       ) {
         ctx.defineRegion(region, faceId);
         if (props.showEditRegions) {
@@ -244,6 +266,22 @@ const render = (ctx: RenderContext, props: DioramaProps): void => {
         )
       );
     });
+
+    if (props.editMode === "Destination") {
+      makeFaceRegions({
+        originX: gridOriginX,
+        originY: gridOriginY,
+        pageWidth: gridAreaWidth,
+        pageHeight: gridAreaHeight,
+        document: props.document,
+        rowOffset,
+      }).forEach(({ id: faceId, region }) => {
+        ctx.defineRegion(region, faceId);
+        if (props.showEditRegions) {
+          ctx.drawRectangle(region, editRegionOutlineOptions);
+        }
+      });
+    }
 
     if (props.editMode === "Source") {
       // Column bands bulk-apply across the whole document, so they only need
@@ -345,6 +383,53 @@ const render = (ctx: RenderContext, props: DioramaProps): void => {
       });
     }
 
+    if (props.editMode === "Split") {
+      // Column bands bulk-apply across the whole document, same reasoning as
+      // Source's own column header above.
+      if (pageIndex === 0) {
+        makeSplitColumnHeaderRegions({
+          originX: gridOriginX,
+          originY: gridOriginY,
+          pageWidth: gridAreaWidth,
+          pageHeight: gridAreaHeight,
+          document: props.document,
+        }).forEach(({ id: headerId, region }) => {
+          ctx.defineRegion(region, headerId);
+          if (props.showEditRegions) {
+            ctx.drawRectangle(region, editRegionOutlineOptions);
+          }
+        });
+      }
+
+      makeSplitRowHeaderRegions({
+        originX: gridOriginX,
+        originY: gridOriginY,
+        pageWidth: gridAreaWidth,
+        pageHeight: gridAreaHeight,
+        document: props.document,
+        rowOffset,
+      }).forEach(({ id: headerId, region }) => {
+        ctx.defineRegion(region, headerId);
+        if (props.showEditRegions) {
+          ctx.drawRectangle(region, editRegionOutlineOptions);
+        }
+      });
+
+      // A third, page-scoped bulk-apply tier unique to Split mode — one
+      // small corner band that toggles every face on the current page.
+      makeSplitPageHeaderRegions({
+        originX: gridOriginX,
+        originY: gridOriginY,
+        document: props.document,
+        rowOffset,
+      }).forEach(({ id: headerId, region }) => {
+        ctx.defineRegion(region, headerId);
+        if (props.showEditRegions) {
+          ctx.drawRectangle(region, editRegionOutlineOptions);
+        }
+      });
+    }
+
     const edgeRegions = makeEdgeRegions({
       originX: gridOriginX,
       originY: gridOriginY,
@@ -435,6 +520,8 @@ function Component(): JSX.Element {
     React.useState(getWorldUnitsForPreset("Full Blocks"));
   const [currentTransform, setCurrentTransform] =
     React.useState<FaceTransform>(defaultFaceTransform);
+  const [currentSplit, setCurrentSplit] =
+    React.useState<SplitSize>(defaultSplitSize);
   const textureVersion = registry.findVersion(versionId);
 
   const onRegionClick: RegionClickHandler = ({ regionId }) => {
@@ -551,6 +638,68 @@ function Component(): JSX.Element {
       setDocument((current) =>
         setFaceTransform(current, regionId, currentTransform)
       );
+      return;
+    }
+    if (editMode === "Split") {
+      const { columns } = getGridDimensions({
+        pageWidth: gridAreaWidth,
+        pageHeight: gridAreaHeight,
+        document,
+      });
+
+      const column = parseSplitColumnId(regionId);
+      if (column !== null) {
+        const totalRows = getTotalRowsAcrossPages({
+          pageWidth: gridAreaWidth,
+          pageHeight: gridAreaHeight,
+          document,
+          pageCount,
+        });
+        const faceIds = Array.from({ length: totalRows }, (_, row) =>
+          getFaceId(column, row)
+        );
+        setDocument((current) =>
+          toggleSplitForFaces(current, faceIds, currentSplit)
+        );
+        return;
+      }
+
+      const row = parseSplitRowId(regionId);
+      if (row !== null) {
+        const faceIds = Array.from({ length: columns }, (_, column) =>
+          getFaceId(column, row)
+        );
+        setDocument((current) =>
+          toggleSplitForFaces(current, faceIds, currentSplit)
+        );
+        return;
+      }
+
+      const page = parseSplitPageId(regionId);
+      if (page !== null) {
+        const { rows: pageRows } = getGridDimensions({
+          pageWidth: gridAreaWidth,
+          pageHeight: gridAreaHeight,
+          document,
+          rowOffset: page,
+        });
+        const faceIds = Array.from({ length: columns }, (_, column) =>
+          Array.from({ length: pageRows }, (_, row) =>
+            getFaceId(column, page + row)
+          )
+        ).flat();
+        setDocument((current) =>
+          toggleSplitForFaces(current, faceIds, currentSplit)
+        );
+        return;
+      }
+
+      const baseFaceId = getBaseFaceId(regionId);
+      if (baseFaceId) {
+        setDocument((current) =>
+          toggleSplitFace(current, baseFaceId, currentSplit)
+        );
+      }
       return;
     }
     if (!selectedTexture) {
@@ -755,6 +904,35 @@ function Component(): JSX.Element {
                       }));
                     }
                   }}
+                />
+              </>
+            ) : null}
+            {editMode === "Split" ? (
+              <>
+                <GeneratorUI.RangeControl
+                  label="Split Width"
+                  min={0.5}
+                  max={15.5}
+                  step={0.5}
+                  showValue
+                  value={currentSplit.width}
+                  onValueChange={(value) =>
+                    setCurrentSplit((current) => ({ ...current, width: value }))
+                  }
+                />
+                <GeneratorUI.RangeControl
+                  label="Split Height"
+                  min={0.5}
+                  max={15.5}
+                  step={0.5}
+                  showValue
+                  value={currentSplit.height}
+                  onValueChange={(value) =>
+                    setCurrentSplit((current) => ({
+                      ...current,
+                      height: value,
+                    }))
+                  }
                 />
               </>
             ) : null}
