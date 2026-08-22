@@ -25,6 +25,35 @@ function toRadians(degrees: number): number {
   return degrees * (Math.PI / 180);
 }
 
+// `crossSize`/`maxHeight` are the *last valid pixel index* along each axis
+// (a caller's own dimension minus 1), not the raw dimension — every point
+// `drawTab` computes stays within the rectangle it was given, rather than
+// landing one pixel past its far edge.
+//
+// Reserves 1 unit of flat top (`minFlatTopSpan`) before computing the widest
+// possible inset, so a tab constrained by `crossSize` keeps a small flat-top
+// trapezoid instead of collapsing to a single point once `Left`/`Right`'s two
+// tapered points would otherwise coincide.
+function getTabGeometry(
+  crossSize: number,
+  maxHeight: number,
+  tabAngle: number
+): { inset: number; tabHeight: number } {
+  const tabAngleRad = toRadians(tabAngle);
+  const minFlatTopSpan = crossSize >= 1 ? 1 : 0;
+  const maxInset = Math.max(0, (crossSize - minFlatTopSpan) / 2);
+  const idealTabHeight = Math.tan(tabAngleRad) * maxInset;
+  const tabHeight = Math.min(Math.max(0, maxHeight), idealTabHeight);
+
+  return {
+    inset:
+      tabHeight > 0 && Math.tan(tabAngleRad) !== 0
+        ? tabHeight / Math.tan(tabAngleRad)
+        : 0,
+    tabHeight,
+  };
+}
+
 function drawTabNorth(
   page: CanvasWithContext,
   rectangle: Rectangle,
@@ -39,25 +68,18 @@ function drawTabNorth(
 
   const { showFoldLine, tabAngle, tabShape } = options;
   const [x, y, w, h] = rectangle;
+  const w2 = w - 1;
+  const h2 = h - 1;
 
-  const tabAngleRad = toRadians(tabAngle);
+  const { inset, tabHeight } = getTabGeometry(w2, h2, tabAngle);
+  const outerY = h2 - tabHeight;
 
-  const maxInset = w / 2;
-
-  let inset = h / Math.tan(tabAngleRad);
-  let tabHeight = 0;
-
-  [inset, tabHeight] =
-    inset > maxInset
-      ? [maxInset, Math.tan(tabAngleRad) * maxInset]
-      : [inset, h];
-
-  let p1: Point = [0, h];
-  let p2: Point = [0 + inset, h - tabHeight];
-  let p3: Point = [w - inset, h - tabHeight];
-  let p4: Point = [w, h];
-  let fullOuterLeft: Point = [0, h - tabHeight];
-  let fullOuterRight: Point = [w, h - tabHeight];
+  let p1: Point = [0, h2];
+  let p2: Point = [inset, outerY];
+  let p3: Point = [w2 - inset, outerY];
+  let p4: Point = [w2, h2];
+  let fullOuterLeft: Point = [0, outerY];
+  let fullOuterRight: Point = [w2, outerY];
 
   p1 = translatePoint(p1, x, y);
   p2 = translatePoint(p2, x, y);
@@ -112,24 +134,17 @@ function drawTabEast(
 
   const { showFoldLine, tabAngle, tabShape } = options;
   const [x, y, w, h] = rectangle;
+  const w2 = w - 1;
+  const h2 = h - 1;
 
-  const tabAngleRad = toRadians(tabAngle);
-
-  const maxInset = h / 2;
-  let inset = w / Math.tan(tabAngleRad);
-  let tabHeight = 0;
-
-  [inset, tabHeight] =
-    inset > maxInset
-      ? [maxInset, Math.tan(tabAngleRad) * maxInset]
-      : [inset, w];
+  const { inset, tabHeight } = getTabGeometry(h2, w2, tabAngle);
 
   let p1: Point = [0, 0];
-  let p2: Point = [tabHeight, 0 + inset];
-  let p3: Point = [tabHeight, h - inset];
-  let p4: Point = [0, h];
+  let p2: Point = [tabHeight, inset];
+  let p3: Point = [tabHeight, h2 - inset];
+  let p4: Point = [0, h2];
   let fullOuterTop: Point = [tabHeight, 0];
-  let fullOuterBottom: Point = [tabHeight, h];
+  let fullOuterBottom: Point = [tabHeight, h2];
 
   p1 = translatePoint(p1, x, y);
   p2 = translatePoint(p2, x, y);
@@ -177,23 +192,16 @@ function drawTabSouth(
 
   const { showFoldLine, tabAngle, tabShape } = options;
   const [x, y, w, h] = rectangle;
+  const w2 = w - 1;
+  const h2 = h - 1;
 
-  const tabAngleRad = toRadians(tabAngle);
+  const { inset, tabHeight } = getTabGeometry(w2, h2, tabAngle);
 
-  const maxInset = w / 2;
-  let inset = h / Math.tan(tabAngleRad);
-  let tabHeight = 0;
-
-  [inset, tabHeight] =
-    inset > maxInset
-      ? [maxInset, Math.tan(tabAngleRad) * maxInset]
-      : [inset, h];
-
-  let p1: Point = [w, 0];
-  let p2: Point = [w - inset, tabHeight];
+  let p1: Point = [w2, 0];
+  let p2: Point = [w2 - inset, tabHeight];
   let p3: Point = [inset, tabHeight];
   let p4: Point = [0, 0];
-  let fullOuterRight: Point = [w, tabHeight];
+  let fullOuterRight: Point = [w2, tabHeight];
   let fullOuterLeft: Point = [0, tabHeight];
 
   p1 = translatePoint(p1, x, y);
@@ -247,24 +255,17 @@ function drawTabWest(
 
   const { showFoldLine, tabAngle, tabShape } = options;
   const [x, y, w, h] = rectangle;
+  const w2 = w - 1;
+  const h2 = h - 1;
 
-  const tabAngleRad = toRadians(tabAngle);
+  const { inset, tabHeight } = getTabGeometry(h2, w2, tabAngle);
 
-  const maxInset = h / 2;
-  let inset = w / Math.tan(tabAngleRad);
-  let tabHeight = 0;
-
-  [inset, tabHeight] =
-    inset > maxInset
-      ? [maxInset, Math.tan(tabAngleRad) * maxInset]
-      : [inset, w];
-
-  let p1: Point = [w, h];
-  let p2: Point = [w - tabHeight, h - inset];
-  let p3: Point = [w - tabHeight, inset];
-  let p4: Point = [w, 0];
-  let fullOuterBottom: Point = [w - tabHeight, h];
-  let fullOuterTop: Point = [w - tabHeight, 0];
+  let p1: Point = [w2, h2];
+  let p2: Point = [w2 - tabHeight, h2 - inset];
+  let p3: Point = [w2 - tabHeight, inset];
+  let p4: Point = [w2, 0];
+  let fullOuterBottom: Point = [w2 - tabHeight, h2];
+  let fullOuterTop: Point = [w2 - tabHeight, 0];
 
   p1 = translatePoint(p1, x, y);
   p2 = translatePoint(p2, x, y);

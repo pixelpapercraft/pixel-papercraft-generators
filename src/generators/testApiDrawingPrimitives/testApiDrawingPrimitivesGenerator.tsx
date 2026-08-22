@@ -60,7 +60,7 @@ const render = (ctx: RenderContext): void => {
   // --- Page 2: drawRectangle (31) ------------------------------------------
   // An OUTLINE (four lines), not a fill: borders drawn, interior left empty.
   // Default colour is black, no options. Border lands on rows y & y+h and
-  // columns x & x+w (drawLine's 0.5px offset keeps H/V lines on-pixel).
+  // columns x & x+w (drawLine plots an H/V line's exact integer coordinate).
   ctx.usePage("DrawRectangle");
   ctx.drawRectangle([10, 10, 40, 40]); // edges at rows 10/50, cols 10/50
 
@@ -87,14 +87,17 @@ const render = (ctx: RenderContext): void => {
   // Each orientation draws three straight tab edges plus (by default) a grey
   // fold line across the base. With the default tabAngle 45 (tan = 1) and these
   // rectangles the tabs are non-overflow, so each has one fully-opaque H or V
-  // edge segment we can pixel-read deterministically (diagonals antialias).
-  // NB drawLine's 0.5px normal offset points a different way per edge depending
-  // on the direction it is drawn, so the exact row/col below is offset for the
-  // edges drawn right-to-left / bottom-to-top:
-  //   North [50,50,40,10]  → top edge on row 50 (L->R); base fold on row 59 (R->L)
-  //   South [50,100,40,10] → bottom edge on row 109 (R->L)
-  //   East  [150,50,10,40] → right edge on col 159 (bottom->top)
-  //   West  [200,50,10,40] → left edge on col 200 (top->bottom)
+  // edge segment we can pixel-read deterministically with a single-point
+  // sample (the diagonal taper segments are also fully opaque, but sampling
+  // one of their pixels deterministically needs walking the exact diagonal,
+  // not a single fixed point).
+  // NB `drawTab` computes each edge one pixel inside the rectangle's own far
+  // boundary (`w-1`/`h-1`, not `w`/`h`), so the exact row/col below isn't
+  // simply the passed-in rectangle's nominal edge:
+  //   North [50,50,40,10]  → top edge on row 50; base fold on row 59
+  //   South [50,100,40,10] → bottom edge on row 109
+  //   East  [150,50,10,40] → right edge on col 159
+  //   West  [200,50,10,40] → left edge on col 200
   ctx.usePage("DrawTab");
   ctx.drawTab([50, 50, 40, 10], "North");
   ctx.drawTab([50, 100, 40, 10], "South");

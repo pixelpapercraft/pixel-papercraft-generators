@@ -42,12 +42,12 @@ function borderLinesOf([x, y, w, h]: Rectangle): [Position, Position][] {
       [x + w, y + h],
     ],
     [
-      [x + w, y + h + 1],
-      [x, y + h + 1],
+      [x + w, y + h],
+      [x, y + h],
     ],
     [
-      [x, y + h],
-      [x, y],
+      [x - 1, y + h],
+      [x - 1, y],
     ],
   ];
 }
@@ -179,8 +179,8 @@ describe("cuboidFolds", () => {
     expect(drawFoldLine).toHaveBeenCalledTimes(4);
     expect(drawFoldLine).toHaveBeenNthCalledWith(1, [10, 19], [40, 19]);
     expect(drawFoldLine).toHaveBeenNthCalledWith(2, [40, 20], [40, 60]);
-    expect(drawFoldLine).toHaveBeenNthCalledWith(3, [40, 61], [10, 61]);
-    expect(drawFoldLine).toHaveBeenNthCalledWith(4, [10, 60], [10, 20]);
+    expect(drawFoldLine).toHaveBeenNthCalledWith(3, [40, 60], [10, 60]);
+    expect(drawFoldLine).toHaveBeenNthCalledWith(4, [9, 60], [9, 20]);
   });
 
   it("draws the west-facing cuboid fold layout by default", () => {

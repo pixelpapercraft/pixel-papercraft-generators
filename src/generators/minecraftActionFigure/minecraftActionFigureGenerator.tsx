@@ -324,7 +324,7 @@ const render = (
       color,
       lineDash: [7, 1],
     });
-    ctx.drawLine([x + w - 1, y + h + 1], [x, y + h + 1], { color });
+    ctx.drawLine([x + w - 1, y + h], [x, y + h], { color });
   }
 
   // The foreground was designed on a 32px grid with an offset of (9, 5) that makes the cells more centered. This function makes finding the [ox, oy] much easier as you only need to count the cells instead of find the actual coordinates.
