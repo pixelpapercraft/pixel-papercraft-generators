@@ -1,5 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import { readPixel, readPixelRow, type Rgba } from "../_shared/pixelColor";
+import { renderImageAtNaturalSize } from "../_shared/screenshot";
 
 // Generator API coverage: asset-free drawing primitives.
 // Generator id: test-api-drawing-primitives.
@@ -26,6 +27,36 @@ const foldGrey: Rgba = { r: 123, g: 123, b: 123, a: 255 };
 const transparent: Rgba = { r: 0, g: 0, b: 0, a: 0 };
 
 const pageImage = (page: Page) => page.getByTestId("generator-page-image");
+
+test("visual baseline: drawLine", async ({ page }) => {
+  await page.goto("/generator/test-api-drawing-primitives");
+  const image = pageImage(page).nth(3);
+
+  await renderImageAtNaturalSize(image);
+  await expect(image).toHaveScreenshot(
+    "test-api-drawing-primitives-draw-line.png"
+  );
+});
+
+test("visual baseline: drawFoldLine", async ({ page }) => {
+  await page.goto("/generator/test-api-drawing-primitives");
+  const image = pageImage(page).nth(4);
+
+  await renderImageAtNaturalSize(image);
+  await expect(image).toHaveScreenshot(
+    "test-api-drawing-primitives-draw-fold-line.png"
+  );
+});
+
+test("visual baseline: drawTab", async ({ page }) => {
+  await page.goto("/generator/test-api-drawing-primitives");
+  const image = pageImage(page).nth(5);
+
+  await renderImageAtNaturalSize(image);
+  await expect(image).toHaveScreenshot(
+    "test-api-drawing-primitives-draw-tab.png"
+  );
+});
 
 // --- fillBackgroundColorWithWhite (29) -------------------------------------
 
