@@ -5,7 +5,7 @@ import {
   drawFoldLine,
   drawLine,
   getLinePixels,
-  getPixelSquare,
+  getPixelRect,
   shouldDrawDashPixel,
 } from "./drawLine";
 
@@ -14,7 +14,8 @@ import {
 // definition (round each endpoint to its nearest pixel, then step the
 // integer error accumulator until the rounded end is reached), not copied
 // from the implementation — so a transcription slip in the implementation
-// shows up as a mismatch here.
+// shows up as a mismatch here. Both endpoints are always included: the two
+// specified pixels are literal input, and both must be drawn.
 describe("getLinePixels", () => {
   it("plots every integer x between two horizontal endpoints", () => {
     expect(getLinePixels([2, 5], [6, 5])).toEqual<Position[]>([
@@ -187,30 +188,94 @@ describe("shouldDrawDashPixel", () => {
   });
 });
 
-// getPixelSquare: pure width-to-square conversion. width=1 is a single exact
-// pixel; wider strokes centre a size x size square on the plotted point,
-// biased toward the top-left by one pixel for even widths (a square can't be
-// perfectly centred on a single integer point).
-describe("getPixelSquare", () => {
-  it("returns a single exact pixel for the default width of 1", () => {
-    expect(getPixelSquare(10, 20, 1)).toEqual({ x: 10, y: 20, size: 1 });
+// getPixelRect: pure width-to-rect conversion. width=1 is a single exact
+// pixel regardless of orientation. Wider strokes on a horizontal/vertical
+// line extend only perpendicular to the line -- the length-wise extent
+// stays exactly 1 -- so a plotted endpoint never grows the line past its
+// own coordinate. A diagonal line has no defined perpendicular without its
+// exact angle, so it falls back to an isotropic square, biased toward the
+// top-left by one pixel for even widths (a square can't be perfectly
+// centred on a single integer point).
+describe("getPixelRect", () => {
+  it("returns a single exact pixel for the default width of 1, for any orientation", () => {
+    expect(getPixelRect(10, 20, 1, "horizontal")).toEqual({
+      x: 10,
+      y: 20,
+      width: 1,
+      height: 1,
+    });
+    expect(getPixelRect(10, 20, 1, "vertical")).toEqual({
+      x: 10,
+      y: 20,
+      width: 1,
+      height: 1,
+    });
+    expect(getPixelRect(10, 20, 1, "diagonal")).toEqual({
+      x: 10,
+      y: 20,
+      width: 1,
+      height: 1,
+    });
   });
 
-  it("centres an odd-width square on the point", () => {
-    expect(getPixelSquare(10, 20, 3)).toEqual({ x: 9, y: 19, size: 3 });
+  it("extends a horizontal line's stroke only vertically, keeping x-width at 1", () => {
+    expect(getPixelRect(10, 20, 3, "horizontal")).toEqual({
+      x: 10,
+      y: 19,
+      width: 1,
+      height: 3,
+    });
   });
 
-  it("biases an even-width square toward the top-left of the point", () => {
-    expect(getPixelSquare(10, 20, 2)).toEqual({ x: 9, y: 19, size: 2 });
+  it("extends a vertical line's stroke only horizontally, keeping y-height at 1", () => {
+    expect(getPixelRect(10, 20, 3, "vertical")).toEqual({
+      x: 9,
+      y: 20,
+      width: 3,
+      height: 1,
+    });
+  });
+
+  it("centres an odd-width isotropic square on a diagonal point", () => {
+    expect(getPixelRect(10, 20, 3, "diagonal")).toEqual({
+      x: 9,
+      y: 19,
+      width: 3,
+      height: 3,
+    });
+  });
+
+  it("biases an even-width diagonal square toward the top-left of the point", () => {
+    expect(getPixelRect(10, 20, 2, "diagonal")).toEqual({
+      x: 9,
+      y: 19,
+      width: 2,
+      height: 2,
+    });
   });
 
   it("clamps a width below 1 up to a single pixel", () => {
-    expect(getPixelSquare(10, 20, 0)).toEqual({ x: 10, y: 20, size: 1 });
-    expect(getPixelSquare(10, 20, 0.4)).toEqual({ x: 10, y: 20, size: 1 });
+    expect(getPixelRect(10, 20, 0, "diagonal")).toEqual({
+      x: 10,
+      y: 20,
+      width: 1,
+      height: 1,
+    });
+    expect(getPixelRect(10, 20, 0.4, "diagonal")).toEqual({
+      x: 10,
+      y: 20,
+      width: 1,
+      height: 1,
+    });
   });
 
   it("rounds a fractional width to the nearest whole pixel", () => {
-    expect(getPixelSquare(10, 20, 2.6)).toEqual({ x: 9, y: 19, size: 3 });
+    expect(getPixelRect(10, 20, 2.6, "diagonal")).toEqual({
+      x: 9,
+      y: 19,
+      width: 3,
+      height: 3,
+    });
   });
 });
 
@@ -334,22 +399,36 @@ describe("drawFoldLine", () => {
     );
   });
 
-  it("keeps the canvas dash phase for a leftward fold line", () => {
+  it("draws the identical dash pattern for a leftward fold line as for the equivalent rightward one", () => {
     const { page, fills } = makeFakeCanvasWithContext();
 
     drawFoldLine(page, [7, 0], [0, 0]);
 
-    // A reversed canvas stroke places the visible two-pixel dashes at x=0/1
-    // then x=4/5, rather than moving the whole pattern one pixel to the right
-    // as the unadjusted step index would.
-    expect(fills.map((fill) => fill.x)).toEqual([5, 4, 1, 0]);
+    // Dash position is measured from the line's own geometrically lesser
+    // endpoint (x=0 here), not from array order, so a reversed call paints
+    // the same physical pixels on as the "forward dashed grey [2,2] line"
+    // case above -- just filled in the opposite order, since this call
+    // walks from x=6 down to x=1.
+    expect(fills.map((fill) => fill.x)).toEqual([6, 5, 2, 1]);
   });
 
-  it("keeps the canvas dash phase for an upward fold line", () => {
+  it("draws the identical dash pattern for an upward fold line as for the equivalent downward one", () => {
     const { page, fills } = makeFakeCanvasWithContext();
 
     drawFoldLine(page, [0, 7], [0, 0]);
 
-    expect(fills.map((fill) => fill.y)).toEqual([5, 4, 1, 0]);
+    expect(fills.map((fill) => fill.y)).toEqual([6, 5, 2, 1]);
+  });
+
+  it("dash pattern is symmetric: reversing from/to paints the identical set of pixels", () => {
+    const forward = makeFakeCanvasWithContext();
+    drawFoldLine(forward.page, [0, 0], [7, 0]);
+
+    const backward = makeFakeCanvasWithContext();
+    drawFoldLine(backward.page, [7, 0], [0, 0]);
+
+    const forwardSet = new Set(forward.fills.map((fill) => fill.x));
+    const backwardSet = new Set(backward.fills.map((fill) => fill.x));
+    expect(backwardSet).toEqual(forwardSet);
   });
 });

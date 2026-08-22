@@ -290,21 +290,21 @@ const render = (
     drawFoldLineRectangle([x + 1, y + 10, 48, 64]);
     ctx.drawFoldLine([x + 1, y + 41], [x + 49, y + 41]);
     ctx.drawFoldLine([x + 48, y + 74], [x + 48, y + 90]);
-    ctx.drawLine([x + 49, y + 26], [x + 49, y + 42], {
+    ctx.drawLine([x + 49, y + 26], [x + 49, y + 41], {
       color: "#ff0000",
     });
 
     drawFoldLineRectangle([x + 241, y + 10, 48, 64]);
-    ctx.drawFoldLine([x + 241, y + 41], [x + 290, y + 41]);
+    ctx.drawFoldLine([x + 241, y + 41], [x + 288, y + 41]);
     ctx.drawFoldLine([x + 241, y + 74], [x + 241, y + 90]);
-    ctx.drawLine([x + 240, y + 26], [x + 240, y + 42], {
+    ctx.drawLine([x + 240, y + 26], [x + 240, y + 41], {
       color: "#ff0000",
     });
 
-    ctx.drawLine([x + 49, y + 89], [x + 113, y + 89], {
+    ctx.drawLine([x + 49, y + 89], [x + 112, y + 89], {
       color: "#ff0000",
     });
-    ctx.drawLine([x + 177, y + 89], [x + 241, y + 89], {
+    ctx.drawLine([x + 177, y + 89], [x + 240, y + 89], {
       color: "#ff0000",
     });
   }

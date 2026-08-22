@@ -8,6 +8,23 @@ export type LineProps = {
   lineDashOffset?: number;
 };
 
+// Whether `from` sorts after `to` by a fixed coordinate order (x, then y).
+// Used by `drawLine` to measure dash position from the line's own
+// geometrically lesser endpoint rather than raw array order, so the dash
+// pattern looks identical regardless of which point the caller labelled
+// `from` — see the comment where this is used, in `drawLine`.
+function isReversedOrder(
+  [fromX, fromY]: Position,
+  [toX, toY]: Position
+): boolean {
+  const rFromX = Math.round(fromX);
+  const rFromY = Math.round(fromY);
+  const rToX = Math.round(toX);
+  const rToY = Math.round(toY);
+
+  return rFromX > rToX || (rFromX === rToX && rFromY > rToY);
+}
+
 // The ordered integer pixel coordinates a line from `from` to `to` visits.
 // Each endpoint is snapped to its nearest pixel first, then walked with
 // Bresenham's integer error-accumulator algorithm (the generalised,
@@ -16,10 +33,16 @@ export type LineProps = {
 // Plotting only ever lands on whole pixels — unlike stroking a path, which
 // antialiases any line that isn't perfectly horizontal or vertical — so
 // every pixel this returns can be painted fully opaque with no blending.
-export function getLinePixels(
-  [fromX, fromY]: Position,
-  [toX, toY]: Position
-): Position[] {
+//
+// Both endpoints are always included: a caller specifies two literal
+// pixels, and both must be drawn, with the line filling in between. This
+// also means two independently-drawn lines that share a corner (e.g. two
+// edges of a `drawTab` outline meeting at a vertex) both paint that shared
+// pixel rather than each risking dropping it — harmless double-painting
+// instead of a gap.
+export function getLinePixels(from: Position, to: Position): Position[] {
+  const [fromX, fromY] = from;
+  const [toX, toY] = to;
   let x = Math.round(fromX);
   let y = Math.round(fromY);
   const endX = Math.round(toX);
@@ -79,33 +102,61 @@ export function shouldDrawDashPixel(
   return true;
 }
 
-// The square `fillRect` should paint for one plotted line pixel at the given
+// The rect `fillRect` should paint for one plotted line pixel at the given
 // stroke width: a single exact pixel at width 1 (the common case), otherwise
-// a `size x size` square centred on the point as closely as an integer size
-// allows — an even size can't centre perfectly, so it's biased one pixel
-// toward the top-left.
-export function getPixelSquare(
+// a rect centred on the point as closely as an integer size allows — an even
+// size can't centre perfectly, so it's biased one pixel toward the top-left.
+//
+// For a horizontal or vertical line, the thickness is applied only
+// perpendicular to the line — the pixel's own extent along the line's
+// direction stays exactly one pixel wide, matching a canvas "butt" line cap
+// (no extension past the line's own endpoints). Stamping an isotropic square
+// at every point instead (as a naive thickness implementation would) also
+// extends the two endpoint pixels *along* the line by the same amount,
+// silently lengthening it — a diagonal line falls back to that isotropic
+// square, since there is no true perpendicular offset to compute without
+// knowing the line's exact angle, and no width>1 diagonal caller exists
+// today to derive one against.
+export function getPixelRect(
   x: number,
   y: number,
-  width: number
-): { x: number; y: number; size: number } {
+  width: number,
+  orientation: "horizontal" | "vertical" | "diagonal"
+): { x: number; y: number; width: number; height: number } {
   const size = Math.max(1, Math.round(width));
   const offset = Math.floor(size / 2);
-  return { x: x - offset, y: y - offset, size };
+
+  if (orientation === "horizontal") {
+    return { x, y: y - offset, width: 1, height: size };
+  }
+  if (orientation === "vertical") {
+    return { x: x - offset, y, width: size, height: 1 };
+  }
+  return { x: x - offset, y: y - offset, width: size, height: size };
 }
 
-function getDashOffset(
+function getLineOrientation(
   [fromX, fromY]: Position,
-  [toX, toY]: Position,
-  lineDashOffset: number
-): number {
-  // Canvas strokes place a reversed horizontal or vertical dash's first
-  // raster pixel one step earlier in the pattern than a forward stroke. Keep
-  // that established phase when plotting the same line as discrete pixels.
-  const isReversedAxisAlignedLine =
-    (fromX === toX && toY < fromY) || (fromY === toY && toX < fromX);
+  [toX, toY]: Position
+): "horizontal" | "vertical" | "diagonal" {
+  const rFromX = Math.round(fromX);
+  const rFromY = Math.round(fromY);
+  const rToX = Math.round(toX);
+  const rToY = Math.round(toY);
 
-  return isReversedAxisAlignedLine ? lineDashOffset - 1 : lineDashOffset;
+  // A degenerate zero-length "line" (both endpoints round to the same
+  // pixel) has no real direction to speak of -- treat it as a dot, which an
+  // isotropic square represents better than an arbitrarily-chosen axis.
+  if (rFromX === rToX && rFromY === rToY) {
+    return "diagonal";
+  }
+  if (rFromY === rToY) {
+    return "horizontal";
+  }
+  if (rFromX === rToX) {
+    return "vertical";
+  }
+  return "diagonal";
 }
 
 export function drawLine(
@@ -118,18 +169,29 @@ export function drawLine(
   const width = lineProps?.width ?? 1;
   const lineDash = lineProps?.lineDash ?? [];
   const lineDashOffset = lineProps?.lineDashOffset ?? 0;
-  const dashOffset = getDashOffset(from, to, lineDashOffset);
 
+  const orientation = getLineOrientation(from, to);
   const context = page.context;
   context.save();
   context.fillStyle = color;
 
-  getLinePixels(from, to).forEach(([x, y], index) => {
-    if (!shouldDrawDashPixel(index, lineDash, dashOffset)) {
+  // Dash position is measured by distance from the line's own geometrically
+  // lesser endpoint, not by raw array position: a reversed call walks the
+  // identical points in the opposite order, so indexing straight from array
+  // position would make a reversed call's dash pattern land one step off
+  // from a forward call drawing the same physical line. Mirroring the index
+  // here keeps the dash pattern itself symmetric, the same way the plotted
+  // point set already is.
+  const points = getLinePixels(from, to);
+  const reversed = isReversedOrder(from, to);
+
+  points.forEach(([x, y], index) => {
+    const dashIndex = reversed ? points.length - 1 - index : index;
+    if (!shouldDrawDashPixel(dashIndex, lineDash, lineDashOffset)) {
       return;
     }
-    const square = getPixelSquare(x, y, width);
-    context.fillRect(square.x, square.y, square.size, square.size);
+    const rect = getPixelRect(x, y, width, orientation);
+    context.fillRect(rect.x, rect.y, rect.width, rect.height);
   });
 
   context.restore();
