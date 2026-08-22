@@ -16,13 +16,16 @@ export type CuboidFoldOptions = {
   center?: Center;
 };
 
+// Draws a fold-line frame 1px outside the given rectangle on every side, so
+// the dashed guide sits adjacent to the printed content rather than
+// overlapping its own edge pixels.
 export function drawRectangleFolds(ctx: RenderContext, rectangle: Rectangle) {
   const [x, y, w, h] = rectangle;
 
   ctx.drawFoldLine([x, y - 1], [x + w, y - 1]);
   ctx.drawFoldLine([x + w, y], [x + w, y + h]);
-  ctx.drawFoldLine([x + w, y + h + 1], [x, y + h + 1]);
-  ctx.drawFoldLine([x, y + h], [x, y]);
+  ctx.drawFoldLine([x + w, y + h], [x, y + h]);
+  ctx.drawFoldLine([x - 1, y + h], [x - 1, y]);
 }
 
 export function drawCuboidFolds(

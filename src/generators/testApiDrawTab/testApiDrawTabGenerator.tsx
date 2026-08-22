@@ -34,6 +34,11 @@ cells use a 80×30 rectangle (width along the tabbed edge); East/West cells
 use a 30×80 rectangle (height along the tabbed edge), so the taper geometry
 is identical across cells within a row and only the orientation differs
 between rows.
+
+A second row below shows a single \`Full\` tab on a rectangle far narrower
+than it is deep (6×60, or 60×6 for East/West) — narrow enough that
+\`getTabGeometry\`'s flat-top capping engages, keeping a small flat-topped
+trapezoid instead of collapsing the two tapered corners to a single point.
 `;
 
 const images: ImageDef[] = [];
@@ -50,6 +55,10 @@ const depth = 30;
 const cellWidth = 140;
 const gridOrigin: [number, number] = [20, 60];
 
+const narrowAlongEdge = 6;
+const narrowDepth = 60;
+const narrowOrigin: [number, number] = [20, 400];
+
 type DrawTabProps = {
   orientation: BoardOrientation;
 };
@@ -62,6 +71,19 @@ function rectangleFor(orientation: BoardOrientation): [number, number] {
     case "East":
     case "West":
       return [depth, alongEdge];
+    default:
+      return orientation satisfies never;
+  }
+}
+
+function narrowRectangleFor(orientation: BoardOrientation): [number, number] {
+  switch (orientation) {
+    case "North":
+    case "South":
+      return [narrowAlongEdge, narrowDepth];
+    case "East":
+    case "West":
+      return [narrowDepth, narrowAlongEdge];
     default:
       return orientation satisfies never;
   }
@@ -100,6 +122,26 @@ const render = (ctx: RenderContext, props: DrawTabProps): void => {
       tabAngle: 45,
       tabShape,
     });
+  });
+
+  const [narrowW, narrowH] = narrowRectangleFor(props.orientation);
+  const narrowRectangle: [number, number, number, number] = [
+    narrowOrigin[0],
+    narrowOrigin[1],
+    narrowW,
+    narrowH,
+  ];
+
+  ctx.drawText(
+    'Narrow tab (width-constrained flat top): tabShape="Full"',
+    [narrowOrigin[0], narrowOrigin[1] - 10],
+    12
+  );
+  ctx.fillRectangle(narrowRectangle, "#dbeafe");
+  ctx.drawTab(narrowRectangle, props.orientation, {
+    showFoldLine: true,
+    tabAngle: 45,
+    tabShape: "Full",
   });
 };
 

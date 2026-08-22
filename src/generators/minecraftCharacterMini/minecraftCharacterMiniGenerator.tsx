@@ -254,8 +254,8 @@ const render = (
 
     ctx.drawFoldLine([x, y - 1], [x + w, y - 1]);
     ctx.drawFoldLine([x + w, y], [x + w, y + h]);
-    ctx.drawFoldLine([x + w, y + h + 1], [x, y + h + 1]);
-    ctx.drawFoldLine([x, y + h], [x, y]);
+    ctx.drawFoldLine([x + w, y + h], [x, y + h]);
+    ctx.drawFoldLine([x - 1, y + h], [x - 1, y]);
   }
 
   function drawFoldLineCuboid(

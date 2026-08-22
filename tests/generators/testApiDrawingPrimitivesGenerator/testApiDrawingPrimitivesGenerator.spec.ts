@@ -115,15 +115,15 @@ test("drawRectangle strokes all four borders in default black", async ({
 
   const drawRect = pageImage(page).nth(2);
 
-  // Rectangle [10,10,40,40]. drawRectangle draws four lines and drawLine's
-  // 0.5px normal offset points a different way per line depending on its
-  // direction, so the edges land at: top row 10, right col 50, bottom row 49
-  // (offset up, drawn R->L), left col 9 (offset left, drawn bottom->top).
-  // Sample the midpoint of each edge.
+  // Rectangle [10,10,40,40]. drawRectangle draws four lines via drawLine's
+  // Bresenham plotter, which lands an axis-aligned line on its exact integer
+  // coordinate regardless of which direction it's drawn — so all four edges
+  // land on the rectangle's own nominal boundary: top row 10, right col 50,
+  // bottom row 50, left col 10. Sample the midpoint of each edge.
   expect(await readPixel(drawRect, 30, 10)).toEqual(black); // top
   expect(await readPixel(drawRect, 50, 30)).toEqual(black); // right
-  expect(await readPixel(drawRect, 30, 49)).toEqual(black); // bottom
-  expect(await readPixel(drawRect, 9, 30)).toEqual(black); // left
+  expect(await readPixel(drawRect, 30, 50)).toEqual(black); // bottom
+  expect(await readPixel(drawRect, 10, 30)).toEqual(black); // left
 });
 
 test("drawRectangle leaves its interior empty (outline, not fill)", async ({
@@ -148,7 +148,7 @@ test("drawLine draws opaque black horizontal and vertical lines by default", asy
   const drawLinePage = pageImage(page).nth(3);
 
   // H line [10,20]->[60,20] lands on row 20; V line [80,10]->[80,60] on col 80.
-  // drawLine's 0.5px normal offset makes H/V lines fully opaque and on-pixel.
+  // drawLine plots each line's exact integer pixel, always fully opaque.
   expect(await readPixel(drawLinePage, 30, 20)).toEqual(black);
   expect(await readPixel(drawLinePage, 80, 30)).toEqual(black);
 });
@@ -214,9 +214,12 @@ test("drawTab draws a straight tab edge for each orientation (N/S/E/W)", async (
 
   const tab = pageImage(page).nth(5);
 
-  // Each orientation has one fully-opaque straight edge (the others antialias
-  // as diagonals). Exact row/col reflects drawLine's direction-dependent 0.5px
-  // offset — see the generator script for the geometry.
+  // Each orientation has one fully-opaque straight edge (the others are
+  // diagonal taper segments, also fully opaque now that `drawLine` plots
+  // exact pixels rather than stroking an antialiased path — see
+  // `testApiDrawTabGenerator.spec.ts`'s dedicated blend-pixel test for that).
+  // Exact row/col reflects `drawTab`'s own `w-1`/`h-1` pixel-crispness
+  // convention — see the generator script for the geometry.
   expect(await readPixel(tab, 70, 50)).toEqual(black); // North: top edge, row 50
   expect(await readPixel(tab, 70, 109)).toEqual(black); // South: bottom edge, row 109
   expect(await readPixel(tab, 159, 70)).toEqual(black); // East: right edge, col 159
