@@ -67,10 +67,13 @@ const render = (ctx: RenderContext): void => {
   // --- Page 3: drawLine (35) -----------------------------------------------
   // Horizontal + vertical lines: default black, width 1, fully opaque and
   // exactly one pixel wide (nothing bleeds onto the neighbouring row/col).
-  // A third line with width 3 must cover pixels off the 1px centre line.
+  // A diagonal makes the renderer's pixel-rasterization visible in the
+  // screenshot baseline. A third line with width 3 must cover pixels off the
+  // 1px centre line.
   ctx.usePage("DrawLine");
   ctx.drawLine([10, 20], [60, 20]); // H line on row 20, cols 10..60
   ctx.drawLine([80, 10], [80, 60]); // V line on col 80, rows 10..60
+  ctx.drawLine([10, 110], [110, 210]); // diagonal from [10,110] to [110,210]
   ctx.drawLine([10, 80], [60, 80], { width: 3 }); // thick H line, rows 79..81
 
   // --- Page 4: drawFoldLine (36) -------------------------------------------

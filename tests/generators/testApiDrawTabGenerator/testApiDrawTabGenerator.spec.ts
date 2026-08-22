@@ -1,5 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import { readPixel, type Rgba } from "../_shared/pixelColor";
+import { renderImageAtNaturalSize } from "../_shared/screenshot";
 
 // Generator API coverage for `drawTab` (`builder/engine/renderers/drawTab.ts`)
 // at the primitive level, exercised through the real render pipeline rather
@@ -45,6 +46,38 @@ async function selectOrientation(
   await page.goto("/generator/test-api-draw-tab");
   await page.getByLabel("Orientation").selectOption(orientation);
 }
+
+test("visual baseline: North tab shapes", async ({ page }) => {
+  await selectOrientation(page, "North");
+  const image = pageImage(page);
+
+  await renderImageAtNaturalSize(image);
+  await expect(image).toHaveScreenshot("test-api-draw-tab-north.png");
+});
+
+test("visual baseline: South tab shapes", async ({ page }) => {
+  await selectOrientation(page, "South");
+  const image = pageImage(page);
+
+  await renderImageAtNaturalSize(image);
+  await expect(image).toHaveScreenshot("test-api-draw-tab-south.png");
+});
+
+test("visual baseline: East tab shapes", async ({ page }) => {
+  await selectOrientation(page, "East");
+  const image = pageImage(page);
+
+  await renderImageAtNaturalSize(image);
+  await expect(image).toHaveScreenshot("test-api-draw-tab-east.png");
+});
+
+test("visual baseline: West tab shapes", async ({ page }) => {
+  await selectOrientation(page, "West");
+  const image = pageImage(page);
+
+  await renderImageAtNaturalSize(image);
+  await expect(image).toHaveScreenshot("test-api-draw-tab-west.png");
+});
 
 test("North: Full/Left/Middle/Right render distinct outer-edge spans", async ({
   page,
