@@ -381,6 +381,7 @@ test("minecraft item generator toggles enchantment from the item region", async 
   await expect(outputPage).toBeVisible();
   await expect(outputPage).toHaveAttribute("src", /data:image\/png/);
   await renderImageAtNaturalSize(outputPage);
+  await page.mouse.move(0, 0);
 
   await expect(outputPage).toHaveScreenshot(
     "minecraft-item-enchanted-toggle-page-1.png"
@@ -407,6 +408,7 @@ test("minecraft item generator preserves each selected glint version", async ({
     const outputPage = page.getByTestId("generator-page-image").first();
     await expect(outputPage).toBeVisible();
     await renderImageAtNaturalSize(outputPage);
+    await page.mouse.move(0, 0);
     await expect(outputPage).toHaveScreenshot(glintVersion.snapshot);
   }
 });
