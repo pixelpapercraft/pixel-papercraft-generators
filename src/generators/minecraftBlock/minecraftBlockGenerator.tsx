@@ -9,6 +9,7 @@ import {
   type Generator,
   type HistoryDef,
   type ImageDef,
+  type InstructionsDef,
   type RegionClickHandler,
   type RenderContext,
   type SelectedTexture,
@@ -79,6 +80,25 @@ const history: HistoryDef = [
   "Jul 2026 lostminer - Layout refresh.",
 ];
 const thumbnail: ThumbnailDef = { url: thumbnailImage.src };
+const instructions: InstructionsDef = `
+## How to use the Minecraft Block Generator
+
+### Choosing textures
+* Pick a "Version", then select a block or item texture in the texture picker. The selected texture can be rotated, flipped, or tinted before it is placed.
+* Select "Custom" as the version to upload your own texture atlas.
+
+### Texturing block faces
+* Click a face on the papercraft template to add the selected texture to that face.
+* Each face can hold several texture layers. New textures are placed on top of the existing layers.
+* Click the texture picker's erase button, then click a face to remove its top texture layer.
+* "Clear" removes every texture from the page and resets the block options.
+
+### Blocks and shapes
+* "Number of Blocks" places either one or two independent blocks on the page.
+* Choose each block's shape with "Block # Type". Available shapes include Block, Slab, Stair, Fence, Door, Trapdoor, Snow Layers, Cake, and Shelf.
+* Shelf blocks have a state option, Snow Layers have level and intermediate-offset options, and Cake blocks let you choose the number of bites taken.
+* "Show Folds" toggles the fold and tab guide lines used when assembling the printed models.
+`;
 const image = (imageId: string, importedImage: { src: string }): ImageDef => ({
   id: imageId,
   url: importedImage.src,
@@ -337,6 +357,10 @@ function Component(): JSX.Element {
           className="flex-1 min-w-0 mb-8 lg:mb-0"
           data-testid="generator-sidebar"
         >
+          <div className="mb-8">
+            <GeneratorUI.Instructions markdown={instructions} />
+          </div>
+
           <div className="w-full bg-gray-100 p-8 space-y-4">
             <GeneratorUI.SelectControl
               label="Version"
