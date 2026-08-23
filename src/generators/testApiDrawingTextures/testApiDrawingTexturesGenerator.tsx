@@ -217,7 +217,7 @@ function Component(): JSX.Element {
         className="flex-1 min-w-0 mb-8 lg:mb-0"
         data-testid="generator-sidebar"
       >
-        <div className="w-full bg-gray-100 p-8 space-y-4">
+        <div className="mb-8">
           <GeneratorUI.Instructions markdown={instructions} />
         </div>
       </div>
