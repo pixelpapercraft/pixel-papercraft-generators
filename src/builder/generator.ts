@@ -69,8 +69,7 @@ export type RenderContext = {
    * @deprecated Model-tracked variable state predates V2 generators and
    * should not gain new callers. Still used by `_common/minecraft.ts`
    * (tab-size) and `_common/plugins/glint.ts` (opacity/offsets), which
-   * should migrate to React state — tracked in TODO.md, not part of this
-   * change.
+   * should migrate to React state.
    */
   getNumberVariable(id: string): number | null;
   /** @deprecated See `getNumberVariable`. */
