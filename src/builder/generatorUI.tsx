@@ -7,16 +7,11 @@ import { History } from "@genroot/builder/ui/history";
 import { MediaHero } from "@genroot/builder/ui/mediaHero";
 import { AtlasControl } from "@genroot/builder/ui/controls/atlasControl";
 import { TextureControl } from "@genroot/builder/ui/controls/textureControl";
-import { RangeControl as RangeControlV1 } from "@genroot/builder/ui/controls/rangeControl";
 import { LoadedTextureControl } from "./loadedTextureControl";
 import { LoadedTextureControlV2 } from "./loadedTextureControlV2";
 
-// V2's controls wrap v1's so both generations render identical markup while v2
-// authors get explicit, controlled props (`label`/`onValueChange`) instead of
-// v1's `id`-doubles-as-label convention. `builder/ui` is being retired; when it
-// goes, these wrappers absorb the markup and the v1 modules are deleted.
-// Generators must reach these only through `GeneratorUI` — see the eslint
-// boundary rule for `src/generators/*V2/`.
+// Generic controls available to generator authors. Generators reach these only
+// through `GeneratorUI`; implementation modules remain builder internals.
 
 export type BooleanControlProps = {
   label: string;
@@ -126,16 +121,35 @@ export function RangeControl({
   showValue,
   onValueChange,
 }: RangeControlProps): JSX.Element {
+  const inputId = React.useId();
+  const [currentValue, setCurrentValue] = React.useState(value);
+
+  React.useEffect(() => {
+    setCurrentValue(value);
+  }, [value]);
+
+  const onRangeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const nextValue = parseFloat(event.target.value);
+    setCurrentValue(nextValue);
+    onValueChange(nextValue);
+  };
+
   return (
-    <RangeControlV1
-      id={label}
-      min={min}
-      max={max}
-      step={step}
-      value={value}
-      showValue={showValue}
-      onChange={onValueChange}
-    />
+    <div className="mb-4">
+      <label className="font-bold mb-1 block" htmlFor={inputId}>
+        {label}
+      </label>
+      <input
+        id={inputId}
+        type="range"
+        min={min}
+        max={max}
+        value={currentValue}
+        step={step}
+        onChange={onRangeChange}
+      />
+      {showValue ? <span className="ml-2">{currentValue}</span> : null}
+    </div>
   );
 }
 
