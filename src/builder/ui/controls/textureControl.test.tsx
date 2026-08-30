@@ -7,7 +7,7 @@ describe("TextureControl", () => {
   it("disables preset and upload interaction while textures are loading", () => {
     const markup = renderToStaticMarkup(
       createElement(TextureControl, {
-        id: "Skin",
+        label: "Skin",
         choices: ["Red"],
         standardWidth: 64,
         standardHeight: 64,

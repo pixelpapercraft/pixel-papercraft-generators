@@ -85,8 +85,7 @@ export function LoadedTextureControl({
 
   return (
     <TextureControl
-      id={id}
-      label={label}
+      label={label ?? id}
       choices={choices}
       standardWidth={standardWidth}
       standardHeight={standardHeight}

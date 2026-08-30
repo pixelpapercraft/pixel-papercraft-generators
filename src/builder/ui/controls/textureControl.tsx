@@ -9,7 +9,6 @@ import {
 } from "./textureUpload";
 
 export function TextureControl({
-  id,
   label,
   choices,
   standardWidth,
@@ -19,8 +18,7 @@ export function TextureControl({
   disabled = false,
   statusMessage,
 }: {
-  id: string;
-  label?: string;
+  label: string;
   choices: string[];
   standardWidth: number;
   standardHeight: number;
@@ -64,7 +62,7 @@ export function TextureControl({
   return (
     <fieldset className="mb-4 min-w-0">
       <legend className="font-bold mb-1" id={legendId}>
-        {label ?? id}
+        {label}
       </legend>
       <div className="flex flex-wrap">
         <div className="flex mb-4 space-x-4 items-center mr-4">
@@ -83,7 +81,7 @@ export function TextureControl({
 
           <div>
             <label className="sr-only" htmlFor={fileInputId}>
-              Upload {id} texture file
+              Upload {label} texture file
             </label>
             <input
               id={fileInputId}
