@@ -166,6 +166,7 @@ function waitForApp(
 async function main(): Promise<void> {
   nextServer = spawnNodeModule(nextBin, [
     "dev",
+    "--webpack",
     "--hostname",
     host,
     "-p",
