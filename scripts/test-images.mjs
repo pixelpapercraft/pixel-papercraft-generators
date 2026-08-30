@@ -151,6 +151,7 @@ function waitForApp(url, timeoutMs, child) {
 async function main() {
   nextServer = spawnNodeModule(nextBin, [
     "dev",
+    "--webpack",
     "--hostname",
     host,
     "-p",
