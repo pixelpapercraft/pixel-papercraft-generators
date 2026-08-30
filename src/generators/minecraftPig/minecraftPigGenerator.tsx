@@ -1255,7 +1255,7 @@ function Component(): JSX.Element {
 
           <div className="w-full bg-gray-100 p-8 space-y-4">
             <GeneratorUI.LoadedTextureControl
-              id="Pig"
+              label="Pig"
               definitions={textures}
               choices={pigChoices}
               standardWidth={64}
@@ -1263,7 +1263,7 @@ function Component(): JSX.Element {
               onChange={setPig}
             />
             <GeneratorUI.LoadedTextureControl
-              id="Saddle"
+              label="Saddle"
               definitions={textures}
               choices={saddleChoices}
               standardWidth={64}
@@ -1271,7 +1271,7 @@ function Component(): JSX.Element {
               onChange={setSaddle}
             />
             <GeneratorUI.LoadedTextureControl
-              id="Armor (Layer 1)"
+              label="Armor (Layer 1)"
               definitions={textures}
               choices={armorChoices}
               standardWidth={64}

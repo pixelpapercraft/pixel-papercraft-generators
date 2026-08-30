@@ -9,7 +9,6 @@ import { useLoadedTextures } from "./useLoadedTextures";
 const noTextures = new Map<string, Texture>();
 
 export function LoadedTextureControl({
-  id,
   label,
   definitions,
   choices,
@@ -20,8 +19,7 @@ export function LoadedTextureControl({
   errorMessage = "Texture choices could not be loaded.",
   onChange,
 }: {
-  id: string;
-  label?: string;
+  label: string;
   definitions: TextureDef[];
   choices: string[];
   standardWidth: number;
@@ -85,7 +83,7 @@ export function LoadedTextureControl({
 
   return (
     <TextureControl
-      label={label ?? id}
+      label={label}
       choices={choices}
       standardWidth={standardWidth}
       standardHeight={standardHeight}

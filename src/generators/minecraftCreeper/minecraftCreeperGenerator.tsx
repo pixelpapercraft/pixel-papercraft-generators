@@ -396,7 +396,7 @@ function Component(): JSX.Element {
 
           <div className="w-full bg-gray-100 p-8 space-y-4">
             <GeneratorUI.LoadedTextureControl
-              id="Skin"
+              label="Skin"
               definitions={textures}
               choices={[]}
               standardWidth={64}

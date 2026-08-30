@@ -12,7 +12,7 @@ describe("LoadedTextureControl", () => {
   it("owns the unavailable loading state without caller plumbing", () => {
     const markup = renderToStaticMarkup(
       createElement(LoadedTextureControl, {
-        id: "Skin",
+        label: "Skin",
         definitions,
         choices: ["Red"],
         standardWidth: 64,

@@ -1289,7 +1289,7 @@ function Component(): JSX.Element {
             />
 
             <GeneratorUI.LoadedTextureControl
-              id="Flower"
+              label="Flower"
               definitions={flowerDefinitions}
               choices={flowerChoices}
               standardWidth={16}
@@ -1298,7 +1298,7 @@ function Component(): JSX.Element {
             />
 
             <GeneratorUI.LoadedTextureControl
-              id="Damage"
+              label="Damage"
               definitions={damageDefinitions}
               choices={damageChoices}
               standardWidth={128}
