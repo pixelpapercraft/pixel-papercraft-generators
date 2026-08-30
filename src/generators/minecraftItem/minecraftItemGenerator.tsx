@@ -698,13 +698,12 @@ function Component(): JSX.Element {
 
             {versionId === "custom" ? (
               <GeneratorUI.AtlasControl
-                id="custom"
                 label="Custom"
                 standardWidth={32}
                 standardHeight={32}
                 choices={[]}
                 textures={dynamicTextures}
-                onChange={onAtlasChange}
+                onAtlasChange={onAtlasChange}
               />
             ) : null}
 

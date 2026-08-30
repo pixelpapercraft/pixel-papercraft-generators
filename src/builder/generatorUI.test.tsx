@@ -124,6 +124,27 @@ describe("GeneratorUI.ButtonControl", () => {
   });
 });
 
+describe("GeneratorUI.AtlasControl", () => {
+  it("uses its visible label for the upload input", () => {
+    const markup = renderToStaticMarkup(
+      createElement(GeneratorUI.AtlasControl, {
+        label: "Custom Banner Patterns",
+        choices: [],
+        standardWidth: 64,
+        standardHeight: 64,
+        textures: new Map(),
+        onAtlasChange: vi.fn(),
+      })
+    );
+
+    expect(labelTargetsAControl(markup, "Select one or more Custom Banner Patterns texture files")).toBe(
+      true
+    );
+    expect(markup).toContain('type="file"');
+    expect(markup).toContain("multiple");
+  });
+});
+
 describe("GeneratorUI.TextControl", () => {
   it("renders its children", () => {
     // JSX rather than createElement: children are this control's only prop, and
