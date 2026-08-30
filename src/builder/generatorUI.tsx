@@ -10,12 +10,8 @@ import { TextureControl } from "@genroot/builder/ui/controls/textureControl";
 import { LoadedTextureControl } from "./loadedTextureControl";
 import { LoadedTextureControlV2 } from "./loadedTextureControlV2";
 
-// V2's controls wrap v1's so both generations render identical markup while v2
-// authors get explicit, controlled props (`label`/`onValueChange`) instead of
-// v1's `id`-doubles-as-label convention. `builder/ui` is being retired; when it
-// goes, these wrappers absorb the markup and the v1 modules are deleted.
-// Generators must reach these only through `GeneratorUI` — see the eslint
-// boundary rule for `src/generators/*V2/`.
+// Generic controls available to generator authors. Generators reach these only
+// through `GeneratorUI`; implementation modules remain builder internals.
 
 export type BooleanControlProps = {
   label: string;
