@@ -527,7 +527,6 @@ function Component(): JSX.Element {
                     the input a file is dropped into determines its role,
                     not the file's name. */}
                 <GeneratorUI.TextureControl
-                  id="custom-banner-base"
                   label="Banner Base"
                   choices={[]}
                   standardWidth={64}
@@ -536,7 +535,6 @@ function Component(): JSX.Element {
                   onChange={onBannerBaseChange}
                 />
                 <GeneratorUI.TextureControl
-                  id="custom-shield-base"
                   label="Shield Base"
                   choices={[]}
                   standardWidth={64}
@@ -545,7 +543,6 @@ function Component(): JSX.Element {
                   onChange={onShieldBaseChange}
                 />
                 <GeneratorUI.TextureControl
-                  id="custom-shield-base-nopattern"
                   label="Shield Base (No Pattern)"
                   choices={[]}
                   standardWidth={64}
