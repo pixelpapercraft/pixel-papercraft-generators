@@ -77,7 +77,7 @@ export class Model {
    * control system. Generator authors should hold this kind of state in
    * React state instead. Not removed because `_common/minecraft.ts` (tab
    * size) and `_common/plugins/glint.ts` (glint opacity/offsets) still
-   * depend on it; migrating those is tracked separately in TODO.md.
+   * depend on it.
    */
   setNumberVariable(id: string, value: number): void {
     this.values.setNumberVariable(id, value);

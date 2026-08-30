@@ -208,6 +208,12 @@ test("minecraft character generator hides every outer skin layer independently",
     regionIndex += 1;
   }
 
+  const box = await pageImage.boundingBox();
+  if (!box) {
+    throw new Error("Character output page was not measurable");
+  }
+  // Move off the final region so its hover outline is absent from the baseline.
+  await page.mouse.move(box.x - 20, box.y - 20);
   await renderImageAtNaturalSize(pageImage);
   await expect(pageImage).toHaveScreenshot(
     "minecraft-character-outer-layers-hidden-page-1.png"
