@@ -7,7 +7,7 @@ const outputPages = (page: Page): Locator =>
 const regions = (page: Page): Locator =>
   outputPages(page).first().locator("xpath=..").locator("div.absolute");
 const toggle = (page: Page, label: string) =>
-  page.getByLabel(label).evaluate((element: HTMLElement) => element.click());
+  page.getByText(label, { exact: true }).click();
 const skinOptions = [
   "None",
   "Alex",

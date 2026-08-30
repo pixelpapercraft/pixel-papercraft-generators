@@ -101,9 +101,7 @@ test("minecraft squid character renders a custom slim skin", async ({
 
 test("minecraft squid character toggles folds", async ({ page }) => {
   await page.goto("/generator/minecraft-squid-character");
-  await page
-    .getByLabel("Show Folds")
-    .evaluate((element: HTMLElement) => element.click());
+  await page.getByText("Show Folds", { exact: true }).click();
   await expect(page.getByLabel("Show Folds")).not.toBeChecked();
   await screenshot(page, "minecraft-squid-character-folds-off");
 });
