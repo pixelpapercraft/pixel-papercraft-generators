@@ -698,7 +698,6 @@ function Component(): JSX.Element {
 
             {versionId === "custom" ? (
               <GeneratorUI.AtlasControl
-                id="custom"
                 label="Custom"
                 standardWidth={32}
                 standardHeight={32}

@@ -188,7 +188,6 @@ function Component(): JSX.Element {
 
           {versionId === customVersion.textureDef.id ? (
             <GeneratorUI.AtlasControl
-              id={customVersion.textureDef.id}
               label="Custom"
               standardWidth={4}
               standardHeight={4}

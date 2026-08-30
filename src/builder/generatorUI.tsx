@@ -5,8 +5,18 @@ import { Button, type ButtonColor } from "@genroot/builder/ui/button/button";
 import { Instructions } from "@genroot/builder/ui/instructions";
 import { History } from "@genroot/builder/ui/history";
 import { MediaHero } from "@genroot/builder/ui/mediaHero";
-import { AtlasControl } from "@genroot/builder/ui/controls/atlasControl";
 import { TextureControl } from "@genroot/builder/ui/controls/textureControl";
+import { type Texture, makeTextureFromUrl } from "@genroot/builder/engine/texture";
+import {
+  type SelectOption as FormSelectOption,
+  Select,
+} from "@genroot/builder/ui/form/select";
+import {
+  isSupportedTextureUploadFile,
+  loadTextureUploadImage,
+  textureUploadAccept,
+} from "@genroot/builder/ui/controls/textureUpload";
+import { createAtlas } from "@genroot/builder/ui/controls/atlasControlLogic";
 import { LoadedTextureControl } from "./loadedTextureControl";
 import { LoadedTextureControlV2 } from "./loadedTextureControlV2";
 
@@ -170,6 +180,119 @@ export function ButtonControl({
         {label}
       </Button>
     </div>
+  );
+}
+
+export type AtlasControlProps = {
+  label: string;
+  choices: string[];
+  standardWidth: number;
+  standardHeight: number;
+  textures: Map<string, Texture>;
+  onChange: (texture: Texture | null, frames: string | null) => void;
+};
+
+export function AtlasControl({
+  label,
+  choices,
+  standardWidth,
+  standardHeight,
+  textures,
+  onChange,
+}: AtlasControlProps): JSX.Element {
+  const baseId = React.useId();
+  const legendId = `${baseId}-legend`;
+  const selectId = `${baseId}-select`;
+  const fileInputId = `${baseId}-file`;
+  const selectChoices: FormSelectOption[] =
+    choices.length > 0
+      ? [
+          { id: "", label: "None" },
+          ...choices.map((choice) => ({ id: choice, label: choice })),
+        ]
+      : [];
+
+  const onInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files ? Array.from(event.target.files) : [];
+    if (files.length === 0) {
+      onChange(null, null);
+      return;
+    }
+
+    const supportedFiles = files.filter(isSupportedTextureUploadFile);
+    if (supportedFiles.length === 0) {
+      onChange(null, null);
+      return;
+    }
+
+    const loadedImages = await Promise.allSettled(
+      supportedFiles.map(loadTextureUploadImage)
+    );
+
+    const images = loadedImages
+      .filter(
+        (result): result is PromiseFulfilledResult<HTMLImageElement> =>
+          result.status === "fulfilled"
+      )
+      .map((result) => result.value);
+
+    if (images.length === 0) {
+      onChange(null, null);
+      return;
+    }
+
+    const { url, framesJson, atlasWidth, atlasHeight } = createAtlas(
+      images,
+      standardWidth,
+      standardHeight
+    );
+    const texture = await makeTextureFromUrl(url, atlasWidth, atlasHeight);
+    onChange(texture, framesJson);
+  };
+
+  const onChoiceChange = (choice: FormSelectOption) => {
+    const texture = textures.get(choice.id) ?? null;
+    onChange(texture, null);
+  };
+
+  return (
+    <fieldset className="mb-4 min-w-0">
+      <legend className="font-bold mb-1" id={legendId}>
+        {label}
+      </legend>
+      <div className="flex flex-wrap">
+        <div className="flex mb-4 space-x-4 items-center mr-4">
+          {selectChoices.length > 0 ? (
+            <>
+              <Select
+                id={selectId}
+                ariaLabelledBy={legendId}
+                choices={selectChoices}
+                onChange={onChoiceChange}
+              />
+              <div>or</div>
+            </>
+          ) : null}
+
+          <div>
+            <label className="sr-only" htmlFor={fileInputId}>
+              Select one or more {label} texture files
+            </label>
+            <input
+              id={fileInputId}
+              className="border border-gray-300 p-1 bg-white text-gray-400"
+              type="file"
+              accept={textureUploadAccept}
+              multiple
+              onChange={onInputChange}
+            />
+            <p className="mt-2 text-sm text-gray-600">
+              Select one or more texture files.
+            </p>
+          </div>
+        </div>
+      </div>
+    </fieldset>
   );
 }
 

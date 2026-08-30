@@ -554,7 +554,6 @@ function Component(): JSX.Element {
                   onChange={onShieldBaseNoPatternChange}
                 />
                 <GeneratorUI.AtlasControl
-                  id="custom-banner-patterns"
                   label="Custom Banner Patterns"
                   standardWidth={64}
                   standardHeight={64}
@@ -563,7 +562,6 @@ function Component(): JSX.Element {
                   onChange={onBannerPatternsChange}
                 />
                 <GeneratorUI.AtlasControl
-                  id="custom-shield-patterns"
                   label="Custom Shield Patterns"
                   standardWidth={64}
                   standardHeight={64}
