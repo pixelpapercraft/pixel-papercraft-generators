@@ -25,10 +25,11 @@ It includes many generators that turn characters, creatures, items, and other ga
 
 Read and follow rules from any category whose "Read when" keywords match your current task. To add, update, or delete rules, use the `agent-rules` skill.
 
-| Category   | Read when                                                                                                    | File                                            |
-| ---------- | ------------------------------------------------------------------------------------------------------------ | ----------------------------------------------- |
-| TypeScript | `.ts`, `.tsx`, type, interface, switch, `any`, `as`, `satisfies`, zod, vitest `expect`, test mock, `vi.mock` | [typescript.md](agent-docs/rules/typescript.md) |
-| Comments   | comment, `//`, `/**`                                                                                         | [comments.md](agent-docs/rules/comments.md)     |
+| Category     | Read when                                                                                                    | File                                                |
+| ------------ | ------------------------------------------------------------------------------------------------------------ | --------------------------------------------------- |
+| TypeScript   | `.ts`, `.tsx`, type, interface, switch, `any`, `as`, `satisfies`, zod, vitest `expect`, test mock, `vi.mock` | [typescript.md](agent-docs/rules/typescript.md)     |
+| Comments     | comment, `//`, `/**`                                                                                         | [comments.md](agent-docs/rules/comments.md)         |
+| Visual Tests | `toHaveScreenshot`, snapshot, visual regression, baseline, `regions(`, `page.mouse`, `.spec.ts`              | [visual-tests.md](agent-docs/rules/visual-tests.md) |
 
 ## Change Scope
 
