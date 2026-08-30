@@ -1,4 +1,5 @@
 import { spawn } from "node:child_process";
+import type { ChildProcess } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -31,11 +32,15 @@ const vitestBin = path.join(
   "vitest.mjs"
 );
 
-let nextServer = null;
-let vitestRun = null;
+let nextServer: ChildProcess | null = null;
+let vitestRun: ChildProcess | null = null;
 let shuttingDown = false;
 
-function spawnNodeModule(scriptPath, args, extraEnv = {}) {
+function spawnNodeModule(
+  scriptPath: string,
+  args: string[],
+  extraEnv: NodeJS.ProcessEnv = {}
+): ChildProcess {
   return spawn(process.execPath, [scriptPath, ...args], {
     cwd: projectRoot,
     env: {
@@ -46,7 +51,7 @@ function spawnNodeModule(scriptPath, args, extraEnv = {}) {
   });
 }
 
-function terminate(child) {
+function terminate(child: ChildProcess | null): void {
   if (!child || child.exitCode !== null || child.signalCode !== null) {
     return;
   }
@@ -59,7 +64,7 @@ function terminate(child) {
   }, 5_000).unref?.();
 }
 
-function cleanup(code = 0) {
+function cleanup(code = 0): void {
   if (shuttingDown) {
     return;
   }
@@ -78,26 +83,36 @@ for (const signal of ["SIGINT", "SIGTERM"]) {
   });
 }
 
-process.on("exit", () => {
-  cleanup(process.exitCode ?? 0);
+process.on("exit", (code: number) => {
+  cleanup(code);
 });
 
-function waitForApp(url, timeoutMs, child) {
-  return new Promise((resolve, reject) => {
+function waitForApp(
+  url: string,
+  timeoutMs: number,
+  child: ChildProcess
+): Promise<void> {
+  return new Promise<void>((resolve, reject) => {
     const deadline = Date.now() + timeoutMs;
     let settled = false;
 
-    const finish = (fn) => (value) => {
+    const resolveOnce = (): void => {
       if (settled) {
         return;
       }
 
       settled = true;
-      fn(value);
+      resolve();
     };
 
-    const resolveOnce = finish(resolve);
-    const rejectOnce = finish(reject);
+    const rejectOnce = (reason: Error): void => {
+      if (settled) {
+        return;
+      }
+
+      settled = true;
+      reject(reason);
+    };
 
     const poll = async () => {
       if (settled) {
@@ -133,8 +148,8 @@ function waitForApp(url, timeoutMs, child) {
       setTimeout(poll, 500).unref?.();
     };
 
-    child.once("error", rejectOnce);
-    child.once("exit", (code, signal) => {
+    child.once("error", (error: Error) => rejectOnce(error));
+    child.once("exit", (code: number | null, signal: NodeJS.Signals | null) => {
       if (!settled) {
         rejectOnce(
           new Error(
@@ -148,7 +163,7 @@ function waitForApp(url, timeoutMs, child) {
   });
 }
 
-async function main() {
+async function main(): Promise<void> {
   nextServer = spawnNodeModule(nextBin, [
     "dev",
     "--webpack",
@@ -159,7 +174,7 @@ async function main() {
   ]);
   await waitForApp(appRootUrl, startupTimeoutMs, nextServer);
 
-  const env = {
+  const env: NodeJS.ProcessEnv = {
     VITE_IMAGE_APP_URL: appRouteUrl,
   };
 
@@ -175,9 +190,9 @@ async function main() {
     env
   );
 
-  const vitestExitCode = await new Promise((resolve, reject) => {
-    vitestRun.once("error", reject);
-    vitestRun.once("exit", (code, signal) => {
+  const vitestExitCode = await new Promise<number>((resolve, reject) => {
+    vitestRun.once("error", (error: Error) => reject(error));
+    vitestRun.once("exit", (code: number | null, signal: NodeJS.Signals | null) => {
       if (signal) {
         reject(new Error(`vitest exited via ${signal}`));
         return;
