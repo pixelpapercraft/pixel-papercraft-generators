@@ -133,7 +133,7 @@ describe("GeneratorUI.AtlasControl", () => {
         standardWidth: 64,
         standardHeight: 64,
         textures: new Map(),
-        onAtlasChange: vi.fn(),
+        onChange: vi.fn(),
       })
     );
 

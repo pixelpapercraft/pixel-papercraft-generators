@@ -559,7 +559,7 @@ function Component(): JSX.Element {
                   standardHeight={64}
                   choices={[]}
                   textures={noPresetTextures}
-                  onAtlasChange={onBannerPatternsChange}
+                  onChange={onBannerPatternsChange}
                 />
                 <GeneratorUI.AtlasControl
                   label="Custom Shield Patterns"
@@ -567,7 +567,7 @@ function Component(): JSX.Element {
                   standardHeight={64}
                   choices={[]}
                   textures={noPresetTextures}
-                  onAtlasChange={onShieldPatternsChange}
+                  onChange={onShieldPatternsChange}
                 />
               </>
             )}

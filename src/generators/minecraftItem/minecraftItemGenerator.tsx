@@ -703,7 +703,7 @@ function Component(): JSX.Element {
                 standardHeight={32}
                 choices={[]}
                 textures={dynamicTextures}
-                onAtlasChange={onAtlasChange}
+                onChange={onAtlasChange}
               />
             ) : null}
 

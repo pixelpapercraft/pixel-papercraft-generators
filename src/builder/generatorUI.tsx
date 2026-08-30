@@ -189,7 +189,7 @@ export type AtlasControlProps = {
   standardWidth: number;
   standardHeight: number;
   textures: Map<string, Texture>;
-  onAtlasChange: (texture: Texture | null, frames: string | null) => void;
+  onChange: (texture: Texture | null, frames: string | null) => void;
 };
 
 export function AtlasControl({
@@ -198,7 +198,7 @@ export function AtlasControl({
   standardWidth,
   standardHeight,
   textures,
-  onAtlasChange,
+  onChange,
 }: AtlasControlProps): JSX.Element {
   const baseId = React.useId();
   const legendId = `${baseId}-legend`;
@@ -215,13 +215,13 @@ export function AtlasControl({
   const onInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files ? Array.from(event.target.files) : [];
     if (files.length === 0) {
-      onAtlasChange(null, null);
+      onChange(null, null);
       return;
     }
 
     const supportedFiles = files.filter(isSupportedTextureUploadFile);
     if (supportedFiles.length === 0) {
-      onAtlasChange(null, null);
+      onChange(null, null);
       return;
     }
 
@@ -237,7 +237,7 @@ export function AtlasControl({
       .map((result) => result.value);
 
     if (images.length === 0) {
-      onAtlasChange(null, null);
+      onChange(null, null);
       return;
     }
 
@@ -247,12 +247,12 @@ export function AtlasControl({
       standardHeight
     );
     const texture = await makeTextureFromUrl(url, atlasWidth, atlasHeight);
-    onAtlasChange(texture, framesJson);
+    onChange(texture, framesJson);
   };
 
   const onChoiceChange = (choice: FormSelectOption) => {
     const texture = textures.get(choice.id) ?? null;
-    onAtlasChange(texture, null);
+    onChange(texture, null);
   };
 
   return (
