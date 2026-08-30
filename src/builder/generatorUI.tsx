@@ -7,7 +7,6 @@ import { History } from "@genroot/builder/ui/history";
 import { MediaHero } from "@genroot/builder/ui/mediaHero";
 import { AtlasControl } from "@genroot/builder/ui/controls/atlasControl";
 import { TextureControl } from "@genroot/builder/ui/controls/textureControl";
-import { RangeControl as RangeControlV1 } from "@genroot/builder/ui/controls/rangeControl";
 import { LoadedTextureControl } from "./loadedTextureControl";
 import { LoadedTextureControlV2 } from "./loadedTextureControlV2";
 
@@ -126,16 +125,35 @@ export function RangeControl({
   showValue,
   onValueChange,
 }: RangeControlProps): JSX.Element {
+  const inputId = React.useId();
+  const [currentValue, setCurrentValue] = React.useState(value);
+
+  React.useEffect(() => {
+    setCurrentValue(value);
+  }, [value]);
+
+  const onRangeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const nextValue = parseFloat(event.target.value);
+    setCurrentValue(nextValue);
+    onValueChange(nextValue);
+  };
+
   return (
-    <RangeControlV1
-      id={label}
-      min={min}
-      max={max}
-      step={step}
-      value={value}
-      showValue={showValue}
-      onChange={onValueChange}
-    />
+    <div className="mb-4">
+      <label className="font-bold mb-1 block" htmlFor={inputId}>
+        {label}
+      </label>
+      <input
+        id={inputId}
+        type="range"
+        min={min}
+        max={max}
+        value={currentValue}
+        step={step}
+        onChange={onRangeChange}
+      />
+      {showValue ? <span className="ml-2">{currentValue}</span> : null}
+    </div>
   );
 }
 
