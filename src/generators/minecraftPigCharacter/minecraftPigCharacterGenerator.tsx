@@ -1551,7 +1551,7 @@ function Component(): JSX.Element {
               onChange={setSkin}
             />
             <GeneratorUI.LoadedTextureControl
-              id="Saddle"
+              label="Saddle"
               definitions={textures}
               choices={saddleChoices}
               standardWidth={64}
@@ -1559,7 +1559,7 @@ function Component(): JSX.Element {
               onChange={setSaddle}
             />
             <GeneratorUI.LoadedTextureControl
-              id="Armor (Layer 1)"
+              label="Armor (Layer 1)"
               definitions={textures}
               choices={armorChoices}
               standardWidth={64}

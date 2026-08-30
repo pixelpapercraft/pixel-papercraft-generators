@@ -625,7 +625,7 @@ function Component(): JSX.Element {
         >
           <div className="w-full bg-gray-100 p-8 space-y-4">
             <GeneratorUI.LoadedTextureControl
-              id="Enderman"
+              label="Enderman"
               definitions={endermanDefinitions}
               choices={[]}
               standardWidth={64}
@@ -634,7 +634,7 @@ function Component(): JSX.Element {
               onChange={setEndermanTex}
             />
             <GeneratorUI.LoadedTextureControl
-              id="Enderman Eyes"
+              label="Enderman Eyes"
               definitions={eyesDefinitions}
               choices={[]}
               standardWidth={64}

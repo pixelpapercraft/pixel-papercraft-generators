@@ -443,7 +443,7 @@ function Component(): JSX.Element {
 
           <div className="w-full bg-gray-100 p-8 space-y-4">
             <GeneratorUI.LoadedTextureControl
-              id="Cat"
+              label="Cat"
               definitions={textures}
               choices={catChoices}
               standardWidth={64}
@@ -452,7 +452,7 @@ function Component(): JSX.Element {
               onChange={setCatTexture}
             />
             <GeneratorUI.LoadedTextureControl
-              id="Collar"
+              label="Collar"
               definitions={textures}
               choices={collarChoices}
               standardWidth={64}

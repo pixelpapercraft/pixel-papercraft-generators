@@ -184,7 +184,7 @@ function Component(): JSX.Element {
         >
           <div className="w-full bg-gray-100 p-8 space-y-4">
             <GeneratorUI.LoadedTextureControl
-              id="Spider"
+              label="Spider"
               definitions={textures}
               choices={["Spider", "Cave Spider"]}
               standardWidth={64}
@@ -193,7 +193,7 @@ function Component(): JSX.Element {
               onChange={setSpiderTexture}
             />
             <GeneratorUI.LoadedTextureControl
-              id="Spider Eyes"
+              label="Spider Eyes"
               definitions={textures}
               choices={[]}
               standardWidth={64}

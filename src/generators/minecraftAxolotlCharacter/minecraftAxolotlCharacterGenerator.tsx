@@ -527,7 +527,7 @@ function Component(): JSX.Element {
             />
 
             <GeneratorUI.LoadedTextureControl
-              id="Head Fins Texture"
+              label="Head Fins Texture"
               definitions={textures}
               standardWidth={64}
               standardHeight={64}
@@ -538,7 +538,7 @@ function Component(): JSX.Element {
             />
 
             <GeneratorUI.LoadedTextureControl
-              id="Tail Fins Texture"
+              label="Tail Fins Texture"
               definitions={textures}
               standardWidth={64}
               standardHeight={64}

@@ -574,7 +574,7 @@ function Component(): JSX.Element {
                 the select shows blank — the same blank-select-but-fallback
                 behavior as the "Horse" control below. */}
             <GeneratorUI.LoadedTextureControl
-              id="Enchanted Glint"
+              label="Enchanted Glint"
               definitions={textures}
               choices={["1.20+", "Pre-1.20"]}
               standardWidth={128}
@@ -614,7 +614,7 @@ function Component(): JSX.Element {
                 where the default texture id ("Horse") isn't one of the named
                 choices either. */}
             <GeneratorUI.LoadedTextureControl
-              id="Horse"
+              label="Horse"
               definitions={textures}
               choices={horseChoices}
               standardWidth={64}
@@ -624,7 +624,7 @@ function Component(): JSX.Element {
             />
 
             <GeneratorUI.LoadedTextureControl
-              id="Markings"
+              label="Markings"
               definitions={textures}
               choices={markingsChoices}
               standardWidth={64}
@@ -633,7 +633,7 @@ function Component(): JSX.Element {
             />
 
             <GeneratorUI.LoadedTextureControl
-              id="Armor"
+              label="Armor"
               definitions={textures}
               choices={armorChoices}
               standardWidth={64}
@@ -666,7 +666,7 @@ function Component(): JSX.Element {
                     Overlay" isn't one of the visible choices — the same
                     blank-select-but-fallback behavior as "Horse". */}
                 <GeneratorUI.LoadedTextureControl
-                  id="Armor Overlay"
+                  label="Armor Overlay"
                   definitions={textures}
                   choices={["Leather Overlay"]}
                   standardWidth={64}

@@ -1490,7 +1490,7 @@ function Component(): JSX.Element {
   ): JSX.Element => (
     <GeneratorUI.LoadedTextureControl
       key={controlId}
-      id={controlId}
+      label={controlId}
       definitions={textures}
       choices={choices}
       standardWidth={standardWidth}

@@ -800,7 +800,7 @@ function Component(): JSX.Element {
         >
           <div className="w-full bg-gray-100 p-8 space-y-4">
             <GeneratorUI.LoadedTextureControl
-              id="Golem"
+              label="Golem"
               definitions={golemDefinitions}
               choices={[]}
               standardWidth={128}
@@ -809,7 +809,7 @@ function Component(): JSX.Element {
               onChange={setGolemTex}
             />
             <GeneratorUI.LoadedTextureControl
-              id="Flower"
+              label="Flower"
               definitions={flowerDefinitions}
               choices={flowerChoices}
               standardWidth={16}
@@ -817,7 +817,7 @@ function Component(): JSX.Element {
               onChange={setFlowerTex}
             />
             <GeneratorUI.LoadedTextureControl
-              id="Damage"
+              label="Damage"
               definitions={damageDefinitions}
               choices={damageChoices}
               standardWidth={128}
