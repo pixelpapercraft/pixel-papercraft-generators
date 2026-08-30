@@ -1,13 +1,12 @@
 "use client";
 
 import React from "react";
-import { type ButtonColor } from "@genroot/builder/ui/button/button";
+import { Button, type ButtonColor } from "@genroot/builder/ui/button/button";
 import { Instructions } from "@genroot/builder/ui/instructions";
 import { History } from "@genroot/builder/ui/history";
 import { MediaHero } from "@genroot/builder/ui/mediaHero";
 import { AtlasControl } from "@genroot/builder/ui/controls/atlasControl";
 import { TextureControl } from "@genroot/builder/ui/controls/textureControl";
-import { ButtonControl as ButtonControlV1 } from "@genroot/builder/ui/controls/buttonControl";
 import { RangeControl as RangeControlV1 } from "@genroot/builder/ui/controls/rangeControl";
 import { LoadedTextureControl } from "./loadedTextureControl";
 import { LoadedTextureControlV2 } from "./loadedTextureControlV2";
@@ -151,7 +150,13 @@ export function ButtonControl({
   color,
   onClick,
 }: ButtonControlProps): JSX.Element {
-  return <ButtonControlV1 id={label} color={color} onClick={onClick} />;
+  return (
+    <div className="mb-4 mr-2 inline-block">
+      <Button title={label} size="Small" color={color} onClick={onClick}>
+        {label}
+      </Button>
+    </div>
+  );
 }
 
 export type TextControlProps = {
