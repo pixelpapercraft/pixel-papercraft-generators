@@ -9,8 +9,11 @@ const outputPage = (page: Page): Locator =>
 const pageImageUrl = (page: Page): Promise<string | null> =>
   outputPage(page).getAttribute("src");
 
+// Click the visible label rather than the visually-hidden checkbox. This waits
+// for a real browser interaction, including React hydration, before changing
+// the controlled value.
 const toggleCheckbox = (page: Page, name: string): Promise<void> =>
-  page.getByLabel(name).evaluate((element: HTMLElement) => element.click());
+  page.getByText(name, { exact: true }).click();
 
 async function screenshot(page: Page, name: string): Promise<void> {
   const pageImage = outputPage(page);

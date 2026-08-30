@@ -10,10 +10,11 @@ const outputPage = (page: Page): Locator =>
 const combo = (page: Page, index: number): Locator =>
   page.getByRole("combobox").nth(index);
 
-// Visually-hidden checkboxes are toggled via a scripted click, as a normal
-// Playwright click fails the visibility wait.
+// Click the visible label rather than the visually-hidden checkbox. This waits
+// for a real browser interaction, including React hydration, before changing
+// the controlled value.
 const toggleCheckbox = (page: Page, name: string) =>
-  page.getByLabel(name).evaluate((element: HTMLElement) => element.click());
+  page.getByText(name, { exact: true }).click();
 
 const rgb = (r: number, g: number, b: number): Rgba => ({ r, g, b, a: 255 });
 const TRANSPARENT: Rgba = { r: 0, g: 0, b: 0, a: 0 };
