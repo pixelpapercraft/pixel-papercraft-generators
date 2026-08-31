@@ -81,7 +81,12 @@ export type {
 } from "@genroot/builder/engine/renderers/drawTexture";
 
 // Page sizes.
-export { A4 } from "@genroot/builder/engine/modelPage";
+export {
+  A4,
+  type PageSize,
+  swapPageSize,
+  pxToMm,
+} from "@genroot/builder/engine/modelPage";
 
 // Texture-picker state. Generic picker plumbing: the selection model plus its
 // serialization, which Block and Item drive through their own pickers.
