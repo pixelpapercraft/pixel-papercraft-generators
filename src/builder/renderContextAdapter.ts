@@ -15,6 +15,7 @@ import {
   type TabOrientation,
 } from "@genroot/builder/engine/renderers/drawTab";
 import { type Texture } from "@genroot/builder/engine/texture";
+import { type PageSize } from "@genroot/builder/engine/modelPage";
 import { type RegionClickHandler, type RenderContext } from "./generator";
 
 // Delegates every draw/page method to an internal `Engine`, and
@@ -37,8 +38,8 @@ export class RenderContextAdapter implements RenderContext {
     this.onRegionClick = onRegionClick;
   }
 
-  usePage(id: string): void {
-    this.gen.usePage(id);
+  usePage(id: string, size?: PageSize): void {
+    this.gen.usePage(id, size);
   }
 
   fillBackgroundColorWithWhite(): void {

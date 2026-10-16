@@ -18,7 +18,7 @@ import {
 } from "./renderers/drawTab";
 import { drawText } from "./renderers/drawText";
 import { fillBackgroundColor } from "./renderers/fillBackgroundColor";
-import { type Page } from "./modelPage";
+import { type Page, type PageSize } from "./modelPage";
 import { fillRect } from "./renderers/fillRect";
 import { Color, getCanvasWithContextPixelColor } from "./canvasWithContext";
 
@@ -56,8 +56,8 @@ export class Engine {
     return this.model.getNumberVariable(id);
   }
 
-  usePage(id: string): void {
-    this.model.usePage(id);
+  usePage(id: string, size?: PageSize): void {
+    this.model.usePage(id, size);
   }
 
   fillBackgroundColorWithWhite() {

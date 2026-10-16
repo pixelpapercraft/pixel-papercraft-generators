@@ -1,6 +1,6 @@
 import { type ImageWithCanvas } from "./imageWithCanvas";
 import { type Texture } from "./texture";
-import { type Page, makePage } from "./modelPage";
+import { A4, type Page, type PageSize, makePage } from "./modelPage";
 import { type Values } from "./modelValues";
 import { type Region } from "./renderers/types";
 
@@ -105,14 +105,14 @@ export class Model {
     return newPage;
   }
 
-  usePage(id: string) {
+  usePage(id: string, size: PageSize = A4.px) {
     const page = this.findPage(id);
     if (page) {
       this.setCurrentPage(page);
       return;
     }
 
-    const newPage = makePage(id);
+    const newPage = makePage(id, size);
 
     this.addPage(newPage);
     this.setCurrentPage(newPage);
